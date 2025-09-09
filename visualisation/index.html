@@ -3,45 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ALM - Speech Bubble Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>ALM Analytics - Data Visualization</title>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* iPhone 15 Pro Color Palette */
+      /* iPhone 15 Pro Color System */
       --bg-primary: #000000;
-      --bg-secondary: #1c1c1e;
-      --bg-tertiary: #2c2c2e;
-      --bg-quaternary: #3a3a3c;
+      --bg-secondary: #1C1C1E;
+      --bg-tertiary: #2C2C2E;
       
-      /* Glassmorphic Elements */
-      --glass-primary: rgba(255, 255, 255, 0.08);
+      /* Dynamic Island Glass */
+      --glass-primary: rgba(255, 255, 255, 0.1);
       --glass-secondary: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --glass-strong: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-strong: rgba(255, 255, 255, 0.2);
       
-      /* iPhone 15 Accent Colors */
-      --accent-blue: #007AFF;
-      --accent-green: #30D158;
-      --accent-orange: #FF9F0A;
-      --accent-red: #FF453A;
-      --accent-purple: #BF5AF2;
-      --accent-pink: #FF2D92;
-      --accent-teal: #64D2FF;
-      --accent-indigo: #5E5CE6;
+      /* iPhone System Colors */
+      --system-blue: #007AFF;
+      --system-green: #30D158;
+      --system-orange: #FF9F0A;
+      --system-red: #FF453A;
+      --system-purple: #BF5AF2;
+      --system-pink: #FF2D92;
+      --system-teal: #64D2FF;
+      --system-indigo: #5E5CE6;
       
-      /* Text Colors */
+      /* Text Hierarchy */
       --text-primary: #FFFFFF;
-      --text-secondary: rgba(255, 255, 255, 0.6);
-      --text-tertiary: rgba(255, 255, 255, 0.4);
-      --text-quaternary: rgba(255, 255, 255, 0.25);
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-tertiary: rgba(255, 255, 255, 0.5);
+      --text-quaternary: rgba(255, 255, 255, 0.3);
       
-      /* Dynamic Island Inspired */
-      --dynamic-island: rgba(0, 0, 0, 0.95);
-      --dynamic-border: rgba(255, 255, 255, 0.08);
-      
-      /* Spacing */
+      /* Spacing System */
       --space-xs: 4px;
       --space-sm: 8px;
       --space-md: 16px;
@@ -53,7 +47,11 @@
       --blur-light: blur(20px);
       --blur-heavy: blur(40px);
       --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.5);
+      --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.6);
+      --glow-blue: 0 0 20px rgba(0, 122, 255, 0.4);
+      --glow-green: 0 0 20px rgba(48, 209, 88, 0.4);
+      --glow-orange: 0 0 20px rgba(255, 159, 10, 0.4);
+      --glow-red: 0 0 20px rgba(255, 69, 58, 0.4);
     }
 
     * {
@@ -71,7 +69,7 @@
       position: relative;
     }
 
-    /* Ambient Background Elements */
+    /* Ambient Background Animation */
     .ambient-bg {
       position: fixed;
       top: 0;
@@ -80,20 +78,20 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
+      opacity: 0.15;
     }
 
     .ambient-orb {
       position: absolute;
       border-radius: 50%;
       filter: blur(80px);
-      opacity: 0.15;
       animation: float 20s ease-in-out infinite;
     }
 
     .orb-1 {
       width: 400px;
       height: 400px;
-      background: var(--accent-blue);
+      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
       top: 10%;
       left: 20%;
       animation-delay: 0s;
@@ -102,7 +100,7 @@
     .orb-2 {
       width: 300px;
       height: 300px;
-      background: var(--accent-purple);
+      background: linear-gradient(135deg, var(--system-green), var(--system-teal));
       top: 60%;
       right: 20%;
       animation-delay: 7s;
@@ -111,7 +109,7 @@
     .orb-3 {
       width: 200px;
       height: 200px;
-      background: var(--accent-teal);
+      background: linear-gradient(135deg, var(--system-orange), var(--system-pink));
       bottom: 20%;
       left: 60%;
       animation-delay: 14s;
@@ -123,111 +121,58 @@
       66% { transform: translate(-20px, 20px) scale(0.9); }
     }
 
-    /* Dynamic Island Header */
-    .dynamic-header {
+    /* Dynamic Island Header - MINIMAL */
+    .dynamic-island {
       position: fixed;
       top: var(--space-lg);
       left: 50%;
       transform: translateX(-50%);
-      background: var(--dynamic-island);
+      background: rgba(0, 0, 0, 0.95);
       backdrop-filter: var(--blur-heavy);
-      border: 1px solid var(--dynamic-border);
-      border-radius: 32px;
+      border: 1px solid var(--glass-border);
+      border-radius: 40px;
       padding: var(--space-md) var(--space-xl);
-      z-index: 100;
+      z-index: 1000;
       display: flex;
       align-items: center;
       gap: var(--space-md);
       box-shadow: var(--shadow-strong);
+      max-width: 90%;
     }
 
     .question-indicator {
-      background: var(--accent-blue);
+      background: linear-gradient(135deg, var(--system-orange), var(--system-pink));
       color: white;
       font-weight: 700;
-      font-size: 0.875rem;
-      padding: var(--space-xs) var(--space-sm);
-      border-radius: 12px;
-      min-width: 48px;
-      text-align: center;
-      letter-spacing: 0.5px;
-    }
-
-    .question-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      max-width: 600px;
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    .response-count {
-      background: var(--glass-primary);
-      border: 1px solid var(--glass-border);
+      font-size: 1rem;
+      padding: var(--space-sm) var(--space-md);
       border-radius: 16px;
-      padding: var(--space-xs) var(--space-sm);
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-secondary);
+      min-width: 60px;
+      text-align: center;
     }
 
-    /* Control Panel */
-    .control-panel {
-      position: fixed;
-      bottom: var(--space-lg);
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--glass-primary);
-      backdrop-filter: var(--blur-light);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: var(--space-sm);
-      z-index: 100;
-      display: flex;
-      gap: var(--space-sm);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .control-btn {
+    .question-selector {
       background: var(--glass-secondary);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: var(--space-sm) var(--space-md);
       color: var(--text-primary);
       font-size: 0.875rem;
-      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-      text-decoration: none;
-      white-space: nowrap;
+      min-width: 200px;
     }
 
-    .control-btn:hover {
-      background: var(--glass-strong);
-      border-color: var(--accent-blue);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3);
-    }
-
-    .control-btn.active {
-      background: var(--accent-blue);
-      border-color: var(--accent-blue);
-      color: white;
-    }
-
-    /* Question Selector */
-    .question-selector {
+    .response-count {
       background: var(--glass-primary);
       border: 1px solid var(--glass-border);
       border-radius: 12px;
-      padding: var(--space-sm) var(--space-md);
-      color: var(--text-primary);
+      padding: var(--space-xs) var(--space-sm);
       font-size: 0.875rem;
-      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
     }
 
     /* Speech Bubbles Container */
@@ -239,6 +184,7 @@
       height: 100%;
       z-index: 10;
       padding: 120px var(--space-lg) 120px;
+      overflow: hidden;
     }
 
     .speech-bubble {
@@ -246,10 +192,10 @@
       background: var(--glass-primary);
       backdrop-filter: var(--blur-light);
       border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: var(--space-lg);
-      max-width: 320px;
-      min-width: 280px;
+      border-radius: 32px;
+      padding: var(--space-xl);
+      max-width: 300px;
+      min-width: 260px;
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       box-shadow: var(--shadow-soft);
@@ -291,45 +237,45 @@
     .speech-bubble:hover {
       transform: translateY(-8px) scale(1.02);
       background: var(--glass-strong);
-      border-color: var(--accent-blue);
-      box-shadow: 0 20px 60px rgba(0, 122, 255, 0.2);
+      border-color: var(--system-blue);
+      box-shadow: var(--glow-blue);
     }
 
     .speech-bubble.selected {
       background: var(--glass-strong);
-      border-color: var(--accent-blue);
+      border-color: var(--system-blue);
       box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.3);
     }
 
     /* Quality-based styling */
     .speech-bubble.excellent {
-      border-color: var(--accent-green);
-      background: linear-gradient(135deg, var(--glass-primary), rgba(48, 209, 88, 0.05));
+      border-color: var(--system-green);
+      background: linear-gradient(135deg, var(--glass-primary), rgba(48, 209, 88, 0.1));
     }
 
     .speech-bubble.excellent:hover {
-      border-color: var(--accent-green);
-      box-shadow: 0 20px 60px rgba(48, 209, 88, 0.3);
+      border-color: var(--system-green);
+      box-shadow: var(--glow-green);
     }
 
     .speech-bubble.good {
-      border-color: var(--accent-orange);
-      background: linear-gradient(135deg, var(--glass-primary), rgba(255, 159, 10, 0.05));
+      border-color: var(--system-orange);
+      background: linear-gradient(135deg, var(--glass-primary), rgba(255, 159, 10, 0.1));
     }
 
     .speech-bubble.good:hover {
-      border-color: var(--accent-orange);
-      box-shadow: 0 20px 60px rgba(255, 159, 10, 0.3);
+      border-color: var(--system-orange);
+      box-shadow: var(--glow-orange);
     }
 
     .speech-bubble.needs-work {
-      border-color: var(--accent-red);
-      background: linear-gradient(135deg, var(--glass-primary), rgba(255, 69, 58, 0.05));
+      border-color: var(--system-red);
+      background: linear-gradient(135deg, var(--glass-primary), rgba(255, 69, 58, 0.1));
     }
 
     .speech-bubble.needs-work:hover {
-      border-color: var(--accent-red);
-      box-shadow: 0 20px 60px rgba(255, 69, 58, 0.3);
+      border-color: var(--system-red);
+      box-shadow: var(--glow-red);
     }
 
     @keyframes speechFloat {
@@ -341,18 +287,19 @@
 
     /* Student Avatar */
     .student-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.125rem;
       margin-bottom: var(--space-md);
       border: 2px solid var(--glass-border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     .student-name {
@@ -360,6 +307,7 @@
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: var(--space-sm);
+      text-align: center;
     }
 
     .speech-content {
@@ -372,61 +320,61 @@
       -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-align: center;
     }
 
     .speech-stats {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       padding-top: var(--space-sm);
       border-top: 1px solid var(--glass-border);
+      gap: var(--space-md);
     }
 
     .stat-item {
       display: flex;
       align-items: center;
       gap: var(--space-xs);
-      font-size: 0.75rem;
-      color: var(--text-tertiary);
-      font-weight: 500;
+      font-size: 1rem;
     }
 
     .quality-indicator {
-      width: 8px;
-      height: 8px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       flex-shrink: 0;
     }
 
     .excellent .quality-indicator {
-      background: var(--accent-green);
+      background: var(--system-green);
       box-shadow: 0 0 8px rgba(48, 209, 88, 0.5);
     }
 
     .good .quality-indicator {
-      background: var(--accent-orange);
+      background: var(--system-orange);
       box-shadow: 0 0 8px rgba(255, 159, 10, 0.5);
     }
 
     .needs-work .quality-indicator {
-      background: var(--accent-red);
+      background: var(--system-red);
       box-shadow: 0 0 8px rgba(255, 69, 58, 0.5);
     }
 
-    /* Detail Panel */
+    /* Detail Panel - MINIMAL */
     .detail-panel {
       position: fixed;
       right: -450px;
       top: 0;
       bottom: 0;
       width: 450px;
-      background: var(--dynamic-island);
+      background: rgba(0, 0, 0, 0.95);
       backdrop-filter: var(--blur-heavy);
-      border-left: 1px solid var(--dynamic-border);
+      border-left: 1px solid var(--glass-border);
       padding: var(--space-xxl);
       overflow-y: auto;
       transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      z-index: 200;
+      z-index: 2000;
     }
 
     .detail-panel.open {
@@ -450,20 +398,19 @@
       background: var(--glass-primary);
       border: 1px solid var(--glass-border);
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-secondary);
+      font-size: 1.25rem;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .close-btn:hover {
-      background: var(--accent-red);
-      color: white;
-      border-color: var(--accent-red);
+      background: var(--system-red);
+      border-color: var(--system-red);
     }
 
     .detail-content {
@@ -472,6 +419,10 @@
       line-height: 1.6;
       color: var(--text-secondary);
       margin-bottom: var(--space-xl);
+      padding: var(--space-lg);
+      background: var(--glass-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
     }
 
     .detail-stats-grid {
@@ -484,26 +435,49 @@
     .detail-stat {
       background: var(--glass-primary);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: var(--space-md);
+      border-radius: 20px;
+      padding: var(--space-lg);
       text-align: center;
     }
 
     .detail-stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 2rem;
+      font-weight: 800;
       color: var(--text-primary);
       margin-bottom: var(--space-xs);
     }
 
-    .detail-stat-label {
-      font-size: 0.75rem;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .detail-stat-emoji {
+      font-size: 1.5rem;
+      margin-bottom: var(--space-sm);
     }
 
-    /* Legend */
+    .detail-actions {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .detail-btn {
+      background: var(--glass-primary);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: var(--space-lg);
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-btn:hover {
+      background: var(--system-blue);
+      border-color: var(--system-blue);
+      box-shadow: var(--glow-blue);
+    }
+
+    /* Legend - VISUAL ONLY */
     .legend {
       position: fixed;
       top: 50%;
@@ -512,34 +486,72 @@
       background: var(--glass-primary);
       backdrop-filter: var(--blur-light);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: var(--space-md);
+      border-radius: 24px;
+      padding: var(--space-lg);
       z-index: 90;
-    }
-
-    .legend-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      box-shadow: var(--shadow-soft);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
-      margin-bottom: var(--space-xs);
-      font-size: 0.75rem;
-      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+      font-size: 1rem;
     }
 
     .legend-color {
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       flex-shrink: 0;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Footer Pills - SUBTLE GLASSMORPHIC */
+    .footer-pills {
+      position: fixed;
+      bottom: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      padding: var(--space-sm);
+      z-index: 1000;
+      display: flex;
+      gap: var(--space-xs);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .pill-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--glass-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-decoration: none;
+      color: var(--text-tertiary);
+    }
+
+    .pill-icon:hover {
+      background: var(--glass-strong);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+      border-color: var(--system-blue);
+    }
+
+    .pill-icon.active {
+      background: var(--glass-strong);
+      color: var(--system-orange);
+      border-color: var(--system-orange);
     }
 
     /* Responsive Design */
@@ -549,15 +561,10 @@
         right: -100%;
       }
       
-      .dynamic-header {
+      .dynamic-island {
         flex-direction: column;
         gap: var(--space-sm);
         padding: var(--space-md);
-      }
-      
-      .question-title {
-        font-size: 1rem;
-        max-width: 300px;
       }
       
       .speech-bubble {
@@ -567,7 +574,7 @@
       
       .legend {
         position: fixed;
-        bottom: 140px;
+        bottom: 120px;
         left: var(--space-md);
         top: auto;
         transform: none;
@@ -575,16 +582,22 @@
     }
 
     @media (max-width: 480px) {
-      .control-panel {
-        flex-wrap: wrap;
-        justify-content: center;
-        max-width: 90%;
-      }
-      
       .speech-bubble {
         max-width: 260px;
         min-width: 220px;
         padding: var(--space-md);
+      }
+      
+      .student-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+      
+      .pill-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
       }
     }
   </style>
@@ -596,19 +609,9 @@
     <div class="ambient-orb orb-3"></div>
   </div>
 
-  <header class="dynamic-header">
+  <!-- Dynamic Island Header -->
+  <div class="dynamic-island">
     <div class="question-indicator" id="question-indicator">Q1</div>
-    <div class="question-title" id="question-title">
-      How has digital technology transformed modern education?
-    </div>
-    <div class="response-count" id="response-count">6 responses</div>
-  </header>
-
-  <div class="speech-container" id="speech-container">
-    <!-- Speech bubbles will be generated here -->
-  </div>
-
-  <div class="control-panel">
     <select class="question-selector" id="question-selector" onchange="switchQuestion()">
       <option value="1">Question 1: Digital Technology Impact</option>
       <option value="2">Question 2: Online vs Traditional Learning</option>
@@ -617,50 +620,46 @@
       <option value="5">Question 5: Motivation in Language Learning</option>
       <option value="6">Question 6: Assessment Methods</option>
     </select>
-    
-    <a href="../teachers/questions/" class="control-btn">
-      <i class="fas fa-chalkboard-teacher"></i>
-      Teacher
-    </a>
-    
-    <a href="../students/answers/" class="control-btn">
-      <i class="fas fa-user-graduate"></i>
-      Student
-    </a>
-    
-    <button class="control-btn active" onclick="refreshBubbles()">
-      <i class="fas fa-refresh"></i>
-      Refresh
-    </button>
-    
-    <button class="control-btn" onclick="exportData()">
-      <i class="fas fa-download"></i>
-      Export
-    </button>
+    <div class="response-count" id="response-count">
+      💬 <span>6</span>
+    </div>
   </div>
 
+  <!-- Speech Bubbles Container -->
+  <div class="speech-container" id="speech-container">
+    <!-- Speech bubbles will be generated here -->
+  </div>
+
+  <!-- Footer Pills -->
+  <div class="footer-pills">
+    <a href="../teachers/questions/" class="pill-icon" title="Teacher">👩‍🏫</a>
+    <a href="../students/answers/" class="pill-icon" title="Student">🎓</a>
+    <button class="pill-icon active" onclick="refreshBubbles()" title="Analytics">📊</button>
+    <button class="pill-icon" onclick="exportData()" title="Export">💾</button>
+    <a href="../../" class="pill-icon" title="Home">🏠</a>
+  </div>
+
+  <!-- Legend -->
   <div class="legend">
-    <div class="legend-title">Quality</div>
     <div class="legend-item">
-      <div class="legend-color" style="background: var(--accent-green);"></div>
-      <span>Excellent</span>
+      <div class="legend-color" style="background: var(--system-green);"></div>
+      <span>🟢</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: var(--accent-orange);"></div>
-      <span>Good</span>
+      <div class="legend-color" style="background: var(--system-orange);"></div>
+      <span>🟡</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: var(--accent-red);"></div>
-      <span>Needs Work</span>
+      <div class="legend-color" style="background: var(--system-red);"></div>
+      <span>🔴</span>
     </div>
   </div>
 
+  <!-- Detail Panel -->
   <div class="detail-panel" id="detail-panel">
     <div class="detail-header">
       <div class="detail-title" id="detail-title">Student Response</div>
-      <button class="close-btn" onclick="closeDetail()">
-        <i class="fas fa-times"></i>
-      </button>
+      <button class="close-btn" onclick="closeDetail()">❌</button>
     </div>
     <div id="detail-body">
       <!-- Dynamic content will be inserted here -->
@@ -679,7 +678,7 @@
             answer: "Digital technology has fundamentally transformed modern education by providing interactive learning platforms, enabling distance learning, and creating personalized educational experiences that adapt to individual student needs and learning paces. The integration of AI-powered tutoring systems has revolutionized how we learn.",
             wordCount: 42,
             keywords: ["technology", "digital", "education", "learning"],
-            timestamp: "2 hours ago",
+            timestamp: "2h",
             score: 95
           },
           {
@@ -689,7 +688,7 @@
             answer: "Technology revolutionizes classroom experiences through multimedia content, collaborative projects, and real-time feedback systems that enhance student engagement and comprehension.",
             wordCount: 23,
             keywords: ["technology", "digital"],
-            timestamp: "1 hour ago",
+            timestamp: "1h",
             score: 78
           },
           {
@@ -699,7 +698,7 @@
             answer: "The digital transformation of education has created unprecedented opportunities for personalized learning experiences. Advanced educational technologies now allow teachers to track student progress in real-time and provide immediate feedback.",
             wordCount: 32,
             keywords: ["digital", "education", "learning", "technology"],
-            timestamp: "30 minutes ago",
+            timestamp: "30m",
             score: 92
           },
           {
@@ -709,7 +708,7 @@
             answer: "Digital platforms have changed how we learn by making education more interactive and accessible. Students can now learn at their own pace.",
             wordCount: 22,
             keywords: ["digital", "education"],
-            timestamp: "45 minutes ago",
+            timestamp: "45m",
             score: 65
           },
           {
@@ -719,7 +718,7 @@
             answer: "Technology in education has transformed traditional teaching methods by introducing innovative digital tools that enhance learning outcomes and create dynamic learning environments.",
             wordCount: 24,
             keywords: ["technology", "education", "digital", "learning"],
-            timestamp: "20 minutes ago",
+            timestamp: "20m",
             score: 88
           },
           {
@@ -729,7 +728,7 @@
             answer: "Educational technology has revolutionized how knowledge is delivered and consumed in modern classrooms through virtual reality and AI-powered systems.",
             wordCount: 21,
             keywords: ["technology", "education", "digital"],
-            timestamp: "10 minutes ago",
+            timestamp: "10m",
             score: 85
           }
         ]
@@ -750,11 +749,10 @@
       
       // Update header
       document.getElementById('question-indicator').textContent = `Q${currentQuestion}`;
-      document.getElementById('question-title').textContent = questionData.text;
-      document.getElementById('response-count').textContent = `${questionData.responses.length} responses`;
+      document.getElementById('response-count').innerHTML = `💬 <span>${questionData.responses.length}</span>`;
       
       const containerRect = container.getBoundingClientRect();
-      const bubbleWidth = 300;
+      const bubbleWidth = 280;
       const bubbleHeight = 200;
       const margin = 40;
       
@@ -795,12 +793,12 @@
         
         // Generate avatar colors
         const avatarColors = [
-          'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))',
-          'linear-gradient(135deg, var(--accent-green), var(--accent-teal))',
-          'linear-gradient(135deg, var(--accent-orange), var(--accent-pink))',
-          'linear-gradient(135deg, var(--accent-red), var(--accent-purple))',
-          'linear-gradient(135deg, var(--accent-indigo), var(--accent-blue))',
-          'linear-gradient(135deg, var(--accent-teal), var(--accent-green))'
+          'linear-gradient(135deg, var(--system-blue), var(--system-purple))',
+          'linear-gradient(135deg, var(--system-green), var(--system-teal))',
+          'linear-gradient(135deg, var(--system-orange), var(--system-pink))',
+          'linear-gradient(135deg, var(--system-red), var(--system-purple))',
+          'linear-gradient(135deg, var(--system-indigo), var(--system-blue))',
+          'linear-gradient(135deg, var(--system-teal), var(--system-green))'
         ];
         
         bubble.innerHTML = `
@@ -812,15 +810,12 @@
           <div class="speech-stats">
             <div class="stat-item">
               <div class="quality-indicator"></div>
-              <span>${response.score}%</span>
             </div>
             <div class="stat-item">
-              <i class="fas fa-font"></i>
-              <span>${response.wordCount}</span>
+              📝 ${response.wordCount}
             </div>
             <div class="stat-item">
-              <i class="fas fa-key"></i>
-              <span>${response.keywords.length}/4</span>
+              🔑 ${response.keywords.length}
             </div>
           </div>
         `;
@@ -840,36 +835,33 @@
       body.innerHTML = `
         <div class="detail-stats-grid">
           <div class="detail-stat">
-            <div class="detail-stat-value" style="color: var(--accent-green);">${response.score}%</div>
-            <div class="detail-stat-label">Quality Score</div>
+            <div class="detail-stat-emoji">🏆</div>
+            <div class="detail-stat-value">${response.score}%</div>
           </div>
           <div class="detail-stat">
-            <div class="detail-stat-value" style="color: var(--accent-blue);">${response.wordCount}</div>
-            <div class="detail-stat-label">Word Count</div>
+            <div class="detail-stat-emoji">📝</div>
+            <div class="detail-stat-value">${response.wordCount}</div>
           </div>
           <div class="detail-stat">
-            <div class="detail-stat-value" style="color: var(--accent-purple);">${response.keywords.length}/4</div>
-            <div class="detail-stat-label">Keywords</div>
+            <div class="detail-stat-emoji">🔑</div>
+            <div class="detail-stat-value">${response.keywords.length}/4</div>
           </div>
           <div class="detail-stat">
-            <div class="detail-stat-value" style="color: var(--accent-orange);">${response.timestamp}</div>
-            <div class="detail-stat-label">Submitted</div>
+            <div class="detail-stat-emoji">⏰</div>
+            <div class="detail-stat-value">${response.timestamp}</div>
           </div>
         </div>
         
         <div class="detail-content">
-          <h4 style="color: var(--text-primary); margin-bottom: var(--space-md); font-size: 1.125rem;">Full Response:</h4>
-          <p>${response.answer}</p>
+          ${response.answer}
         </div>
         
-        <div style="display: flex; gap: var(--space-md);">
-          <button class="control-btn" onclick="highlightKeywords(${response.id})">
-            <i class="fas fa-highlighter"></i>
-            Highlight
+        <div class="detail-actions">
+          <button class="detail-btn" onclick="highlightKeywords(${response.id})">
+            🔍
           </button>
-          <button class="control-btn" onclick="startDiscussion(${response.id})">
-            <i class="fas fa-comments"></i>
-            Discuss
+          <button class="detail-btn" onclick="startDiscussion(${response.id})">
+            💬
           </button>
         </div>
       `;
@@ -896,26 +888,93 @@
     function refreshBubbles() {
       generateSpeechBubbles();
       
-      // Refresh animation
-      const bubbles = document.querySelectorAll('.speech-bubble');
-      bubbles.forEach((bubble, index) => {
-        bubble.style.animation = 'none';
-        bubble.offsetHeight; // Trigger reflow
-        bubble.style.animation = `speechFloat ${8 + Math.random() * 2}s ease-in-out infinite`;
-        bubble.style.animationDelay = (index * 0.3) + 's';
-      });
+      // Show success animation
+      const animation = document.createElement('div');
+      animation.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        z-index: 3000;
+        animation: successPop 1s ease-out;
+        pointer-events: none;
+      `;
+      animation.textContent = '🔄';
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes successPop {
+          0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(animation);
+      
+      setTimeout(() => {
+        animation.remove();
+        style.remove();
+      }, 1000);
     }
 
     function exportData() {
-      alert('📊 Export functionality ready! Would integrate with CSV/Excel export in production.');
+      const animation = document.createElement('div');
+      animation.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        z-index: 3000;
+        animation: successPop 1s ease-out;
+        pointer-events: none;
+      `;
+      animation.textContent = '📥';
+      
+      document.body.appendChild(animation);
+      
+      setTimeout(() => animation.remove(), 1000);
     }
 
     function highlightKeywords(responseId) {
-      alert('🔍 Keyword highlighting activated! This would highlight required keywords in the student response.');
+      const animation = document.createElement('div');
+      animation.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        z-index: 3000;
+        animation: successPop 1s ease-out;
+        pointer-events: none;
+      `;
+      animation.textContent = '🔍';
+      
+      document.body.appendChild(animation);
+      
+      setTimeout(() => animation.remove(), 1000);
     }
 
     function startDiscussion(responseId) {
-      alert('💬 Discussion Mode Started!\n\nThis would open a collaborative discussion interface for this specific response.');
+      const animation = document.createElement('div');
+      animation.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        z-index: 3000;
+        animation: successPop 1s ease-out;
+        pointer-events: none;
+      `;
+      animation.textContent = '💬';
+      
+      document.body.appendChild(animation);
+      
+      setTimeout(() => animation.remove(), 1000);
     }
 
     // Initialize
@@ -925,7 +984,13 @@
       // Auto-refresh bubbles periodically for dynamic effect
       setInterval(() => {
         if (!selectedBubble) {
-          refreshBubbles();
+          const bubbles = document.querySelectorAll('.speech-bubble');
+          bubbles.forEach((bubble, index) => {
+            bubble.style.animation = 'none';
+            bubble.offsetHeight; // Trigger reflow
+            bubble.style.animation = `speechFloat ${8 + Math.random() * 2}s ease-in-out infinite`;
+            bubble.style.animationDelay = (index * 0.3) + 's';
+          });
         }
       }, 12000);
     });
@@ -933,6 +998,15 @@
     // Handle window resize
     window.addEventListener('resize', () => {
       setTimeout(generateSpeechBubbles, 100);
+    });
+
+    // Close detail panel when clicking outside
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.detail-panel') === null && 
+          e.target.closest('.speech-bubble') === null &&
+          document.getElementById('detail-panel').classList.contains('open')) {
+        closeDetail();
+      }
     });
   </script>
 </body>
