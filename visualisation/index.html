@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Teacher Data Visualization</title>
+  <title>INTUITY - Analytics</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -13,7 +13,6 @@
       --bg-secondary: #243447;
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
-      --accent-gold: #f4a261;
       --accent-teal: #2dd4bf;
       --accent-lime: #32d74b;
       --accent-orange: #ff9500;
@@ -23,7 +22,6 @@
       --text-muted: rgba(255, 255, 255, 0.5);
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      --space-xs: 0.25rem;
       --space-sm: 0.5rem;
       --space-md: 1rem;
       --space-lg: 1.5rem;
@@ -46,36 +44,6 @@
       line-height: 1.6;
       overflow-x: hidden;
       padding-bottom: 100px;
-    }
-
-    .constellation-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.2;
-    }
-
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--accent-gold);
-      border-radius: 50%;
-      animation: twinkle 3s infinite alternate;
-    }
-
-    .star:nth-child(even) {
-      animation-delay: 1.5s;
-      background: var(--accent-teal);
-    }
-
-    @keyframes twinkle {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.8; }
     }
 
     .header {
@@ -105,28 +73,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 4px;
-      position: relative;
-    }
-
-    .brand-name::after {
-      content: '📊';
-      position: absolute;
-      top: -10px;
-      right: -20px;
-      font-size: 1.5rem;
-      animation: sparkle 3s ease-in-out infinite;
-    }
-
-    @keyframes sparkle {
-      0%, 100% { 
-        opacity: 0.5; 
-        transform: scale(1) rotate(0deg); 
-      }
-      50% { 
-        opacity: 1; 
-        transform: scale(1.3) rotate(180deg); 
-      }
     }
 
     .brand-subtitle {
@@ -146,8 +92,7 @@
       z-index: 10;
     }
 
-    /* Teacher Controls Container */
-    .teacher-controls {
+    .controls-container {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
       border-radius: 1.5rem;
@@ -155,26 +100,9 @@
       margin-bottom: var(--space-xl);
       box-shadow: var(--shadow);
       backdrop-filter: var(--blur);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .teacher-controls::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      pointer-events: none;
     }
 
     .controls-header {
-      position: relative;
-      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -203,12 +131,12 @@
       box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
     }
 
-    .presentation-controls {
+    .filter-controls {
       display: flex;
       gap: var(--space-md);
     }
 
-    .control-btn {
+    .filter-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 0.75rem;
@@ -225,28 +153,19 @@
       gap: var(--space-sm);
     }
 
-    .control-btn:hover {
+    .filter-btn:hover {
       background: rgba(255, 255, 255, 0.15);
       border-color: var(--accent-teal);
       transform: translateY(-1px);
     }
 
-    .control-btn.active {
+    .filter-btn.active {
       background: var(--accent-teal);
       border-color: var(--accent-teal);
       color: #000;
     }
 
-    .control-btn.presentation {
-      background: var(--accent-lime);
-      border-color: var(--accent-lime);
-      color: #000;
-      box-shadow: 0 4px 20px rgba(50, 215, 75, 0.3);
-    }
-
     .stats-bar {
-      position: relative;
-      z-index: 2;
       display: flex;
       justify-content: center;
       gap: var(--space-xl);
@@ -265,7 +184,7 @@
       font-size: 2rem;
       font-weight: 800;
       color: var(--text-primary);
-      margin-bottom: var(--space-xs);
+      margin-bottom: var(--space-sm);
     }
 
     .stat-label {
@@ -275,8 +194,7 @@
       letter-spacing: 1px;
     }
 
-    /* Response Slides Grid */
-    .slides-container {
+    .responses-container {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
       border-radius: 1.5rem;
@@ -284,53 +202,32 @@
       margin-bottom: var(--space-xl);
       box-shadow: var(--shadow);
       backdrop-filter: var(--blur);
-      position: relative;
-      overflow: hidden;
     }
 
-    .slides-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      pointer-events: none;
-    }
-
-    .slides-header {
-      position: relative;
-      z-index: 2;
+    .responses-header {
       text-align: center;
       margin-bottom: var(--space-xl);
     }
 
-    .slides-title {
+    .responses-title {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--text-primary);
       margin-bottom: var(--space-sm);
     }
 
-    .slides-subtitle {
+    .responses-subtitle {
       color: var(--text-secondary);
       font-size: 0.9rem;
     }
 
     .response-grid {
-      position: relative;
-      z-index: 2;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
     }
 
-    /* Individual Response Slide */
-    .response-slide {
+    .response-card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
       border-radius: 1.25rem;
@@ -340,68 +237,26 @@
       overflow: hidden;
       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       cursor: pointer;
-      animation: slideIn 0.5s ease-out;
     }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .response-slide::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1.25rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      pointer-events: none;
-    }
-
-    .response-slide:hover {
+    .response-card:hover {
       transform: translateY(-4px) scale(1.02);
       box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
     }
 
-    .response-slide.excellent {
+    .response-card.excellent {
       border-color: var(--accent-lime);
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(50, 215, 75, 0.1));
     }
 
-    .response-slide.excellent:hover {
-      box-shadow: 0 12px 48px rgba(50, 215, 75, 0.3);
-    }
-
-    .response-slide.good {
+    .response-card.good {
       border-color: var(--accent-orange);
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 159, 10, 0.1));
     }
 
-    .response-slide.good:hover {
-      box-shadow: 0 12px 48px rgba(255, 159, 10, 0.3);
-    }
-
-    .response-slide.needs-work {
+    .response-card.needs-work {
       border-color: var(--accent-brick);
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(196, 69, 54, 0.1));
-    }
-
-    .response-slide.needs-work:hover {
-      box-shadow: 0 12px 48px rgba(196, 69, 54, 0.3);
-    }
-
-    .response-slide.selected {
-      transform: scale(1.05);
-      border-width: 2px;
-      z-index: 10;
-    }
-
-    .slide-content {
-      position: relative;
-      z-index: 2;
     }
 
     .student-header {
@@ -434,7 +289,7 @@
       font-size: 1.125rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: var(--space-xs);
+      margin-bottom: var(--space-sm);
     }
 
     .response-meta {
@@ -447,8 +302,7 @@
     .quality-badge {
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
-      margin-left: auto;
+      gap: var(--space-sm);
     }
 
     .quality-indicator {
@@ -485,11 +339,6 @@
       overflow: hidden;
     }
 
-    .response-text.expanded {
-      -webkit-line-clamp: unset;
-      display: block;
-    }
-
     .response-stats {
       display: flex;
       justify-content: space-between;
@@ -507,80 +356,10 @@
     .stat {
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
+      gap: var(--space-sm);
       color: var(--text-muted);
     }
 
-    /* Presentation Mode */
-    .presentation-mode {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 2000;
-      display: none;
-      padding: var(--space-xl);
-    }
-
-    .presentation-content {
-      max-width: 800px;
-      margin: 0 auto;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .presentation-slide {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--card-border);
-      border-radius: 2rem;
-      padding: var(--space-xl);
-      backdrop-filter: var(--blur);
-      text-align: center;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    }
-
-    .presentation-controls-bar {
-      position: fixed;
-      bottom: var(--space-xl);
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--card-border);
-      border-radius: 3rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .presentation-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .presentation-btn:hover {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
-    /* Glass Neumorphic Footer */
     .glass-footer {
       position: fixed;
       bottom: 0;
@@ -602,30 +381,13 @@
       padding: var(--space-md);
       backdrop-filter: var(--blur);
       box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .footer-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      pointer-events: none;
     }
 
     .footer-buttons {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      gap: var(--space-sm);
-      position: relative;
-      z-index: 2;
+      gap: var(--space-lg);
     }
 
     .footer-btn {
@@ -644,7 +406,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-xs);
+      gap: var(--space-sm);
       min-width: 80px;
       height: 60px;
       text-decoration: none;
@@ -674,7 +436,6 @@
       color: #000;
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
       .controls-header {
         flex-direction: column;
@@ -685,7 +446,7 @@
         min-width: auto;
       }
 
-      .presentation-controls {
+      .filter-controls {
         justify-content: center;
       }
 
@@ -700,16 +461,10 @@
 
       .footer-buttons {
         flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .footer-btn {
-        min-width: 70px;
-        height: 55px;
+        gap: var(--space-md);
       }
     }
 
-    /* Notification System */
     .notification {
       position: fixed;
       top: 100px;
@@ -740,18 +495,15 @@
   </style>
 </head>
 <body>
-  <div class="constellation-bg" id="constellation"></div>
-
   <header class="header">
     <div class="header-content">
       <div class="brand-name">INTUITY</div>
-      <div class="brand-subtitle">Teacher Data Visualization - Classroom Presentation</div>
+      <div class="brand-subtitle">Analytics</div>
     </div>
   </header>
 
   <div class="container">
-    <!-- Teacher Controls Container -->
-    <div class="teacher-controls">
+    <div class="controls-container">
       <div class="controls-header">
         <select class="question-selector" id="question-selector" onchange="switchQuestion()">
           <option value="1">Question 1: Digital Technology Impact</option>
@@ -762,18 +514,18 @@
           <option value="6">Question 6: Assessment Methods</option>
         </select>
         
-        <div class="presentation-controls">
-          <button class="control-btn" onclick="filterByQuality('all')" id="filter-all">
+        <div class="filter-controls">
+          <button class="filter-btn active" onclick="filterByQuality('all')" id="filter-all">
             <i class="fas fa-list"></i>
-            <span>All Responses</span>
+            <span>All</span>
           </button>
-          <button class="control-btn" onclick="filterByQuality('excellent')" id="filter-excellent">
+          <button class="filter-btn" onclick="filterByQuality('excellent')" id="filter-excellent">
             <i class="fas fa-star"></i>
             <span>Excellent</span>
           </button>
-          <button class="control-btn presentation" onclick="startPresentation()">
-            <i class="fas fa-presentation-screen"></i>
-            <span>Present to Class</span>
+          <button class="filter-btn" onclick="filterByQuality('good')" id="filter-good">
+            <i class="fas fa-thumbs-up"></i>
+            <span>Good</span>
           </button>
         </div>
       </div>
@@ -802,72 +554,33 @@
       </div>
     </div>
 
-    <!-- Response Slides Container -->
-    <div class="slides-container">
-      <div class="slides-header">
-        <div class="slides-title" id="slides-title">Student Responses - Question 1</div>
-        <div class="slides-subtitle">Click on any response slide to highlight for classroom discussion</div>
+    <div class="responses-container">
+      <div class="responses-header">
+        <div class="responses-title" id="responses-title">Student Responses - Question 1</div>
+        <div class="responses-subtitle">Click on any response to select for classroom discussion</div>
       </div>
 
       <div class="response-grid" id="response-grid">
-        <!-- Response slides will be generated here -->
+        <!-- Response cards will be generated here -->
       </div>
     </div>
   </div>
 
-  <!-- Presentation Mode -->
-  <div class="presentation-mode" id="presentation-mode">
-    <div class="presentation-content">
-      <div class="presentation-slide" id="presentation-slide">
-        <div id="presentation-content">
-          <!-- Selected response content for presentation -->
-        </div>
-      </div>
-    </div>
-    <div class="presentation-controls-bar">
-      <button class="presentation-btn" onclick="exitPresentation()">
-        <i class="fas fa-times"></i>
-      </button>
-      <button class="presentation-btn" onclick="previousSlide()">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="presentation-btn" onclick="nextSlide()">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- Glass Neumorphic Footer -->
   <div class="glass-footer">
     <div class="footer-container">
       <div class="footer-buttons">
         
-        <a href="../teachers/questions/" class="footer-btn" title="Create Questions">
+        <a href="teachers/questions/" class="footer-btn">
           <i class="fas fa-plus"></i>
           <span>Create</span>
         </a>
 
-        <button class="footer-btn active" title="Data Visualization">
+        <button class="footer-btn active">
           <i class="fas fa-chart-bar"></i>
           <span>Analytics</span>
         </button>
 
-        <button class="footer-btn" onclick="exportData()" title="Export Data">
-          <i class="fas fa-download"></i>
-          <span>Export</span>
-        </button>
-
-        <button class="footer-btn" onclick="shareToClass()" title="Share with Class">
-          <i class="fas fa-share-alt"></i>
-          <span>Share</span>
-        </button>
-
-        <button class="footer-btn" onclick="printResponses()" title="Print Responses">
-          <i class="fas fa-print"></i>
-          <span>Print</span>
-        </button>
-
-        <a href="../../" class="footer-btn" title="Home">
+        <a href="../" class="footer-btn">
           <i class="fas fa-home"></i>
           <span>Home</span>
         </a>
@@ -876,26 +589,11 @@
     </div>
   </div>
 
-  <!-- Notification Container -->
   <div class="notification" id="notification">
     <div id="notification-content"></div>
   </div>
 
   <script>
-    // Create constellation background
-    function createConstellation() {
-      const constellation = document.getElementById('constellation');
-      for (let i = 0; i < 40; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        constellation.appendChild(star);
-      }
-    }
-
-    // Notification system
     function showNotification(message, type = 'success') {
       const notification = document.getElementById('notification');
       const content = document.getElementById('notification-content');
@@ -909,113 +607,100 @@
       }, 3000);
     }
 
-    // Sample student response data
-    const questionsData = {
-      1: {
-        title: "Digital Technology Impact",
-        responses: [
-          {
-            id: 1,
-            student: "Maria Rodriguez",
-            avatar: "MR",
-            answer: "Digital technology has fundamentally transformed modern education by providing interactive learning platforms, enabling distance learning, and creating personalized educational experiences that adapt to individual student needs and learning paces. The integration of AI-powered tutoring systems has revolutionized how we approach learning, making education more accessible and effective than ever before.",
-            wordCount: 52,
-            keywords: 4,
-            quality: "excellent",
-            score: 95,
-            timestamp: "2h ago"
-          },
-          {
-            id: 2,
-            student: "Ahmed Hassan", 
-            avatar: "AH",
-            answer: "Technology revolutionizes classroom experiences through multimedia content, collaborative projects, and real-time feedback systems that enhance student engagement and comprehension. Digital tools have made learning more interactive and accessible.",
-            wordCount: 28,
-            keywords: 3,
-            quality: "good",
-            score: 78,
-            timestamp: "1h ago"
-          },
-          {
-            id: 3,
-            student: "Sophie Chen",
-            avatar: "SC", 
-            answer: "The digital transformation of education has created unprecedented opportunities for personalized learning experiences. Advanced educational technologies now allow teachers to track student progress in real-time and provide immediate feedback, making learning more efficient and targeted.",
-            wordCount: 38,
-            keywords: 4,
-            quality: "excellent",
-            score: 92,
-            timestamp: "30m ago"
-          },
-          {
-            id: 4,
-            student: "Carlos Rivera",
-            avatar: "CR",
-            answer: "Digital platforms have changed how we learn by making education more interactive and accessible. Students can now learn at their own pace with various online resources.",
-            wordCount: 26,
-            keywords: 2,
-            quality: "good",
-            score: 65,
-            timestamp: "45m ago"
-          },
-          {
-            id: 5,
-            student: "Aisha Patel",
-            avatar: "AP",
-            answer: "Technology in education has transformed traditional teaching methods by introducing innovative digital tools that enhance learning outcomes and create dynamic learning environments for students.",
-            wordCount: 26,
-            keywords: 3,
-            quality: "good",
-            score: 88,
-            timestamp: "20m ago"
-          },
-          {
-            id: 6,
-            student: "Marcus Johnson",
-            avatar: "MJ",
-            answer: "Educational technology has helped students learn better with computers and internet resources.",
-            wordCount: 14,
-            keywords: 1,
-            quality: "needs-work",
-            score: 45,
-            timestamp: "10m ago"
-          }
-        ]
-      }
+    const sampleResponses = {
+      1: [
+        {
+          id: 1,
+          student: "Maria Rodriguez",
+          avatar: "MR",
+          answer: "Digital technology has fundamentally transformed modern education by providing interactive learning platforms, enabling distance learning, and creating personalized educational experiences that adapt to individual student needs and learning paces.",
+          wordCount: 52,
+          keywords: 4,
+          quality: "excellent",
+          score: 95,
+          timestamp: "2h ago"
+        },
+        {
+          id: 2,
+          student: "Ahmed Hassan", 
+          avatar: "AH",
+          answer: "Technology revolutionizes classroom experiences through multimedia content, collaborative projects, and real-time feedback systems that enhance student engagement and comprehension.",
+          wordCount: 28,
+          keywords: 3,
+          quality: "good",
+          score: 78,
+          timestamp: "1h ago"
+        },
+        {
+          id: 3,
+          student: "Sophie Chen",
+          avatar: "SC", 
+          answer: "The digital transformation of education has created unprecedented opportunities for personalized learning experiences. Advanced educational technologies now allow teachers to track student progress in real-time and provide immediate feedback.",
+          wordCount: 38,
+          keywords: 4,
+          quality: "excellent",
+          score: 92,
+          timestamp: "30m ago"
+        },
+        {
+          id: 4,
+          student: "Carlos Rivera",
+          avatar: "CR",
+          answer: "Digital platforms have changed how we learn by making education more interactive and accessible. Students can now learn at their own pace with various online resources.",
+          wordCount: 26,
+          keywords: 2,
+          quality: "good",
+          score: 65,
+          timestamp: "45m ago"
+        },
+        {
+          id: 5,
+          student: "Aisha Patel",
+          avatar: "AP",
+          answer: "Technology in education has transformed traditional teaching methods by introducing innovative digital tools that enhance learning outcomes and create dynamic learning environments.",
+          wordCount: 26,
+          keywords: 3,
+          quality: "good",
+          score: 88,
+          timestamp: "20m ago"
+        },
+        {
+          id: 6,
+          student: "Marcus Johnson",
+          avatar: "MJ",
+          answer: "Educational technology has helped students learn better with computers and internet resources.",
+          wordCount: 14,
+          keywords: 1,
+          quality: "needs-work",
+          score: 45,
+          timestamp: "10m ago"
+        }
+      ]
     };
 
     let currentQuestion = 1;
     let currentFilter = 'all';
-    let selectedSlides = [];
-    let presentationIndex = 0;
 
-    function generateResponseSlides() {
+    function generateResponseCards() {
       const container = document.getElementById('response-grid');
-      const questionData = questionsData[currentQuestion];
-      
-      if (!questionData) return;
+      const responses = sampleResponses[currentQuestion] || [];
       
       container.innerHTML = '';
       
-      // Update title
-      document.getElementById('slides-title').textContent = `Student Responses - Question ${currentQuestion}`;
+      document.getElementById('responses-title').textContent = `Student Responses - Question ${currentQuestion}`;
       
-      // Filter responses based on current filter
-      let responses = questionData.responses;
+      let filteredResponses = responses;
       if (currentFilter !== 'all') {
-        responses = responses.filter(r => r.quality === currentFilter);
+        filteredResponses = responses.filter(r => r.quality === currentFilter);
       }
       
-      // Update stats
-      updateStats(questionData.responses);
+      updateStats(responses);
       
-      responses.forEach((response, index) => {
-        const slide = document.createElement('div');
-        slide.className = `response-slide ${response.quality}`;
-        slide.setAttribute('data-response-id', response.id);
-        slide.style.animationDelay = (index * 0.1) + 's';
+      filteredResponses.forEach((response, index) => {
+        const card = document.createElement('div');
+        card.className = `response-card ${response.quality}`;
+        card.setAttribute('data-response-id', response.id);
         
-        // Generate avatar colors
         const avatarColors = [
           'linear-gradient(135deg, #007AFF, #BF5AF2)',
           'linear-gradient(135deg, #30D158, #64D2FF)', 
@@ -1025,46 +710,41 @@
           'linear-gradient(135deg, #64D2FF, #30D158)'
         ];
         
-        slide.innerHTML = `
-          <div class="slide-content">
-            <div class="student-header">
-              <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
-                ${response.avatar}
-              </div>
-              <div class="student-info">
-                <div class="student-name">${response.student}</div>
-                <div class="response-meta">
-                  <span>📝 ${response.wordCount} words</span>
-                  <span>🔑 ${response.keywords}/4</span>
-                  <span>⏰ ${response.timestamp}</span>
-                </div>
-              </div>
-              <div class="quality-badge">
-                <div class="quality-indicator"></div>
-                <span>${response.score}%</span>
+        card.innerHTML = `
+          <div class="student-header">
+            <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
+              ${response.avatar}
+            </div>
+            <div class="student-info">
+              <div class="student-name">${response.student}</div>
+              <div class="response-meta">
+                <span>📝 ${response.wordCount} words</span>
+                <span>🔑 ${response.keywords}/4</span>
+                <span>⏰ ${response.timestamp}</span>
               </div>
             </div>
-            
-            <div class="response-text" id="text-${response.id}">
-              ${response.answer}
+            <div class="quality-badge">
+              <div class="quality-indicator"></div>
+              <span>${response.score}%</span>
             </div>
-            
-            <div class="response-stats">
-              <div class="stat-group">
-                <div class="stat">
-                  <span>${getQualityEmoji(response.quality)}</span>
-                  <span>${capitalizeFirst(response.quality)}</span>
-                </div>
+          </div>
+          
+          <div class="response-text">
+            ${response.answer}
+          </div>
+          
+          <div class="response-stats">
+            <div class="stat-group">
+              <div class="stat">
+                <span>${getQualityEmoji(response.quality)}</span>
+                <span>${capitalizeFirst(response.quality)}</span>
               </div>
-              <button onclick="expandResponse(${response.id})" class="control-btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                <i class="fas fa-expand-alt"></i>
-              </button>
             </div>
           </div>
         `;
         
-        slide.addEventListener('click', () => selectSlideForPresentation(slide, response));
-        container.appendChild(slide);
+        card.addEventListener('click', () => selectResponse(card, response));
+        container.appendChild(card);
       });
     }
 
@@ -1097,122 +777,28 @@
 
     function switchQuestion() {
       currentQuestion = parseInt(document.getElementById('question-selector').value);
-      generateResponseSlides();
+      generateResponseCards();
     }
 
     function filterByQuality(quality) {
       currentFilter = quality;
       
-      // Update active filter button
-      document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById(`filter-${quality}`).classList.add('active');
       
-      generateResponseSlides();
+      generateResponseCards();
       showNotification(`Showing ${quality === 'all' ? 'all' : quality} responses`);
     }
 
-    function selectSlideForPresentation(slideElement, response) {
-      // Remove previous selections
-      document.querySelectorAll('.response-slide').forEach(slide => slide.classList.remove('selected'));
+    function selectResponse(cardElement, response) {
+      document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
+      cardElement.classList.add('selected');
       
-      // Select current slide
-      slideElement.classList.add('selected');
-      
-      // Add to presentation queue
-      selectedSlides = [response];
-      showNotification(`Selected response from ${response.student} for presentation`);
+      showNotification(`Selected response from ${response.student}`);
     }
 
-    function expandResponse(responseId) {
-      const textElement = document.getElementById(`text-${responseId}`);
-      textElement.classList.toggle('expanded');
-    }
-
-    function startPresentation() {
-      if (selectedSlides.length === 0) {
-        // If no specific slide selected, use all visible slides
-        const questionData = questionsData[currentQuestion];
-        selectedSlides = currentFilter === 'all' ? 
-          questionData.responses : 
-          questionData.responses.filter(r => r.quality === currentFilter);
-      }
-      
-      presentationIndex = 0;
-      showPresentationSlide();
-      document.getElementById('presentation-mode').style.display = 'block';
-      showNotification('Presentation mode started - showing to class');
-    }
-
-    function showPresentationSlide() {
-      if (selectedSlides.length === 0) return;
-      
-      const response = selectedSlides[presentationIndex];
-      const content = document.getElementById('presentation-content');
-      
-      content.innerHTML = `
-        <div style="margin-bottom: 2rem;">
-          <h2 style="font-size: 2rem; margin-bottom: 1rem; color: var(--text-primary);">
-            ${response.student}
-          </h2>
-          <div style="font-size: 1.25rem; line-height: 1.8; color: var(--text-secondary);">
-            ${response.answer}
-          </div>
-        </div>
-        <div style="display: flex; justify-content: center; gap: 2rem; font-size: 1.125rem;">
-          <div>📝 ${response.wordCount} words</div>
-          <div>🔑 ${response.keywords}/4 keywords</div>
-          <div>${getQualityEmoji(response.quality)} ${capitalizeFirst(response.quality)}</div>
-        </div>
-      `;
-    }
-
-    function nextSlide() {
-      if (presentationIndex < selectedSlides.length - 1) {
-        presentationIndex++;
-        showPresentationSlide();
-      }
-    }
-
-    function previousSlide() {
-      if (presentationIndex > 0) {
-        presentationIndex--;
-        showPresentationSlide();
-      }
-    }
-
-    function exitPresentation() {
-      document.getElementById('presentation-mode').style.display = 'none';
-      showNotification('Exited presentation mode');
-    }
-
-    function exportData() {
-      showNotification('Student response data exported to CSV');
-    }
-
-    function shareToClass() {
-      showNotification('Response slides shared to classroom display');
-    }
-
-    function printResponses() {
-      showNotification('Printing student responses...');
-    }
-
-    // Keyboard shortcuts for presentation
-    document.addEventListener('keydown', (e) => {
-      if (document.getElementById('presentation-mode').style.display === 'block') {
-        if (e.key === 'ArrowRight') nextSlide();
-        if (e.key === 'ArrowLeft') previousSlide();
-        if (e.key === 'Escape') exitPresentation();
-      }
-    });
-
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
-      generateResponseSlides();
-      
-      // Set default filter
-      document.getElementById('filter-all').classList.add('active');
+      generateResponseCards();
     });
   </script>
 </body>
