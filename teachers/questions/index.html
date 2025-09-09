@@ -147,7 +147,6 @@
       z-index: 10;
     }
 
-    /* Two-layer Glass Neumorphic Main Container */
     .questionnaire-container {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
@@ -195,18 +194,15 @@
       min-width: 120px;
     }
 
-    /* Compact Header - 30% smaller */
     .compact-header {
-      font-size: 0.63rem; /* 30% reduction from 0.9rem */
+      font-size: 0.63rem;
     }
 
-    /* Standalone Input Row */
     .standalone-input-row {
       width: 100%;
       margin-bottom: var(--space-lg);
     }
 
-    /* Compact Row Layout */
     .compact-row {
       display: flex;
       align-items: center;
@@ -215,7 +211,6 @@
       flex-wrap: wrap;
     }
 
-    /* Compact Button - 100% size reduction */
     .compact-btn {
       background: var(--accent-lime);
       border: 1px solid var(--accent-lime);
@@ -249,7 +244,6 @@
       font-size: 0.8rem;
     }
 
-    /* Compact Label - 100% size reduction */
     .compact-label {
       font-weight: 600;
       color: var(--accent-gold);
@@ -259,7 +253,6 @@
       min-width: 80px;
     }
 
-    /* Compact Input - 100% size reduction */
     .compact-input {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -366,7 +359,6 @@
       font-size: 1rem;
     }
 
-    /* Glass Neumorphic Footer */
     .glass-footer {
       position: fixed;
       bottom: 0;
@@ -478,7 +470,76 @@
       color: #000;
     }
 
-    /* Status Indicators */
+    /* QR Code Modal - Responsive Design */
+    .qr-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: var(--blur);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-lg);
+    }
+
+    .qr-modal.show {
+      display: flex;
+    }
+
+    .qr-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .qr-code-display {
+      width: 200px;
+      height: 200px;
+      margin: var(--space-lg) auto;
+      background: white;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+    }
+
+    .qr-code-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: var(--space-md);
+      right: var(--space-md);
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: var(--space-sm);
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
     .status-indicator {
       display: flex;
       align-items: center;
@@ -508,7 +569,6 @@
       color: var(--accent-brick);
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
       .brand-name {
         font-size: 2rem;
@@ -539,12 +599,6 @@
         max-width: 100px;
       }
 
-      .ultra-compact-btn {
-        min-width: 80px;
-        height: 28px;
-        font-size: 0.65rem;
-      }
-
       .footer-buttons {
         flex-wrap: wrap;
         justify-content: center;
@@ -557,6 +611,16 @@
 
       .footer-btn span {
         font-size: 0.6rem;
+      }
+
+      .qr-content {
+        margin: var(--space-md);
+        padding: var(--space-lg);
+      }
+
+      .qr-code-display {
+        width: 160px;
+        height: 160px;
       }
     }
 
@@ -581,9 +645,21 @@
       .footer-btn span {
         font-size: 0.55rem;
       }
+
+      .qr-modal {
+        padding: var(--space-md);
+      }
+
+      .qr-content {
+        padding: var(--space-md);
+      }
+
+      .qr-code-display {
+        width: 140px;
+        height: 140px;
+      }
     }
 
-    /* Notification System */
     .notification {
       position: fixed;
       top: 100px;
@@ -624,41 +700,43 @@
   </header>
 
   <div class="container">
-    <!-- Two-layer Glass Neumorphic Main Container -->
     <div class="questionnaire-container">
       <div class="form-section">
         
-        <!-- Line 1: Reduced Header + Dropdown -->
+        <!-- Line 1: Enter your question header -->
         <div class="form-row">
-          <label class="form-label compact-header">Write your question</label>
-          <select class="dropdown-input" id="question-dropdown">
-            <option value="">Select existing question...</option>
-            <option value="1">How has digital technology transformed education?</option>
-            <option value="2">What are the advantages of online learning?</option>
-            <option value="3">Describe effective language learning strategies</option>
-            <option value="4">How important is cultural understanding?</option>
-            <option value="5">What role does motivation play in learning?</option>
-            <option value="6">Evaluate assessment methods in education</option>
-          </select>
+          <label class="form-label compact-header">Enter your question</label>
         </div>
 
-        <!-- Line 2: Standalone Text Input -->
+        <!-- Line 2: Text Input for new question -->
         <div class="standalone-input-row">
           <input 
             type="text" 
             class="form-input" 
             id="question-input"
-            placeholder="Enter your question here..."
+            placeholder="Type your question here..."
           >
         </div>
 
-        <!-- Line 3: Status Indicator (moved up) -->
+        <!-- Line 3: Select existing question header -->
+        <div class="form-row">
+          <label class="form-label compact-header">Or select from existing</label>
+        </div>
+
+        <!-- Line 4: Dropdown for existing questions -->
+        <div class="standalone-input-row">
+          <select class="dropdown-input" id="question-dropdown">
+            <option value="">Choose from existing questions...</option>
+          </select>
+        </div>
+
+        <!-- Line 5: Status Indicator -->
         <div class="status-indicator" id="status-indicator">
           <i class="fas fa-info-circle"></i>
           <span>Ready to create new question</span>
         </div>
 
-        <!-- Line 4: Compact Row - Button + Min Words (moved down) -->
+        <!-- Line 6: Compact Row - Button + Min Words -->
         <div class="compact-row">
           <button class="add-question-btn compact-btn" onclick="addQuestion()" title="Add Question">
             <i class="fas fa-plus"></i>
@@ -679,7 +757,22 @@
     </div>
   </div>
 
-  <!-- Two-layer Glass Neumorphic Footer -->
+  <!-- QR Code Modal -->
+  <div class="qr-modal" id="qr-modal">
+    <div class="qr-content">
+      <button class="close-modal" onclick="closeQRModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <h3 style="margin-bottom: var(--space-lg); color: var(--text-primary);">Student Access QR Code</h3>
+      <div class="qr-code-display" id="qr-display">
+        <div style="color: #666;">Generating QR Code...</div>
+      </div>
+      <p style="color: var(--text-secondary); margin-top: var(--space-lg); font-size: 0.9rem;">
+        Students can scan this code to access the questionnaire
+      </p>
+    </div>
+  </div>
+
   <div class="glass-footer">
     <div class="footer-container">
       <div class="footer-buttons">
@@ -718,12 +811,54 @@
     </div>
   </div>
 
-  <!-- Notification Container -->
   <div class="notification" id="notification">
     <div id="notification-content"></div>
   </div>
 
   <script>
+    // Data storage and management
+    const DataManager = {
+      saveQuestion: function(questionData) {
+        try {
+          let questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          const newQuestion = {
+            id: Date.now(),
+            text: questionData.text,
+            minWords: parseInt(questionData.minWords),
+            keywords: questionData.keywords || [],
+            created: new Date().toISOString()
+          };
+          questions.push(newQuestion);
+          localStorage.setItem('alm_questions', JSON.stringify(questions));
+          return newQuestion;
+        } catch (error) {
+          console.error('Error saving question:', error);
+          return null;
+        }
+      },
+
+      loadQuestions: function() {
+        try {
+          return JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        } catch (error) {
+          console.error('Error loading questions:', error);
+          return [];
+        }
+      },
+
+      deleteQuestion: function(questionId) {
+        try {
+          let questions = this.loadQuestions();
+          questions = questions.filter(q => q.id !== questionId);
+          localStorage.setItem('alm_questions', JSON.stringify(questions));
+          return true;
+        } catch (error) {
+          console.error('Error deleting question:', error);
+          return false;
+        }
+      }
+    };
+
     // Create constellation background
     function createConstellation() {
       const constellation = document.getElementById('constellation');
@@ -758,36 +893,105 @@
       const statusIndicator = document.getElementById('status-indicator');
       
       try {
-        const questionsData = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        const questionsData = DataManager.loadQuestions();
         const totalQuestions = questionsData.length;
         
         if (questionInput && minWords) {
           statusIndicator.className = 'status-indicator success';
-          statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to save to data layer</span>';
+          statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to save question</span>';
         } else if (questionInput || minWords) {
           statusIndicator.className = 'status-indicator warning';
           statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Please complete all fields</span>';
         } else if (totalQuestions > 0) {
           statusIndicator.className = 'status-indicator success';
-          statusIndicator.innerHTML = `<i class="fas fa-database"></i><span>Connected: ${totalQuestions} questions in data layer</span>`;
+          statusIndicator.innerHTML = `<i class="fas fa-database"></i><span>Connected: ${totalQuestions} questions stored</span>`;
         } else {
           statusIndicator.className = 'status-indicator';
-          statusIndicator.innerHTML = '<i class="fas fa-database"></i><span>Connected to data layer - ready to create questions</span>';
+          statusIndicator.innerHTML = '<i class="fas fa-database"></i><span>Ready to create first question</span>';
         }
       } catch (error) {
         statusIndicator.className = 'status-indicator error';
-        statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>Data layer connection error</span>';
+        statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>Data storage error</span>';
       }
     }
 
-    // Footer button functions
-    function generateQR() {
-      showNotification('QR code generated successfully!');
+    // Load existing questions into dropdown
+    function loadQuestionDropdown() {
+      const dropdown = document.getElementById('question-dropdown');
+      const questions = DataManager.loadQuestions();
+      
+      // Clear existing options except the first one
+      dropdown.innerHTML = '<option value="">Choose from existing questions...</option>';
+      
+      questions.forEach(question => {
+        const option = document.createElement('option');
+        option.value = question.id;
+        option.textContent = question.text.substring(0, 60) + (question.text.length > 60 ? '...' : '');
+        dropdown.appendChild(option);
+      });
     }
 
+    // QR Code generation with responsive modal
+    function generateQR() {
+      const modal = document.getElementById('qr-modal');
+      const display = document.getElementById('qr-display');
+      
+      modal.classList.add('show');
+      
+      // Generate QR code URL for student interface
+      const studentURL = window.location.origin + window.location.pathname.replace('teachers/questions/', 'students/answers/');
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
+      
+      setTimeout(() => {
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
+        showNotification('QR code generated successfully!');
+      }, 500);
+    }
+
+    function closeQRModal() {
+      document.getElementById('qr-modal').classList.remove('show');
+    }
+
+    // Footer button functions
     function shareLink() {
-      navigator.clipboard.writeText(window.location.href);
-      showNotification('Link copied to clipboard!');
+      const studentURL = window.location.origin + window.location.pathname.replace('teachers/questions/', 'students/answers/');
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'INTUITY Questionnaire',
+          text: 'Complete this educational questionnaire',
+          url: studentURL
+        }).then(() => {
+          showNotification('Link shared successfully!');
+        }).catch(() => {
+          copyToClipboard(studentURL);
+        });
+      } else {
+        copyToClipboard(studentURL);
+      }
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showNotification('Link copied to clipboard!');
+        }).catch(() => {
+          showNotification('Failed to copy link', 'error');
+        });
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showNotification('Link copied to clipboard!');
+        } catch (err) {
+          showNotification('Failed to copy link', 'error');
+        }
+        document.body.removeChild(textArea);
+      }
     }
 
     function addQuestion() {
@@ -799,16 +1003,27 @@
         return;
       }
       
-      // Simulate adding question
       const btn = event.target.closest('.compact-btn');
       const originalHTML = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Adding...</span>';
       
       setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        showNotification('Question added successfully!');
-        // Optionally clear form after adding
-        // clearForm();
+        const questionData = {
+          text: questionInput,
+          minWords: minWords
+        };
+        
+        const savedQuestion = DataManager.saveQuestion(questionData);
+        
+        if (savedQuestion) {
+          btn.innerHTML = originalHTML;
+          showNotification('Question added successfully!');
+          loadQuestionDropdown();
+          updateStatus();
+        } else {
+          btn.innerHTML = originalHTML;
+          showNotification('Failed to save question', 'error');
+        }
       }, 1500);
     }
 
@@ -821,29 +1036,53 @@
         return;
       }
       
-      // Simulate submission
       const btn = event.target.closest('.footer-btn');
       const originalHTML = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting</span>';
       
       setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        showNotification('Question submitted successfully!');
-        clearForm();
+        const questionData = {
+          text: questionInput,
+          minWords: minWords
+        };
+        
+        const savedQuestion = DataManager.saveQuestion(questionData);
+        
+        if (savedQuestion) {
+          btn.innerHTML = originalHTML;
+          showNotification('Question submitted successfully!');
+          clearForm();
+          loadQuestionDropdown();
+        } else {
+          btn.innerHTML = originalHTML;
+          showNotification('Failed to submit question', 'error');
+        }
       }, 2000);
     }
 
     function deleteQuestion() {
+      const dropdown = document.getElementById('question-dropdown');
+      if (!dropdown.value) {
+        showNotification('Please select a question to delete', 'error');
+        return;
+      }
+      
       if (confirm('Are you sure you want to delete this question?')) {
-        clearForm();
-        showNotification('Question deleted successfully!');
+        const success = DataManager.deleteQuestion(parseInt(dropdown.value));
+        if (success) {
+          clearForm();
+          loadQuestionDropdown();
+          showNotification('Question deleted successfully!');
+          updateStatus();
+        } else {
+          showNotification('Failed to delete question', 'error');
+        }
       }
     }
 
     function editQuestion() {
       const dropdown = document.getElementById('question-dropdown');
       if (dropdown.value) {
-        // Load selected question for editing
         loadQuestionFromDropdown();
         showNotification('Question loaded for editing');
       } else {
@@ -852,6 +1091,11 @@
     }
 
     function sendQuestion() {
+      const questionInput = document.getElementById('question-input').value;
+      if (!questionInput) {
+        showNotification('Please create or select a question first', 'error');
+        return;
+      }
       showNotification('Question sent to students!', 'success');
     }
 
@@ -866,52 +1110,34 @@
       const dropdown = document.getElementById('question-dropdown');
       const selectedValue = dropdown.value;
       
-      // Sample question data
-      const questions = {
-        '1': {
-          text: 'How has digital technology transformed modern education?',
-          minWords: 50
-        },
-        '2': {
-          text: 'What are the main advantages and disadvantages of online learning?',
-          minWords: 45
-        },
-        '3': {
-          text: 'Describe effective language learning strategies',
-          minWords: 40
-        },
-        '4': {
-          text: 'How important is cultural understanding in language learning?',
-          minWords: 45
-        },
-        '5': {
-          text: 'What role does motivation play in successful language acquisition?',
-          minWords: 50
-        },
-        '6': {
-          text: 'Evaluate the effectiveness of different assessment methods',
-          minWords: 55
+      if (selectedValue) {
+        const questions = DataManager.loadQuestions();
+        const question = questions.find(q => q.id == selectedValue);
+        
+        if (question) {
+          document.getElementById('question-input').value = question.text;
+          document.getElementById('min-words-input').value = question.minWords;
+          updateStatus();
         }
-      };
-      
-      // Merge with custom questions
-      const allQuestions = { ...questions, ...(window.customQuestions || {}) };
-      
-      if (selectedValue && allQuestions[selectedValue]) {
-        const question = allQuestions[selectedValue];
-        document.getElementById('question-input').value = question.text;
-        document.getElementById('min-words-input').value = question.minWords;
-        updateStatus();
       }
     }
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
       createConstellation();
+      loadQuestionDropdown();
       
       // Add input event listener for real-time status updates
       document.getElementById('question-input').addEventListener('input', updateStatus);
+      document.getElementById('min-words-input').addEventListener('input', updateStatus);
       document.getElementById('question-dropdown').addEventListener('change', loadQuestionFromDropdown);
+      
+      // Close modal on outside click
+      document.getElementById('qr-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'qr-modal') {
+          closeQRModal();
+        }
+      });
       
       // Initialize status
       updateStatus();
