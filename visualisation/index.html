@@ -1,1 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALM Questionnaire - Data Visualization</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <style>
+    :root {
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
+      --accent-teal: #2dd4bf;
+      --accent-lime: #32d74b;
+      --accent-orange: #ff9500;
+      --accent-brick: #c44536;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #ec4899;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      --btn-grey: rgba(255, 255, 255, 0.2);
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --blur: blur(20px);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    .constellation-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: twinkle 3s infinite alternate;
+    }
+
+    .star:nth-child(even) {
+      animation-delay: 1.5s;
+      background: var(--accent-teal);
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.8; }
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: var(--space-md);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .controls {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+
+    .control-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      text-decoration: none;
+    }
+
+    .control-btn:hover {
+      background: var(--accent-lime);
+      color: #000;
+    }
+
+    .control-btn.active {
+      background: var(--accent-gold);
+      color: #000;
+    }
+
+    .question-selector {
+      background: var(--btn-grey);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .mind-map-container {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .mind-map {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      cursor: grab;
+    }
+
+    .mind-map:active {
+      cursor: grabbing;
+    }
+
+    .central-node {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-orange) 100%);
+      color: #000;
+      padding: var(--space-lg);
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-align: center;
+      min-width: 150px;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(244, 162, 97, 0.5);
+      z-index: 50;
+      animation: centralPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes centralPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+
+    .answer-node {
+      position: absolute;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 1rem;
+      padding: var(--space-md);
+      max-width: 300px;
+      min-width: 200px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: nodeFloat 6s ease-in-out infinite;
+      z-index: 20;
+    }
+
+    .answer-node:hover {
+      transform: scale(1.05);
+      border-color: var(--accent-lime);
+      box-shadow: 0 0 20px rgba(50, 215, 75, 0.3);
+    }
+
+    .answer-node.selected {
+      border-color: var(--accent-gold);
+      background: rgba(244, 162, 97, 0.1);
+      box-shadow: 0 0 25px rgba(244, 162, 97, 0.4);
+    }
+
+    @keyframes nodeFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .student-name {
+      font-weight: 700;
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+      margin-bottom: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .student-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-lime));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    .answer-preview {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .answer-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .word-count {
+      color: var(--accent-lime);
+    }
+
+    .keyword-indicator {
+      color: var(--accent-teal);
+    }
+
+    .connection-line {
+      position: absolute;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-lime));
+      height: 2px;
+      transform-origin: left center;
+      opacity: 0.6;
+      z-index: 5;
+      animation: lineGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes lineGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    .detail-panel {
+      position: fixed;
+      right: -400px;
+      top: 80px;
+      bottom: 0;
+      width: 400px;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border-left: 1px solid var(--card-border);
+      padding: var(--space-lg);
+      overflow-y: auto;
+      transition: right 0.4s ease;
+      z-index: 60;
+    }
+
+    .detail-panel.open {
+      right: 0;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .detail-title {
+      color: var(--accent-gold);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .close-detail {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: var(--space-xs);
+      border-radius: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .close-detail:hover {
+      background: var(--accent-brick);
+      color: #fff;
+    }
+
+    .detail-content {
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+
+    .detail-stats {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-sm);
+      font-size: 0.9rem;
+    }
+
+    .floating-particles {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-lime);
+      border-radius: 50%;
+      opacity: 0.7;
+      animation: floatParticle 8s linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .legend {
+      position: fixed;
+      bottom: var(--space-lg);
+      left: var(--space-lg);
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-md);
+      z-index: 70;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xs);
+      font-size: 0.8rem;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 768px) {
+      .detail-panel {
+        width: 100%;
+        right: -100%;
+      }
+      
+      .controls {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+      }
+      
+      .central-node {
+        min-width: 120px;
+        min-height: 120px;
+        font-size: 1rem;
+      }
+      
+      .answer-node {
+        max-width: 250px;
+        min-width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="constellation-bg" id="constellation"></div>
+
+  <header class="header">
+    <div class="brand-section">
+      <div class="brand-name">📊 DATA VISUALIZATION</div>
+      <select class="question-selector" id="question-selector" onchange="switchQuestion()">
+        <option value="1">Question 1: Digital Technology Impact</option>
+        <option value="2">Question 2: Online vs Traditional Learning</option>
+        <option value="3">Question 3: Language Learning Strategies</option>
+        <option value="4">Question 4: Cultural Understanding</option>
+        <option value="5">Question 5: Motivation in Language Learning</option>
+        <option value="6">Question 6: Assessment Methods</option>
+      </select>
+    </div>
+    
+    <div class="controls">
+      <a href="../teachers/questions/" class="control-btn">
+        <i class="fas fa-chalkboard-teacher"></i>
+        Teacher Panel
+      </a>
+      <a href="../students/answers/" class="control-btn">
+        <i class="fas fa-user-graduate"></i>
+        Student Form
+      </a>
+      <button class="control-btn active" id="mind-map-btn" onclick="setViewMode('mindmap')">
+        <i class="fas fa-project-diagram"></i>
+        Mind Map
+      </button>
+      <button class="control-btn" id="timeline-btn" onclick="setViewMode('timeline')">
+        <i class="fas fa-clock"></i>
+        Timeline
+      </button>
+      <button class="control-btn" onclick="exportData()">
+        <i class="fas fa-download"></i>
+        Export
+      </button>
+    </div>
+  </header>
+
+  <div class="mind-map-container">
+    <div class="mind-map" id="mind-map">
+      <div class="central-node" id="central-node">
+        Question 1<br>
+        <small style="font-size: 0.8rem; font-weight: 400;">6 Responses</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <div class="detail-title" id="detail-title">Student Response</div>
+      <button class="close-detail" onclick="closeDetail()">×</button>
+    </div>
+    <div id="detail-body">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--accent-lime);"></div>
+      <span>Meets all requirements</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--accent-orange);"></div>
+      <span>Partial requirements</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--accent-brick);"></div>
+      <span>Missing requirements</span>
+    </div>
+  </div>
+
+  <script>
+    const sampleData = {
+      1: [
+        {
+          id: 1,
+          student: "Maria Rodriguez",
+          avatar: "MR",
+          answer: "Digital technology has fundamentally transformed modern education by providing interactive learning platforms, enabling distance learning, and creating personalized educational experiences that adapt to individual student needs and learning paces. The integration of AI-powered tutoring systems, virtual reality classrooms, and collaborative online tools has revolutionized how teachers deliver content and how students engage with learning materials.",
+          wordCount: 52,
+          keywords: ["technology", "digital", "education", "learning"],
+          timestamp: "2 hours ago",
+          score: 95
+        },
+        {
+          id: 2,
+          student: "Ahmed Hassan",
+          avatar: "AH",
+          answer: "Technology revolutionizes classroom experiences through multimedia content, collaborative projects, and real-time feedback systems that enhance student engagement and comprehension. Digital tools provide instant access to vast educational resources and enable innovative teaching methodologies.",
+          wordCount: 32,
+          keywords: ["technology", "digital"],
+          timestamp: "1 hour ago",
+          score: 78
+        },
+        {
+          id: 3,
+          student: "Sophie Chen",
+          avatar: "SC",
+          answer: "The digital transformation of education has created unprecedented opportunities for personalized learning experiences. Advanced educational technologies now allow teachers to track student progress in real-time, adapt curriculum to individual learning styles, and provide immediate feedback. This technological integration has made education more accessible, engaging, and effective for diverse learning populations.",
+          wordCount: 48,
+          keywords: ["digital", "education", "learning", "technology"],
+          timestamp: "30 minutes ago",
+          score: 92
+        },
+        {
+          id: 4,
+          student: "Carlos Rivera",
+          avatar: "CR",
+          answer: "Digital platforms have changed how we learn by making education more interactive and accessible. Students can now learn at their own pace using online resources and educational apps.",
+          wordCount: 28,
+          keywords: ["digital", "education"],
+          timestamp: "45 minutes ago",
+          score: 65
+        },
+        {
+          id: 5,
+          student: "Aisha Patel",
+          avatar: "AP",
+          answer: "Technology in education has transformed traditional teaching methods by introducing innovative digital tools that enhance learning outcomes. Interactive whiteboards, educational software, and online collaboration platforms have created dynamic learning environments that engage students more effectively than conventional lecture-based approaches.",
+          wordCount: 38,
+          keywords: ["technology", "education", "digital", "learning"],
+          timestamp: "20 minutes ago",
+          score: 88
+        },
+        {
+          id: 6,
+          student: "Marcus Johnson",
+          avatar: "MJ",
+          answer: "Educational technology has revolutionized how knowledge is delivered and consumed in modern classrooms. From virtual reality field trips to AI-powered personalized learning systems, digital innovations have made education more engaging, accessible, and effective for students with diverse learning needs and backgrounds.",
+          wordCount: 41,
+          keywords: ["technology", "education", "digital", "learning"],
+          timestamp: "10 minutes ago",
+          score: 90
+        }
+      ]
+    };
+
+    let currentQuestion = 1;
+    let selectedNode = null;
+    let viewMode = 'mindmap';
+
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      for (let i = 0; i < 40; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    function createFloatingParticles() {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div');
+          particle.className = 'floating-particles';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.animationDelay = Math.random() * 2 + 's';
+          
+          const colors = ['var(--accent-lime)', 'var(--accent-teal)', 'var(--accent-gold)'];
+          particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          document.body.appendChild(particle);
+          
+          setTimeout(() => {
+            if (particle.parentNode) {
+              particle.parentNode.removeChild(particle);
+            }
+          }, 8000);
+        }, i * 1000);
+      }
+    }
+
+    function generateMindMap() {
+      const mindMap = document.getElementById('mind-map');
+      const responses = sampleData[currentQuestion] || [];
+      
+      // Clear existing nodes (except central)
+      const existingNodes = mindMap.querySelectorAll('.answer-node, .connection-line');
+      existingNodes.forEach(node => node.remove());
+      
+      // Update central node
+      const centralNode = document.getElementById('central-node');
+      centralNode.innerHTML = `Question ${currentQuestion}<br><small style="font-size: 0.8rem; font-weight: 400;">${responses.length} Responses</small>`;
+      
+      // Position answer nodes in a circle around the center
+      const centerX = window.innerWidth / 2;
+      const centerY = (window.innerHeight + 80) / 2; // Account for header
+      const radius = Math.min(300, Math.min(window.innerWidth, window.innerHeight) * 0.25);
+      
+      responses.forEach((response, index) => {
+        const angle = (index * 2 * Math.PI) / responses.length;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        
+        // Create answer node
+        const node = document.createElement('div');
+        node.className = 'answer-node';
+        node.style.left = (x - 100) + 'px'; // Offset by half width
+        node.style.top = (y - 60) + 'px'; // Offset by half height
+        node.style.animationDelay = (index * 0.2) + 's';
+        
+        // Determine node color based on score
+        let borderColor = 'var(--accent-brick)';
+        if (response.score >= 85) borderColor = 'var(--accent-lime)';
+        else if (response.score >= 70) borderColor = 'var(--accent-orange)';
+        
+        node.style.borderColor = borderColor;
+        
+        node.innerHTML = `
+          <div class="student-name">
+            <div class="student-avatar">${response.avatar}</div>
+            ${response.student}
+          </div>
+          <div class="answer-preview">
+            ${response.answer.substring(0, 100)}${response.answer.length > 100 ? '...' : ''}
+          </div>
+          <div class="answer-stats">
+            <span class="word-count">${response.wordCount} words</span>
+            <span class="keyword-indicator">${response.keywords.length}/4 keywords</span>
+          </div>
+        `;
+        
+        node.addEventListener('click', () => showDetail(response));
+        mindMap.appendChild(node);
+        
+        // Create connection line
+        const line = document.createElement('div');
+        line.className = 'connection-line';
+        
+        const lineLength = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2)) - 75;
+        const lineAngle = Math.atan2(y - centerY, x - centerX);
+        
+        line.style.left = centerX + 'px';
+        line.style.top = centerY + 'px';
+        line.style.width = lineLength + 'px';
+        line.style.transform = `rotate(${lineAngle}rad)`;
+        line.style.animationDelay = (index * 0.1) + 's';
+        
+        mindMap.appendChild(line);
+      });
+    }
+
+    function showDetail(response) {
+      const panel = document.getElementById('detail-panel');
+      const title = document.getElementById('detail-title');
+      const body = document.getElementById('detail-body');
+      
+      title.textContent = response.student;
+      
+      body.innerHTML = `
+        <div class="detail-stats">
+          <div class="stat-item">
+            <span>Word Count:</span>
+            <span style="color: var(--accent-lime);">${response.wordCount}</span>
+          </div>
+          <div class="stat-item">
+            <span>Keywords Found:</span>
+            <span style="color: var(--accent-teal);">${response.keywords.join(', ')}</span>
+          </div>
+          <div class="stat-item">
+            <span>Score:</span>
+            <span style="color: var(--accent-gold);">${response.score}%</span>
+          </div>
+          <div class="stat-item">
+            <span>Submitted:</span>
+            <span style="color: var(--text-muted);">${response.timestamp}</span>
+          </div>
+        </div>
+        
+        <div class="detail-content">
+          <h4 style="color: var(--accent-gold); margin-bottom: var(--space-md);">Full Response:</h4>
+          <p style="line-height: 1.6;">${response.answer}</p>
+        </div>
+        
+        <div style="display: flex; gap: var(--space-md);">
+          <button class="control-btn" onclick="highlightKeywords(${response.id})">
+            <i class="fas fa-highlighter"></i>
+            Highlight Keywords
+          </button>
+          <button class="control-btn" onclick="startDiscussion(${response.id})">
+            <i class="fas fa-comments"></i>
+            Discuss
+          </button>
+        </div>
+      `;
+      
+      panel.classList.add('open');
+      
+      // Highlight selected node
+      document.querySelectorAll('.answer-node').forEach(node => node.classList.remove('selected'));
+      selectedNode = response.id;
+    }
+
+    function closeDetail() {
+      document.getElementById('detail-panel').classList.remove('open');
+      document.querySelectorAll('.answer-node').forEach(node => node.classList.remove('selected'));
+      selectedNode = null;
+    }
+
+    function switchQuestion() {
+      currentQuestion = parseInt(document.getElementById('question-selector').value);
+      generateMindMap();
+      closeDetail();
+    }
+
+    function setViewMode(mode) {
+      document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`${mode}-btn`).classList.add('active');
+      viewMode = mode;
+      
+      if (mode === 'mindmap') {
+        generateMindMap();
+      } else {
+        alert(`${mode} view is under development! The mind map view showcases the core visualization concept.`);
+      }
+    }
+
+    function exportData() {
+      alert('Data export functionality ready! Would integrate with CSV/Excel export in production.');
+    }
+
+    function highlightKeywords(responseId) {
+      alert('Keyword highlighting activated! This would highlight required keywords in the student response.');
+    }
+
+    function startDiscussion(responseId) {
+      alert('💬 Discussion Mode Started!\n\nThis would open a collaborative discussion interface for this specific response.');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createConstellation();
+      generateMindMap();
+      
+      // Start floating particles
+      setInterval(createFloatingParticles, 3000);
+      createFloatingParticles();
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      setTimeout(generateMindMap, 100);
+    });
+  </script>
+</body>
+</html>
