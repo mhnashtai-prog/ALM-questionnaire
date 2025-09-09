@@ -532,23 +532,23 @@
 
       <div class="stats-bar">
         <div class="stat-item">
-          <div class="stat-value" id="total-responses">6</div>
+          <div class="stat-value" id="total-responses">0</div>
           <div class="stat-label">Total Responses</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="avg-words">48</div>
+          <div class="stat-value" id="avg-words">0</div>
           <div class="stat-label">Avg Words</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="excellent-count">2</div>
+          <div class="stat-value" id="excellent-count">0</div>
           <div class="stat-label">Excellent</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="good-count">3</div>
+          <div class="stat-value" id="good-count">0</div>
           <div class="stat-label">Good</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="needs-work-count">1</div>
+          <div class="stat-value" id="needs-work-count">0</div>
           <div class="stat-label">Needs Work</div>
         </div>
       </div>
@@ -561,7 +561,9 @@
       </div>
 
       <div class="response-grid" id="response-grid">
-        <!-- Response cards will be generated here -->
+        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+          No student responses yet. Questions will appear here once students start submitting answers.
+        </div>
       </div>
     </div>
   </div>
@@ -570,7 +572,7 @@
     <div class="footer-container">
       <div class="footer-buttons">
         
-        <a href="teachers/questions/" class="footer-btn">
+        <a href="../teachers/questions/" class="footer-btn">
           <i class="fas fa-plus"></i>
           <span>Create</span>
         </a>
@@ -607,83 +609,23 @@
       }, 3000);
     }
 
-    const sampleResponses = {
-      1: [
-        {
-          id: 1,
-          student: "Maria Rodriguez",
-          avatar: "MR",
-          answer: "Digital technology has fundamentally transformed modern education by providing interactive learning platforms, enabling distance learning, and creating personalized educational experiences that adapt to individual student needs and learning paces.",
-          wordCount: 52,
-          keywords: 4,
-          quality: "excellent",
-          score: 95,
-          timestamp: "2h ago"
-        },
-        {
-          id: 2,
-          student: "Ahmed Hassan", 
-          avatar: "AH",
-          answer: "Technology revolutionizes classroom experiences through multimedia content, collaborative projects, and real-time feedback systems that enhance student engagement and comprehension.",
-          wordCount: 28,
-          keywords: 3,
-          quality: "good",
-          score: 78,
-          timestamp: "1h ago"
-        },
-        {
-          id: 3,
-          student: "Sophie Chen",
-          avatar: "SC", 
-          answer: "The digital transformation of education has created unprecedented opportunities for personalized learning experiences. Advanced educational technologies now allow teachers to track student progress in real-time and provide immediate feedback.",
-          wordCount: 38,
-          keywords: 4,
-          quality: "excellent",
-          score: 92,
-          timestamp: "30m ago"
-        },
-        {
-          id: 4,
-          student: "Carlos Rivera",
-          avatar: "CR",
-          answer: "Digital platforms have changed how we learn by making education more interactive and accessible. Students can now learn at their own pace with various online resources.",
-          wordCount: 26,
-          keywords: 2,
-          quality: "good",
-          score: 65,
-          timestamp: "45m ago"
-        },
-        {
-          id: 5,
-          student: "Aisha Patel",
-          avatar: "AP",
-          answer: "Technology in education has transformed traditional teaching methods by introducing innovative digital tools that enhance learning outcomes and create dynamic learning environments.",
-          wordCount: 26,
-          keywords: 3,
-          quality: "good",
-          score: 88,
-          timestamp: "20m ago"
-        },
-        {
-          id: 6,
-          student: "Marcus Johnson",
-          avatar: "MJ",
-          answer: "Educational technology has helped students learn better with computers and internet resources.",
-          wordCount: 14,
-          keywords: 1,
-          quality: "needs-work",
-          score: 45,
-          timestamp: "10m ago"
-        }
-      ]
-    };
+    // Load responses from localStorage (integrated with teacher system)
+    function loadStudentResponses() {
+      try {
+        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        return responses;
+      } catch (error) {
+        console.error('Error loading responses:', error);
+        return [];
+      }
+    }
 
     let currentQuestion = 1;
     let currentFilter = 'all';
 
     function generateResponseCards() {
       const container = document.getElementById('response-grid');
-      const responses = sampleResponses[currentQuestion] || [];
+      const responses = loadStudentResponses().filter(r => r.questionId === currentQuestion) || [];
       
       container.innerHTML = '';
       
@@ -695,6 +637,18 @@
       }
       
       updateStats(responses);
+      
+      if (filteredResponses.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            ${responses.length === 0 ? 
+              'No student responses yet. Questions will appear here once students start submitting answers.' :
+              `No ${currentFilter === 'all' ? '' : currentFilter + ' '}responses found for this question.`
+            }
+          </div>
+        `;
+        return;
+      }
       
       filteredResponses.forEach((response, index) => {
         const card = document.createElement('div');
@@ -713,19 +667,19 @@
         card.innerHTML = `
           <div class="student-header">
             <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
-              ${response.avatar}
+              ${response.studentName ? response.studentName.substring(0, 2).toUpperCase() : 'ST'}
             </div>
             <div class="student-info">
-              <div class="student-name">${response.student}</div>
+              <div class="student-name">${response.studentName || 'Student ' + (index + 1)}</div>
               <div class="response-meta">
                 <span>📝 ${response.wordCount} words</span>
-                <span>🔑 ${response.keywords}/4</span>
+                <span>🔑 ${response.keywords || 0}/4</span>
                 <span>⏰ ${response.timestamp}</span>
               </div>
             </div>
             <div class="quality-badge">
               <div class="quality-indicator"></div>
-              <span>${response.score}%</span>
+              <span>${response.score || 0}%</span>
             </div>
           </div>
           
@@ -763,7 +717,7 @@
 
     function updateStats(responses) {
       const total = responses.length;
-      const avgWords = Math.round(responses.reduce((sum, r) => sum + r.wordCount, 0) / total);
+      const avgWords = total > 0 ? Math.round(responses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / total) : 0;
       const excellent = responses.filter(r => r.quality === 'excellent').length;
       const good = responses.filter(r => r.quality === 'good').length; 
       const needsWork = responses.filter(r => r.quality === 'needs-work').length;
@@ -794,10 +748,11 @@
       document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
       cardElement.classList.add('selected');
       
-      showNotification(`Selected response from ${response.student}`);
+      showNotification(`Selected response from ${response.studentName || 'student'}`);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      populateQuestionSelector();
       generateResponseCards();
     });
   </script>
