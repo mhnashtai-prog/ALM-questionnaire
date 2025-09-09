@@ -4,27 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ALM Questionnaire System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --accent-gold: #f4a261;
-      --accent-teal: #2dd4bf;
-      --accent-lime: #32d74b;
-      --text-primary: #ffffff;
+      /* iPhone 15 Pro Color System */
+      --bg-primary: #000000;
+      --bg-secondary: #1C1C1E;
+      --bg-tertiary: #2C2C2E;
+      
+      /* Dynamic Island Glass */
+      --glass-primary: rgba(255, 255, 255, 0.1);
+      --glass-secondary: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-strong: rgba(255, 255, 255, 0.2);
+      
+      /* iPhone System Colors */
+      --system-blue: #007AFF;
+      --system-green: #30D158;
+      --system-orange: #FF9F0A;
+      --system-red: #FF453A;
+      --system-purple: #BF5AF2;
+      --system-pink: #FF2D92;
+      --system-teal: #64D2FF;
+      --system-indigo: #5E5CE6;
+      
+      /* Text Hierarchy */
+      --text-primary: #FFFFFF;
       --text-secondary: rgba(255, 255, 255, 0.7);
-      --intuity-gold: #ffd54f;
-      --intuity-teal: #26a69a;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
-      --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --text-tertiary: rgba(255, 255, 255, 0.5);
+      
+      /* Spacing System */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-xxl: 48px;
+      
+      /* Effects */
+      --blur-light: blur(20px);
+      --blur-heavy: blur(40px);
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.6);
+      --glow-blue: 0 0 20px rgba(0, 122, 255, 0.4);
     }
 
     * {
@@ -34,15 +57,16 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
       overflow-x: hidden;
+      position: relative;
     }
 
-    .constellation-bg {
+    /* Ambient Background Animation */
+    .ambient-bg {
       position: fixed;
       top: 0;
       left: 0;
@@ -53,264 +77,325 @@
       opacity: 0.3;
     }
 
-    .star {
+    .ambient-orb {
       position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--accent-gold);
       border-radius: 50%;
-      animation: twinkle 3s infinite alternate;
+      filter: blur(80px);
+      animation: float 20s ease-in-out infinite;
     }
 
-    .star:nth-child(even) {
-      animation-delay: 1.5s;
-      background: var(--accent-teal);
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
+      top: 10%;
+      left: 20%;
+      animation-delay: 0s;
     }
 
-    @keyframes twinkle {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.8; }
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, var(--system-green), var(--system-teal));
+      top: 60%;
+      right: 20%;
+      animation-delay: 7s;
     }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: var(--space-xl);
-      position: relative;
-      z-index: 10;
+    .orb-3 {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--system-orange), var(--system-pink));
+      bottom: 20%;
+      left: 60%;
+      animation-delay: 14s;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 4rem;
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
     }
 
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 4rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: var(--space-md);
-      position: relative;
-    }
-
-    .brand-name::after {
-      content: '🎓';
-      position: absolute;
-      top: -20px;
-      right: -60px;
-      font-size: 3rem;
-      animation: bounce 2s ease-in-out infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1.3rem;
-      font-weight: 300;
-      margin-bottom: var(--space-lg);
-    }
-
-    .description {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto var(--space-xl);
-      line-height: 1.8;
-    }
-
-    .interfaces-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--space-xl);
-      margin-bottom: var(--space-xl);
-    }
-
-    .interface-card {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      box-shadow: var(--shadow);
-      text-align: center;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      color: var(--text-primary);
-    }
-
-    .interface-card:hover {
-      transform: translateY(-10px);
-      border-color: var(--accent-lime);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .interface-icon {
-      font-size: 4rem;
-      margin-bottom: var(--space-lg);
-      display: block;
-    }
-
-    .teacher-card .interface-icon { color: var(--accent-gold); }
-    .student-card .interface-icon { color: var(--accent-teal); }
-    .viz-card .interface-icon { color: var(--accent-lime); }
-
-    .interface-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: var(--space-md);
-      color: var(--text-primary);
-    }
-
-    .interface-description {
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .features {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .features h2 {
-      color: var(--accent-gold);
-      font-size: 2rem;
-      margin-bottom: var(--space-lg);
-    }
-
-    .features-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--space-lg);
-    }
-
-    .feature-item {
+    /* Dynamic Island Header */
+    .dynamic-island {
+      position: fixed;
+      top: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: var(--blur-heavy);
+      border: 1px solid var(--glass-border);
+      border-radius: 40px;
+      padding: var(--space-md) var(--space-xl);
+      z-index: 1000;
       display: flex;
       align-items: center;
       gap: var(--space-md);
-      text-align: left;
+      box-shadow: var(--shadow-strong);
     }
 
-    .feature-icon {
-      color: var(--accent-lime);
-      font-size: 1.5rem;
-      flex-shrink: 0;
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      animation: gentle-bounce 3s ease-in-out infinite;
     }
 
+    @keyframes gentle-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.8px;
+    }
+
+    .status-badge {
+      background: var(--system-green);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hero Section - ULTRA MINIMAL */
+    .hero-section {
+      text-align: center;
+      padding: 140px var(--space-lg) var(--space-xxl);
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      min-height: calc(100vh - 200px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: var(--space-xxl);
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -3px;
+    }
+
+    /* Interface Cards - HUGE VISUAL BUTTONS */
+    .interface-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-xxl);
+    }
+
+    .interface-card {
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 40px;
+      padding: var(--space-xxl);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+
+    .interface-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: all 0.6s;
+    }
+
+    .interface-card:hover::before {
+      left: 100%;
+    }
+
+    .interface-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--glow-blue);
+    }
+
+    .interface-card.teacher {
+      background: linear-gradient(135deg, var(--glass-primary), rgba(0, 122, 255, 0.1));
+      border-color: var(--system-blue);
+    }
+
+    .interface-card.teacher:hover {
+      border-color: var(--system-blue);
+      box-shadow: 0 20px 60px rgba(0, 122, 255, 0.3);
+    }
+
+    .interface-card.student {
+      background: linear-gradient(135deg, var(--glass-primary), rgba(48, 209, 88, 0.1));
+      border-color: var(--system-green);
+    }
+
+    .interface-card.student:hover {
+      border-color: var(--system-green);
+      box-shadow: 0 20px 60px rgba(48, 209, 88, 0.3);
+    }
+
+    .interface-card.analytics {
+      background: linear-gradient(135deg, var(--glass-primary), rgba(255, 159, 10, 0.1));
+      border-color: var(--system-orange);
+    }
+
+    .interface-card.analytics:hover {
+      border-color: var(--system-orange);
+      box-shadow: 0 20px 60px rgba(255, 159, 10, 0.3);
+    }
+
+    .card-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-lg);
+    }
+
+    .card-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -1px;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .brand-name {
+      .dynamic-island {
+        padding: var(--space-sm) var(--space-lg);
+      }
+      
+      .brand-title {
+        font-size: 1.125rem;
+      }
+      
+      .hero-title {
+        font-size: 3rem;
+        letter-spacing: -2px;
+      }
+      
+      .hero-section {
+        padding: 120px var(--space-md) var(--space-xl);
+      }
+      
+      .interface-grid {
+        gap: var(--space-lg);
+      }
+      
+      .interface-card {
+        padding: var(--space-xl);
+        min-height: 100px;
+      }
+      
+      .card-icon {
+        font-size: 3rem;
+      }
+      
+      .card-title {
+        font-size: 1.375rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
         font-size: 2.5rem;
+        letter-spacing: -1px;
       }
       
-      .interfaces-grid {
-        grid-template-columns: 1fr;
+      .interface-card {
+        padding: var(--space-lg);
+        min-height: 80px;
       }
       
-      .features-list {
-        grid-template-columns: 1fr;
+      .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: var(--space-md);
+      }
+      
+      .card-title {
+        font-size: 1.125rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="constellation-bg" id="constellation"></div>
+  <div class="ambient-bg">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
 
-  <div class="container">
-    <header class="header">
-      <div class="brand-name">ALM QUESTIONNAIRE</div>
-      <div class="subtitle">Advanced Language Methodology Platform</div>
-      <div class="description">
-        A comprehensive web-based system for language teachers to create engaging questionnaires, 
-        monitor student responses in real-time, and analyze results with stunning visualizations.
-      </div>
-    </header>
+  <!-- Dynamic Island Header -->
+  <div class="dynamic-island">
+    <div class="brand-icon">📝</div>
+    <div class="brand-title">ALM QUESTIONNAIRE</div>
+    <div class="status-badge">Online</div>
+  </div>
 
-    <div class="interfaces-grid">
-      <a href="teachers/questions/" class="interface-card teacher-card">
-        <i class="fas fa-chalkboard-teacher interface-icon"></i>
-        <div class="interface-title">Teacher Interface</div>
-        <div class="interface-description">
-          Create questions with validation rules, set minimum word counts, 
-          require specific keywords, and generate QR codes for instant sharing.
-        </div>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <h1 class="hero-title">ALM</h1>
+
+    <!-- Interface Grid - GIANT VISUAL BUTTONS -->
+    <div class="interface-grid">
+      <a href="teachers/questions/" class="interface-card teacher">
+        <div class="card-icon">👩‍🏫</div>
+        <h2 class="card-title">Teacher</h2>
       </a>
 
-      <a href="students/answers/" class="interface-card student-card">
-        <i class="fas fa-user-graduate interface-icon"></i>
-        <div class="interface-title">Student Interface</div>
-        <div class="interface-description">
-          Progressive question answering with real-time validation, 
-          word count monitoring, and automatic requirement checking.
-        </div>
+      <a href="students/answers/" class="interface-card student">
+        <div class="card-icon">🎓</div>
+        <h2 class="card-title">Student</h2>
       </a>
 
-      <a href="visualization/" class="interface-card viz-card">
-        <i class="fas fa-chart-pie interface-icon"></i>
-        <div class="interface-title">Data Visualization</div>
-        <div class="interface-description">
-          Interactive mind maps displaying student responses with 
-          beautiful animations and detailed analysis tools.
-        </div>
+      <a href="visualization/" class="interface-card analytics">
+        <div class="card-icon">📊</div>
+        <h2 class="card-title">Analytics</h2>
       </a>
-    </div>
-
-    <div class="features">
-      <h2>✨ Key Features</h2>
-      <div class="features-list">
-        <div class="feature-item">
-          <i class="fas fa-magic feature-icon"></i>
-          <span>Real-time validation and feedback</span>
-        </div>
-        <div class="feature-item">
-          <i class="fas fa-palette feature-icon"></i>
-          <span>Modern glassmorphic design</span>
-        </div>
-        <div class="feature-item">
-          <i class="fas fa-mobile-alt feature-icon"></i>
-          <span>Fully responsive on all devices</span>
-        </div>
-        <div class="feature-item">
-          <i class="fas fa-qrcode feature-icon"></i>
-          <span>QR code generation for easy sharing</span>
-        </div>
-        <div class="feature-item">
-          <i class="fas fa-chart-line feature-icon"></i>
-          <span>Speech bubble visualization with adaptive layouts</span>
-        </div>
-        <div class="feature-item">
-          <i class="fas fa-comments feature-icon"></i>
-          <span>Built-in discussion tools</span>
-        </div>
-      </div>
     </div>
   </div>
 
   <script>
-    function createConstellation() {
-      const constellation = document.getElementById('constellation');
-      for (let i = 0; i < 50; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        constellation.appendChild(star);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', createConstellation);
+    // Add loading animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.interface-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 200);
+      });
+    });
   </script>
 </body>
 </html>
