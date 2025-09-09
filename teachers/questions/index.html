@@ -3,38 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ALM Questionnaire System - Enhanced Teacher Interface</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>ALM Questionnaire - Student Interface</title>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-primary: #0a0f1c;
-      --bg-secondary: #1a2332;
-      --bg-tertiary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
+      /* iPhone 15 Pro Color System */
+      --bg-primary: #000000;
+      --bg-secondary: #1C1C1E;
+      --bg-tertiary: #2C2C2E;
       
-      --accent-primary: #007AFF;
-      --accent-secondary: #5AC8FA;
-      --accent-success: #34C759;
-      --accent-warning: #FF9500;
-      --accent-danger: #FF3B30;
-      --accent-purple: #AF52DE;
-      --accent-indigo: #5856D6;
+      /* Dynamic Island Glass */
+      --glass-primary: rgba(255, 255, 255, 0.1);
+      --glass-secondary: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-strong: rgba(255, 255, 255, 0.2);
       
-      --text-primary: #ffffff;
+      /* iPhone System Colors */
+      --system-blue: #007AFF;
+      --system-green: #30D158;
+      --system-orange: #FF9F0A;
+      --system-red: #FF453A;
+      --system-purple: #BF5AF2;
+      --system-pink: #FF2D92;
+      --system-teal: #64D2FF;
+      --system-indigo: #5E5CE6;
+      
+      /* Text Hierarchy */
+      --text-primary: #FFFFFF;
       --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
+      --text-tertiary: rgba(255, 255, 255, 0.5);
       
-      --space-xs: 0.25rem;
-      --space-sm: 0.5rem;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
-      --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --glow: 0 0 20px rgba(0, 122, 255, 0.3);
+      /* Spacing System */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-xxl: 48px;
+      
+      /* Effects */
+      --blur-light: blur(20px);
+      --blur-heavy: blur(40px);
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.6);
+      --glow-blue: 0 0 20px rgba(0, 122, 255, 0.4);
+      --glow-green: 0 0 20px rgba(48, 209, 88, 0.4);
     }
 
     * {
@@ -44,15 +58,15 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
       overflow-x: hidden;
-      padding: var(--space-md);
+      position: relative;
     }
 
+    /* Ambient Background */
     .ambient-bg {
       position: fixed;
       top: 0;
@@ -61,21 +75,20 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.4;
+      opacity: 0.2;
     }
 
     .ambient-orb {
       position: absolute;
       border-radius: 50%;
       filter: blur(80px);
-      opacity: 0.3;
       animation: float 20s ease-in-out infinite;
     }
 
     .orb-1 {
       width: 300px;
       height: 300px;
-      background: var(--accent-primary);
+      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
       top: 20%;
       left: 10%;
       animation-delay: 0s;
@@ -84,7 +97,7 @@
     .orb-2 {
       width: 200px;
       height: 200px;
-      background: var(--accent-purple);
+      background: linear-gradient(135deg, var(--system-green), var(--system-teal));
       top: 60%;
       right: 20%;
       animation-delay: 10s;
@@ -95,499 +108,455 @@
       50% { transform: translate(20px, -20px) scale(1.1); }
     }
 
+    /* Dynamic Island Header */
+    .dynamic-island {
+      position: fixed;
+      top: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: var(--blur-heavy);
+      border: 1px solid var(--glass-border);
+      border-radius: 40px;
+      padding: var(--space-md) var(--space-xl);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      box-shadow: var(--shadow-strong);
+      max-width: 90%;
+    }
+
+    .question-indicator {
+      background: linear-gradient(135deg, var(--system-green), var(--system-teal));
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 16px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .progress-info {
+      flex: 1;
+      text-align: center;
+    }
+
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      height: 6px;
+      overflow: hidden;
+      margin: var(--space-xs) 0;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, var(--system-green), var(--system-blue));
+      height: 100%;
+      border-radius: 8px;
+      transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      width: 16.67%;
+    }
+
+    .completion-badge {
+      background: var(--system-blue);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    /* Main Container */
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 800px;
+      margin: 120px auto var(--space-xxl);
+      padding: 0 var(--space-lg);
       position: relative;
       z-index: 10;
     }
 
-    .header {
+    /* Question Navigation - MINIMAL */
+    .question-nav {
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow-soft);
       text-align: center;
-      margin-bottom: var(--space-xl);
     }
 
-    .brand-name {
-      font-family: 'Poppins', sans-serif;
-      font-size: 3rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: var(--space-sm);
-      position: relative;
-    }
-
-    .brand-name::after {
-      content: '🎓';
-      position: absolute;
-      top: -10px;
-      right: -40px;
-      font-size: 2rem;
-      animation: gentle-bounce 3s ease-in-out infinite;
-    }
-
-    @keyframes gentle-bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .subtitle {
-      color: var(--accent-primary);
-      font-size: 1.2rem;
-      font-weight: 500;
-      margin-bottom: var(--space-sm);
-    }
-
-    .description {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-bottom: var(--space-xl);
-    }
-
-    .mode-tabs {
-      display: flex;
-      gap: var(--space-md);
-      margin-bottom: var(--space-xl);
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-sm);
-    }
-
-    .mode-tab {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      padding: var(--space-md) var(--space-lg);
-      border-radius: 1rem;
-      font-size: 1rem;
-      font-weight: 600;
+    .question-selector {
+      background: var(--glass-secondary);
+      border: 2px solid var(--glass-border);
+      border-radius: 16px;
+      padding: var(--space-md);
+      color: var(--text-primary);
+      font-family: 'SF Pro Text', system-ui, sans-serif;
+      font-size: 0.875rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
+      width: 100%;
     }
 
-    .mode-tab:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
+    .question-selector:focus {
+      outline: none;
+      border-color: var(--system-blue);
+      background: var(--glass-strong);
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
     }
 
-    .mode-tab.active {
-      background: var(--accent-primary);
-      color: white;
-      box-shadow: var(--glow);
-    }
-
-    .panel {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 2rem;
-      padding: var(--space-xl);
-      box-shadow: var(--shadow);
-      margin-bottom: var(--space-lg);
-      display: none;
-    }
-
-    .panel.active {
-      display: block;
-      animation: slideIn 0.4s ease-out;
+    /* Question Display - MINIMAL */
+    .question-panel {
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: var(--space-xxl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow-soft);
+      animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Question Dropdown Selector */
-    .question-selector-section {
-      background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(90, 200, 250, 0.05));
-      border: 1px solid rgba(0, 122, 255, 0.2);
-      border-radius: 1.5rem;
-      padding: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .selector-header {
+    .question-header {
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
-      margin-bottom: var(--space-md);
-      color: var(--accent-primary);
-      font-weight: 600;
-      font-size: 1.1rem;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
     }
 
-    .question-dropdown {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .question-dropdown:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-    }
-
-    .dropdown-actions {
+    .question-number {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--system-green), var(--system-teal));
+      border-radius: 24px;
       display: flex;
-      gap: var(--space-sm);
-      margin-top: var(--space-md);
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: 800;
+      box-shadow: var(--glow-green);
     }
 
-    /* Student Interface Preview */
-    .student-interface {
-      background: var(--card-bg);
-      border: 2px dashed var(--card-border);
-      border-radius: 1.5rem;
+    .question-text {
+      font-family: 'SF Pro Text', system-ui, sans-serif;
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xl);
       padding: var(--space-xl);
-      margin-top: var(--space-lg);
-    }
-
-    .interface-header {
+      background: var(--glass-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
       text-align: center;
-      margin-bottom: var(--space-lg);
     }
 
-    .student-title {
-      color: var(--accent-secondary);
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: var(--space-sm);
+    /* Answer Section - MINIMAL */
+    .answer-section {
+      margin-bottom: var(--space-xl);
     }
 
-    .student-dropdown {
+    .answer-textarea {
       width: 100%;
-      max-width: 500px;
-      margin: 0 auto var(--space-lg);
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-size: 1rem;
-    }
-
-    .completion-status {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-      font-size: 0.9rem;
-      margin-top: var(--space-sm);
-    }
-
-    .status-complete {
-      color: var(--accent-success);
-    }
-
-    .status-partial {
-      color: var(--accent-warning);
-    }
-
-    .status-not-started {
-      color: var(--text-muted);
-    }
-
-    /* Data Management Section */
-    .data-management {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-lg);
-      margin-top: var(--space-lg);
-    }
-
-    .data-panel {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-lg);
-    }
-
-    .data-panel h4 {
-      color: var(--accent-primary);
-      margin-bottom: var(--space-md);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .file-item {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 0.5rem;
-      padding: var(--space-sm) var(--space-md);
-      margin-bottom: var(--space-sm);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: 'SF Mono', monospace;
-      font-size: 0.9rem;
-    }
-
-    .file-status {
-      font-size: 0.8rem;
-      padding: var(--space-xs) var(--space-sm);
-      border-radius: 0.25rem;
-      font-weight: 600;
-    }
-
-    .status-updated {
-      background: rgba(52, 199, 89, 0.2);
-      color: var(--accent-success);
-    }
-
-    .status-pending {
-      background: rgba(255, 149, 0, 0.2);
-      color: var(--accent-warning);
-    }
-
-    /* Response Management */
-    .response-filters {
-      display: flex;
-      gap: var(--space-sm);
-      margin-bottom: var(--space-lg);
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--card-border);
-      border-radius: 0.5rem;
-      padding: var(--space-sm) var(--space-md);
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .filter-btn.active {
-      background: var(--accent-primary);
-      color: white;
-      border-color: var(--accent-primary);
-    }
-
-    .response-item {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-md);
-      margin-bottom: var(--space-md);
-    }
-
-    .response-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-sm);
-    }
-
-    .student-info {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .response-actions {
-      display: flex;
-      gap: var(--space-sm);
-    }
-
-    .action-btn {
-      background: transparent;
-      border: 1px solid var(--card-border);
-      border-radius: 0.5rem;
-      padding: var(--space-xs) var(--space-sm);
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .action-btn:hover {
-      background: var(--accent-primary);
-      color: white;
-      border-color: var(--accent-primary);
-    }
-
-    /* Form styles remain the same as before */
-    .form-section {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
+      background: var(--glass-secondary);
+      border: 2px solid var(--glass-border);
+      border-radius: 24px;
       padding: var(--space-xl);
-      margin-bottom: var(--space-lg);
-    }
-
-    .section-title {
-      color: var(--accent-primary);
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: var(--space-lg);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .form-group {
-      margin-bottom: var(--space-lg);
-    }
-
-    .label {
-      display: block;
       color: var(--text-primary);
-      font-weight: 600;
-      margin-bottom: var(--space-sm);
-      font-size: 0.95rem;
-    }
-
-    .label-required {
-      color: var(--accent-danger);
-      margin-left: var(--space-xs);
-    }
-
-    .input-field {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .input-field:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-    }
-
-    .textarea-field {
-      min-height: 120px;
+      font-family: 'SF Pro Text', system-ui, sans-serif;
+      font-size: 1.125rem;
+      line-height: 1.6;
+      min-height: 200px;
       resize: vertical;
-      line-height: 1.5;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    .inline-inputs {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: var(--space-lg);
+    .answer-textarea:focus {
+      outline: none;
+      border-color: var(--system-blue);
+      background: var(--glass-strong);
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
     }
 
-    .teacher-info-section {
-      background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(90, 200, 250, 0.05));
-      border: 1px solid rgba(0, 122, 255, 0.2);
+    .answer-textarea.valid {
+      border-color: var(--system-green);
+      background: linear-gradient(135deg, var(--glass-secondary), rgba(48, 209, 88, 0.05));
     }
 
-    .btn {
-      background: var(--accent-primary);
-      color: white;
-      border: none;
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-xl);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
-      font-family: 'Inter', sans-serif;
+    .answer-textarea.warning {
+      border-color: var(--system-orange);
+      background: linear-gradient(135deg, var(--glass-secondary), rgba(255, 159, 10, 0.05));
     }
 
-    .btn:hover {
-      background: var(--accent-secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3);
+    .answer-textarea.error {
+      border-color: var(--system-red);
+      background: linear-gradient(135deg, var(--glass-secondary), rgba(255, 69, 58, 0.05));
     }
 
-    .btn-secondary {
-      background: var(--accent-indigo);
-    }
-
-    .btn-success {
-      background: var(--accent-success);
-    }
-
-    .btn-warning {
-      background: var(--accent-warning);
-    }
-
-    .btn-danger {
-      background: var(--accent-danger);
-    }
-
-    .btn-small {
-      padding: var(--space-sm) var(--space-md);
-      font-size: 0.9rem;
-    }
-
-    .button-group {
-      display: flex;
-      gap: var(--space-md);
-      justify-content: center;
-      margin-top: var(--space-xl);
-      flex-wrap: wrap;
-    }
-
-    .help-text {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: var(--space-xs);
+    .answer-textarea::placeholder {
+      color: var(--text-tertiary);
       font-style: italic;
     }
 
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: var(--accent-primary);
-      color: white;
-      padding: var(--space-md) var(--space-lg);
-      border-radius: 0.75rem;
+    /* Status Bar - VISUAL ONLY */
+    .status-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: var(--space-lg);
+      padding: var(--space-lg);
+      background: var(--glass-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      gap: var(--space-xl);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 1rem;
       font-weight: 600;
+    }
+
+    .word-count {
+      color: var(--text-tertiary);
+    }
+
+    .word-count.valid {
+      color: var(--system-green);
+    }
+
+    .word-count.warning {
+      color: var(--system-orange);
+    }
+
+    .word-count.error {
+      color: var(--system-red);
+    }
+
+    .keyword-status {
+      font-size: 1.125rem;
+    }
+
+    .auto-save {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 1rem;
+      color: var(--text-tertiary);
+    }
+
+    .save-icon.saved {
+      color: var(--system-green);
+    }
+
+    /* Navigation - PILL BUTTONS */
+    .nav-buttons {
+      display: flex;
+      gap: var(--space-lg);
+      justify-content: center;
+      margin-top: var(--space-xl);
+    }
+
+    .nav-btn {
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      padding: var(--space-lg) var(--space-xxl);
+      color: var(--text-primary);
+      font-family: 'SF Pro Display', system-ui, sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      text-decoration: none;
+      min-width: 160px;
+      justify-content: center;
+    }
+
+    .nav-btn:hover {
+      background: var(--glass-strong);
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: var(--glow-blue);
+    }
+
+    .nav-btn:disabled {
+      background: var(--glass-secondary);
+      color: var(--text-tertiary);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .nav-btn.primary {
+      background: var(--system-blue);
+      border-color: var(--system-blue);
+      box-shadow: var(--glow-blue);
+    }
+
+    .nav-btn.primary:hover {
+      background: #0056D6;
+      transform: translateY(-4px) scale(1.05);
+    }
+
+    .nav-btn.success {
+      background: var(--system-green);
+      border-color: var(--system-green);
+      box-shadow: var(--glow-green);
+    }
+
+    /* Completion Panel */
+    .completion-panel {
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: var(--space-xxl);
+      text-align: center;
+      display: none;
+      animation: celebration 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes celebration {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .completion-icon {
+      font-size: 5rem;
+      margin-bottom: var(--space-lg);
+      animation: bounce 0.6s ease-out;
+    }
+
+    @keyframes bounce {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .completion-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: var(--space-xxl);
+      background: linear-gradient(135deg, var(--system-green), var(--system-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Footer Pills - SUBTLE GLASSMORPHIC */
+    .footer-pills {
+      position: fixed;
+      bottom: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-primary);
+      backdrop-filter: var(--blur-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      padding: var(--space-sm);
       z-index: 1000;
-      box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3);
-      animation: slideInRight 0.3s ease-out;
+      display: flex;
+      gap: var(--space-xs);
+      box-shadow: var(--shadow-soft);
     }
 
-    .notification.success { background: var(--accent-success); }
-    .notification.warning { background: var(--accent-warning); }
-    .notification.error { background: var(--accent-danger); }
+    .pill-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--glass-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-decoration: none;
+      color: var(--text-tertiary);
+    }
 
+    .pill-icon:hover {
+      background: var(--glass-strong);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+      border-color: var(--system-blue);
+    }
+
+    .pill-icon.active {
+      background: var(--glass-strong);
+      color: var(--system-green);
+      border-color: var(--system-green);
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .data-management {
-        grid-template-columns: 1fr;
+      .dynamic-island {
+        flex-direction: column;
+        gap: var(--space-sm);
+        padding: var(--space-md);
       }
       
-      .inline-inputs {
-        grid-template-columns: 1fr;
+      .question-header {
+        flex-direction: column;
       }
       
-      .response-filters {
-        justify-content: center;
+      .question-number {
+        width: 64px;
+        height: 64px;
+        font-size: 1.5rem;
+      }
+      
+      .nav-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .status-bar {
+        flex-direction: column;
+        gap: var(--space-md);
       }
     }
 
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 var(--space-md);
+      }
+      
+      .question-panel {
+        padding: var(--space-xl);
+      }
+      
+      .answer-textarea {
+        min-height: 150px;
+        font-size: 1rem;
+      }
+      
+      .nav-btn {
+        min-width: 140px;
+        padding: var(--space-md) var(--space-xl);
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -597,582 +566,341 @@
     <div class="ambient-orb orb-2"></div>
   </div>
 
-  <div class="container">
-    <header class="header">
-      <div class="brand-name">ALM QUESTIONNAIRE</div>
-    </header>
-
-    <div class="mode-tabs">
-      <button class="mode-tab active" onclick="switchMode('create')" id="create-tab">
-        <i class="fas fa-edit"></i>
-        Create & Edit
-      </button>
-      <button class="mode-tab" onclick="switchMode('manage')" id="manage-tab">
-        <i class="fas fa-cogs"></i>
-        Response Management
-      </button>
-      <button class="mode-tab" onclick="switchMode('student')" id="student-tab">
-        <i class="fas fa-eye"></i>
-        Student Preview
-      </button>
-      <button class="mode-tab" onclick="switchMode('data')" id="data-tab">
-        <i class="fas fa-database"></i>
-        Data & Files
-      </button>
-    </div>
-
-    <!-- CREATE & EDIT PANEL -->
-    <div id="create-panel" class="panel active">
-      
-      <!-- Teacher Information -->
-      <div class="form-section teacher-info-section">
-        <div class="section-title">
-          <i class="fas fa-user-tie"></i>
-          Teacher Information
-        </div>
-        
-        <div class="form-group">
-          <label class="label">
-            Teacher Name
-            <span class="label-required">*</span>
-          </label>
-          <input type="text" class="input-field" id="teacher-name" 
-                 placeholder="Enter your full name (e.g., Dr. Maria Santos)">
-        </div>
-
-        <div class="inline-inputs">
-          <div class="form-group">
-            <label class="label">Subject/Course</label>
-            <input type="text" days="input-field" id="hours-name" 
-                   placeholder="e.g., Advanced English">
-          </div>
-          <div class="form-group">
-            <label class="label">Class/Group</label>
-            <input type="text" class="input-field" id="class-group" 
-                   placeholder="e.g., 11th Grade A">
-          </div>
-        </div>
-      </div>
-
-      <!-- Question Selector Dropdown -->
-      <div class="question-selector-section" id="question-selector-section" style="display: none;">
-        <div class="selector-header">
-          <i class="fas fa-list"></i>
-          Quick Question Access
-        </div>
-        
-        <select class="question-dropdown" id="question-dropdown" onchange="loadSelectedQuestion()">
-          <option value="">Select a question to edit...</option>
-        </select>
-        
-        <div class="dropdown-actions">
-          <button class="btn btn-small btn-warning" onclick="editSelectedQuestion()">
-            <i class="fas fa-edit"></i>
-            Edit Selected
-          </button>
-          <button class="btn btn-small btn-danger" onclick="deleteSelectedQuestion()">
-            <i class="fas fa-trash"></i>
-            Delete Selected
-          </button>
-          <button class="btn btn-small btn-secondary" onclick="clearSelection()">
-            <i class="fas fa-plus"></i>
-            Create New
-          </button>
-        </div>
-      </div>
-
-      <!-- Question Creation -->
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-question-circle"></i>
-          Question Creation
-          <span id="edit-indicator" style="display: none; color: var(--accent-warning); font-size: 0.9rem; margin-left: auto;">
-            <i class="fas fa-edit"></i> Editing Mode
-          </span>
-        </div>
-        
-        <div class="form-group">
-          <label class="label">
-            Question Text
-            <span class="label-required">*</span>
-          </label>
-          <textarea class="input-field textarea-field" id="question-text" 
-                    placeholder="Enter your question here. Be clear and specific about what you want students to address."></textarea>
-        </div>
-
-        <div class="inline-inputs">
-          <div class="form-group">
-            <label class="label">
-              Minimum Word Count
-              <span class="label-required">*</span>
-            </label>
-            <input type="number" class="input-field" id="min-words" 
-                   placeholder="50" min="10" value="50">
-          </div>
-          <div class="form-group">
-            <label class="label">Required Keywords (Optional)</label>
-            <input type="text" class="input-field" id="keywords" 
-                   placeholder="technology, education, learning, digital">
-          </div>
-        </div>
-
-        <div class="button-group">
-          <button class="btn btn-secondary" onclick="saveQuestion()">
-            <i class="fas fa-save"></i>
-            <span id="save-btn-text">Save Question</span>
-          </button>
-          <button class="btn btn-success" onclick="saveAndNew()" id="save-new-btn">
-            <i class="fas fa-plus"></i>
-            Save & Create New
-          </button>
-        </div>
+  <!-- Dynamic Island Header -->
+  <div class="dynamic-island">
+    <div class="question-indicator" id="question-indicator">Q1</div>
+    <div class="progress-info">
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
       </div>
     </div>
-
-    <!-- RESPONSE MANAGEMENT PANEL -->
-    <div id="manage-panel" class="panel">
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-chart-line"></i>
-          Response Management & Filtering
-        </div>
-        
-        <div class="response-filters">
-          <button class="filter-btn active" onclick="filterResponses('all')">All Responses</button>
-          <button class="filter-btn" onclick="filterResponses('complete')">Complete</button>
-          <button class="filter-btn" onclick="filterResponses('partial')">Partial</button>
-          <button class="filter-btn" onclick="filterResponses('flagged')">Flagged for Review</button>
-          <button class="filter-btn" onclick="filterResponses('question', 1)">Question 1</button>
-          <button class="filter-btn" onclick="filterResponses('question', 2)">Question 2</button>
-        </div>
-
-        <div id="responses-container">
-          <div class="response-item">
-            <div class="response-header">
-              <div class="student-info">Maria Rodriguez • Question 1 • Technology Impact</div>
-              <div class="response-actions">
-                <button class="action-btn" onclick="showResponse(1)">View</button>
-                <button class="action-btn" onclick="flagResponse(1)">Flag</button>
-                <button class="action-btn" onclick="hideResponse(1)">Hide</button>
-              </div>
-            </div>
-            <div style="color: var(--text-secondary); font-size: 0.9rem;">
-              "Digital technology has fundamentally transformed modern education by providing interactive learning platforms..."
-            </div>
-            <div class="completion-status status-complete">
-              <i class="fas fa-check-circle"></i>
-              Complete • 87 words • All keywords found
-            </div>
-          </div>
-
-          <div class="response-item">
-            <div class="response-header">
-              <div class="student-info">Ahmed Hassan • Question 2 • Online vs Traditional</div>
-              <div class="response-actions">
-                <button class="action-btn" onclick="showResponse(2)">View</button>
-                <button class="action-btn" onclick="flagResponse(2)">Flag</button>
-                <button class="action-btn" onclick="hideResponse(2)">Hide</button>
-              </div>
-            </div>
-            <div style="color: var(--text-secondary); font-size: 0.9rem;">
-              "Online learning offers flexibility but lacks the personal interaction of traditional classrooms..."
-            </div>
-            <div class="completion-status status-partial">
-              <i class="fas fa-clock"></i>
-              Partial • 34 words • Missing 2 keywords
-            </div>
-          </div>
-        </div>
-
-        <div class="button-group">
-          <button class="btn btn-secondary" onclick="exportFilteredData()">
-            <i class="fas fa-download"></i>
-            Export Filtered Data
-          </button>
-          <button class="btn" onclick="openVisualization()">
-            <i class="fas fa-eye"></i>
-            View Response Visualization
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- STUDENT PREVIEW PANEL -->
-    <div id="student-panel" class="panel">
-      <div class="student-interface">
-        <div class="interface-header">
-          <div class="student-title">
-            <i class="fas fa-user-graduate"></i>
-            Student View Preview
-          </div>
-          <p style="color: var(--text-secondary); margin-bottom: var(--space-lg);">
-            This is how students will see the questionnaire interface
-          </p>
-        </div>
-
-        <div class="form-group">
-          <label class="label">
-            <i class="fas fa-list"></i>
-            Question Navigation (Student Dropdown)
-          </label>
-          <select class="student-dropdown" id="student-dropdown" onchange="previewQuestion()">
-            <option value="">Select a question to answer...</option>
-            <option value="1">Question 1: How has digital technology transformed modern education? ✓</option>
-            <option value="2">Question 2: What are the advantages and disadvantages of online learning? ⏳</option>
-            <option value="3">Question 3: Describe effective language learning strategies 📝</option>
-            <option value="4">Question 4: How important is cultural understanding? 📝</option>
-          </select>
-          <div class="completion-status">
-            <span class="status-complete">✓ Completed</span> • 
-            <span class="status-partial">⏳ In Progress</span> • 
-            <span class="status-not-started">📝 Not Started</span>
-          </div>
-        </div>
-
-        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: var(--space-lg); margin-top: var(--space-lg);">
-          <h4 style="color: var(--accent-secondary); margin-bottom: var(--space-md);">
-            <i class="fas fa-info-circle"></i>
-            Student Features:
-          </h4>
-          <ul style="color: var(--text-secondary); line-height: 1.8;">
-            <li>🔍 <strong>Question Navigation:</strong> Students can jump to any question using the dropdown</li>
-            <li>📝 <strong>Read-Only Questions:</strong> Students cannot edit the questions, only view them</li>
-            <li>💾 <strong>Auto-Save:</strong> Progress is saved automatically as they type</li>
-            <li>⏳ <strong>Resume Capability:</strong> If distracted, they can easily return to where they left off</li>
-            <li>✅ <strong>Progress Tracking:</strong> Visual indicators show completion status</li>
-            <li>🔒 <strong>Security:</strong> Students only see questions you've published</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- DATA & FILES PANEL -->
-    <div id="data-panel" class="panel">
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-database"></i>
-          Data Management & File Updates
-        </div>
-        
-        <div class="data-management">
-          <div class="data-panel">
-            <h4>
-              <i class="fas fa-file-csv"></i>
-              System Files
-            </h4>
-            
-            <div class="file-item">
-              <span>questions.csv</span>
-              <span class="file-status status-updated">Updated</span>
-            </div>
-            <div class="file-item">
-              <span>answers.csv</span>
-              <span class="file-status status-pending">Pending</span>
-            </div>
-            <div class="file-item">
-              <span>teacher_settings.json</span>
-              <span class="file-status status-updated">Updated</span>
-            </div>
-            <div class="file-item">
-              <span>visibility_rules.json</span>
-              <span class="file-status status-pending">Pending</span>
-            </div>
-          </div>
-
-          <div class="data-panel">
-            <h4>
-              <i class="fas fa-sync-alt"></i>
-              Auto-Update Rules
-            </h4>
-            
-            <div style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
-              <p style="margin-bottom: var(--space-sm);">
-                <strong>When you edit/delete questions:</strong><br>
-                • questions.csv gets updated immediately<br>
-                • visibility_rules.json updates question status<br>
-                • Student interface refreshes automatically
-              </p>
-              
-              <p style="margin-bottom: var(--space-sm);">
-                <strong>When managing responses:</strong><br>
-                • answers.csv tracks response visibility<br>
-                • Filtered data exports to Excel/CSV<br>
-                • Visualization data updates in real-time
-              </p>
-              
-              <p>
-                <strong>File Structure:</strong><br>
-                • Questions: ID, Text, Keywords, MinWords, Visible<br>
-                • Answers: StudentID, QuestionID, Response, Status<br>
-                • Settings: TeacherName, PublishStatus
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="button-group">
-          <button class="btn btn-secondary" onclick="backupData()">
-            <i class="fas fa-download"></i>
-            Backup All Data
-          </button>
-          <button class="btn btn-warning" onclick="syncFiles()">
-            <i class="fas fa-sync"></i>
-            Force File Sync
-          </button>
-          <button class="btn" onclick="viewLogs()">
-            <i class="fas fa-list-alt"></i>
-            View Update Logs
-          </button>
-        </div>
-      </div>
+    <div class="completion-badge">
+      <span>📝</span>
+      <span id="completion-count">0/6</span>
     </div>
   </div>
 
+  <div class="container">
+    <!-- Question Navigation -->
+    <div class="question-nav">
+      <select class="question-selector" id="question-selector" onchange="switchQuestion()">
+        <option value="1">Question 1: Digital Technology Impact 📝</option>
+        <option value="2">Question 2: Online vs Traditional Learning 📝</option>
+        <option value="3">Question 3: Language Learning Strategies 📝</option>
+        <option value="4">Question 4: Cultural Understanding 📝</option>
+        <option value="5">Question 5: Motivation in Learning 📝</option>
+        <option value="6">Question 6: Assessment Methods 📝</option>
+      </select>
+    </div>
+
+    <!-- Question Panel -->
+    <div class="question-panel" id="question-panel">
+      <div class="question-header">
+        <div class="question-number" id="question-number">1</div>
+      </div>
+
+      <div class="question-text" id="question-text">
+        How has digital technology transformed modern education? Discuss the impact on teaching methods, 
+        student engagement, and learning outcomes. Provide specific examples from your own learning experience.
+      </div>
+
+      <div class="answer-section">
+        <textarea 
+          class="answer-textarea" 
+          id="answer-text" 
+          placeholder="Start typing your answer here..."
+        ></textarea>
+        
+        <div class="status-bar">
+          <div class="status-item">
+            <span>📝</span>
+            <span class="word-count" id="word-count">0</span>
+          </div>
+          
+          <div class="keyword-status" id="keyword-status">
+            🔑
+          </div>
+          
+          <div class="auto-save" id="auto-save">
+            <span class="save-icon saved">💾</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn" id="prev-btn" onclick="previousQuestion()" disabled>
+          ⬅️
+        </button>
+        <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" disabled>
+          ➡️
+        </button>
+      </div>
+    </div>
+
+    <!-- Completion Panel -->
+    <div class="completion-panel" id="completion-panel">
+      <div class="completion-icon">🏆</div>
+      <div class="completion-title">AMAZING!</div>
+      
+      <button class="nav-btn success" onclick="submitAnswers()">
+        🚀 SUBMIT
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer Pills -->
+  <div class="footer-pills">
+    <a href="../teachers/questions/" class="pill-icon" title="Teacher">👩‍🏫</a>
+    <button class="pill-icon active" title="Student">🎓</button>
+    <a href="../visualization/" class="pill-icon" title="Analytics">📊</a>
+    <a href="../../" class="pill-icon" title="Home">🏠</a>
+  </div>
+
   <script>
-    let questions = [
-      {
-        id: 1,
-        text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes.",
-        minWords: 50,
-        keywords: ["technology", "digital", "education", "learning"],
-        visible: true
-      },
-      {
-        id: 2,
-        text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education?",
-        minWords: 40,
-        keywords: ["online", "advantages", "disadvantages", "classroom"],
-        visible: true
-      }
-    ];
-    
-    let editingQuestionId = null;
-    let responseFilter = 'all';
+    const questionnaire = {
+      questions: [
+        {
+          id: 1,
+          text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes. Provide specific examples from your own learning experience.",
+          minWords: 50,
+          keywords: ["technology", "digital", "education", "learning"],
+          completed: false
+        },
+        {
+          id: 2,
+          text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education? Consider factors such as flexibility, interaction, and learning effectiveness.",
+          minWords: 45,
+          keywords: ["online", "advantages", "disadvantages", "classroom"],
+          completed: false
+        },
+        {
+          id: 3,
+          text: "Describe effective language learning strategies that you have used or would recommend to other students. Explain why these strategies work well for developing language skills.",
+          minWords: 40,
+          keywords: ["language", "strategies", "learning", "skills"],
+          completed: false
+        },
+        {
+          id: 4,
+          text: "How important is cultural understanding in language learning? Provide specific examples of how cultural knowledge has enhanced or could enhance your language learning experience.",
+          minWords: 45,
+          keywords: ["cultural", "understanding", "language", "examples"],
+          completed: false
+        },
+        {
+          id: 5,
+          text: "What role does motivation play in successful language acquisition? Discuss both intrinsic and extrinsic factors that influence your motivation to learn English.",
+          minWords: 50,
+          keywords: ["motivation", "language", "intrinsic", "extrinsic"],
+          completed: false
+        },
+        {
+          id: 6,
+          text: "Evaluate the effectiveness of different assessment methods in language education (tests, portfolios, peer assessment, presentations). Which methods do you find most helpful and why?",
+          minWords: 55,
+          keywords: ["assessment", "methods", "education", "evaluation"],
+          completed: false
+        }
+      ]
+    };
 
-    function switchMode(mode) {
-      document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
-      document.getElementById(`${mode}-tab`).classList.add('active');
+    let currentQuestionIndex = 0;
+    let answers = {};
 
-      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
-      document.getElementById(`${mode}-panel`).classList.add('active');
-
-      if (mode === 'create') {
-        updateQuestionDropdown();
-      }
-    }
-
-    function updateQuestionDropdown() {
-      const dropdown = document.getElementById('question-dropdown');
-      const section = document.getElementById('question-selector-section');
+    function initializeInterface() {
+      loadQuestion();
       
-      if (questions.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-      
-      section.style.display = 'block';
-      dropdown.innerHTML = '<option value="">Select a question to edit...</option>' +
-        questions.map(q => 
-          `<option value="${q.id}">Q${q.id}: ${q.text.substring(0, 60)}${q.text.length > 60 ? '...' : ''}</option>`
-        ).join('');
-    }
-
-    function loadSelectedQuestion() {
-      const dropdown = document.getElementById('question-dropdown');
-      const questionId = parseInt(dropdown.value);
-      
-      if (!questionId) return;
-      
-      const question = questions.find(q => q.id === questionId);
-      if (!question) return;
-
-      // Populate form
-      document.getElementById('question-text').value = question.text;
-      document.getElementById('min-words').value = question.minWords;
-      document.getElementById('keywords').value = question.keywords.join(', ');
-      
-      // Show editing mode
-      editingQuestionId = questionId;
-      document.getElementById('edit-indicator').style.display = 'block';
-      document.getElementById('save-btn-text').textContent = 'Update Question';
-      document.getElementById('save-new-btn').style.display = 'none';
-      
-      showNotification(`Loaded question ${question.id} for editing`, 'success');
-    }
-
-    function editSelectedQuestion() {
-      const dropdown = document.getElementById('question-dropdown');
-      if (!dropdown.value) {
-        showNotification('Please select a question first', 'warning');
-        return;
-      }
-      loadSelectedQuestion();
-    }
-
-    function deleteSelectedQuestion() {
-      const dropdown = document.getElementById('question-dropdown');
-      const questionId = parseInt(dropdown.value);
-      
-      if (!questionId) {
-        showNotification('Please select a question first', 'warning');
-        return;
-      }
-      
-      if (confirm('Are you sure you want to delete this question?')) {
-        questions = questions.filter(q => q.id !== questionId);
-        updateQuestionDropdown();
-        clearSelection();
-        updateFiles(['questions.csv', 'visibility_rules.json']);
-        showNotification('Question deleted successfully', 'success');
-      }
-    }
-
-    function clearSelection() {
-      editingQuestionId = null;
-      document.getElementById('question-dropdown').value = '';
-      document.getElementById('question-text').value = '';
-      document.getElementById('min-words').value = 50;
-      document.getElementById('keywords').value = '';
-      document.getElementById('edit-indicator').style.display = 'none';
-      document.getElementById('save-btn-text').textContent = 'Save Question';
-      document.getElementById('save-new-btn').style.display = 'flex';
-    }
-
-    function saveQuestion() {
-      const teacherName = document.getElementById('teacher-name').value.trim();
-      const questionText = document.getElementById('question-text').value.trim();
-      const minWords = document.getElementById('min-words').value || 50;
-      const keywords = document.getElementById('keywords').value.trim();
-
-      if (!teacherName) {
-        showNotification('Please enter your name first', 'error');
-        return;
-      }
-
-      if (!questionText) {
-        showNotification('Please enter a question', 'error');
-        return;
-      }
-
-      const question = {
-        id: editingQuestionId || Math.max(...questions.map(q => q.id), 0) + 1,
-        text: questionText,
-        minWords: parseInt(minWords),
-        keywords: keywords ? keywords.split(',').map(k => k.trim()) : [],
-        visible: true
-      };
-
-      if (editingQuestionId) {
-        const index = questions.findIndex(q => q.id === editingQuestionId);
-        questions[index] = question;
-        showNotification('Question updated successfully', 'success');
-      } else {
-        questions.push(question);
-        showNotification('Question saved successfully', 'success');
-      }
-
-      updateQuestionDropdown();
-      updateFiles(['questions.csv', 'teacher_settings.json']);
-    }
-
-    function saveAndNew() {
-      saveQuestion();
-      clearSelection();
-    }
-
-    function filterResponses(type, questionId = null) {
-      // Update active filter button
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      
-      responseFilter = { type, questionId };
-      
-      // In real implementation, this would filter the responses display
-      showNotification(`Filtered responses: ${type}${questionId ? ` (Question ${questionId})` : ''}`, 'success');
-      updateFiles(['answers.csv']);
-    }
-
-    function showResponse(id) {
-      showNotification(`Opening response ${id} in detail view`, 'success');
-    }
-
-    function flagResponse(id) {
-      showNotification(`Response ${id} flagged for review`, 'warning');
-      updateFiles(['answers.csv']);
-    }
-
-    function hideResponse(id) {
-      showNotification(`Response ${id} hidden from visualization`, 'warning');
-      updateFiles(['visibility_rules.json']);
-    }
-
-    function previewQuestion() {
-      const dropdown = document.getElementById('student-dropdown');
-      showNotification(`Student would view Question ${dropdown.value}`, 'success');
-    }
-
-    function exportFilteredData() {
-      showNotification('Exporting filtered response data to Excel...', 'success');
-    }
-
-    function openVisualization() {
-      showNotification('Opening response bubble visualization...', 'success');
-    }
-
-    function updateFiles(fileList) {
-      // Simulate file updates
-      fileList.forEach(filename => {
-        setTimeout(() => {
-          const fileItems = document.querySelectorAll('.file-item');
-          fileItems.forEach(item => {
-            if (item.textContent.includes(filename)) {
-              const status = item.querySelector('.file-status');
-              status.className = 'file-status status-updated';
-              status.textContent = 'Updated';
-            }
-          });
-        }, 500);
+      document.getElementById('answer-text').addEventListener('input', () => {
+        handleTextInput();
       });
     }
 
-    function backupData() {
-      showNotification('Creating backup of all questionnaire data...', 'success');
-    }
-
-    function syncFiles() {
-      showNotification('Force syncing all data files...', 'warning');
-      updateFiles(['questions.csv', 'answers.csv', 'teacher_settings.json', 'visibility_rules.json']);
-    }
-
-    function viewLogs() {
-      showNotification('Opening system update logs...', 'success');
-    }
-
-    function showNotification(message, type = 'success') {
-      document.querySelectorAll('.notification').forEach(n => n.remove());
+    function loadQuestion() {
+      const question = questionnaire.questions[currentQuestionIndex];
+      const totalQuestions = questionnaire.questions.length;
       
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.textContent = message;
+      // Update progress
+      document.getElementById('question-indicator').textContent = `Q${currentQuestionIndex + 1}`;
+      document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
       
-      document.body.appendChild(notification);
+      const completedCount = questionnaire.questions.filter(q => q.completed).length;
+      document.getElementById('completion-count').textContent = `${completedCount}/${totalQuestions}`;
+
+      // Update question display
+      document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+      document.getElementById('question-text').textContent = question.text;
+
+      // Load saved answer
+      const answerText = document.getElementById('answer-text');
+      answerText.value = answers[question.id] || '';
+
+      // Update navigation buttons
+      document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+      document.getElementById('question-selector').value = question.id;
+
+      // Trigger validation
+      handleTextInput();
+      
+      // Animate panel
+      const panel = document.getElementById('question-panel');
+      panel.style.animation = 'none';
+      panel.offsetHeight; // Trigger reflow
+      panel.style.animation = 'slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    }
+
+    function handleTextInput() {
+      const answerText = document.getElementById('answer-text').value;
+      const question = questionnaire.questions[currentQuestionIndex];
+      const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
+      
+      // Update word count
+      const wordCountElement = document.getElementById('word-count');
+      wordCountElement.textContent = wordCount;
+      
+      if (wordCount === 0) {
+        wordCountElement.className = 'word-count';
+      } else if (wordCount < question.minWords) {
+        wordCountElement.className = 'word-count warning';
+      } else {
+        wordCountElement.className = 'word-count valid';
+      }
+
+      // Update keyword status
+      const keywordCount = question.keywords.filter(keyword => 
+        answerText.toLowerCase().includes(keyword.toLowerCase())
+      ).length;
+      
+      document.getElementById('keyword-status').textContent = keywordCount === question.keywords.length ? '🔑✅' : '🔑';
+      
+      // Update textarea styling
+      updateTextareaValidation(answerText, question, wordCount);
+      
+      // Update next button
+      updateNavigationButtons(answerText, question, wordCount);
+    }
+
+    function updateTextareaValidation(text, question, wordCount) {
+      const textarea = document.getElementById('answer-text');
+      const meetsWordCount = wordCount >= question.minWords;
+      const meetsKeywords = checkKeywords(text, question);
+      
+      textarea.className = 'answer-textarea';
+      if (text.length > 0) {
+        if (meetsWordCount && meetsKeywords) {
+          textarea.classList.add('valid');
+        } else if (wordCount > 0) {
+          textarea.classList.add('warning');
+        } else {
+          textarea.classList.add('error');
+        }
+      }
+    }
+
+    function checkKeywords(text, question) {
+      const lowerText = text.toLowerCase();
+      return question.keywords.every(keyword => 
+        lowerText.includes(keyword.toLowerCase())
+      );
+    }
+
+    function updateNavigationButtons(text, question, wordCount) {
+      const nextBtn = document.getElementById('next-btn');
+      const meetsWordCount = wordCount >= question.minWords;
+      const meetsKeywords = checkKeywords(text, question);
+      const isValid = meetsWordCount && meetsKeywords;
+      
+      nextBtn.disabled = !isValid;
+      
+      if (currentQuestionIndex === questionnaire.questions.length - 1) {
+        nextBtn.innerHTML = isValid ? '✅' : '✅';
+        nextBtn.className = isValid ? 'nav-btn success' : 'nav-btn';
+      } else {
+        nextBtn.innerHTML = '➡️';
+        nextBtn.className = 'nav-btn primary';
+      }
+    }
+
+    function saveCurrentAnswer() {
+      const question = questionnaire.questions[currentQuestionIndex];
+      const answer = document.getElementById('answer-text').value;
+      answers[question.id] = answer;
+      
+      // Update completion status
+      const wordCount = answer.trim() ? answer.trim().split(/\s+/).length : 0;
+      const meetsRequirements = wordCount >= question.minWords && checkKeywords(answer, question);
+      question.completed = meetsRequirements && answer.trim().length > 0;
+      
+      // Update progress
+      const completedCount = questionnaire.questions.filter(q => q.completed).length;
+      document.getElementById('completion-count').textContent = `${completedCount}/${questionnaire.questions.length}`;
+    }
+
+    function switchQuestion() {
+      const selector = document.getElementById('question-selector');
+      const questionId = parseInt(selector.value);
+      const newIndex = questionnaire.questions.findIndex(q => q.id === questionId);
+      
+      if (newIndex !== -1) {
+        saveCurrentAnswer();
+        currentQuestionIndex = newIndex;
+        loadQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      saveCurrentAnswer();
+      
+      if (currentQuestionIndex === questionnaire.questions.length - 1) {
+        showCompletion();
+      } else {
+        currentQuestionIndex++;
+        loadQuestion();
+      }
+    }
+
+    function previousQuestion() {
+      saveCurrentAnswer();
+      currentQuestionIndex--;
+      loadQuestion();
+    }
+
+    function showCompletion() {
+      document.getElementById('question-panel').style.display = 'none';
+      document.getElementById('completion-panel').style.display = 'block';
+    }
+
+    function submitAnswers() {
+      const btn = event.target;
+      btn.innerHTML = '🚀 SENDING...';
+      btn.disabled = true;
       
       setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease-out';
-        setTimeout(() => notification.remove(), 300);
-      }, 4000);
+        btn.innerHTML = '✅ DONE!';
+        
+        setTimeout(() => {
+          const celebration = document.createElement('div');
+          celebration.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            z-index: 3000;
+            animation: successPop 2s ease-out;
+            pointer-events: none;
+          `;
+          celebration.textContent = '🎉';
+          
+          document.body.appendChild(celebration);
+          
+          setTimeout(() => celebration.remove(), 2000);
+        }, 500);
+      }, 2000);
     }
 
-    // Initialize
+    // Initialize when page loads
     document.addEventListener('DOMContentLoaded', () => {
-      updateQuestionDropdown();
-      
-      // Show appropriate welcome message
-      if (questions.length === 0) {
-        showNotification('✨ Welcome! Start by entering your name and creating your first question.', 'success');
-      } else {
-        showNotification('Enhanced ALM Questionnaire System loaded', 'success');
-      }
+      initializeInterface();
     });
   </script>
 </body>
