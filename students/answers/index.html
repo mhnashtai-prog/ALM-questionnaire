@@ -93,6 +93,42 @@
       z-index: 10;
     }
 
+    .no-questions-container {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+      text-align: center;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .no-questions-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-lg);
+      opacity: 0.5;
+    }
+
+    .no-questions-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+    }
+
+    .no-questions-text {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+
     .progress-container {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
@@ -145,7 +181,7 @@
       height: 100%;
       border-radius: 8px;
       transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      width: 16.67%;
+      width: 0%;
     }
 
     .completion-badge {
@@ -172,6 +208,7 @@
       position: relative;
       overflow: hidden;
       animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: none;
     }
 
     @keyframes slideIn {
@@ -218,213 +255,6 @@
       border-radius: 1.25rem;
       text-align: center;
       backdrop-filter: var(--blur);
-    }
-
-    .answer-section {
-      margin-bottom: var(--space-xl);
-    }
-
-    .answer-textarea {
-      width: 100%;
-      background: var(--card-bg);
-      border: 2px solid var(--card-border);
-      border-radius: 1.25rem;
-      padding: var(--space-xl);
-      color: var(--text-primary);
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 1.125rem;
-      line-height: 1.6;
-      min-height: 200px;
-      resize: vertical;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      backdrop-filter: var(--blur);
-    }
-
-    .answer-textarea:focus {
-      outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 4px rgba(38, 166, 154, 0.15);
-      transform: translateY(-2px);
-    }
-
-    .answer-textarea.valid {
-      border-color: var(--accent-lime);
-      background: linear-gradient(135deg, var(--card-bg), rgba(50, 215, 75, 0.05));
-    }
-
-    .answer-textarea.warning {
-      border-color: var(--accent-orange);
-      background: linear-gradient(135deg, var(--card-bg), rgba(255, 159, 10, 0.05));
-    }
-
-    .answer-textarea.error {
-      border-color: var(--accent-brick);
-      background: linear-gradient(135deg, var(--card-bg), rgba(196, 69, 54, 0.05));
-    }
-
-    .answer-textarea::placeholder {
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .status-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: var(--space-lg);
-      padding: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1.25rem;
-      gap: var(--space-xl);
-      backdrop-filter: var(--blur);
-    }
-
-    .status-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .word-count {
-      color: var(--text-muted);
-    }
-
-    .word-count.valid {
-      color: var(--accent-lime);
-    }
-
-    .word-count.warning {
-      color: var(--accent-orange);
-    }
-
-    .word-count.error {
-      color: var(--accent-brick);
-    }
-
-    .keyword-status {
-      font-size: 1.125rem;
-    }
-
-    .auto-save {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      font-size: 1rem;
-      color: var(--text-muted);
-    }
-
-    .save-icon.saved {
-      color: var(--accent-lime);
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: var(--space-lg);
-      justify-content: center;
-      margin-top: var(--space-xl);
-    }
-
-    .nav-btn {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-lg) var(--space-xl);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      text-decoration: none;
-      min-width: 120px;
-      justify-content: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(38, 166, 154, 0.3);
-      border-color: var(--accent-teal);
-    }
-
-    .nav-btn:disabled {
-      background: var(--card-bg);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-      border-color: var(--card-border);
-    }
-
-    .nav-btn.primary {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
-    }
-
-    .nav-btn.primary:hover {
-      background: var(--accent-lime);
-      border-color: var(--accent-lime);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(50, 215, 75, 0.4);
-    }
-
-    .nav-btn.success {
-      background: var(--accent-lime);
-      border-color: var(--accent-lime);
-      color: #000;
-      box-shadow: 0 4px 20px rgba(50, 215, 75, 0.3);
-    }
-
-    .completion-panel {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      text-align: center;
-      display: none;
-      animation: celebration 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    @keyframes celebration {
-      0% { transform: scale(0.8); opacity: 0; }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .completion-icon {
-      font-size: 5rem;
-      margin-bottom: var(--space-lg);
-      animation: bounce 0.6s ease-out;
-    }
-
-    @keyframes bounce {
-      0% { transform: scale(0); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-
-    .completion-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: var(--space-xl);
-      background: linear-gradient(135deg, var(--accent-lime), var(--accent-teal));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
 
     .glass-footer {
@@ -497,36 +327,13 @@
       letter-spacing: 0.5px;
     }
 
-    .footer-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
     @media (max-width: 768px) {
-      .progress-header {
-        flex-direction: column;
-        gap: var(--space-md);
+      .no-questions-icon {
+        font-size: 3rem;
       }
 
-      .question-header {
-        flex-direction: column;
-      }
-
-      .question-number {
-        width: 64px;
-        height: 64px;
-        font-size: 1.5rem;
-      }
-
-      .nav-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .status-bar {
-        flex-direction: column;
-        gap: var(--space-md);
+      .no-questions-title {
+        font-size: 1.25rem;
       }
 
       .footer-buttons {
@@ -573,7 +380,15 @@
   </header>
 
   <div class="container">
-    <div class="progress-container">
+    <div class="no-questions-container" id="no-questions-container">
+      <div class="no-questions-icon">📚</div>
+      <div class="no-questions-title">No Questions Available</div>
+      <div class="no-questions-text">
+        Your teacher hasn't created any questions yet. Please check back later or contact your teacher to get started with the questionnaire.
+      </div>
+    </div>
+
+    <div class="progress-container" id="progress-container" style="display: none;">
       <div class="progress-header">
         <div class="question-indicator" id="question-indicator">Q1</div>
         <div class="progress-info">
@@ -583,69 +398,13 @@
         </div>
         <div class="completion-badge">
           <span>📝</span>
-          <span id="completion-count">0/6</span>
+          <span id="completion-count">0/0</span>
         </div>
       </div>
     </div>
 
     <div class="question-container" id="question-container">
-      <div class="question-section">
-        <div class="question-header">
-          <div class="question-number" id="question-number">1</div>
-        </div>
-
-        <div class="question-text" id="question-text">
-          How has digital technology transformed modern education? Discuss the impact on teaching methods, 
-          student engagement, and learning outcomes. Provide specific examples from your own learning experience.
-        </div>
-
-        <div class="answer-section">
-          <textarea 
-            class="answer-textarea" 
-            id="answer-text" 
-            placeholder="Start typing your answer here..."
-          ></textarea>
-          
-          <div class="status-bar">
-            <div class="status-item">
-              <span>📝</span>
-              <span class="word-count" id="word-count">0 words</span>
-            </div>
-            
-            <div class="keyword-status" id="keyword-status">
-              🔑 0/4
-            </div>
-            
-            <div class="auto-save" id="auto-save">
-              <span class="save-icon saved">💾</span>
-              <span>Auto-saved</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="nav-buttons">
-          <button class="nav-btn" id="prev-btn" onclick="previousQuestion()" disabled>
-            <i class="fas fa-chevron-left"></i>
-            <span>Previous</span>
-          </button>
-          <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" disabled>
-            <span>Next</span>
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="completion-panel" id="completion-panel">
-      <div class="completion-content">
-        <div class="completion-icon">📚</div>
-        <div class="completion-title">Ready to Submit!</div>
-        
-        <button class="nav-btn success" onclick="submitAnswers()">
-          <i class="fas fa-paper-plane"></i>
-          <span>Submit to Teacher</span>
-        </button>
-      </div>
+      <!-- Questions will be loaded dynamically from teacher's data -->
     </div>
   </div>
 
@@ -653,9 +412,9 @@
     <div class="footer-container">
       <div class="footer-buttons">
         
-        <button class="footer-btn" onclick="saveProgress()" title="Save Progress">
-          <i class="fas fa-save"></i>
-          <span>Save</span>
+        <button class="footer-btn" onclick="checkForQuestions()" title="Refresh Questions">
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
         </button>
 
         <a href="../../" class="footer-btn" title="Home">
@@ -672,6 +431,65 @@
   </div>
 
   <script>
+    // Data Management - Connects to teacher's question system
+    const QuestionLoader = {
+      loadQuestions: function() {
+        try {
+          // Load questions created by teachers
+          const questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          return questions;
+        } catch (error) {
+          console.error('Error loading questions:', error);
+          return [];
+        }
+      },
+
+      saveAnswers: function(answers) {
+        try {
+          const studentAnswers = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+          
+          // Add new responses with metadata
+          Object.keys(answers).forEach(questionId => {
+            if (answers[questionId] && answers[questionId].trim()) {
+              const response = {
+                id: Date.now() + Math.random(),
+                questionId: parseInt(questionId),
+                answer: answers[questionId],
+                wordCount: answers[questionId].trim().split(/\s+/).length,
+                studentName: 'Anonymous Student',
+                timestamp: new Date().toLocaleString(),
+                quality: this.assessQuality(answers[questionId]),
+                score: this.calculateScore(answers[questionId])
+              };
+              studentAnswers.push(response);
+            }
+          });
+          
+          localStorage.setItem('alm_student_responses', JSON.stringify(studentAnswers));
+          return true;
+        } catch (error) {
+          console.error('Error saving answers:', error);
+          return false;
+        }
+      },
+
+      assessQuality: function(answer) {
+        const wordCount = answer.trim().split(/\s+/).length;
+        if (wordCount >= 50) return 'excellent';
+        if (wordCount >= 30) return 'good';
+        return 'needs-work';
+      },
+
+      calculateScore: function(answer) {
+        const wordCount = answer.trim().split(/\s+/).length;
+        return Math.min(100, Math.max(0, Math.round((wordCount / 50) * 100)));
+      }
+    };
+
+    let questionnaire = { questions: [] };
+    let currentQuestionIndex = 0;
+    let answers = {};
+
     function showNotification(message, type = 'success') {
       const notification = document.getElementById('notification');
       const content = document.getElementById('notification-content');
@@ -685,65 +503,97 @@
       }, 3000);
     }
 
-    const questionnaire = {
-      questions: [
-        {
-          id: 1,
-          text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes. Provide specific examples from your own learning experience.",
-          minWords: 50,
-          keywords: ["technology", "digital", "education", "learning"],
+    function checkForQuestions() {
+      const questions = QuestionLoader.loadQuestions();
+      
+      if (questions.length === 0) {
+        document.getElementById('no-questions-container').style.display = 'flex';
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('question-container').style.display = 'none';
+        showNotification('No questions available yet', 'error');
+      } else {
+        // Transform teacher questions into student questionnaire format
+        questionnaire.questions = questions.map((q, index) => ({
+          id: q.id,
+          text: q.text,
+          minWords: q.minWords,
+          keywords: q.keywords || [],
           completed: false
-        },
-        {
-          id: 2,
-          text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education? Consider factors such as flexibility, interaction, and learning effectiveness.",
-          minWords: 45,
-          keywords: ["online", "advantages", "disadvantages", "classroom"],
-          completed: false
-        },
-        {
-          id: 3,
-          text: "Describe effective language learning strategies that you have used or would recommend to other students. Explain why these strategies work well for developing language skills.",
-          minWords: 40,
-          keywords: ["language", "strategies", "learning", "skills"],
-          completed: false
-        },
-        {
-          id: 4,
-          text: "How important is cultural understanding in language learning? Provide specific examples of how cultural knowledge has enhanced or could enhance your language learning experience.",
-          minWords: 45,
-          keywords: ["cultural", "understanding", "language", "examples"],
-          completed: false
-        },
-        {
-          id: 5,
-          text: "What role does motivation play in successful language acquisition? Discuss both intrinsic and extrinsic factors that influence your motivation to learn English.",
-          minWords: 50,
-          keywords: ["motivation", "language", "intrinsic", "extrinsic"],
-          completed: false
-        },
-        {
-          id: 6,
-          text: "Evaluate the effectiveness of different assessment methods in language education (tests, portfolios, peer assessment, presentations). Which methods do you find most helpful and why?",
-          minWords: 55,
-          keywords: ["assessment", "methods", "education", "evaluation"],
-          completed: false
-        }
-      ]
-    };
-
-    let currentQuestionIndex = 0;
-    let answers = {};
+        }));
+        
+        document.getElementById('no-questions-container').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'block';
+        document.getElementById('question-container').style.display = 'block';
+        
+        initializeInterface();
+        showNotification(`Loaded ${questions.length} questions!`);
+      }
+    }
 
     function initializeInterface() {
+      if (questionnaire.questions.length === 0) {
+        checkForQuestions();
+        return;
+      }
+      
       loadQuestion();
       
-      document.getElementById('answer-text').addEventListener('input', () => {
-        handleTextInput();
-      });
+      // Add answer input functionality when questions are loaded
+      const answerContainer = document.getElementById('question-container');
+      answerContainer.innerHTML = `
+        <div class="question-section">
+          <div class="question-header">
+            <div class="question-number" id="question-number">1</div>
+          </div>
+
+          <div class="question-text" id="question-text">
+            Question will appear here
+          </div>
+
+          <div class="answer-section">
+            <textarea 
+              class="answer-textarea" 
+              id="answer-text" 
+              placeholder="Start typing your answer here..."
+              style="width: 100%; background: var(--card-bg); border: 2px solid var(--card-border); border-radius: 1.25rem; padding: var(--space-xl); color: var(--text-primary); font-family: 'Inter', system-ui, sans-serif; font-size: 1.125rem; line-height: 1.6; min-height: 200px; resize: vertical; transition: all 0.3s ease; backdrop-filter: var(--blur);"
+            ></textarea>
+            
+            <div style="display: flex; justify-content: center; align-items: center; margin-top: var(--space-lg); padding: var(--space-lg); background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1.25rem; gap: var(--space-xl); backdrop-filter: var(--blur);">
+              <div style="display: flex; align-items: center; gap: var(--space-sm); font-size: 1rem; font-weight: 600;">
+                <span>📝</span>
+                <span id="word-count">0 words</span>
+              </div>
+              
+              <div style="font-size: 1.125rem;" id="keyword-status">
+                🔑 0/0
+              </div>
+              
+              <div style="display: flex; align-items: center; gap: var(--space-sm); font-size: 1rem; color: var(--text-muted);">
+                <span class="save-icon saved">💾</span>
+                <span>Auto-saved</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-lg); justify-content: center; margin-top: var(--space-xl);">
+            <button onclick="previousQuestion()" disabled id="prev-btn" style="background: var(--card-bg); backdrop-filter: var(--blur); border: 1px solid var(--card-border); border-radius: 0.75rem; padding: var(--space-lg) var(--space-xl); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; min-width: 120px; justify-content: center; text-transform: uppercase; letter-spacing: 1px;">
+              <i class="fas fa-chevron-left"></i>
+              <span>Previous</span>
+            </button>
+            <button onclick="nextQuestion()" disabled id="next-btn" style="background: var(--accent-teal); border: 1px solid var(--accent-teal); color: #000; border-radius: 0.75rem; padding: var(--space-lg) var(--space-xl); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: var(--space-sm); min-width: 120px; justify-content: center; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);">
+              <span>Next</span>
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('answer-text').addEventListener('input', handleTextInput);
     }
 
     function loadQuestion() {
+      if (questionnaire.questions.length === 0) return;
+      
       const question = questionnaire.questions[currentQuestionIndex];
       const totalQuestions = questionnaire.questions.length;
       
@@ -757,16 +607,12 @@
       document.getElementById('question-text').textContent = question.text;
 
       const answerText = document.getElementById('answer-text');
-      answerText.value = answers[question.id] || '';
-
-      document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
-
-      handleTextInput();
-      
-      const container = document.getElementById('question-container');
-      container.style.animation = 'none';
-      container.offsetHeight;
-      container.style.animation = 'slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      if (answerText) {
+        answerText.value = answers[question.id] || '';
+        
+        document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+        handleTextInput();
+      }
     }
 
     function handleTextInput() {
@@ -774,91 +620,35 @@
       const question = questionnaire.questions[currentQuestionIndex];
       const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
       
-      const wordCountElement = document.getElementById('word-count');
-      wordCountElement.textContent = `${wordCount} words`;
+      document.getElementById('word-count').textContent = `${wordCount} words`;
       
-      if (wordCount === 0) {
-        wordCountElement.className = 'word-count';
-      } else if (wordCount < question.minWords) {
-        wordCountElement.className = 'word-count warning';
-      } else {
-        wordCountElement.className = 'word-count valid';
-      }
-
-      const keywordCount = question.keywords.filter(keyword => 
+      const keywordCount = (question.keywords || []).filter(keyword => 
         answerText.toLowerCase().includes(keyword.toLowerCase())
       ).length;
       
-      document.getElementById('keyword-status').textContent = `🔑 ${keywordCount}/${question.keywords.length}`;
+      document.getElementById('keyword-status').textContent = `🔑 ${keywordCount}/${question.keywords?.length || 0}`;
       
-      updateTextareaValidation(answerText, question, wordCount);
-      updateNavigationButtons(answerText, question, wordCount);
-      
-      if (answerText.length > 0) {
-        saveCurrentAnswer();
-        document.getElementById('auto-save').innerHTML = '<span class="save-icon saved">💾</span><span>Auto-saved</span>';
-      }
-    }
-
-    function updateTextareaValidation(text, question, wordCount) {
-      const textarea = document.getElementById('answer-text');
       const meetsWordCount = wordCount >= question.minWords;
-      const meetsKeywords = checkKeywords(text, question);
-      
-      textarea.className = 'answer-textarea';
-      if (text.length > 0) {
-        if (meetsWordCount && meetsKeywords) {
-          textarea.classList.add('valid');
-        } else if (wordCount > 0) {
-          textarea.classList.add('warning');
-        } else {
-          textarea.classList.add('error');
-        }
-      }
-    }
-
-    function checkKeywords(text, question) {
-      const lowerText = text.toLowerCase();
-      return question.keywords.every(keyword => 
-        lowerText.includes(keyword.toLowerCase())
-      );
-    }
-
-    function updateNavigationButtons(text, question, wordCount) {
-      const nextBtn = document.getElementById('next-btn');
-      const meetsWordCount = wordCount >= question.minWords;
-      const meetsKeywords = checkKeywords(text, question);
+      const meetsKeywords = (question.keywords || []).length === 0 || keywordCount >= (question.keywords?.length || 0);
       const isValid = meetsWordCount && meetsKeywords;
       
-      nextBtn.disabled = !isValid;
+      document.getElementById('next-btn').disabled = !isValid;
       
-      if (currentQuestionIndex === questionnaire.questions.length - 1) {
-        nextBtn.innerHTML = isValid ? '<span>Complete</span><i class="fas fa-check"></i>' : '<span>Complete</span><i class="fas fa-check"></i>';
-        nextBtn.className = isValid ? 'nav-btn success' : 'nav-btn';
-      } else {
-        nextBtn.innerHTML = '<span>Next</span><i class="fas fa-chevron-right"></i>';
-        nextBtn.className = 'nav-btn primary';
+      if (answerText.length > 0) {
+        answers[question.id] = answerText;
       }
-    }
-
-    function saveCurrentAnswer() {
-      const question = questionnaire.questions[currentQuestionIndex];
-      const answer = document.getElementById('answer-text').value;
-      answers[question.id] = answer;
-      
-      const wordCount = answer.trim() ? answer.trim().split(/\s+/).length : 0;
-      const meetsRequirements = wordCount >= question.minWords && checkKeywords(answer, question);
-      question.completed = meetsRequirements && answer.trim().length > 0;
-      
-      const completedCount = questionnaire.questions.filter(q => q.completed).length;
-      document.getElementById('completion-count').textContent = `${completedCount}/${questionnaire.questions.length}`;
     }
 
     function nextQuestion() {
-      saveCurrentAnswer();
-      
       if (currentQuestionIndex === questionnaire.questions.length - 1) {
-        showCompletion();
+        // Submit all answers
+        const success = QuestionLoader.saveAnswers(answers);
+        if (success) {
+          showNotification('All answers submitted successfully!');
+          // Could redirect or show completion message
+        } else {
+          showNotification('Error submitting answers', 'error');
+        }
       } else {
         currentQuestionIndex++;
         loadQuestion();
@@ -866,64 +656,13 @@
     }
 
     function previousQuestion() {
-      saveCurrentAnswer();
       currentQuestionIndex--;
       loadQuestion();
     }
 
-    function showCompletion() {
-      document.getElementById('question-container').style.display = 'none';
-      document.getElementById('completion-panel').style.display = 'block';
-    }
-
-    function submitAnswers() {
-      const btn = event.target;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
-      btn.disabled = true;
-      
-      setTimeout(() => {
-        btn.innerHTML = '<i class="fas fa-check"></i><span>Submitted!</span>';
-        showNotification('Your answers have been submitted to the teacher!');
-        
-        setTimeout(() => {
-          const celebration = document.createElement('div');
-          celebration.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 5rem;
-            z-index: 3000;
-            animation: successPop 2s ease-out;
-            pointer-events: none;
-          `;
-          celebration.textContent = '📚';
-          
-          document.body.appendChild(celebration);
-          
-          setTimeout(() => celebration.remove(), 2000);
-        }, 500);
-      }, 2000);
-    }
-
-    function saveProgress() {
-      saveCurrentAnswer();
-      showNotification('Your progress has been saved!');
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      initializeInterface();
+      checkForQuestions();
     });
-
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes successPop {
-        0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
   </script>
 </body>
 </html>
