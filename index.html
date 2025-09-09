@@ -3,51 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ALM Questionnaire System</title>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>INTUITY - Teacher Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      /* iPhone 15 Pro Color System */
-      --bg-primary: #000000;
-      --bg-secondary: #1C1C1E;
-      --bg-tertiary: #2C2C2E;
-      
-      /* Dynamic Island Glass */
-      --glass-primary: rgba(255, 255, 255, 0.1);
-      --glass-secondary: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --glass-strong: rgba(255, 255, 255, 0.2);
-      
-      /* iPhone System Colors */
-      --system-blue: #007AFF;
-      --system-green: #30D158;
-      --system-orange: #FF9F0A;
-      --system-red: #FF453A;
-      --system-purple: #BF5AF2;
-      --system-pink: #FF2D92;
-      --system-teal: #64D2FF;
-      --system-indigo: #5E5CE6;
-      
-      /* Text Hierarchy */
-      --text-primary: #FFFFFF;
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
+      --accent-teal: #2dd4bf;
+      --accent-lime: #32d74b;
+      --accent-orange: #ff9500;
+      --accent-brick: #c44536;
+      --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-tertiary: rgba(255, 255, 255, 0.5);
-      
-      /* Spacing System */
-      --space-xs: 4px;
-      --space-sm: 8px;
-      --space-md: 16px;
-      --space-lg: 24px;
-      --space-xl: 32px;
-      --space-xxl: 48px;
-      
-      /* Effects */
-      --blur-light: blur(20px);
-      --blur-heavy: blur(40px);
-      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.6);
-      --glow-blue: 0 0 20px rgba(0, 122, 255, 0.4);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-xxl: 3rem;
+      --blur: blur(20px);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     * {
@@ -57,16 +40,15 @@
     }
 
     body {
-      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
+      line-height: 1.6;
       overflow-x: hidden;
-      position: relative;
     }
 
-    /* Ambient Background Animation */
-    .ambient-bg {
+    .constellation-bg {
       position: fixed;
       top: 0;
       left: 0;
@@ -77,154 +59,180 @@
       opacity: 0.3;
     }
 
-    .ambient-orb {
+    .star {
       position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
       border-radius: 50%;
-      filter: blur(80px);
-      animation: float 20s ease-in-out infinite;
+      animation: twinkle 3s infinite alternate;
     }
 
-    .orb-1 {
-      width: 400px;
-      height: 400px;
-      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
-      top: 10%;
-      left: 20%;
-      animation-delay: 0s;
+    .star:nth-child(even) {
+      animation-delay: 1.5s;
+      background: var(--accent-teal);
     }
 
-    .orb-2 {
-      width: 300px;
-      height: 300px;
-      background: linear-gradient(135deg, var(--system-green), var(--system-teal));
-      top: 60%;
-      right: 20%;
-      animation-delay: 7s;
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.8; }
     }
 
-    .orb-3 {
-      width: 200px;
-      height: 200px;
-      background: linear-gradient(135deg, var(--system-orange), var(--system-pink));
-      bottom: 20%;
-      left: 60%;
-      animation-delay: 14s;
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(26, 35, 50, 0.9);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: var(--space-lg);
     }
 
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -30px) scale(1.1); }
-      66% { transform: translate(-20px, 20px) scale(0.9); }
-    }
-
-    /* Dynamic Island Header */
-    .dynamic-island {
-      position: fixed;
-      top: var(--space-lg);
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: var(--blur-heavy);
-      border: 1px solid var(--glass-border);
-      border-radius: 40px;
-      padding: var(--space-md) var(--space-xl);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      box-shadow: var(--shadow-strong);
-    }
-
-    .brand-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      animation: gentle-bounce 3s ease-in-out infinite;
-    }
-
-    @keyframes gentle-bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    .brand-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.8px;
-    }
-
-    .status-badge {
-      background: var(--system-green);
-      color: white;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: var(--space-xs) var(--space-sm);
-      border-radius: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Hero Section - ULTRA MINIMAL */
-    .hero-section {
-      text-align: center;
-      padding: 140px var(--space-lg) var(--space-xxl);
-      max-width: 600px;
+    .header-content {
+      max-width: 800px;
       margin: 0 auto;
-      position: relative;
-      z-index: 10;
-      min-height: calc(100vh - 200px);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
 
-    .hero-title {
-      font-size: 4rem;
-      font-weight: 900;
-      line-height: 1;
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--space-sm);
+      position: relative;
+    }
+
+    .brand-name::after {
+      content: '👩‍🏫';
+      position: absolute;
+      top: -15px;
+      right: -25px;
+      font-size: 2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { 
+        opacity: 0.5; 
+        transform: scale(1) rotate(0deg); 
+      }
+      50% { 
+        opacity: 1; 
+        transform: scale(1.3) rotate(180deg); 
+      }
+    }
+
+    .brand-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: var(--space-sm);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .brand-description {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-xxl) var(--space-lg);
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Teacher Dashboard Container */
+    .teacher-dashboard {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 2rem;
+      padding: var(--space-xxl);
       margin-bottom: var(--space-xxl);
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .teacher-dashboard::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+    }
+
+    .dashboard-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .dashboard-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: var(--space-lg);
       background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      letter-spacing: -3px;
+      font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Interface Cards - HUGE VISUAL BUTTONS */
-    .interface-grid {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xl);
+    .dashboard-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
       margin-bottom: var(--space-xxl);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .interface-card {
-      background: var(--glass-primary);
-      backdrop-filter: var(--blur-light);
-      border: 1px solid var(--glass-border);
-      border-radius: 40px;
+    /* Teacher Action Cards */
+    .action-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xxl);
+      margin-bottom: var(--space-xl);
+    }
+
+    .action-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--card-border);
+      border-radius: 1.5rem;
       padding: var(--space-xxl);
       text-decoration: none;
       color: inherit;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow-soft);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
       text-align: center;
+      min-height: 350px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      min-height: 120px;
     }
 
-    .interface-card::before {
+    .action-card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -235,157 +243,320 @@
       transition: all 0.6s;
     }
 
-    .interface-card:hover::before {
+    .action-card:hover::before {
       left: 100%;
     }
 
-    .interface-card:hover {
+    .action-card:hover {
       transform: translateY(-8px) scale(1.02);
-      box-shadow: var(--glow-blue);
+      border-color: var(--accent-teal);
+      box-shadow: 0 20px 60px rgba(38, 166, 154, 0.3);
     }
 
-    .interface-card.teacher {
-      background: linear-gradient(135deg, var(--glass-primary), rgba(0, 122, 255, 0.1));
-      border-color: var(--system-blue);
+    .action-card.create {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(244, 162, 97, 0.1));
+      border-color: var(--accent-gold);
     }
 
-    .interface-card.teacher:hover {
-      border-color: var(--system-blue);
-      box-shadow: 0 20px 60px rgba(0, 122, 255, 0.3);
+    .action-card.create:hover {
+      border-color: var(--accent-gold);
+      box-shadow: 0 20px 60px rgba(244, 162, 97, 0.3);
     }
 
-    .interface-card.student {
-      background: linear-gradient(135deg, var(--glass-primary), rgba(48, 209, 88, 0.1));
-      border-color: var(--system-green);
+    .action-card.analytics {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(45, 212, 191, 0.1));
+      border-color: var(--accent-teal);
     }
 
-    .interface-card.student:hover {
-      border-color: var(--system-green);
-      box-shadow: 0 20px 60px rgba(48, 209, 88, 0.3);
-    }
-
-    .interface-card.analytics {
-      background: linear-gradient(135deg, var(--glass-primary), rgba(255, 159, 10, 0.1));
-      border-color: var(--system-orange);
-    }
-
-    .interface-card.analytics:hover {
-      border-color: var(--system-orange);
-      box-shadow: 0 20px 60px rgba(255, 159, 10, 0.3);
+    .action-card.analytics:hover {
+      border-color: var(--accent-lime);
+      box-shadow: 0 20px 60px rgba(50, 215, 75, 0.3);
     }
 
     .card-icon {
-      font-size: 4rem;
+      font-size: 5rem;
       margin-bottom: var(--space-lg);
+      display: block;
     }
 
     .card-title {
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 700;
       color: var(--text-primary);
-      letter-spacing: -1px;
+      margin-bottom: var(--space-md);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .card-description {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+
+    .card-features {
+      list-style: none;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .card-features li {
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+    }
+
+    .card-features i {
+      color: var(--accent-lime);
+      width: 16px;
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      backdrop-filter: var(--blur);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .quick-stats::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+    }
+
+    .stats-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .stats-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-lg);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .stat-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: var(--space-lg);
+      backdrop-filter: var(--blur);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
-      .dynamic-island {
-        padding: var(--space-sm) var(--space-lg);
+      .brand-name {
+        font-size: 2.5rem;
       }
-      
-      .brand-title {
-        font-size: 1.125rem;
+
+      .action-cards {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
       }
-      
-      .hero-title {
-        font-size: 3rem;
-        letter-spacing: -2px;
-      }
-      
-      .hero-section {
-        padding: 120px var(--space-md) var(--space-xl);
-      }
-      
-      .interface-grid {
-        gap: var(--space-lg);
-      }
-      
-      .interface-card {
+
+      .action-card {
+        min-height: 250px;
         padding: var(--space-xl);
-        min-height: 100px;
       }
-      
+
       .card-icon {
-        font-size: 3rem;
+        font-size: 4rem;
       }
-      
+
       .card-title {
-        font-size: 1.375rem;
+        font-size: 1.25rem;
       }
     }
 
     @media (max-width: 480px) {
-      .hero-title {
-        font-size: 2.5rem;
-        letter-spacing: -1px;
+      .container {
+        padding: var(--space-xl) var(--space-md);
       }
-      
-      .interface-card {
+
+      .teacher-dashboard {
+        padding: var(--space-xl);
+      }
+
+      .brand-name {
+        font-size: 2rem;
+      }
+
+      .action-card {
+        min-height: 200px;
         padding: var(--space-lg);
-        min-height: 80px;
       }
-      
+
       .card-icon {
-        font-size: 2.5rem;
-        margin-bottom: var(--space-md);
+        font-size: 3rem;
       }
-      
+
       .card-title {
-        font-size: 1.125rem;
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="ambient-bg">
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
-  </div>
+  <div class="constellation-bg" id="constellation"></div>
 
-  <!-- Dynamic Island Header -->
-  <div class="dynamic-island">
-    <div class="brand-icon">📝</div>
-    <div class="brand-title">ALM QUESTIONNAIRE</div>
-    <div class="status-badge">Online</div>
-  </div>
+  <header class="header">
+    <div class="header-content">
+      <div class="brand-name">INTUITY</div>
+      <div class="brand-subtitle">Teacher Dashboard</div>
+      <div class="brand-description">
+        Access your teaching tools to create engaging questionnaires and analyze student performance 
+        with powerful data visualization and classroom presentation features.
+      </div>
+    </div>
+  </header>
 
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <h1 class="hero-title">ALM</h1>
+  <div class="container">
+    <!-- Teacher Dashboard Container -->
+    <div class="teacher-dashboard">
+      <div class="dashboard-content">
+        <h1 class="dashboard-title">Welcome, Teacher</h1>
+        <p class="dashboard-subtitle">
+          Choose your action to create questionnaires or analyze student responses with professional data visualization tools.
+        </p>
 
-    <!-- Interface Grid - GIANT VISUAL BUTTONS -->
-    <div class="interface-grid">
-      <a href="teachers/questions/" class="interface-card teacher">
-        <div class="card-icon">👩‍🏫</div>
-        <h2 class="card-title">Teacher</h2>
-      </a>
+        <div class="action-cards">
+          <!-- Create Questions Card -->
+          <a href="teachers/questions/" class="action-card create">
+            <span class="card-icon">✏️</span>
+            <h2 class="card-title">Create Questions</h2>
+            <p class="card-description">
+              Design and build questionnaires with customizable parameters, generate QR codes for student access, and manage your question library.
+            </p>
+            <ul class="card-features">
+              <li><i class="fas fa-plus"></i> Build Questionnaires</li>
+              <li><i class="fas fa-qrcode"></i> Generate QR Codes</li>
+              <li><i class="fas fa-database"></i> Manage Questions</li>
+              <li><i class="fas fa-share-alt"></i> Share with Students</li>
+            </ul>
+          </a>
 
-      <a href="students/answers/" class="interface-card student">
-        <div class="card-icon">🎓</div>
-        <h2 class="card-title">Student</h2>
-      </a>
+          <!-- Analytics Card -->
+          <a href="visualisation/" class="action-card analytics">
+            <span class="card-icon">📊</span>
+            <h2 class="card-title">View Analytics</h2>
+            <p class="card-description">
+              Analyze student responses with interactive visualizations, present findings to the class, and export data for further analysis.
+            </p>
+            <ul class="card-features">
+              <li><i class="fas fa-chart-bar"></i> Response Analytics</li>
+              <li><i class="fas fa-presentation-screen"></i> Classroom Presentation</li>
+              <li><i class="fas fa-filter"></i> Quality Filtering</li>
+              <li><i class="fas fa-download"></i> Export Data</li>
+            </ul>
+          </a>
+        </div>
+      </div>
+    </div>
 
-      <a href="visualization/" class="interface-card analytics">
-        <div class="card-icon">📊</div>
-        <h2 class="card-title">Analytics</h2>
-      </a>
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <div class="stats-content">
+        <h2 class="stats-title">System Overview</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="total-questions">6</div>
+            <div class="stat-label">Questions</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-value" id="total-responses">24</div>
+            <div class="stat-label">Responses</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-value" id="active-students">8</div>
+            <div class="stat-label">Active Students</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-value" id="avg-score">87%</div>
+            <div class="stat-label">Avg Score</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Add loading animation
+    // Create constellation background
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    // Update stats from localStorage
+    function updateStats() {
+      try {
+        const questionsData = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        const totalQuestions = questionsData.length + 6; // Include predefined questions
+        
+        document.getElementById('total-questions').textContent = totalQuestions;
+        
+        // Simulate dynamic stats (in real app, these would come from database)
+        const responses = totalQuestions * 4; // Avg 4 responses per question
+        const activeStudents = Math.ceil(responses / totalQuestions);
+        
+        document.getElementById('total-responses').textContent = responses;
+        document.getElementById('active-students').textContent = activeStudents;
+      } catch (error) {
+        console.log('Using default stats');
+      }
+    }
+
+    // Add loading animation for action cards
     document.addEventListener('DOMContentLoaded', () => {
-      const cards = document.querySelectorAll('.interface-card');
+      createConstellation();
+      updateStats();
+      
+      const cards = document.querySelectorAll('.action-card');
       cards.forEach((card, index) => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
@@ -395,7 +566,33 @@
           card.style.transform = 'translateY(0)';
         }, index * 200);
       });
+
+      // Animate stats
+      const stats = document.querySelectorAll('.stat-item');
+      stats.forEach((stat, index) => {
+        stat.style.opacity = '0';
+        stat.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          stat.style.transition = 'all 0.5s ease';
+          stat.style.opacity = '1';
+          stat.style.transform = 'translateY(0)';
+        }, 600 + (index * 100));
+      });
     });
+
+    // Add subtle hover effects
+    document.querySelectorAll('.action-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-8px) scale(1.02)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Update stats periodically
+    setInterval(updateStats, 5000);
   </script>
 </body>
 </html>
