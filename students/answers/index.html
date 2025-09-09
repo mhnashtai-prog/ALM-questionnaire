@@ -696,12 +696,7 @@
           Your Progress
         </div>
         <select class="question-selector" id="question-selector" onchange="switchQuestion()">
-          <option value="1">Question 1: Digital Technology Impact ✓</option>
-          <option value="2">Question 2: Online vs Traditional Learning ⏳</option>
-          <option value="3">Question 3: Language Learning Strategies 📝</option>
-          <option value="4">Question 4: Cultural Understanding 📝</option>
-          <option value="5">Question 5: Motivation in Learning 📝</option>
-          <option value="6">Question 6: Assessment Methods 📝</option>
+          <option value="">No questions available yet</option>
         </select>
       </div>
       
@@ -1181,7 +1176,8 @@
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', () => {
       initializeInterface();
-      showNotification('Welcome! Use the dropdown to navigate between questions if you get distracted.', 'success');
+      checkUrlParameters();
+      showNotification('Welcome! Use the tabs to navigate between answering questions, viewing all questions, or getting direct links.', 'success');
     });
   </script>
 </body>
