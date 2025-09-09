@@ -718,8 +718,18 @@
     }
 
     function generateQR() {
-      alert('QR Code generation would integrate with a QR code library in production!');
-    }
+  const qrContainer = document.getElementById('qr-container');
+  qrContainer.innerHTML = ""; // clear placeholder or previous QR
+
+  new QRCode(qrContainer, {
+    text: document.getElementById('share-link').textContent,
+    width: 200,
+    height: 200,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
 
     function clearAll() {
       if (confirm('Are you sure you want to clear all questions?')) {
