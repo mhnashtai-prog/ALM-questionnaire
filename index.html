@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ALM Questionnaire - Student Interface</title>
+  <title>ALM Questionnaire System</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -16,16 +16,10 @@
       --accent-gold: #f4a261;
       --accent-teal: #2dd4bf;
       --accent-lime: #32d74b;
-      --accent-orange: #ff9500;
-      --accent-brick: #c44536;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      --btn-grey: rgba(255, 255, 255, 0.2);
-      --space-xs: 0.25rem;
-      --space-sm: 0.5rem;
       --space-md: 1rem;
       --space-lg: 1.5rem;
       --space-xl: 2rem;
@@ -46,7 +40,6 @@
       min-height: 100vh;
       line-height: 1.6;
       overflow-x: hidden;
-      padding: var(--space-md);
     }
 
     .constellation-bg {
@@ -80,297 +73,67 @@
     }
 
     .container {
-      max-width: 700px;
+      max-width: 1000px;
       margin: 0 auto;
+      padding: var(--space-xl);
       position: relative;
       z-index: 10;
     }
 
     .header {
       text-align: center;
-      margin-bottom: var(--space-xl);
+      margin-bottom: 4rem;
     }
 
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
+      font-size: 4rem;
       font-weight: 700;
       background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
       position: relative;
     }
 
     .brand-name::after {
-      content: '📝';
+      content: '🎓';
       position: absolute;
-      top: -10px;
-      right: -30px;
-      font-size: 1.5rem;
-      animation: pulse 2s ease-in-out infinite;
+      top: -20px;
+      right: -60px;
+      font-size: 3rem;
+      animation: bounce 2s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.1); }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
     }
 
     .subtitle {
       color: var(--text-secondary);
-      font-size: 1rem;
+      font-size: 1.3rem;
       font-weight: 300;
-    }
-
-    .progress-section {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-lg);
-      box-shadow: var(--shadow);
-      margin-bottom: var(--space-lg);
-      text-align: center;
-    }
-
-    .progress-bar {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      height: 8px;
-      margin: var(--space-md) 0;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      background: linear-gradient(90deg, var(--accent-teal) 0%, var(--accent-lime) 100%);
-      height: 100%;
-      border-radius: 1rem;
-      transition: width 0.3s ease;
-      width: 16.67%;
-    }
-
-    .progress-text {
-      color: var(--accent-gold);
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .question-panel {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      box-shadow: var(--shadow);
       margin-bottom: var(--space-lg);
     }
 
-    .question-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    .question-number {
-      background: var(--accent-teal);
-      color: #000;
-      font-size: 1.5rem;
-      font-weight: 800;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
-    }
-
-    .question-info {
-      flex: 1;
-    }
-
-    .question-title {
-      color: var(--accent-gold);
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: var(--space-xs);
-    }
-
-    .question-subtitle {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
-    .question-text {
-      font-size: 1.2rem;
-      font-weight: 500;
-      line-height: 1.6;
-      margin-bottom: var(--space-lg);
-      color: var(--text-primary);
-    }
-
-    .requirements-panel {
-      background: rgba(255, 215, 79, 0.1);
-      border: 1px solid rgba(255, 215, 79, 0.3);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    .requirements-title {
-      color: var(--accent-gold);
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: var(--space-sm);
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    .requirement-item {
-      font-size: 0.85rem;
+    .description {
       color: var(--text-secondary);
-      margin-bottom: var(--space-xs);
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    .answer-section {
-      margin-bottom: var(--space-lg);
-    }
-
-    .textarea-field {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-size: 1rem;
-      line-height: 1.6;
-      min-height: 200px;
-      resize: vertical;
-      transition: all 0.3s ease;
-    }
-
-    .textarea-field:focus {
-      outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
-    }
-
-    .textarea-field.error {
-      border-color: var(--accent-brick);
-      background: rgba(196, 69, 54, 0.1);
-    }
-
-    .textarea-field.valid {
-      border-color: var(--accent-lime);
-      background: rgba(50, 215, 75, 0.1);
-    }
-
-    .word-counter {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: var(--space-sm);
-      font-size: 0.85rem;
-    }
-
-    .word-count {
-      color: var(--text-muted);
-    }
-
-    .word-count.warning {
-      color: var(--accent-orange);
-      font-weight: 600;
-    }
-
-    .word-count.error {
-      color: var(--accent-brick);
-      font-weight: 600;
-    }
-
-    .word-count.valid {
-      color: var(--accent-lime);
-      font-weight: 600;
-    }
-
-    .keyword-status {
-      font-size: 0.8rem;
-    }
-
-    .keyword-missing {
-      color: var(--accent-brick);
-    }
-
-    .keyword-found {
-      color: var(--accent-lime);
-    }
-
-    .navigation {
-      display: flex;
-      justify-content: space-between;
-      gap: var(--space-md);
-    }
-
-    .btn {
-      background: var(--accent-lime);
-      color: #000;
-      border: none;
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-xl);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
-    }
-
-    .btn:hover {
-      background: var(--accent-gold);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(50, 215, 75, 0.3);
-    }
-
-    .btn:disabled {
-      background: var(--btn-grey);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .btn-secondary {
-      background: var(--btn-grey);
-      color: var(--text-primary);
-    }
-
-    .btn-secondary:hover {
-      background: var(--accent-teal);
-      color: #000;
-    }
-
-    .btn-submit {
-      background: var(--accent-gold);
-      color: #000;
       font-size: 1.1rem;
-      padding: var(--space-lg) var(--space-xl);
+      max-width: 600px;
+      margin: 0 auto var(--space-xl);
+      line-height: 1.8;
     }
 
-    .btn-submit:hover {
-      background: var(--accent-lime);
-      box-shadow: 0 8px 25px rgba(244, 162, 97, 0.4);
+    .interfaces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-xl);
+      margin-bottom: var(--space-xl);
     }
 
-    .completion-panel {
+    .interface-card {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
@@ -378,46 +141,85 @@
       padding: var(--space-xl);
       box-shadow: var(--shadow);
       text-align: center;
-      display: none;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text-primary);
     }
 
-    .completion-icon {
+    .interface-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent-lime);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .interface-icon {
       font-size: 4rem;
-      color: var(--accent-lime);
       margin-bottom: var(--space-lg);
-      animation: celebration 0.6s ease-out;
+      display: block;
     }
 
-    @keyframes celebration {
-      0% { transform: scale(0); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
+    .teacher-card .interface-icon { color: var(--accent-gold); }
+    .student-card .interface-icon { color: var(--accent-teal); }
+    .viz-card .interface-icon { color: var(--accent-lime); }
 
-    .completion-title {
+    .interface-title {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--accent-gold);
       margin-bottom: var(--space-md);
+      color: var(--text-primary);
     }
 
-    .completion-text {
+    .interface-description {
       color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .features {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .features h2 {
+      color: var(--accent-gold);
+      font-size: 2rem;
       margin-bottom: var(--space-lg);
+    }
+
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      text-align: left;
+    }
+
+    .feature-icon {
+      color: var(--accent-lime);
+      font-size: 1.5rem;
+      flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
       .brand-name {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
       
-      .navigation {
-        flex-direction: column;
+      .interfaces-grid {
+        grid-template-columns: 1fr;
       }
       
-      .question-header {
-        flex-direction: column;
-        text-align: center;
+      .features-list {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -428,131 +230,77 @@
   <div class="container">
     <header class="header">
       <div class="brand-name">ALM QUESTIONNAIRE</div>
-      <div class="subtitle">Student Response Interface</div>
+      <div class="subtitle">Advanced Language Methodology Platform</div>
+      <div class="description">
+        A comprehensive web-based system for language teachers to create engaging questionnaires, 
+        monitor student responses in real-time, and analyze results with stunning visualizations.
+      </div>
     </header>
 
-    <div class="progress-section">
-      <div class="progress-text" id="progress-text">Question 1 of 6</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
+    <div class="interfaces-grid">
+      <a href="teachers/questions/" class="interface-card teacher-card">
+        <i class="fas fa-chalkboard-teacher interface-icon"></i>
+        <div class="interface-title">Teacher Interface</div>
+        <div class="interface-description">
+          Create questions with validation rules, set minimum word counts, 
+          require specific keywords, and generate QR codes for instant sharing.
+        </div>
+      </a>
+
+      <a href="students/answers/" class="interface-card student-card">
+        <i class="fas fa-user-graduate interface-icon"></i>
+        <div class="interface-title">Student Interface</div>
+        <div class="interface-description">
+          Progressive question answering with real-time validation, 
+          word count monitoring, and automatic requirement checking.
+        </div>
+      </a>
+
+      <a href="visualization/" class="interface-card viz-card">
+        <i class="fas fa-chart-pie interface-icon"></i>
+        <div class="interface-title">Data Visualization</div>
+        <div class="interface-description">
+          Interactive mind maps displaying student responses with 
+          beautiful animations and detailed analysis tools.
+        </div>
+      </a>
     </div>
 
-    <div class="question-panel" id="question-panel">
-      <div class="question-header">
-        <div class="question-number" id="question-number">1</div>
-        <div class="question-info">
-          <div class="question-title">Question 1</div>
-          <div class="question-subtitle" id="question-subtitle">Advanced Language Methodology Assessment</div>
+    <div class="features">
+      <h2>✨ Key Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <i class="fas fa-magic feature-icon"></i>
+          <span>Real-time validation and feedback</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-palette feature-icon"></i>
+          <span>Modern glassmorphic design</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-mobile-alt feature-icon"></i>
+          <span>Fully responsive on all devices</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-qrcode feature-icon"></i>
+          <span>QR code generation for easy sharing</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-chart-line feature-icon"></i>
+          <span>Interactive bubble visualization</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-comments feature-icon"></i>
+          <span>Built-in discussion tools</span>
         </div>
       </div>
-
-      <div class="question-text" id="question-text">
-        How has digital technology transformed modern education? Discuss the impact on teaching methods, 
-        student engagement, and learning outcomes.
-      </div>
-
-      <div class="requirements-panel">
-        <div class="requirements-title">
-          <i class="fas fa-exclamation-triangle"></i>
-          Requirements
-        </div>
-        <div class="requirement-item">
-          <i class="fas fa-word"></i>
-          <span id="word-requirement">Your answer must contain at least 50 words</span>
-        </div>
-        <div class="requirement-item" id="keyword-requirement" style="display: none;">
-          <i class="fas fa-key"></i>
-          <span>Required keywords: <span id="required-keywords"></span></span>
-        </div>
-      </div>
-
-      <div class="answer-section">
-        <textarea class="textarea-field" id="answer-text" 
-                  placeholder="Type your answer here..."></textarea>
-        
-        <div class="word-counter">
-          <div class="word-count" id="word-count">0 words</div>
-          <div class="keyword-status" id="keyword-status"></div>
-        </div>
-      </div>
-
-      <div class="navigation">
-        <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>
-          <i class="fas fa-arrow-left"></i>
-          Previous
-        </button>
-        <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>
-          Next
-          <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-    </div>
-
-    <div class="completion-panel" id="completion-panel">
-      <div class="completion-icon">
-        <i class="fas fa-trophy"></i>
-      </div>
-      <div class="completion-title">Questionnaire Complete!</div>
-      <div class="completion-text">
-        Thank you for completing all questions. Review your answers and submit when ready.
-      </div>
-      <button class="btn btn-submit" onclick="submitQuestionnaire()">
-        <i class="fas fa-paper-plane"></i>
-        SUBMIT ALL ANSWERS
-      </button>
     </div>
   </div>
 
   <script>
-    // Sample questionnaire data
-    const questionnaire = {
-      questions: [
-        {
-          id: 1,
-          text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes.",
-          minWords: 50,
-          keywords: ["technology", "digital", "education", "learning"]
-        },
-        {
-          id: 2,
-          text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education?",
-          minWords: 40,
-          keywords: ["online", "advantages", "disadvantages", "classroom"]
-        },
-        {
-          id: 3,
-          text: "Describe effective language learning strategies that you have used or would recommend to other students.",
-          minWords: 35,
-          keywords: ["language", "strategies", "learning", "students"]
-        },
-        {
-          id: 4,
-          text: "How important is cultural understanding in language learning? Provide specific examples.",
-          minWords: 45,
-          keywords: ["cultural", "understanding", "language", "examples"]
-        },
-        {
-          id: 5,
-          text: "What role does motivation play in successful language acquisition? Discuss both intrinsic and extrinsic factors.",
-          minWords: 55,
-          keywords: ["motivation", "language", "intrinsic", "extrinsic"]
-        },
-        {
-          id: 6,
-          text: "Evaluate the effectiveness of different assessment methods in language education (tests, portfolios, peer assessment, etc.).",
-          minWords: 60,
-          keywords: ["assessment", "methods", "education", "evaluation"]
-        }
-      ]
-    };
-
-    let currentQuestionIndex = 0;
-    let answers = {};
-
     function createConstellation() {
       const constellation = document.getElementById('constellation');
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 50; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
@@ -562,195 +310,7 @@
       }
     }
 
-    function loadQuestion() {
-      const question = questionnaire.questions[currentQuestionIndex];
-      const totalQuestions = questionnaire.questions.length;
-      
-      // Update progress
-      document.getElementById('progress-text').textContent = 
-        `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
-      document.getElementById('progress-fill').style.width = 
-        `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
-
-      // Update question display
-      document.getElementById('question-number').textContent = currentQuestionIndex + 1;
-      document.getElementById('question-text').textContent = question.text;
-      document.getElementById('word-requirement').textContent = 
-        `Your answer must contain at least ${question.minWords} words`;
-
-      // Update keyword requirements
-      if (question.keywords && question.keywords.length > 0) {
-        document.getElementById('keyword-requirement').style.display = 'flex';
-        document.getElementById('required-keywords').textContent = question.keywords.join(', ');
-      } else {
-        document.getElementById('keyword-requirement').style.display = 'none';
-      }
-
-      // Load saved answer
-      const answerText = document.getElementById('answer-text');
-      answerText.value = answers[question.id] || '';
-
-      // Update navigation buttons
-      document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
-      
-      updateWordCount();
-      updateValidation();
-    }
-
-    function updateWordCount() {
-      const answerText = document.getElementById('answer-text').value;
-      const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
-      const question = questionnaire.questions[currentQuestionIndex];
-      
-      const wordCountElement = document.getElementById('word-count');
-      wordCountElement.textContent = `${wordCount} words`;
-
-      // Update word count styling
-      if (wordCount === 0) {
-        wordCountElement.className = 'word-count';
-      } else if (wordCount < question.minWords) {
-        wordCountElement.className = 'word-count warning';
-      } else {
-        wordCountElement.className = 'word-count valid';
-      }
-
-      // Update keyword status
-      updateKeywordStatus(answerText);
-    }
-
-    function updateKeywordStatus(text) {
-      const question = questionnaire.questions[currentQuestionIndex];
-      const keywordStatusElement = document.getElementById('keyword-status');
-      
-      if (!question.keywords || question.keywords.length === 0) {
-        keywordStatusElement.textContent = '';
-        return;
-      }
-
-      const lowerText = text.toLowerCase();
-      const foundKeywords = question.keywords.filter(keyword => 
-        lowerText.includes(keyword.toLowerCase())
-      );
-
-      if (foundKeywords.length === 0) {
-        keywordStatusElement.innerHTML = 
-          `<span class="keyword-missing">⚠️ Missing required keywords</span>`;
-      } else if (foundKeywords.length === question.keywords.length) {
-        keywordStatusElement.innerHTML = 
-          `<span class="keyword-found">✓ All keywords found</span>`;
-      } else {
-        keywordStatusElement.innerHTML = 
-          `<span class="keyword-missing">⚠️ Found ${foundKeywords.length}/${question.keywords.length} keywords</span>`;
-      }
-    }
-
-    function updateValidation() {
-      const answerText = document.getElementById('answer-text');
-      const question = questionnaire.questions[currentQuestionIndex];
-      const text = answerText.value;
-      const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-      
-      // Check word count
-      const meetsWordCount = wordCount >= question.minWords;
-      
-      // Check keywords
-      let meetsKeywords = true;
-      if (question.keywords && question.keywords.length > 0) {
-        const lowerText = text.toLowerCase();
-        meetsKeywords = question.keywords.every(keyword => 
-          lowerText.includes(keyword.toLowerCase())
-        );
-      }
-
-      const isValid = meetsWordCount && meetsKeywords;
-      
-      // Update textarea styling
-      answerText.className = 'textarea-field';
-      if (text.length > 0) {
-        if (isValid) {
-          answerText.classList.add('valid');
-        } else {
-          answerText.classList.add('error');
-        }
-      }
-
-      // Update next button
-      const nextBtn = document.getElementById('next-btn');
-      nextBtn.disabled = !isValid;
-      
-      if (currentQuestionIndex === questionnaire.questions.length - 1) {
-        nextBtn.innerHTML = isValid ? 
-          '<i class="fas fa-check"></i> Complete' : 
-          '<i class="fas fa-check"></i> Complete';
-      } else {
-        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
-      }
-    }
-
-    function saveCurrentAnswer() {
-      const question = questionnaire.questions[currentQuestionIndex];
-      const answer = document.getElementById('answer-text').value;
-      answers[question.id] = answer;
-    }
-
-    function nextQuestion() {
-      saveCurrentAnswer();
-      
-      if (currentQuestionIndex === questionnaire.questions.length - 1) {
-        showCompletion();
-      } else {
-        currentQuestionIndex++;
-        loadQuestion();
-      }
-    }
-
-    function previousQuestion() {
-      saveCurrentAnswer();
-      currentQuestionIndex--;
-      loadQuestion();
-    }
-
-    function showCompletion() {
-      document.getElementById('question-panel').style.display = 'none';
-      document.getElementById('completion-panel').style.display = 'block';
-    }
-
-    function submitQuestionnaire() {
-      // Simulate submission
-      const btn = event.target;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-      btn.disabled = true;
-      
-      setTimeout(() => {
-        btn.innerHTML = '<i class="fas fa-check"></i> Submitted!';
-        btn.style.background = 'var(--accent-lime)';
-        
-        setTimeout(() => {
-          alert('🎉 Thank you! Your responses have been submitted successfully.\n\n✅ All answers saved\n📊 Data sent to teacher\n🎯 Keyword validation complete\n\nYour teacher will review them shortly and start the discussion!');
-        }, 500);
-      }, 2000);
-    }
-
-    function openTeacherInterface() {
-      alert('👩‍🏫 Teacher Interface\n\nThis would open the teacher\'s control panel where instructors can:\n\n✅ Create questions with requirements\n📱 Generate QR codes for sharing\n📊 View and analyze student responses\n🎯 Set word count and keyword requirements\n🚀 Publish questionnaires');
-    }
-
-    function openDataVisualization() {
-      alert('📊 Data Visualization Interface\n\nThis would open the stunning mind-map visualization showing all student responses.\n\nFeatures include:\n✨ Animated mind maps\n🎯 Interactive response nodes\n📈 Real-time analytics\n🎨 Beautiful data presentation\n🔍 Detailed response analysis\n💬 Discussion tools');
-    }
-
-    // Event listeners
-    document.getElementById('answer-text').addEventListener('input', () => {
-      updateWordCount();
-      updateValidation();
-    });
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
-      loadQuestion();
-    });
+    document.addEventListener('DOMContentLoaded', createConstellation);
   </script>
 </body>
 </html>
