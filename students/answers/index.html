@@ -4,26 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ALM Questionnaire - Student Interface</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
+      --bg-primary: #0a0f1c;
+      --bg-secondary: #1a2332;
+      --bg-tertiary: #243447;
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
-      --accent-gold: #f4a261;
-      --accent-teal: #2dd4bf;
-      --accent-lime: #32d74b;
-      --accent-orange: #ff9500;
-      --accent-brick: #c44536;
+      
+      --accent-primary: #007AFF;
+      --accent-secondary: #5AC8FA;
+      --accent-success: #34C759;
+      --accent-warning: #FF9500;
+      --accent-danger: #FF3B30;
+      --accent-purple: #AF52DE;
+      --accent-indigo: #5856D6;
+      
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
-      --intuity-gold: #ffd54f;
-      --intuity-teal: #26a69a;
-      --btn-grey: rgba(255, 255, 255, 0.2);
+      
       --space-xs: 0.25rem;
       --space-sm: 0.5rem;
       --space-md: 1rem;
@@ -31,6 +34,7 @@
       --space-xl: 2rem;
       --blur: blur(20px);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --glow: 0 0 20px rgba(0, 122, 255, 0.3);
     }
 
     * {
@@ -41,7 +45,7 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
       line-height: 1.6;
@@ -49,7 +53,7 @@
       padding: var(--space-md);
     }
 
-    .constellation-bg {
+    .ambient-bg {
       position: fixed;
       top: 0;
       left: 0;
@@ -57,30 +61,42 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.3;
+      opacity: 0.4;
     }
 
-    .star {
+    .ambient-orb {
       position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--accent-gold);
       border-radius: 50%;
-      animation: twinkle 3s infinite alternate;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
     }
 
-    .star:nth-child(even) {
-      animation-delay: 1.5s;
-      background: var(--accent-teal);
+    .orb-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--accent-primary);
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
     }
 
-    @keyframes twinkle {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.8; }
+    .orb-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--accent-purple);
+      top: 60%;
+      right: 20%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.1); }
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: 0 auto;
       position: relative;
       z-index: 10;
@@ -92,10 +108,10 @@
     }
 
     .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 3rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -107,84 +123,158 @@
       content: '📝';
       position: absolute;
       top: -10px;
-      right: -30px;
-      font-size: 1.5rem;
-      animation: pulse 2s ease-in-out infinite;
+      right: -40px;
+      font-size: 2rem;
+      animation: gentle-bounce 3s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.1); }
+    @keyframes gentle-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
-    .subtitle {
+    /* Teacher Info Display */
+    .teacher-info {
+      background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(90, 200, 250, 0.05));
+      border: 1px solid rgba(0, 122, 255, 0.2);
+      border-radius: 1.5rem;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      text-align: center;
+    }
+
+    .teacher-label {
+      font-size: 0.9rem;
       color: var(--text-secondary);
-      font-size: 1rem;
-      font-weight: 300;
+      margin-bottom: var(--space-xs);
     }
 
+    .teacher-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+    }
+
+    /* Progress Section */
     .progress-section {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
-      border-radius: 1rem;
+      border-radius: 1.5rem;
       padding: var(--space-lg);
       box-shadow: var(--shadow);
       margin-bottom: var(--space-lg);
-      text-align: center;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .progress-title {
+      color: var(--accent-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .question-selector {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-sm) var(--space-md);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 200px;
+    }
+
+    .question-selector:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+    }
+
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      height: 12px;
+      margin: var(--space-md) 0;
+      overflow: hidden;
+      position: relative;
     }
 
     .progress-bar {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      height: 8px;
-      margin: var(--space-md) 0;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      background: linear-gradient(90deg, var(--accent-teal) 0%, var(--accent-lime) 100%);
+      background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
       height: 100%;
       border-radius: 1rem;
-      transition: width 0.3s ease;
+      transition: width 0.5s ease;
       width: 16.67%;
+      position: relative;
     }
 
-    .progress-text {
-      color: var(--accent-gold);
-      font-weight: 600;
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
       font-size: 0.9rem;
+      color: var(--text-secondary);
     }
 
+    /* Question Panel */
     .question-panel {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
+      border-radius: 2rem;
       padding: var(--space-xl);
       box-shadow: var(--shadow);
       margin-bottom: var(--space-lg);
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .question-header {
       display: flex;
       align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
     }
 
     .question-number {
-      background: var(--accent-teal);
-      color: #000;
-      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      font-size: 1.8rem;
       font-weight: 800;
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
+      box-shadow: var(--glow);
+      flex-shrink: 0;
     }
 
     .question-info {
@@ -192,135 +282,211 @@
     }
 
     .question-title {
-      color: var(--accent-gold);
+      color: var(--accent-primary);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       margin-bottom: var(--space-xs);
     }
 
     .question-subtitle {
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.9rem;
     }
 
     .question-text {
       font-size: 1.2rem;
       font-weight: 500;
       line-height: 1.6;
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-xl);
       color: var(--text-primary);
+      padding: var(--space-lg);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 1rem;
+      border-left: 4px solid var(--accent-primary);
     }
 
+    /* Requirements Panel */
     .requirements-panel {
-      background: rgba(255, 215, 79, 0.1);
-      border: 1px solid rgba(255, 215, 79, 0.3);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      margin-bottom: var(--space-lg);
+      background: linear-gradient(135deg, rgba(52, 199, 89, 0.1), rgba(48, 209, 88, 0.05));
+      border: 1px solid rgba(52, 199, 89, 0.3);
+      border-radius: 1rem;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
     }
 
     .requirements-title {
-      color: var(--accent-gold);
+      color: var(--accent-success);
       font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: var(--space-sm);
+      font-size: 1rem;
+      margin-bottom: var(--space-md);
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
+      gap: var(--space-sm);
+    }
+
+    .requirement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
     }
 
     .requirement-item {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-bottom: var(--space-xs);
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
+      gap: var(--space-sm);
+      font-size: 0.9rem;
+      color: var(--text-secondary);
     }
 
+    .requirement-icon {
+      color: var(--accent-success);
+      font-size: 1.1rem;
+    }
+
+    /* Answer Section */
     .answer-section {
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .answer-label {
+      color: var(--accent-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
     }
 
     .textarea-field {
       width: 100%;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
+      border: 2px solid var(--card-border);
+      border-radius: 1rem;
+      padding: var(--space-lg);
       color: var(--text-primary);
       font-size: 1rem;
       line-height: 1.6;
       min-height: 200px;
       resize: vertical;
       transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
     }
 
     .textarea-field:focus {
       outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
-    }
-
-    .textarea-field.error {
-      border-color: var(--accent-brick);
-      background: rgba(196, 69, 54, 0.1);
+      border-color: var(--accent-primary);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
     }
 
     .textarea-field.valid {
-      border-color: var(--accent-lime);
-      background: rgba(50, 215, 75, 0.1);
+      border-color: var(--accent-success);
+      background: rgba(52, 199, 89, 0.1);
+    }
+
+    .textarea-field.warning {
+      border-color: var(--accent-warning);
+      background: rgba(255, 149, 0, 0.1);
+    }
+
+    .textarea-field.error {
+      border-color: var(--accent-danger);
+      background: rgba(255, 59, 48, 0.1);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-md);
+      padding: var(--space-md);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 0.75rem;
+      flex-wrap: wrap;
+      gap: var(--space-md);
     }
 
     .word-counter {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: var(--space-sm);
-      font-size: 0.85rem;
+      gap: var(--space-sm);
+      font-size: 0.9rem;
     }
 
     .word-count {
       color: var(--text-muted);
-    }
-
-    .word-count.warning {
-      color: var(--accent-orange);
-      font-weight: 600;
-    }
-
-    .word-count.error {
-      color: var(--accent-brick);
       font-weight: 600;
     }
 
     .word-count.valid {
-      color: var(--accent-lime);
-      font-weight: 600;
+      color: var(--accent-success);
+    }
+
+    .word-count.warning {
+      color: var(--accent-warning);
+    }
+
+    .word-count.error {
+      color: var(--accent-danger);
     }
 
     .keyword-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 0.9rem;
+    }
+
+    .keyword-badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
+      padding: var(--space-xs) var(--space-sm);
       font-size: 0.8rem;
+      transition: all 0.3s ease;
     }
 
-    .keyword-missing {
-      color: var(--accent-brick);
+    .keyword-badge.found {
+      background: rgba(52, 199, 89, 0.2);
+      border-color: var(--accent-success);
+      color: var(--accent-success);
     }
 
-    .keyword-found {
-      color: var(--accent-lime);
+    .auto-save-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
 
+    .save-icon {
+      animation: spin 1s linear infinite;
+    }
+
+    .save-icon.saved {
+      animation: none;
+      color: var(--accent-success);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Navigation */
     .navigation {
       display: flex;
       justify-content: space-between;
       gap: var(--space-md);
+      margin-top: var(--space-xl);
     }
 
     .btn {
-      background: var(--accent-lime);
-      color: #000;
+      background: var(--accent-primary);
+      color: white;
       border: none;
       border-radius: 0.75rem;
       padding: var(--space-md) var(--space-xl);
@@ -332,16 +498,18 @@
       align-items: center;
       justify-content: center;
       gap: var(--space-sm);
+      font-family: 'Inter', sans-serif;
+      min-width: 140px;
     }
 
     .btn:hover {
-      background: var(--accent-gold);
+      background: var(--accent-secondary);
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(50, 215, 75, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3);
     }
 
     .btn:disabled {
-      background: var(--btn-grey);
+      background: rgba(255, 255, 255, 0.2);
       color: var(--text-muted);
       cursor: not-allowed;
       transform: none;
@@ -349,92 +517,201 @@
     }
 
     .btn-secondary {
-      background: var(--btn-grey);
-      color: var(--text-primary);
+      background: var(--accent-indigo);
     }
 
     .btn-secondary:hover {
-      background: var(--accent-teal);
-      color: #000;
+      background: var(--accent-purple);
     }
 
-    .btn-submit {
-      background: var(--accent-gold);
-      color: #000;
-      font-size: 1.1rem;
-      padding: var(--space-lg) var(--space-xl);
+    .btn-success {
+      background: var(--accent-success);
     }
 
-    .btn-submit:hover {
-      background: var(--accent-lime);
-      box-shadow: 0 8px 25px rgba(244, 162, 97, 0.4);
+    .btn-success:hover {
+      background: #28a745;
     }
 
+    /* Completion Panel */
     .completion-panel {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
+      border-radius: 2rem;
       padding: var(--space-xl);
       box-shadow: var(--shadow);
       text-align: center;
       display: none;
+      animation: celebration 0.8s ease-out;
+    }
+
+    @keyframes celebration {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .completion-icon {
       font-size: 4rem;
-      color: var(--accent-lime);
+      color: var(--accent-success);
       margin-bottom: var(--space-lg);
-      animation: celebration 0.6s ease-out;
+      animation: bounce 0.6s ease-out;
     }
 
-    @keyframes celebration {
+    @keyframes bounce {
       0% { transform: scale(0); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
 
     .completion-title {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      color: var(--accent-gold);
+      color: var(--accent-success);
       margin-bottom: var(--space-md);
     }
 
     .completion-text {
       color: var(--text-secondary);
-      margin-bottom: var(--space-lg);
+      font-size: 1.1rem;
+      margin-bottom: var(--space-xl);
+      line-height: 1.6;
     }
 
+    .completion-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: var(--space-md);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Notifications */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-primary);
+      color: white;
+      padding: var(--space-md) var(--space-lg);
+      border-radius: 0.75rem;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3);
+      animation: slideInRight 0.3s ease-out;
+      max-width: 300px;
+    }
+
+    .notification.success { background: var(--accent-success); }
+    .notification.warning { background: var(--accent-warning); }
+    .notification.error { background: var(--accent-danger); }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .brand-name {
-        font-size: 2rem;
+        font-size: 2.5rem;
+      }
+      
+      .question-header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-md);
+      }
+      
+      .progress-header {
+        flex-direction: column;
+        gap: var(--space-md);
       }
       
       .navigation {
         flex-direction: column;
       }
       
-      .question-header {
+      .status-bar {
         flex-direction: column;
+        align-items: stretch;
         text-align: center;
       }
+      
+      .requirement-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .completion-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="constellation-bg" id="constellation"></div>
+  <div class="ambient-bg">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+  </div>
 
   <div class="container">
     <header class="header">
       <div class="brand-name">ALM QUESTIONNAIRE</div>
-      <div class="subtitle">Student Response Interface</div>
     </header>
 
+    <div class="teacher-info">
+      <div class="teacher-label">Created by:</div>
+      <div class="teacher-name" id="teacher-name">Dr. Maria Santos</div>
+    </div>
+
     <div class="progress-section">
-      <div class="progress-text" id="progress-text">Question 1 of 6</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
+      <div class="progress-header">
+        <div class="progress-title">
+          <i class="fas fa-tasks"></i>
+          Your Progress
+        </div>
+        <select class="question-selector" id="question-selector" onchange="switchQuestion()">
+          <option value="1">Question 1: Digital Technology Impact ✓</option>
+          <option value="2">Question 2: Online vs Traditional Learning ⏳</option>
+          <option value="3">Question 3: Language Learning Strategies 📝</option>
+          <option value="4">Question 4: Cultural Understanding 📝</option>
+          <option value="5">Question 5: Motivation in Learning 📝</option>
+          <option value="6">Question 6: Assessment Methods 📝</option>
+        </select>
+      </div>
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      
+      <div class="progress-stats">
+        <span id="progress-text">Question 1 of 6</span>
+        <span id="completion-stats">1 completed • 5 remaining</span>
       </div>
     </div>
 
@@ -442,38 +719,66 @@
       <div class="question-header">
         <div class="question-number" id="question-number">1</div>
         <div class="question-info">
-          <div class="question-title">Question 1</div>
-          <div class="question-subtitle" id="question-subtitle">Advanced Language Methodology Assessment</div>
+          <div class="question-title" id="question-title">Question 1</div>
+          <div class="question-subtitle" id="question-subtitle">English Language Development</div>
         </div>
       </div>
 
       <div class="question-text" id="question-text">
         How has digital technology transformed modern education? Discuss the impact on teaching methods, 
-        student engagement, and learning outcomes.
+        student engagement, and learning outcomes. Provide specific examples from your own learning experience.
       </div>
 
       <div class="requirements-panel">
         <div class="requirements-title">
-          <i class="fas fa-exclamation-triangle"></i>
-          Requirements
+          <i class="fas fa-clipboard-check"></i>
+          Requirements for this answer:
         </div>
-        <div class="requirement-item">
-          <i class="fas fa-word"></i>
-          <span id="word-requirement">Your answer must contain at least 50 words</span>
-        </div>
-        <div class="requirement-item" id="keyword-requirement" style="display: none;">
-          <i class="fas fa-key"></i>
-          <span>Required keywords: <span id="required-keywords"></span></span>
+        <div class="requirement-grid">
+          <div class="requirement-item">
+            <i class="fas fa-font requirement-icon"></i>
+            <span id="word-requirement">Minimum 50 words</span>
+          </div>
+          <div class="requirement-item" id="keyword-requirement" style="display: none;">
+            <i class="fas fa-key requirement-icon"></i>
+            <span>Include keywords: <span id="required-keywords"></span></span>
+          </div>
+          <div class="requirement-item">
+            <i class="fas fa-lightbulb requirement-icon"></i>
+            <span>Use specific examples</span>
+          </div>
+          <div class="requirement-item">
+            <i class="fas fa-spell-check requirement-icon"></i>
+            <span>Check spelling and grammar</span>
+          </div>
         </div>
       </div>
 
       <div class="answer-section">
+        <div class="answer-label">
+          <i class="fas fa-edit"></i>
+          Your Answer:
+        </div>
         <textarea class="textarea-field" id="answer-text" 
-                  placeholder="Type your answer here..."></textarea>
+                  placeholder="Start typing your answer here... Take your time to think about the question and provide thoughtful examples from your own experience."></textarea>
         
-        <div class="word-counter">
-          <div class="word-count" id="word-count">0 words</div>
-          <div class="keyword-status" id="keyword-status"></div>
+        <div class="status-bar">
+          <div class="word-counter">
+            <i class="fas fa-font"></i>
+            <span class="word-count" id="word-count">0 words</span>
+          </div>
+          
+          <div class="keyword-status" id="keyword-status">
+            <div class="keyword-badge">technology</div>
+            <div class="keyword-badge">digital</div>
+            <div class="keyword-badge">education</div>
+            <div class="keyword-badge">learning</div>
+          </div>
+          
+          <div class="auto-save-indicator" id="auto-save">
+            <i class="fas fa-save save-icon saved"></i>
+            <span>Auto-saved</span>
+          </div>
         </div>
       </div>
 
@@ -493,11 +798,32 @@
       <div class="completion-icon">
         <i class="fas fa-trophy"></i>
       </div>
-      <div class="completion-title">Questionnaire Complete!</div>
+      <div class="completion-title">Excellent Work!</div>
       <div class="completion-text">
-        Thank you for completing all questions. Your responses have been submitted successfully.
+        You have successfully completed all questions in this questionnaire. 
+        Your thoughtful responses demonstrate strong understanding of the topics.
       </div>
-      <button class="btn btn-submit" onclick="submitQuestionnaire()">
+      
+      <div class="completion-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="total-words">0</div>
+          <div class="stat-label">Total Words</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="questions-completed">6</div>
+          <div class="stat-label">Questions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="keywords-found">0</div>
+          <div class="stat-label">Keywords Used</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="completion-time">--</div>
+          <div class="stat-label">Time Spent</div>
+        </div>
+      </div>
+      
+      <button class="btn btn-success" onclick="submitQuestionnaire()">
         <i class="fas fa-paper-plane"></i>
         Submit Final Answers
       </button>
@@ -505,61 +831,81 @@
   </div>
 
   <script>
-    // Sample questionnaire data
+    // Enhanced questionnaire data
     const questionnaire = {
+      teacherName: "Dr. Maria Santos",
       questions: [
         {
           id: 1,
-          text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes.",
+          title: "Question 1",
+          text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes. Provide specific examples from your own learning experience.",
           minWords: 50,
-          keywords: ["technology", "digital", "education", "learning"]
+          keywords: ["technology", "digital", "education", "learning"],
+          completed: false
         },
         {
           id: 2,
-          text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education?",
-          minWords: 40,
-          keywords: ["online", "advantages", "disadvantages", "classroom"]
+          title: "Question 2",
+          text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education? Consider factors such as flexibility, interaction, and learning effectiveness.",
+          minWords: 45,
+          keywords: ["online", "advantages", "disadvantages", "classroom"],
+          completed: false
         },
         {
           id: 3,
-          text: "Describe effective language learning strategies that you have used or would recommend to other students.",
-          minWords: 35,
-          keywords: ["language", "strategies", "learning", "students"]
+          title: "Question 3",
+          text: "Describe effective language learning strategies that you have used or would recommend to other students. Explain why these strategies work well for developing language skills.",
+          minWords: 40,
+          keywords: ["language", "strategies", "learning", "skills"],
+          completed: false
         },
         {
           id: 4,
-          text: "How important is cultural understanding in language learning? Provide specific examples.",
+          title: "Question 4",
+          text: "How important is cultural understanding in language learning? Provide specific examples of how cultural knowledge has enhanced or could enhance your language learning experience.",
           minWords: 45,
-          keywords: ["cultural", "understanding", "language", "examples"]
+          keywords: ["cultural", "understanding", "language", "examples"],
+          completed: false
         },
         {
           id: 5,
-          text: "What role does motivation play in successful language acquisition? Discuss both intrinsic and extrinsic factors.",
-          minWords: 55,
-          keywords: ["motivation", "language", "intrinsic", "extrinsic"]
+          title: "Question 5",
+          text: "What role does motivation play in successful language acquisition? Discuss both intrinsic and extrinsic factors that influence your motivation to learn English.",
+          minWords: 50,
+          keywords: ["motivation", "language", "intrinsic", "extrinsic"],
+          completed: false
         },
         {
           id: 6,
-          text: "Evaluate the effectiveness of different assessment methods in language education (tests, portfolios, peer assessment, etc.).",
-          minWords: 60,
-          keywords: ["assessment", "methods", "education", "evaluation"]
+          title: "Question 6",
+          text: "Evaluate the effectiveness of different assessment methods in language education (tests, portfolios, peer assessment, presentations). Which methods do you find most helpful and why?",
+          minWords: 55,
+          keywords: ["assessment", "methods", "education", "evaluation"],
+          completed: false
         }
       ]
     };
 
     let currentQuestionIndex = 0;
     let answers = {};
+    let startTime = Date.now();
+    let autoSaveTimeout;
 
-    function createConstellation() {
-      const constellation = document.getElementById('constellation');
-      for (let i = 0; i < 25; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        constellation.appendChild(star);
-      }
+    function initializeInterface() {
+      // Set teacher name
+      document.getElementById('teacher-name').textContent = questionnaire.teacherName;
+      
+      // Load first question
+      loadQuestion();
+      
+      // Update question selector
+      updateQuestionSelector();
+      
+      // Set up auto-save
+      document.getElementById('answer-text').addEventListener('input', () => {
+        handleTextInput();
+        scheduleAutoSave();
+      });
     }
 
     function loadQuestion() {
@@ -569,43 +915,68 @@
       // Update progress
       document.getElementById('progress-text').textContent = 
         `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
-      document.getElementById('progress-fill').style.width = 
+      
+      const completed = questionnaire.questions.filter(q => q.completed).length;
+      document.getElementById('completion-stats').textContent = 
+        `${completed} completed • ${totalQuestions - completed} remaining`;
+      
+      document.getElementById('progress-bar').style.width = 
         `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
 
       // Update question display
       document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+      document.getElementById('question-title').textContent = question.title;
       document.getElementById('question-text').textContent = question.text;
       document.getElementById('word-requirement').textContent = 
-        `Your answer must contain at least ${question.minWords} words`;
+        `Minimum ${question.minWords} words`;
 
       // Update keyword requirements
       if (question.keywords && question.keywords.length > 0) {
         document.getElementById('keyword-requirement').style.display = 'flex';
         document.getElementById('required-keywords').textContent = question.keywords.join(', ');
+        
+        // Update keyword badges
+        const keywordStatus = document.getElementById('keyword-status');
+        keywordStatus.innerHTML = question.keywords.map(keyword => 
+          `<div class="keyword-badge" data-keyword="${keyword}">${keyword}</div>`
+        ).join('');
       } else {
         document.getElementById('keyword-requirement').style.display = 'none';
+        document.getElementById('keyword-status').innerHTML = '';
       }
 
       // Load saved answer
       const answerText = document.getElementById('answer-text');
       answerText.value = answers[question.id] || '';
 
-      // Update navigation buttons
+      // Update navigation
       document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
       
-      updateWordCount();
-      updateValidation();
+      // Update question selector
+      document.getElementById('question-selector').value = question.id;
+
+      // Trigger validation
+      handleTextInput();
     }
 
-    function updateWordCount() {
+    function updateQuestionSelector() {
+      const selector = document.getElementById('question-selector');
+      selector.innerHTML = questionnaire.questions.map(q => {
+        const status = q.completed ? '✓' : 
+                      answers[q.id] && answers[q.id].trim() ? '⏳' : '📝';
+        return `<option value="${q.id}">${q.title}: ${q.text.substring(0, 30)}... ${status}</option>`;
+      }).join('');
+    }
+
+    function handleTextInput() {
       const answerText = document.getElementById('answer-text').value;
-      const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
       const question = questionnaire.questions[currentQuestionIndex];
+      const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
       
+      // Update word count
       const wordCountElement = document.getElementById('word-count');
       wordCountElement.textContent = `${wordCount} words`;
-
-      // Update word count styling
+      
       if (wordCount === 0) {
         wordCountElement.className = 'word-count';
       } else if (wordCount < question.minWords) {
@@ -615,67 +986,63 @@
       }
 
       // Update keyword status
-      updateKeywordStatus(answerText);
-    }
-
-    function updateKeywordStatus(text) {
-      const question = questionnaire.questions[currentQuestionIndex];
-      const keywordStatusElement = document.getElementById('keyword-status');
-      
-      if (!question.keywords || question.keywords.length === 0) {
-        keywordStatusElement.textContent = '';
-        return;
-      }
-
-      const lowerText = text.toLowerCase();
-      const foundKeywords = question.keywords.filter(keyword => 
-        lowerText.includes(keyword.toLowerCase())
-      );
-
-      if (foundKeywords.length === 0) {
-        keywordStatusElement.innerHTML = 
-          `<span class="keyword-missing">⚠️ Missing required keywords</span>`;
-      } else if (foundKeywords.length === question.keywords.length) {
-        keywordStatusElement.innerHTML = 
-          `<span class="keyword-found">✓ All keywords found</span>`;
-      } else {
-        keywordStatusElement.innerHTML = 
-          `<span class="keyword-missing">⚠️ Found ${foundKeywords.length}/${question.keywords.length} keywords</span>`;
-      }
-    }
-
-    function updateValidation() {
-      const answerText = document.getElementById('answer-text');
-      const question = questionnaire.questions[currentQuestionIndex];
-      const text = answerText.value;
-      const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-      
-      // Check word count
-      const meetsWordCount = wordCount >= question.minWords;
-      
-      // Check keywords
-      let meetsKeywords = true;
-      if (question.keywords && question.keywords.length > 0) {
-        const lowerText = text.toLowerCase();
-        meetsKeywords = question.keywords.every(keyword => 
-          lowerText.includes(keyword.toLowerCase())
-        );
-      }
-
-      const isValid = meetsWordCount && meetsKeywords;
+      updateKeywordStatus(answerText, question);
       
       // Update textarea styling
-      answerText.className = 'textarea-field';
-      if (text.length > 0) {
-        if (isValid) {
-          answerText.classList.add('valid');
+      updateTextareaValidation(answerText, question, wordCount);
+      
+      // Update next button
+      updateNavigationButtons(answerText, question, wordCount);
+    }
+
+    function updateKeywordStatus(text, question) {
+      if (!question.keywords || question.keywords.length === 0) return;
+      
+      const lowerText = text.toLowerCase();
+      const keywordBadges = document.querySelectorAll('.keyword-badge');
+      
+      keywordBadges.forEach(badge => {
+        const keyword = badge.dataset.keyword;
+        if (lowerText.includes(keyword.toLowerCase())) {
+          badge.classList.add('found');
         } else {
-          answerText.classList.add('error');
+          badge.classList.remove('found');
+        }
+      });
+    }
+
+    function updateTextareaValidation(text, question, wordCount) {
+      const textarea = document.getElementById('answer-text');
+      const meetsWordCount = wordCount >= question.minWords;
+      const meetsKeywords = checkKeywords(text, question);
+      
+      textarea.className = 'textarea-field';
+      if (text.length > 0) {
+        if (meetsWordCount && meetsKeywords) {
+          textarea.classList.add('valid');
+        } else if (wordCount > 0) {
+          textarea.classList.add('warning');
+        } else {
+          textarea.classList.add('error');
         }
       }
+    }
 
-      // Update next button
+    function checkKeywords(text, question) {
+      if (!question.keywords || question.keywords.length === 0) return true;
+      
+      const lowerText = text.toLowerCase();
+      return question.keywords.every(keyword => 
+        lowerText.includes(keyword.toLowerCase())
+      );
+    }
+
+    function updateNavigationButtons(text, question, wordCount) {
       const nextBtn = document.getElementById('next-btn');
+      const meetsWordCount = wordCount >= question.minWords;
+      const meetsKeywords = checkKeywords(text, question);
+      const isValid = meetsWordCount && meetsKeywords;
+      
       nextBtn.disabled = !isValid;
       
       if (currentQuestionIndex === questionnaire.questions.length - 1) {
@@ -687,10 +1054,53 @@
       }
     }
 
+    function scheduleAutoSave() {
+      const autoSaveIndicator = document.getElementById('auto-save');
+      const icon = autoSaveIndicator.querySelector('.save-icon');
+      const text = autoSaveIndicator.querySelector('span');
+      
+      // Show saving state
+      icon.className = 'fas fa-sync-alt save-icon';
+      text.textContent = 'Saving...';
+      
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => {
+        saveCurrentAnswer();
+        icon.className = 'fas fa-save save-icon saved';
+        text.textContent = 'Auto-saved';
+      }, 1000);
+    }
+
     function saveCurrentAnswer() {
       const question = questionnaire.questions[currentQuestionIndex];
       const answer = document.getElementById('answer-text').value;
       answers[question.id] = answer;
+      
+      // Update completion status
+      const wordCount = answer.trim() ? answer.trim().split(/\s+/).length : 0;
+      const meetsRequirements = wordCount >= question.minWords && checkKeywords(answer, question);
+      question.completed = meetsRequirements && answer.trim().length > 0;
+      
+      // Update selector
+      updateQuestionSelector();
+    }
+
+    function switchQuestion() {
+      const selector = document.getElementById('question-selector');
+      const questionId = parseInt(selector.value);
+      const newIndex = questionnaire.questions.findIndex(q => q.id === questionId);
+      
+      if (newIndex !== -1) {
+        saveCurrentAnswer();
+        currentQuestionIndex = newIndex;
+        loadQuestion();
+        
+        // Smooth transition effect
+        const panel = document.getElementById('question-panel');
+        panel.style.animation = 'none';
+        panel.offsetHeight; // Trigger reflow
+        panel.style.animation = 'slideIn 0.5s ease-out';
+      }
     }
 
     function nextQuestion() {
@@ -711,12 +1121,31 @@
     }
 
     function showCompletion() {
+      // Calculate stats
+      const totalWords = Object.values(answers).reduce((sum, answer) => {
+        return sum + (answer.trim() ? answer.trim().split(/\s+/).length : 0);
+      }, 0);
+      
+      const totalKeywords = questionnaire.questions.reduce((sum, question) => {
+        const answer = answers[question.id] || '';
+        return sum + (question.keywords ? question.keywords.filter(keyword => 
+          answer.toLowerCase().includes(keyword.toLowerCase())
+        ).length : 0);
+      }, 0);
+      
+      const completionTime = Math.round((Date.now() - startTime) / 60000); // minutes
+      
+      // Update completion stats
+      document.getElementById('total-words').textContent = totalWords;
+      document.getElementById('keywords-found').textContent = totalKeywords;
+      document.getElementById('completion-time').textContent = completionTime + 'm';
+      
+      // Show completion panel
       document.getElementById('question-panel').style.display = 'none';
       document.getElementById('completion-panel').style.display = 'block';
     }
 
     function submitQuestionnaire() {
-      // Simulate submission
       const btn = event.target;
       const originalText = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
@@ -724,32 +1153,35 @@
       
       setTimeout(() => {
         btn.innerHTML = '<i class="fas fa-check"></i> Submitted!';
-        btn.style.background = 'var(--accent-lime)';
+        btn.className = 'btn btn-success';
         
         setTimeout(() => {
-          alert('🎉 Thank you! Your responses have been submitted successfully.\n\n✅ All answers saved\n📊 Data sent to teacher\n🎯 Keyword validation complete\n\nYour teacher will review them shortly and start the discussion!');
+          showNotification('🎉 Questionnaire submitted successfully! Your teacher will review your responses.', 'success');
         }, 500);
       }, 2000);
     }
 
-    function openTeacherInterface() {
-      alert('👩‍🏫 Teacher Interface\n\nThis would open the teacher\'s control panel where instructors can:\n\n✅ Create questions with requirements\n📱 Generate QR codes for sharing\n📊 View and analyze student responses\n🎯 Set word count and keyword requirements\n🚀 Publish questionnaires');
+    function showNotification(message, type = 'success') {
+      // Remove existing notifications
+      document.querySelectorAll('.notification').forEach(n => n.remove());
+      
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 5 seconds
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
     }
 
-    function openDataVisualization() {
-      alert('📊 Data Visualization Interface\n\nThis would open the stunning mind-map visualization showing all student responses.\n\nFeatures include:\n✨ Animated mind maps\n🎯 Interactive response nodes\n📈 Real-time analytics\n🎨 Beautiful data presentation\n🔍 Detailed response analysis\n💬 Discussion tools');
-    }
-
-    // Event listeners
-    document.getElementById('answer-text').addEventListener('input', () => {
-      updateWordCount();
-      updateValidation();
-    });
-
-    // Initialize
+    // Initialize when page loads
     document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
-      loadQuestion();
+      initializeInterface();
+      showNotification('Welcome! Use the dropdown to navigate between questions if you get distracted.', 'success');
     });
   </script>
 </body>
