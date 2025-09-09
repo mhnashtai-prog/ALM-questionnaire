@@ -196,8 +196,14 @@
     }
 
     @keyframes centralPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.05); }
+      0%, 100% { 
+        transform: translate(-50%, -50%) scale(1); 
+        box-shadow: 0 0 40px rgba(244, 162, 97, 0.7);
+      }
+      50% { 
+        transform: translate(-50%, -50%) scale(1.08); 
+        box-shadow: 0 0 60px rgba(244, 162, 97, 0.9);
+      }
     }
 
     .answer-node {
@@ -753,9 +759,9 @@
       viewMode = mode;
       
       if (mode === 'mindmap') {
-        generateMindMap();
+        generateMindMap(); // This now generates bubble view
       } else {
-        alert(`${mode} view is under development! The mind map view showcases the core visualization concept.`);
+        alert(`${mode} view is under development! The bubble view showcases the core visualization concept.`);
       }
     }
 
