@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics</title>
+  <title>INTUITY - Student Questionnaire</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -22,6 +22,7 @@
       --text-muted: rgba(255, 255, 255, 0.5);
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
+      --space-xs: 0.25rem;
       --space-sm: 0.5rem;
       --space-md: 1rem;
       --space-lg: 1.5rem;
@@ -57,7 +58,7 @@
     }
 
     .header-content {
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -85,14 +86,14 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
       padding: var(--space-xl) var(--space-lg);
       position: relative;
       z-index: 10;
     }
 
-    .controls-container {
+    .progress-container {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
       border-radius: 1.5rem;
@@ -100,264 +101,330 @@
       margin-bottom: var(--space-xl);
       box-shadow: var(--shadow);
       backdrop-filter: var(--blur);
+      position: relative;
+      overflow: hidden;
     }
 
-    .controls-header {
+    .progress-header {
+      position: relative;
+      z-index: 2;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .question-selector {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      min-width: 300px;
-    }
-
-    .question-selector:focus {
-      outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
-    }
-
-    .filter-controls {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .filter-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-lg);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
-    }
-
-    .filter-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
-    .stats-bar {
-      display: flex;
       justify-content: center;
-      gap: var(--space-xl);
-      padding: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      backdrop-filter: var(--blur);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-md);
     }
 
-    .stat-item {
+    .question-indicator {
+      background: linear-gradient(135deg, var(--accent-lime), var(--accent-teal));
+      color: #000;
+      font-weight: 700;
+      font-size: 1.25rem;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: 1.5rem;
+      min-width: 80px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(50, 215, 75, 0.3);
+    }
+
+    .progress-info {
+      flex: 1;
       text-align: center;
     }
 
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+      margin: var(--space-sm) 0;
     }
 
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
+    .progress-bar {
+      background: linear-gradient(90deg, var(--accent-lime), var(--accent-teal));
+      height: 100%;
+      border-radius: 8px;
+      transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      width: 16.67%;
+    }
+
+    .completion-badge {
+      background: var(--accent-orange);
+      border: 1px solid var(--accent-orange);
+      color: #000;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .question-container {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-section {
+      position: relative;
+      z-index: 2;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .question-number {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent-lime), var(--accent-teal));
+      border-radius: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 2rem;
+      font-weight: 800;
+      box-shadow: 0 8px 32px rgba(50, 215, 75, 0.3);
+    }
+
+    .question-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xl);
+      padding: var(--space-xl);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      text-align: center;
+      backdrop-filter: var(--blur);
+    }
+
+    .answer-section {
+      margin-bottom: var(--space-xl);
+    }
+
+    .answer-textarea {
+      width: 100%;
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: var(--space-xl);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 1.125rem;
+      line-height: 1.6;
+      min-height: 200px;
+      resize: vertical;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      backdrop-filter: var(--blur);
+    }
+
+    .answer-textarea:focus {
+      outline: none;
+      border-color: var(--accent-teal);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 4px rgba(38, 166, 154, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .answer-textarea.valid {
+      border-color: var(--accent-lime);
+      background: linear-gradient(135deg, var(--card-bg), rgba(50, 215, 75, 0.05));
+    }
+
+    .answer-textarea.warning {
+      border-color: var(--accent-orange);
+      background: linear-gradient(135deg, var(--card-bg), rgba(255, 159, 10, 0.05));
+    }
+
+    .answer-textarea.error {
+      border-color: var(--accent-brick);
+      background: linear-gradient(135deg, var(--card-bg), rgba(196, 69, 54, 0.05));
+    }
+
+    .answer-textarea::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: var(--space-lg);
+      padding: var(--space-lg);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      gap: var(--space-xl);
+      backdrop-filter: var(--blur);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .word-count {
+      color: var(--text-muted);
+    }
+
+    .word-count.valid {
+      color: var(--accent-lime);
+    }
+
+    .word-count.warning {
+      color: var(--accent-orange);
+    }
+
+    .word-count.error {
+      color: var(--accent-brick);
+    }
+
+    .keyword-status {
+      font-size: 1.125rem;
+    }
+
+    .auto-save {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .save-icon.saved {
+      color: var(--accent-lime);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: var(--space-lg);
+      justify-content: center;
+      margin-top: var(--space-xl);
+    }
+
+    .nav-btn {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-lg) var(--space-xl);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      text-decoration: none;
+      min-width: 120px;
+      justify-content: center;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .responses-container {
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(38, 166, 154, 0.3);
+      border-color: var(--accent-teal);
+    }
+
+    .nav-btn:disabled {
+      background: var(--card-bg);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      border-color: var(--card-border);
+    }
+
+    .nav-btn.primary {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+      color: #000;
+      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
+    }
+
+    .nav-btn.primary:hover {
+      background: var(--accent-lime);
+      border-color: var(--accent-lime);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(50, 215, 75, 0.4);
+    }
+
+    .nav-btn.success {
+      background: var(--accent-lime);
+      border-color: var(--accent-lime);
+      color: #000;
+      box-shadow: 0 4px 20px rgba(50, 215, 75, 0.3);
+    }
+
+    .completion-panel {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
       border-radius: 1.5rem;
       padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
+      text-align: center;
+      display: none;
+      animation: celebration 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       box-shadow: var(--shadow);
       backdrop-filter: var(--blur);
     }
 
-    .responses-header {
-      text-align: center;
+    @keyframes celebration {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .completion-icon {
+      font-size: 5rem;
+      margin-bottom: var(--space-lg);
+      animation: bounce 0.6s ease-out;
+    }
+
+    @keyframes bounce {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .completion-title {
+      font-size: 2.5rem;
+      font-weight: 800;
       margin-bottom: var(--space-xl);
-    }
-
-    .responses-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .responses-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .response-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: var(--space-lg);
-    }
-
-    .response-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.25rem;
-      padding: var(--space-xl);
-      backdrop-filter: var(--blur);
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      cursor: pointer;
-    }
-
-    .response-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
-    }
-
-    .response-card.excellent {
-      border-color: var(--accent-lime);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(50, 215, 75, 0.1));
-    }
-
-    .response-card.good {
-      border-color: var(--accent-orange);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 159, 10, 0.1));
-    }
-
-    .response-card.needs-work {
-      border-color: var(--accent-brick);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(196, 69, 54, 0.1));
-    }
-
-    .student-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    .student-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-lime));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-weight: 700;
-      font-size: 1.25rem;
-      border: 2px solid var(--card-border);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    .student-info {
-      flex: 1;
-    }
-
-    .student-name {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .response-meta {
-      display: flex;
-      gap: var(--space-md);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .quality-badge {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .quality-indicator {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .excellent .quality-indicator {
-      background: var(--accent-lime);
-      box-shadow: 0 0 8px rgba(50, 215, 75, 0.5);
-    }
-
-    .good .quality-indicator {
-      background: var(--accent-orange);
-      box-shadow: 0 0 8px rgba(255, 159, 10, 0.5);
-    }
-
-    .needs-work .quality-indicator {
-      background: var(--accent-brick);
-      box-shadow: 0 0 8px rgba(196, 69, 54, 0.5);
-    }
-
-    .response-text {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-secondary);
-      margin-bottom: var(--space-lg);
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .response-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: var(--space-md);
-      border-top: 1px solid var(--card-border);
-      font-size: 0.85rem;
-    }
-
-    .stat-group {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      color: var(--text-muted);
+      background: linear-gradient(135deg, var(--accent-lime), var(--accent-teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .glass-footer {
@@ -373,7 +440,7 @@
     }
 
     .footer-container {
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -406,7 +473,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-sm);
+      gap: var(--space-xs);
       min-width: 80px;
       height: 60px;
       text-decoration: none;
@@ -437,26 +504,29 @@
     }
 
     @media (max-width: 768px) {
-      .controls-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .question-selector {
-        min-width: auto;
-      }
-
-      .filter-controls {
-        justify-content: center;
-      }
-
-      .stats-bar {
+      .progress-header {
         flex-direction: column;
         gap: var(--space-md);
       }
 
-      .response-grid {
-        grid-template-columns: 1fr;
+      .question-header {
+        flex-direction: column;
+      }
+
+      .question-number {
+        width: 64px;
+        height: 64px;
+        font-size: 1.5rem;
+      }
+
+      .nav-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .status-bar {
+        flex-direction: column;
+        gap: var(--space-md);
       }
 
       .footer-buttons {
@@ -498,70 +568,83 @@
   <header class="header">
     <div class="header-content">
       <div class="brand-name">INTUITY</div>
-      <div class="brand-subtitle">Analytics</div>
+      <div class="brand-subtitle">Student Questionnaire</div>
     </div>
   </header>
 
   <div class="container">
-    <div class="controls-container">
-      <div class="controls-header">
-        <select class="question-selector" id="question-selector" onchange="switchQuestion()">
-          <option value="1">Question 1: Digital Technology Impact</option>
-          <option value="2">Question 2: Online vs Traditional Learning</option>
-          <option value="3">Question 3: Language Learning Strategies</option>
-          <option value="4">Question 4: Cultural Understanding</option>
-          <option value="5">Question 5: Motivation in Learning</option>
-          <option value="6">Question 6: Assessment Methods</option>
-        </select>
-        
-        <div class="filter-controls">
-          <button class="filter-btn active" onclick="filterByQuality('all')" id="filter-all">
-            <i class="fas fa-list"></i>
-            <span>All</span>
-          </button>
-          <button class="filter-btn" onclick="filterByQuality('excellent')" id="filter-excellent">
-            <i class="fas fa-star"></i>
-            <span>Excellent</span>
-          </button>
-          <button class="filter-btn" onclick="filterByQuality('good')" id="filter-good">
-            <i class="fas fa-thumbs-up"></i>
-            <span>Good</span>
-          </button>
+    <div class="progress-container">
+      <div class="progress-header">
+        <div class="question-indicator" id="question-indicator">Q1</div>
+        <div class="progress-info">
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
         </div>
-      </div>
-
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value" id="total-responses">6</div>
-          <div class="stat-label">Total Responses</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="avg-words">48</div>
-          <div class="stat-label">Avg Words</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="excellent-count">2</div>
-          <div class="stat-label">Excellent</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="good-count">3</div>
-          <div class="stat-label">Good</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="needs-work-count">1</div>
-          <div class="stat-label">Needs Work</div>
+        <div class="completion-badge">
+          <span>📝</span>
+          <span id="completion-count">0/6</span>
         </div>
       </div>
     </div>
 
-    <div class="responses-container">
-      <div class="responses-header">
-        <div class="responses-title" id="responses-title">Student Responses - Question 1</div>
-        <div class="responses-subtitle">Click on any response to select for classroom discussion</div>
-      </div>
+    <div class="question-container" id="question-container">
+      <div class="question-section">
+        <div class="question-header">
+          <div class="question-number" id="question-number">1</div>
+        </div>
 
-      <div class="response-grid" id="response-grid">
-        <!-- Response cards will be generated here -->
+        <div class="question-text" id="question-text">
+          How has digital technology transformed modern education? Discuss the impact on teaching methods, 
+          student engagement, and learning outcomes. Provide specific examples from your own learning experience.
+        </div>
+
+        <div class="answer-section">
+          <textarea 
+            class="answer-textarea" 
+            id="answer-text" 
+            placeholder="Start typing your answer here..."
+          ></textarea>
+          
+          <div class="status-bar">
+            <div class="status-item">
+              <span>📝</span>
+              <span class="word-count" id="word-count">0 words</span>
+            </div>
+            
+            <div class="keyword-status" id="keyword-status">
+              🔑 0/4
+            </div>
+            
+            <div class="auto-save" id="auto-save">
+              <span class="save-icon saved">💾</span>
+              <span>Auto-saved</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="nav-btn" id="prev-btn" onclick="previousQuestion()" disabled>
+            <i class="fas fa-chevron-left"></i>
+            <span>Previous</span>
+          </button>
+          <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" disabled>
+            <span>Next</span>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="completion-panel" id="completion-panel">
+      <div class="completion-content">
+        <div class="completion-icon">📚</div>
+        <div class="completion-title">Ready to Submit!</div>
+        
+        <button class="nav-btn success" onclick="submitAnswers()">
+          <i class="fas fa-paper-plane"></i>
+          <span>Submit to Teacher</span>
+        </button>
       </div>
     </div>
   </div>
@@ -570,17 +653,12 @@
     <div class="footer-container">
       <div class="footer-buttons">
         
-        <a href="teachers/questions/" class="footer-btn">
-          <i class="fas fa-plus"></i>
-          <span>Create</span>
-        </a>
-
-        <button class="footer-btn active">
-          <i class="fas fa-chart-bar"></i>
-          <span>Analytics</span>
+        <button class="footer-btn" onclick="saveProgress()" title="Save Progress">
+          <i class="fas fa-save"></i>
+          <span>Save</span>
         </button>
 
-        <a href="../" class="footer-btn">
+        <a href="../../" class="footer-btn" title="Home">
           <i class="fas fa-home"></i>
           <span>Home</span>
         </a>
@@ -607,199 +685,245 @@
       }, 3000);
     }
 
-    const sampleResponses = {
-      1: [
+    const questionnaire = {
+      questions: [
         {
           id: 1,
-          student: "Maria Rodriguez",
-          avatar: "MR",
-          answer: "Digital technology has fundamentally transformed modern education by providing interactive learning platforms, enabling distance learning, and creating personalized educational experiences that adapt to individual student needs and learning paces.",
-          wordCount: 52,
-          keywords: 4,
-          quality: "excellent",
-          score: 95,
-          timestamp: "2h ago"
+          text: "How has digital technology transformed modern education? Discuss the impact on teaching methods, student engagement, and learning outcomes. Provide specific examples from your own learning experience.",
+          minWords: 50,
+          keywords: ["technology", "digital", "education", "learning"],
+          completed: false
         },
         {
           id: 2,
-          student: "Ahmed Hassan", 
-          avatar: "AH",
-          answer: "Technology revolutionizes classroom experiences through multimedia content, collaborative projects, and real-time feedback systems that enhance student engagement and comprehension.",
-          wordCount: 28,
-          keywords: 3,
-          quality: "good",
-          score: 78,
-          timestamp: "1h ago"
+          text: "What are the main advantages and disadvantages of online learning compared to traditional classroom education? Consider factors such as flexibility, interaction, and learning effectiveness.",
+          minWords: 45,
+          keywords: ["online", "advantages", "disadvantages", "classroom"],
+          completed: false
         },
         {
           id: 3,
-          student: "Sophie Chen",
-          avatar: "SC", 
-          answer: "The digital transformation of education has created unprecedented opportunities for personalized learning experiences. Advanced educational technologies now allow teachers to track student progress in real-time and provide immediate feedback.",
-          wordCount: 38,
-          keywords: 4,
-          quality: "excellent",
-          score: 92,
-          timestamp: "30m ago"
+          text: "Describe effective language learning strategies that you have used or would recommend to other students. Explain why these strategies work well for developing language skills.",
+          minWords: 40,
+          keywords: ["language", "strategies", "learning", "skills"],
+          completed: false
         },
         {
           id: 4,
-          student: "Carlos Rivera",
-          avatar: "CR",
-          answer: "Digital platforms have changed how we learn by making education more interactive and accessible. Students can now learn at their own pace with various online resources.",
-          wordCount: 26,
-          keywords: 2,
-          quality: "good",
-          score: 65,
-          timestamp: "45m ago"
+          text: "How important is cultural understanding in language learning? Provide specific examples of how cultural knowledge has enhanced or could enhance your language learning experience.",
+          minWords: 45,
+          keywords: ["cultural", "understanding", "language", "examples"],
+          completed: false
         },
         {
           id: 5,
-          student: "Aisha Patel",
-          avatar: "AP",
-          answer: "Technology in education has transformed traditional teaching methods by introducing innovative digital tools that enhance learning outcomes and create dynamic learning environments.",
-          wordCount: 26,
-          keywords: 3,
-          quality: "good",
-          score: 88,
-          timestamp: "20m ago"
+          text: "What role does motivation play in successful language acquisition? Discuss both intrinsic and extrinsic factors that influence your motivation to learn English.",
+          minWords: 50,
+          keywords: ["motivation", "language", "intrinsic", "extrinsic"],
+          completed: false
         },
         {
           id: 6,
-          student: "Marcus Johnson",
-          avatar: "MJ",
-          answer: "Educational technology has helped students learn better with computers and internet resources.",
-          wordCount: 14,
-          keywords: 1,
-          quality: "needs-work",
-          score: 45,
-          timestamp: "10m ago"
+          text: "Evaluate the effectiveness of different assessment methods in language education (tests, portfolios, peer assessment, presentations). Which methods do you find most helpful and why?",
+          minWords: 55,
+          keywords: ["assessment", "methods", "education", "evaluation"],
+          completed: false
         }
       ]
     };
 
-    let currentQuestion = 1;
-    let currentFilter = 'all';
+    let currentQuestionIndex = 0;
+    let answers = {};
 
-    function generateResponseCards() {
-      const container = document.getElementById('response-grid');
-      const responses = sampleResponses[currentQuestion] || [];
+    function initializeInterface() {
+      loadQuestion();
       
-      container.innerHTML = '';
-      
-      document.getElementById('responses-title').textContent = `Student Responses - Question ${currentQuestion}`;
-      
-      let filteredResponses = responses;
-      if (currentFilter !== 'all') {
-        filteredResponses = responses.filter(r => r.quality === currentFilter);
-      }
-      
-      updateStats(responses);
-      
-      filteredResponses.forEach((response, index) => {
-        const card = document.createElement('div');
-        card.className = `response-card ${response.quality}`;
-        card.setAttribute('data-response-id', response.id);
-        
-        const avatarColors = [
-          'linear-gradient(135deg, #007AFF, #BF5AF2)',
-          'linear-gradient(135deg, #30D158, #64D2FF)', 
-          'linear-gradient(135deg, #FF9F0A, #FF2D92)',
-          'linear-gradient(135deg, #FF453A, #BF5AF2)',
-          'linear-gradient(135deg, #5E5CE6, #007AFF)',
-          'linear-gradient(135deg, #64D2FF, #30D158)'
-        ];
-        
-        card.innerHTML = `
-          <div class="student-header">
-            <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
-              ${response.avatar}
-            </div>
-            <div class="student-info">
-              <div class="student-name">${response.student}</div>
-              <div class="response-meta">
-                <span>📝 ${response.wordCount} words</span>
-                <span>🔑 ${response.keywords}/4</span>
-                <span>⏰ ${response.timestamp}</span>
-              </div>
-            </div>
-            <div class="quality-badge">
-              <div class="quality-indicator"></div>
-              <span>${response.score}%</span>
-            </div>
-          </div>
-          
-          <div class="response-text">
-            ${response.answer}
-          </div>
-          
-          <div class="response-stats">
-            <div class="stat-group">
-              <div class="stat">
-                <span>${getQualityEmoji(response.quality)}</span>
-                <span>${capitalizeFirst(response.quality)}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        card.addEventListener('click', () => selectResponse(card, response));
-        container.appendChild(card);
+      document.getElementById('answer-text').addEventListener('input', () => {
+        handleTextInput();
       });
     }
 
-    function getQualityEmoji(quality) {
-      const emojis = {
-        'excellent': '🟢',
-        'good': '🟡', 
-        'needs-work': '🔴'
-      };
-      return emojis[quality] || '⚪';
-    }
-
-    function capitalizeFirst(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
-    }
-
-    function updateStats(responses) {
-      const total = responses.length;
-      const avgWords = Math.round(responses.reduce((sum, r) => sum + r.wordCount, 0) / total);
-      const excellent = responses.filter(r => r.quality === 'excellent').length;
-      const good = responses.filter(r => r.quality === 'good').length; 
-      const needsWork = responses.filter(r => r.quality === 'needs-work').length;
+    function loadQuestion() {
+      const question = questionnaire.questions[currentQuestionIndex];
+      const totalQuestions = questionnaire.questions.length;
       
-      document.getElementById('total-responses').textContent = total;
-      document.getElementById('avg-words').textContent = avgWords;
-      document.getElementById('excellent-count').textContent = excellent;
-      document.getElementById('good-count').textContent = good;
-      document.getElementById('needs-work-count').textContent = needsWork;
+      document.getElementById('question-indicator').textContent = `Q${currentQuestionIndex + 1}`;
+      document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
+      
+      const completedCount = questionnaire.questions.filter(q => q.completed).length;
+      document.getElementById('completion-count').textContent = `${completedCount}/${totalQuestions}`;
+
+      document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+      document.getElementById('question-text').textContent = question.text;
+
+      const answerText = document.getElementById('answer-text');
+      answerText.value = answers[question.id] || '';
+
+      document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+
+      handleTextInput();
+      
+      const container = document.getElementById('question-container');
+      container.style.animation = 'none';
+      container.offsetHeight;
+      container.style.animation = 'slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     }
 
-    function switchQuestion() {
-      currentQuestion = parseInt(document.getElementById('question-selector').value);
-      generateResponseCards();
+    function handleTextInput() {
+      const answerText = document.getElementById('answer-text').value;
+      const question = questionnaire.questions[currentQuestionIndex];
+      const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
+      
+      const wordCountElement = document.getElementById('word-count');
+      wordCountElement.textContent = `${wordCount} words`;
+      
+      if (wordCount === 0) {
+        wordCountElement.className = 'word-count';
+      } else if (wordCount < question.minWords) {
+        wordCountElement.className = 'word-count warning';
+      } else {
+        wordCountElement.className = 'word-count valid';
+      }
+
+      const keywordCount = question.keywords.filter(keyword => 
+        answerText.toLowerCase().includes(keyword.toLowerCase())
+      ).length;
+      
+      document.getElementById('keyword-status').textContent = `🔑 ${keywordCount}/${question.keywords.length}`;
+      
+      updateTextareaValidation(answerText, question, wordCount);
+      updateNavigationButtons(answerText, question, wordCount);
+      
+      if (answerText.length > 0) {
+        saveCurrentAnswer();
+        document.getElementById('auto-save').innerHTML = '<span class="save-icon saved">💾</span><span>Auto-saved</span>';
+      }
     }
 
-    function filterByQuality(quality) {
-      currentFilter = quality;
+    function updateTextareaValidation(text, question, wordCount) {
+      const textarea = document.getElementById('answer-text');
+      const meetsWordCount = wordCount >= question.minWords;
+      const meetsKeywords = checkKeywords(text, question);
       
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`filter-${quality}`).classList.add('active');
-      
-      generateResponseCards();
-      showNotification(`Showing ${quality === 'all' ? 'all' : quality} responses`);
+      textarea.className = 'answer-textarea';
+      if (text.length > 0) {
+        if (meetsWordCount && meetsKeywords) {
+          textarea.classList.add('valid');
+        } else if (wordCount > 0) {
+          textarea.classList.add('warning');
+        } else {
+          textarea.classList.add('error');
+        }
+      }
     }
 
-    function selectResponse(cardElement, response) {
-      document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
-      cardElement.classList.add('selected');
+    function checkKeywords(text, question) {
+      const lowerText = text.toLowerCase();
+      return question.keywords.every(keyword => 
+        lowerText.includes(keyword.toLowerCase())
+      );
+    }
+
+    function updateNavigationButtons(text, question, wordCount) {
+      const nextBtn = document.getElementById('next-btn');
+      const meetsWordCount = wordCount >= question.minWords;
+      const meetsKeywords = checkKeywords(text, question);
+      const isValid = meetsWordCount && meetsKeywords;
       
-      showNotification(`Selected response from ${response.student}`);
+      nextBtn.disabled = !isValid;
+      
+      if (currentQuestionIndex === questionnaire.questions.length - 1) {
+        nextBtn.innerHTML = isValid ? '<span>Complete</span><i class="fas fa-check"></i>' : '<span>Complete</span><i class="fas fa-check"></i>';
+        nextBtn.className = isValid ? 'nav-btn success' : 'nav-btn';
+      } else {
+        nextBtn.innerHTML = '<span>Next</span><i class="fas fa-chevron-right"></i>';
+        nextBtn.className = 'nav-btn primary';
+      }
+    }
+
+    function saveCurrentAnswer() {
+      const question = questionnaire.questions[currentQuestionIndex];
+      const answer = document.getElementById('answer-text').value;
+      answers[question.id] = answer;
+      
+      const wordCount = answer.trim() ? answer.trim().split(/\s+/).length : 0;
+      const meetsRequirements = wordCount >= question.minWords && checkKeywords(answer, question);
+      question.completed = meetsRequirements && answer.trim().length > 0;
+      
+      const completedCount = questionnaire.questions.filter(q => q.completed).length;
+      document.getElementById('completion-count').textContent = `${completedCount}/${questionnaire.questions.length}`;
+    }
+
+    function nextQuestion() {
+      saveCurrentAnswer();
+      
+      if (currentQuestionIndex === questionnaire.questions.length - 1) {
+        showCompletion();
+      } else {
+        currentQuestionIndex++;
+        loadQuestion();
+      }
+    }
+
+    function previousQuestion() {
+      saveCurrentAnswer();
+      currentQuestionIndex--;
+      loadQuestion();
+    }
+
+    function showCompletion() {
+      document.getElementById('question-container').style.display = 'none';
+      document.getElementById('completion-panel').style.display = 'block';
+    }
+
+    function submitAnswers() {
+      const btn = event.target;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i><span>Submitted!</span>';
+        showNotification('Your answers have been submitted to the teacher!');
+        
+        setTimeout(() => {
+          const celebration = document.createElement('div');
+          celebration.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            z-index: 3000;
+            animation: successPop 2s ease-out;
+            pointer-events: none;
+          `;
+          celebration.textContent = '📚';
+          
+          document.body.appendChild(celebration);
+          
+          setTimeout(() => celebration.remove(), 2000);
+        }, 500);
+      }, 2000);
+    }
+
+    function saveProgress() {
+      saveCurrentAnswer();
+      showNotification('Your progress has been saved!');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      generateResponseCards();
+      initializeInterface();
     });
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes successPop {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
