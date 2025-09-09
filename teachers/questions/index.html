@@ -757,15 +757,26 @@
       const minWords = document.getElementById('min-words-input').value;
       const statusIndicator = document.getElementById('status-indicator');
       
-      if (questionInput && minWords) {
-        statusIndicator.className = 'status-indicator success';
-        statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>Question ready to submit</span>';
-      } else if (questionInput || minWords) {
-        statusIndicator.className = 'status-indicator warning';
-        statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Please complete all fields</span>';
-      } else {
-        statusIndicator.className = 'status-indicator';
-        statusIndicator.innerHTML = '<i class="fas fa-info-circle"></i><span>Ready to create new question</span>';
+      try {
+        const questionsData = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        const totalQuestions = questionsData.length;
+        
+        if (questionInput && minWords) {
+          statusIndicator.className = 'status-indicator success';
+          statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to save to data layer</span>';
+        } else if (questionInput || minWords) {
+          statusIndicator.className = 'status-indicator warning';
+          statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Please complete all fields</span>';
+        } else if (totalQuestions > 0) {
+          statusIndicator.className = 'status-indicator success';
+          statusIndicator.innerHTML = `<i class="fas fa-database"></i><span>Connected: ${totalQuestions} questions in data layer</span>`;
+        } else {
+          statusIndicator.className = 'status-indicator';
+          statusIndicator.innerHTML = '<i class="fas fa-database"></i><span>Connected to data layer - ready to create questions</span>';
+        }
+      } catch (error) {
+        statusIndicator.className = 'status-indicator error';
+        statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>Data layer connection error</span>';
       }
     }
 
