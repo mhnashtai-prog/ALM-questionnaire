@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALM Questionnaire System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <style>
+    :root {
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
+      --accent-teal: #2dd4bf;
+      --accent-lime: #32d74b;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --blur: blur(20px);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .constellation-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: twinkle 3s infinite alternate;
+    }
+
+    .star:nth-child(even) {
+      animation-delay: 1.5s;
+      background: var(--accent-teal);
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.8; }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--space-xl);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--space-md);
+      position: relative;
+    }
+
+    .brand-name::after {
+      content: '🎓';
+      position: absolute;
+      top: -20px;
+      right: -60px;
+      font-size: 3rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.3rem;
+      font-weight: 300;
+      margin-bottom: var(--space-lg);
+    }
+
+    .description {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto var(--space-xl);
+      line-height: 1.8;
+    }
+
+    .interfaces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-xl);
+      margin-bottom: var(--space-xl);
+    }
+
+    .interface-card {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .interface-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent-lime);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .interface-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-lg);
+      display: block;
+    }
+
+    .teacher-card .interface-icon { color: var(--accent-gold); }
+    .student-card .interface-icon { color: var(--accent-teal); }
+    .viz-card .interface-icon { color: var(--accent-lime); }
+
+    .interface-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+      color: var(--text-primary);
+    }
+
+    .interface-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .features {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .features h2 {
+      color: var(--accent-gold);
+      font-size: 2rem;
+      margin-bottom: var(--space-lg);
+    }
+
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      text-align: left;
+    }
+
+    .feature-icon {
+      color: var(--accent-lime);
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .brand-name {
+        font-size: 2.5rem;
+      }
+      
+      .interfaces-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .features-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="constellation-bg" id="constellation"></div>
+
+  <div class="container">
+    <header class="header">
+      <div class="brand-name">ALM QUESTIONNAIRE</div>
+      <div class="subtitle">Advanced Language Methodology Platform</div>
+      <div class="description">
+        A comprehensive web-based system for language teachers to create engaging questionnaires, 
+        monitor student responses in real-time, and analyze results with stunning visualizations.
+      </div>
+    </header>
+
+    <div class="interfaces-grid">
+      <a href="teachers/questions/" class="interface-card teacher-card">
+        <i class="fas fa-chalkboard-teacher interface-icon"></i>
+        <div class="interface-title">Teacher Interface</div>
+        <div class="interface-description">
+          Create questions with validation rules, set minimum word counts, 
+          require specific keywords, and generate QR codes for instant sharing.
+        </div>
+      </a>
+
+      <a href="students/answers/" class="interface-card student-card">
+        <i class="fas fa-user-graduate interface-icon"></i>
+        <div class="interface-title">Student Interface</div>
+        <div class="interface-description">
+          Progressive question answering with real-time validation, 
+          word count monitoring, and automatic requirement checking.
+        </div>
+      </a>
+
+      <a href="visualization/" class="interface-card viz-card">
+        <i class="fas fa-chart-pie interface-icon"></i>
+        <div class="interface-title">Data Visualization</div>
+        <div class="interface-description">
+          Interactive mind maps displaying student responses with 
+          beautiful animations and detailed analysis tools.
+        </div>
+      </a>
+    </div>
+
+    <div class="features">
+      <h2>✨ Key Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <i class="fas fa-magic feature-icon"></i>
+          <span>Real-time validation and feedback</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-palette feature-icon"></i>
+          <span>Modern glassmorphic design</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-mobile-alt feature-icon"></i>
+          <span>Fully responsive on all devices</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-qrcode feature-icon"></i>
+          <span>QR code generation for easy sharing</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-chart-line feature-icon"></i>
+          <span>Interactive data visualization</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-comments feature-icon"></i>
+          <span>Built-in discussion tools</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', createConstellation);
+  </script>
+</body>
+</html>
