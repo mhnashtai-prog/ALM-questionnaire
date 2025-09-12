@@ -52,7 +52,6 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
-      /* FIXED: Removed touch-action that might interfere with input */
       padding-bottom: 100px;
     }
     
@@ -189,7 +188,7 @@
       line-height: 1.4;
     }
     
-    /* FIXED: Enhanced Answer Input with better responsiveness */
+    /* Enhanced Answer Input */
     .answer-input {
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
@@ -204,7 +203,6 @@
       resize: vertical;
       min-height: 150px;
       margin-bottom: 2rem;
-      /* FIXED: Ensure input is always interactive */
       pointer-events: auto;
       touch-action: auto;
       -webkit-user-select: text;
@@ -225,7 +223,6 @@
       transform: translateY(-2px);
     }
     
-    /* FIXED: Better visual feedback for active input */
     .answer-input:hover {
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(45, 212, 191, 0.5);
@@ -334,7 +331,6 @@
       margin-bottom: 2rem;
     }
     
-    /* ADDED: Debug and test buttons for no-question state */
     .debug-actions {
       display: flex;
       gap: 1rem;
@@ -498,7 +494,6 @@
       100% { transform: rotate(360deg); }
     }
     
-    /* ADDED: Debug info display */
     .debug-info {
       background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--card-border);
@@ -535,7 +530,7 @@
           This page will update automatically when ready.
         </div>
         
-        <!-- ADDED: Debug and test actions -->
+        <!-- Debug and test actions -->
         <div class="debug-actions">
           <button class="debug-btn" onclick="createTestQuestion()">
             <i class="fas fa-flask"></i> Create Test Question
@@ -545,6 +540,9 @@
           </button>
           <button class="debug-btn" onclick="showDebugInfo()">
             <i class="fas fa-bug"></i> Debug Info
+          </button>
+          <button class="debug-btn" onclick="clearAllData()">
+            <i class="fas fa-trash"></i> Clear All Data
           </button>
         </div>
         
@@ -612,12 +610,13 @@
   </div>
 
   <script>
-    // ENHANCED: Better error handling and debugging
+    // Enhanced debugging and logging
     function log(message, type = 'info') {
-      console.log(`[INTUITY] ${message}`);
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[INTUITY ${timestamp}] ${message}`);
+      
       const debugInfo = document.getElementById('debugInfo');
-      if (debugInfo) {
-        const timestamp = new Date().toLocaleTimeString();
+      if (debugInfo && debugInfo.style.display !== 'none') {
         debugInfo.innerHTML += `[${timestamp}] ${message}\n`;
         debugInfo.scrollTop = debugInfo.scrollHeight;
       }
@@ -639,25 +638,46 @@
       }
     }
 
-    // ENHANCED: Better question loading with debugging
+    // FIXED: Better question loading with multiple fallback methods
     function loadQuestion() {
       try {
-        log('Loading questions from localStorage...', 'info');
-        const questionsData = localStorage.getItem('alm_questions');
-        log(`Raw questions data: ${questionsData}`, 'debug');
+        log('Attempting to load questions from localStorage...', 'info');
         
-        const questions = JSON.parse(questionsData || '[]');
-        log(`Parsed ${questions.length} questions`, 'info');
+        // Method 1: Check for alm_questions (primary)
+        let questionsData = localStorage.getItem('alm_questions');
+        log(`Method 1 - alm_questions: ${questionsData}`, 'debug');
         
-        if (questions.length > 0) {
-          // Get the most recent question
-          const latestQuestion = questions[questions.length - 1];
-          log(`Latest question: "${latestQuestion.text}"`, 'success');
-          showQuestion(latestQuestion);
-        } else {
-          log('No questions found - showing waiting state', 'warning');
-          showNoQuestion();
+        // Method 2: Check for intuity_questions (fallback)
+        if (!questionsData) {
+          questionsData = localStorage.getItem('intuity_questions');
+          log(`Method 2 - intuity_questions: ${questionsData}`, 'debug');
         }
+        
+        // Method 3: Check for current_question (single question)
+        if (!questionsData) {
+          const singleQuestion = localStorage.getItem('current_question');
+          if (singleQuestion) {
+            questionsData = `[${singleQuestion}]`;
+            log(`Method 3 - current_question: ${singleQuestion}`, 'debug');
+          }
+        }
+        
+        if (questionsData) {
+          const questions = JSON.parse(questionsData);
+          log(`Successfully parsed ${questions.length} questions`, 'success');
+          
+          if (questions.length > 0) {
+            // Get the most recent question
+            const latestQuestion = questions[questions.length - 1];
+            log(`Displaying question: "${latestQuestion.text || latestQuestion.question || 'Unknown'}"`, 'success');
+            showQuestion(latestQuestion);
+            return;
+          }
+        }
+        
+        log('No questions found - showing waiting state', 'warning');
+        showNoQuestion();
+        
       } catch (error) {
         log(`Error loading question: ${error.message}`, 'error');
         console.error('Error loading question:', error);
@@ -665,16 +685,27 @@
       }
     }
 
-    function showQuestion(question) {
-      log('Showing question interface', 'success');
+    function showQuestion(questionData) {
+      log('Switching to question display mode', 'success');
+      
       document.getElementById('noQuestionState').style.display = 'none';
       document.getElementById('questionState').style.display = 'block';
-      document.getElementById('questionText').textContent = question.text;
+      
+      // Handle different question formats
+      const questionText = questionData.text || questionData.question || questionData.content || 'No question text available';
+      document.getElementById('questionText').textContent = questionText;
       
       // Store current question for submission
-      window.currentQuestion = question;
+      window.currentQuestion = {
+        id: questionData.id || Date.now(),
+        text: questionText,
+        timestamp: questionData.timestamp || new Date().toISOString()
+      };
       
-      // ENHANCED: Ensure input field is ready
+      // Load any existing draft
+      loadDraft();
+      
+      // Focus input field after a short delay
       setTimeout(() => {
         const answerInput = document.getElementById('answerInput');
         if (answerInput) {
@@ -685,12 +716,12 @@
     }
 
     function showNoQuestion() {
-      log('Showing no question state', 'info');
+      log('Switching to no question state', 'info');
       document.getElementById('noQuestionState').style.display = 'block';
       document.getElementById('questionState').style.display = 'none';
     }
 
-    // ENHANCED: Better input handling with debugging
+    // ENHANCED: Better input handling
     function handleAnswerInput() {
       const answerInput = document.getElementById('answerInput');
       if (!answerInput) {
@@ -709,15 +740,14 @@
         wordStatus.textContent = `${wordCount} words`;
       }
       
-      // Update ready status
+      // Update ready status and button state
       if (readyStatus && submitButton) {
         if (wordCount >= 10) {
           readyStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to submit!</span>';
           readyStatus.classList.add('status-ready');
           submitButton.classList.add('ready');
-          log(`Input ready: ${wordCount} words`, 'success');
         } else if (wordCount > 0) {
-          readyStatus.innerHTML = '<i class="fas fa-edit"></i><span>Keep writing...</span>';
+          readyStatus.innerHTML = '<i class="fas fa-edit"></i><span>Keep writing... (need ' + (10 - wordCount) + ' more words)</span>';
           readyStatus.classList.remove('status-ready');
           submitButton.classList.remove('ready');
         } else {
@@ -727,16 +757,17 @@
         }
       }
       
-      // Auto-save
+      // Auto-save draft
       if (window.currentQuestion && answerText) {
         localStorage.setItem('draft_answer_' + window.currentQuestion.id, answerText);
       }
     }
 
-    // Submit response (unchanged but with logging)
+    // Submit response function
     function submitResponse() {
       const answerText = document.getElementById('answerInput').value;
       const submitButton = document.getElementById('submitButton');
+      const studentName = document.getElementById('studentName').value || 'Anonymous';
       
       if (!window.currentQuestion || !answerText.trim()) {
         log('Cannot submit: no question or empty answer', 'error');
@@ -760,10 +791,11 @@
             questionId: window.currentQuestion.id,
             answer: answerText,
             wordCount: wordCount,
-            studentName: document.getElementById('studentName').value || 'Anonymous',
+            studentName: studentName,
             timestamp: new Date().toLocaleString(),
             quality: assessQuality(wordCount),
-            score: calculateScore(wordCount)
+            score: calculateScore(wordCount),
+            submittedAt: new Date().toISOString()
           };
           
           responses.push(response);
@@ -772,7 +804,7 @@
           // Clear draft
           localStorage.removeItem('draft_answer_' + window.currentQuestion.id);
           
-          log(`Response submitted successfully: ${wordCount} words`, 'success');
+          log(`Response submitted successfully: ${wordCount} words by ${studentName}`, 'success');
           
           // Show success
           document.getElementById('successMessage').style.display = 'block';
@@ -856,44 +888,64 @@
       }
     }
 
-    // ADDED: Debug functions
+    // Debug functions
     function createTestQuestion() {
       log('Creating test question...', 'info');
       const testQuestion = {
         id: Date.now(),
-        text: "What are your thoughts on digital learning and how it has changed education?",
-        timestamp: new Date().toISOString()
+        text: "What are your thoughts on digital learning and how it has changed education? Please share your experiences with online learning platforms.",
+        timestamp: new Date().toISOString(),
+        createdBy: 'teacher',
+        type: 'open-ended'
       };
       
       try {
+        // Save in multiple formats for compatibility
         localStorage.setItem('alm_questions', JSON.stringify([testQuestion]));
-        log('Test question created successfully!', 'success');
-        loadQuestion(); // Reload to show the question
+        localStorage.setItem('current_question', JSON.stringify(testQuestion));
+        localStorage.setItem('intuity_questions', JSON.stringify([testQuestion]));
+        
+        log('Test question created and saved in multiple formats!', 'success');
+        setTimeout(() => {
+          loadQuestion(); // Reload to show the question
+        }, 500);
       } catch (error) {
         log(`Failed to create test question: ${error.message}`, 'error');
       }
     }
 
     function checkLocalStorage() {
-      log('Checking localStorage...', 'info');
+      log('=== CHECKING LOCALSTORAGE ===', 'info');
       try {
-        const questions = localStorage.getItem('alm_questions');
-        const responses = localStorage.getItem('alm_student_responses');
+        const keys = ['alm_questions', 'intuity_questions', 'current_question', 'alm_student_responses', 'student_name'];
         
-        log(`Questions data: ${questions || 'null'}`, 'debug');
-        log(`Responses data: ${responses || 'null'}`, 'debug');
+        keys.forEach(key => {
+          const data = localStorage.getItem(key);
+          if (data) {
+            try {
+              const parsed = JSON.parse(data);
+              if (Array.isArray(parsed)) {
+                log(`${key}: Array with ${parsed.length} items`, 'success');
+              } else {
+                log(`${key}: Object - ${JSON.stringify(parsed).substring(0, 100)}...`, 'success');
+              }
+            } catch {
+              log(`${key}: "${data}"`, 'success');
+            }
+          } else {
+            log(`${key}: null/empty`, 'warning');
+          }
+        });
         
-        if (questions) {
-          const parsed = JSON.parse(questions);
-          log(`Found ${parsed.length} questions`, 'success');
-        } else {
-          log('No questions found in localStorage', 'warning');
+        // Storage usage
+        let totalSize = 0;
+        for (let key in localStorage) {
+          if (localStorage.hasOwnProperty(key)) {
+            totalSize += localStorage[key].length;
+          }
         }
+        log(`Total localStorage size: ~${Math.round(totalSize/1024)}KB`, 'info');
         
-        if (responses) {
-          const parsed = JSON.parse(responses);
-          log(`Found ${parsed.length} responses`, 'info');
-        }
       } catch (error) {
         log(`localStorage error: ${error.message}`, 'error');
       }
@@ -903,6 +955,7 @@
       const debugInfo = document.getElementById('debugInfo');
       if (debugInfo.style.display === 'none' || !debugInfo.style.display) {
         debugInfo.style.display = 'block';
+        debugInfo.innerHTML = '=== DEBUG CONSOLE ===\n';
         log('Debug info panel opened', 'info');
         checkLocalStorage();
       } else {
@@ -910,38 +963,41 @@
       }
     }
 
-    // ENHANCED: Better event listener setup with error handling
+    function clearAllData() {
+      if (confirm('Are you sure you want to clear all data? This will remove all questions and responses.')) {
+        localStorage.clear();
+        log('All localStorage data cleared', 'warning');
+        location.reload();
+      }
+    }
+
+    // Enhanced event listener setup
     document.addEventListener('DOMContentLoaded', () => {
-      log('INTUITY Student page initializing...', 'info');
+      log('=== INTUITY STUDENT INTERFACE STARTING ===', 'info');
       
       try {
         createConstellation();
         loadQuestion();
         loadStudentName();
         
-        // Set up input handler with error checking
+        // Set up input handler
         const answerInput = document.getElementById('answerInput');
         if (answerInput) {
           answerInput.addEventListener('input', handleAnswerInput);
           answerInput.addEventListener('focus', () => log('Input field focused', 'info'));
           answerInput.addEventListener('blur', () => log('Input field blurred', 'info'));
-          log('Input event listeners attached', 'success');
-        } else {
-          log('Warning: answerInput element not found during initialization', 'warning');
         }
         
         // Set up submit handler
         const submitButton = document.getElementById('submitButton');
         if (submitButton) {
           submitButton.addEventListener('click', submitResponse);
-          log('Submit button event listener attached', 'success');
         }
         
         // Set up name input handler
         const nameInput = document.getElementById('studentName');
         if (nameInput) {
           nameInput.addEventListener('input', saveStudentName);
-          log('Name input event listener attached', 'success');
         }
         
         // Set up footer button handlers
@@ -957,12 +1013,11 @@
         // Auto-refresh for new questions every 10 seconds
         setInterval(() => {
           if (document.getElementById('noQuestionState').style.display !== 'none') {
-            log('Auto-refreshing questions...', 'info');
             loadQuestion();
           }
         }, 10000);
         
-        log('INTUITY Student page initialized successfully!', 'success');
+        log('=== STUDENT INTERFACE READY ===', 'success');
         
       } catch (error) {
         log(`Initialization error: ${error.message}`, 'error');
