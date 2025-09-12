@@ -52,7 +52,7 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
-      touch-action: manipulation;
+      /* FIXED: Removed touch-action that might interfere with input */
       padding-bottom: 100px;
     }
     
@@ -189,7 +189,7 @@
       line-height: 1.4;
     }
     
-    /* Answer Input */
+    /* FIXED: Enhanced Answer Input with better responsiveness */
     .answer-input {
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
@@ -204,6 +204,13 @@
       resize: vertical;
       min-height: 150px;
       margin-bottom: 2rem;
+      /* FIXED: Ensure input is always interactive */
+      pointer-events: auto;
+      touch-action: auto;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
     }
     
     .answer-input::placeholder {
@@ -216,6 +223,12 @@
       border-color: var(--accent-teal);
       box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
       transform: translateY(-2px);
+    }
+    
+    /* FIXED: Better visual feedback for active input */
+    .answer-input:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(45, 212, 191, 0.5);
     }
     
     /* Simple Status */
@@ -301,7 +314,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* No Questions State */
+    /* Enhanced No Questions State */
     .no-question-state {
       text-align: center;
       padding: 4rem 2rem;
@@ -318,6 +331,32 @@
       color: var(--text-secondary);
       font-size: 1rem;
       line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    
+    /* ADDED: Debug and test buttons for no-question state */
+    .debug-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    
+    .debug-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .debug-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-teal);
     }
     
     /* Minimalist Footer */
@@ -441,6 +480,11 @@
       .name-input {
         width: 100px;
       }
+      
+      .debug-actions {
+        flex-direction: column;
+        align-items: center;
+      }
     }
     
     /* Loading Animation */
@@ -452,6 +496,21 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    
+    /* ADDED: Debug info display */
+    .debug-info {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
     }
   </style>
 </head>
@@ -475,6 +534,21 @@
           Your teacher will share a question with you soon.<br>
           This page will update automatically when ready.
         </div>
+        
+        <!-- ADDED: Debug and test actions -->
+        <div class="debug-actions">
+          <button class="debug-btn" onclick="createTestQuestion()">
+            <i class="fas fa-flask"></i> Create Test Question
+          </button>
+          <button class="debug-btn" onclick="checkLocalStorage()">
+            <i class="fas fa-database"></i> Check Data
+          </button>
+          <button class="debug-btn" onclick="showDebugInfo()">
+            <i class="fas fa-bug"></i> Debug Info
+          </button>
+        </div>
+        
+        <div class="debug-info" id="debugInfo"></div>
       </div>
       
       <!-- Question State (Initially Hidden) -->
@@ -538,6 +612,17 @@
   </div>
 
   <script>
+    // ENHANCED: Better error handling and debugging
+    function log(message, type = 'info') {
+      console.log(`[INTUITY] ${message}`);
+      const debugInfo = document.getElementById('debugInfo');
+      if (debugInfo) {
+        const timestamp = new Date().toLocaleTimeString();
+        debugInfo.innerHTML += `[${timestamp}] ${message}\n`;
+        debugInfo.scrollTop = debugInfo.scrollHeight;
+      }
+    }
+
     // Enhanced constellation
     function createConstellation() {
       const constellation = document.getElementById('constellation');
@@ -554,62 +639,92 @@
       }
     }
 
-    // Load question from teacher system
+    // ENHANCED: Better question loading with debugging
     function loadQuestion() {
       try {
-        const questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        log('Loading questions from localStorage...', 'info');
+        const questionsData = localStorage.getItem('alm_questions');
+        log(`Raw questions data: ${questionsData}`, 'debug');
+        
+        const questions = JSON.parse(questionsData || '[]');
+        log(`Parsed ${questions.length} questions`, 'info');
         
         if (questions.length > 0) {
           // Get the most recent question
           const latestQuestion = questions[questions.length - 1];
+          log(`Latest question: "${latestQuestion.text}"`, 'success');
           showQuestion(latestQuestion);
         } else {
+          log('No questions found - showing waiting state', 'warning');
           showNoQuestion();
         }
       } catch (error) {
+        log(`Error loading question: ${error.message}`, 'error');
         console.error('Error loading question:', error);
         showNoQuestion();
       }
     }
 
     function showQuestion(question) {
+      log('Showing question interface', 'success');
       document.getElementById('noQuestionState').style.display = 'none';
       document.getElementById('questionState').style.display = 'block';
       document.getElementById('questionText').textContent = question.text;
       
       // Store current question for submission
       window.currentQuestion = question;
+      
+      // ENHANCED: Ensure input field is ready
+      setTimeout(() => {
+        const answerInput = document.getElementById('answerInput');
+        if (answerInput) {
+          answerInput.focus();
+          log('Input field focused and ready for typing', 'success');
+        }
+      }, 100);
     }
 
     function showNoQuestion() {
+      log('Showing no question state', 'info');
       document.getElementById('noQuestionState').style.display = 'block';
       document.getElementById('questionState').style.display = 'none';
     }
 
-    // Handle answer input
+    // ENHANCED: Better input handling with debugging
     function handleAnswerInput() {
-      const answerText = document.getElementById('answerInput').value;
+      const answerInput = document.getElementById('answerInput');
+      if (!answerInput) {
+        log('Answer input element not found!', 'error');
+        return;
+      }
+      
+      const answerText = answerInput.value;
       const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
       const submitButton = document.getElementById('submitButton');
       const wordStatus = document.getElementById('wordCount');
       const readyStatus = document.getElementById('readyStatus');
       
       // Update word count
-      wordStatus.textContent = `${wordCount} words`;
+      if (wordStatus) {
+        wordStatus.textContent = `${wordCount} words`;
+      }
       
       // Update ready status
-      if (wordCount >= 10) {
-        readyStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to submit!</span>';
-        readyStatus.classList.add('status-ready');
-        submitButton.classList.add('ready');
-      } else if (wordCount > 0) {
-        readyStatus.innerHTML = '<i class="fas fa-edit"></i><span>Keep writing...</span>';
-        readyStatus.classList.remove('status-ready');
-        submitButton.classList.remove('ready');
-      } else {
-        readyStatus.innerHTML = '<i class="fas fa-pencil-alt"></i><span>Start typing...</span>';
-        readyStatus.classList.remove('status-ready');
-        submitButton.classList.remove('ready');
+      if (readyStatus && submitButton) {
+        if (wordCount >= 10) {
+          readyStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to submit!</span>';
+          readyStatus.classList.add('status-ready');
+          submitButton.classList.add('ready');
+          log(`Input ready: ${wordCount} words`, 'success');
+        } else if (wordCount > 0) {
+          readyStatus.innerHTML = '<i class="fas fa-edit"></i><span>Keep writing...</span>';
+          readyStatus.classList.remove('status-ready');
+          submitButton.classList.remove('ready');
+        } else {
+          readyStatus.innerHTML = '<i class="fas fa-pencil-alt"></i><span>Start typing...</span>';
+          readyStatus.classList.remove('status-ready');
+          submitButton.classList.remove('ready');
+        }
       }
       
       // Auto-save
@@ -618,14 +733,17 @@
       }
     }
 
-    // Submit response
+    // Submit response (unchanged but with logging)
     function submitResponse() {
       const answerText = document.getElementById('answerInput').value;
       const submitButton = document.getElementById('submitButton');
       
       if (!window.currentQuestion || !answerText.trim()) {
+        log('Cannot submit: no question or empty answer', 'error');
         return;
       }
+      
+      log('Submitting response...', 'info');
       
       // Show loading state
       submitButton.innerHTML = '<i class="fas fa-spinner loading"></i> Submitting...';
@@ -654,6 +772,8 @@
           // Clear draft
           localStorage.removeItem('draft_answer_' + window.currentQuestion.id);
           
+          log(`Response submitted successfully: ${wordCount} words`, 'success');
+          
           // Show success
           document.getElementById('successMessage').style.display = 'block';
           submitButton.style.display = 'none';
@@ -670,6 +790,7 @@
           }, 3000);
           
         } catch (error) {
+          log(`Error submitting response: ${error.message}`, 'error');
           console.error('Error submitting response:', error);
           submitButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error - Try Again';
           submitButton.disabled = false;
@@ -694,6 +815,7 @@
       if (answerInput && answerInput.style.display !== 'none') {
         answerInput.focus();
         answerInput.setSelectionRange(answerInput.value.length, answerInput.value.length);
+        log('Focused on input field for editing', 'info');
       }
     }
 
@@ -701,6 +823,8 @@
       const submitButton = document.getElementById('submitButton');
       if (submitButton && submitButton.classList.contains('ready')) {
         submitResponse();
+      } else {
+        log('Cannot quick send: response not ready', 'warning');
       }
     }
 
@@ -708,6 +832,7 @@
     function saveStudentName() {
       const nameInput = document.getElementById('studentName');
       localStorage.setItem('student_name', nameInput.value);
+      log(`Student name saved: ${nameInput.value}`, 'info');
     }
 
     // Load student name
@@ -715,6 +840,7 @@
       const savedName = localStorage.getItem('student_name');
       if (savedName) {
         document.getElementById('studentName').value = savedName;
+        log(`Loaded student name: ${savedName}`, 'info');
       }
     }
 
@@ -725,38 +851,123 @@
         if (draft) {
           document.getElementById('answerInput').value = draft;
           handleAnswerInput();
+          log(`Loaded draft: ${draft.length} characters`, 'info');
         }
       }
     }
 
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
-      loadQuestion();
-      loadStudentName();
+    // ADDED: Debug functions
+    function createTestQuestion() {
+      log('Creating test question...', 'info');
+      const testQuestion = {
+        id: Date.now(),
+        text: "What are your thoughts on digital learning and how it has changed education?",
+        timestamp: new Date().toISOString()
+      };
       
-      // Set up input handler
-      document.getElementById('answerInput').addEventListener('input', handleAnswerInput);
-      
-      // Set up submit handler
-      document.getElementById('submitButton').addEventListener('click', submitResponse);
-      
-      // Set up name input handler
-      document.getElementById('studentName').addEventListener('input', saveStudentName);
-      
-      // Set up footer button handlers
-      document.getElementById('editBtn').addEventListener('click', editResponse);
-      document.getElementById('sendBtn').addEventListener('click', quickSend);
-      
-      // Load any existing draft
-      setTimeout(loadDraft, 100);
-      
-      // Auto-refresh for new questions every 10 seconds
-      setInterval(() => {
-        if (document.getElementById('noQuestionState').style.display !== 'none') {
-          loadQuestion();
+      try {
+        localStorage.setItem('alm_questions', JSON.stringify([testQuestion]));
+        log('Test question created successfully!', 'success');
+        loadQuestion(); // Reload to show the question
+      } catch (error) {
+        log(`Failed to create test question: ${error.message}`, 'error');
+      }
+    }
+
+    function checkLocalStorage() {
+      log('Checking localStorage...', 'info');
+      try {
+        const questions = localStorage.getItem('alm_questions');
+        const responses = localStorage.getItem('alm_student_responses');
+        
+        log(`Questions data: ${questions || 'null'}`, 'debug');
+        log(`Responses data: ${responses || 'null'}`, 'debug');
+        
+        if (questions) {
+          const parsed = JSON.parse(questions);
+          log(`Found ${parsed.length} questions`, 'success');
+        } else {
+          log('No questions found in localStorage', 'warning');
         }
-      }, 10000);
+        
+        if (responses) {
+          const parsed = JSON.parse(responses);
+          log(`Found ${parsed.length} responses`, 'info');
+        }
+      } catch (error) {
+        log(`localStorage error: ${error.message}`, 'error');
+      }
+    }
+
+    function showDebugInfo() {
+      const debugInfo = document.getElementById('debugInfo');
+      if (debugInfo.style.display === 'none' || !debugInfo.style.display) {
+        debugInfo.style.display = 'block';
+        log('Debug info panel opened', 'info');
+        checkLocalStorage();
+      } else {
+        debugInfo.style.display = 'none';
+      }
+    }
+
+    // ENHANCED: Better event listener setup with error handling
+    document.addEventListener('DOMContentLoaded', () => {
+      log('INTUITY Student page initializing...', 'info');
+      
+      try {
+        createConstellation();
+        loadQuestion();
+        loadStudentName();
+        
+        // Set up input handler with error checking
+        const answerInput = document.getElementById('answerInput');
+        if (answerInput) {
+          answerInput.addEventListener('input', handleAnswerInput);
+          answerInput.addEventListener('focus', () => log('Input field focused', 'info'));
+          answerInput.addEventListener('blur', () => log('Input field blurred', 'info'));
+          log('Input event listeners attached', 'success');
+        } else {
+          log('Warning: answerInput element not found during initialization', 'warning');
+        }
+        
+        // Set up submit handler
+        const submitButton = document.getElementById('submitButton');
+        if (submitButton) {
+          submitButton.addEventListener('click', submitResponse);
+          log('Submit button event listener attached', 'success');
+        }
+        
+        // Set up name input handler
+        const nameInput = document.getElementById('studentName');
+        if (nameInput) {
+          nameInput.addEventListener('input', saveStudentName);
+          log('Name input event listener attached', 'success');
+        }
+        
+        // Set up footer button handlers
+        const editBtn = document.getElementById('editBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        if (editBtn) editBtn.addEventListener('click', editResponse);
+        if (sendBtn) sendBtn.addEventListener('click', quickSend);
+        
+        // Load any existing draft
+        setTimeout(loadDraft, 100);
+        
+        // Auto-refresh for new questions every 10 seconds
+        setInterval(() => {
+          if (document.getElementById('noQuestionState').style.display !== 'none') {
+            log('Auto-refreshing questions...', 'info');
+            loadQuestion();
+          }
+        }, 10000);
+        
+        log('INTUITY Student page initialized successfully!', 'success');
+        
+      } catch (error) {
+        log(`Initialization error: ${error.message}`, 'error');
+        console.error('Initialization error:', error);
+      }
     });
   </script>
 </body>
