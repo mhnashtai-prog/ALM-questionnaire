@@ -14,9 +14,6 @@
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
       --accent-teal: #2dd4bf;
-      --accent-lime: #32d74b;
-      --accent-orange: #ff9500;
-      --accent-brick: #c44536;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
@@ -131,40 +128,6 @@
       box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
     }
 
-    .filter-controls {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .filter-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-lg);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
-    }
-
-    .filter-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
     .stats-bar {
       display: flex;
       justify-content: center;
@@ -244,21 +207,6 @@
       box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
     }
 
-    .response-card.excellent {
-      border-color: var(--accent-lime);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(50, 215, 75, 0.1));
-    }
-
-    .response-card.good {
-      border-color: var(--accent-orange);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 159, 10, 0.1));
-    }
-
-    .response-card.needs-work {
-      border-color: var(--accent-brick);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(196, 69, 54, 0.1));
-    }
-
     .student-header {
       display: flex;
       align-items: center;
@@ -270,7 +218,7 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-lime));
+      background: linear-gradient(135deg, var(--accent-teal), var(--intuity-gold));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -297,34 +245,6 @@
       gap: var(--space-md);
       font-size: 0.8rem;
       color: var(--text-secondary);
-    }
-
-    .quality-badge {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .quality-indicator {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .excellent .quality-indicator {
-      background: var(--accent-lime);
-      box-shadow: 0 0 8px rgba(50, 215, 75, 0.5);
-    }
-
-    .good .quality-indicator {
-      background: var(--accent-orange);
-      box-shadow: 0 0 8px rgba(255, 159, 10, 0.5);
-    }
-
-    .needs-work .quality-indicator {
-      background: var(--accent-brick);
-      box-shadow: 0 0 8px rgba(196, 69, 54, 0.5);
     }
 
     .response-text {
@@ -446,8 +366,15 @@
         min-width: auto;
       }
 
-      .filter-controls {
-        justify-content: center;
+      .display-controls {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .display-btn {
+        min-width: 200px;
+        padding: var(--space-sm) var(--space-md);
       }
 
       .stats-bar {
@@ -486,11 +413,7 @@
     }
 
     .notification.success {
-      border-color: var(--accent-lime);
-    }
-
-    .notification.error {
-      border-color: var(--accent-brick);
+      border-color: var(--accent-teal);
     }
   </style>
 </head>
@@ -514,18 +437,20 @@
           <option value="6">Question 6: Assessment Methods</option>
         </select>
         
-        <div class="filter-controls">
-          <button class="filter-btn active" onclick="filterByQuality('all')" id="filter-all">
-            <i class="fas fa-list"></i>
-            <span>All</span>
+        <div class="display-controls">
+          <button class="display-btn" onclick="openScrollView()" id="scroll-btn">
+            <i class="fas fa-arrows-alt-v"></i>
+            <span>Scroll Up</span>
           </button>
-          <button class="filter-btn" onclick="filterByQuality('excellent')" id="filter-excellent">
-            <i class="fas fa-star"></i>
-            <span>Excellent</span>
+          
+          <button class="display-btn active" onclick="openStackedView()" id="stacked-btn">
+            <i class="fas fa-layer-group"></i>
+            <span>Stacked</span>
           </button>
-          <button class="filter-btn" onclick="filterByQuality('good')" id="filter-good">
-            <i class="fas fa-thumbs-up"></i>
-            <span>Good</span>
+          
+          <button class="display-btn" onclick="openSpreadView()" id="spread-btn">
+            <i class="fas fa-project-diagram"></i>
+            <span>Spread Out</span>
           </button>
         </div>
       </div>
@@ -534,22 +459,6 @@
         <div class="stat-item">
           <div class="stat-value" id="total-responses">0</div>
           <div class="stat-label">Total Responses</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="avg-words">0</div>
-          <div class="stat-label">Avg Words</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="excellent-count">0</div>
-          <div class="stat-label">Excellent</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="good-count">0</div>
-          <div class="stat-label">Good</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="needs-work-count">0</div>
-          <div class="stat-label">Needs Work</div>
         </div>
       </div>
     </div>
@@ -621,7 +530,6 @@
     }
 
     let currentQuestion = 1;
-    let currentFilter = 'all';
 
     function generateResponseCards() {
       const container = document.getElementById('response-grid');
@@ -631,28 +539,20 @@
       
       document.getElementById('responses-title').textContent = `Student Responses - Question ${currentQuestion}`;
       
-      let filteredResponses = responses;
-      if (currentFilter !== 'all') {
-        filteredResponses = responses.filter(r => r.quality === currentFilter);
-      }
-      
       updateStats(responses);
       
-      if (filteredResponses.length === 0) {
+      if (responses.length === 0) {
         container.innerHTML = `
           <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-            ${responses.length === 0 ? 
-              'No student responses yet. Questions will appear here once students start submitting answers.' :
-              `No ${currentFilter === 'all' ? '' : currentFilter + ' '}responses found for this question.`
-            }
+            No student responses yet. Questions will appear here once students start submitting answers.
           </div>
         `;
         return;
       }
       
-      filteredResponses.forEach((response, index) => {
+      responses.forEach((response, index) => {
         const card = document.createElement('div');
-        card.className = `response-card ${response.quality}`;
+        card.className = 'response-card';
         card.setAttribute('data-response-id', response.id);
         
         const avatarColors = [
@@ -673,13 +573,8 @@
               <div class="student-name">${response.studentName || 'Student ' + (index + 1)}</div>
               <div class="response-meta">
                 <span>📝 ${response.wordCount} words</span>
-                <span>🔑 ${response.keywords || 0}/4</span>
                 <span>⏰ ${response.timestamp}</span>
               </div>
-            </div>
-            <div class="quality-badge">
-              <div class="quality-indicator"></div>
-              <span>${response.score || 0}%</span>
             </div>
           </div>
           
@@ -690,8 +585,8 @@
           <div class="response-stats">
             <div class="stat-group">
               <div class="stat">
-                <span>${getQualityEmoji(response.quality)}</span>
-                <span>${capitalizeFirst(response.quality)}</span>
+                <span>💬</span>
+                <span>Response</span>
               </div>
             </div>
           </div>
@@ -702,46 +597,14 @@
       });
     }
 
-    function getQualityEmoji(quality) {
-      const emojis = {
-        'excellent': '🟢',
-        'good': '🟡', 
-        'needs-work': '🔴'
-      };
-      return emojis[quality] || '⚪';
-    }
-
-    function capitalizeFirst(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
-    }
-
     function updateStats(responses) {
       const total = responses.length;
-      const avgWords = total > 0 ? Math.round(responses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / total) : 0;
-      const excellent = responses.filter(r => r.quality === 'excellent').length;
-      const good = responses.filter(r => r.quality === 'good').length; 
-      const needsWork = responses.filter(r => r.quality === 'needs-work').length;
-      
       document.getElementById('total-responses').textContent = total;
-      document.getElementById('avg-words').textContent = avgWords;
-      document.getElementById('excellent-count').textContent = excellent;
-      document.getElementById('good-count').textContent = good;
-      document.getElementById('needs-work-count').textContent = needsWork;
     }
 
     function switchQuestion() {
       currentQuestion = parseInt(document.getElementById('question-selector').value);
       generateResponseCards();
-    }
-
-    function filterByQuality(quality) {
-      currentFilter = quality;
-      
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`filter-${quality}`).classList.add('active');
-      
-      generateResponseCards();
-      showNotification(`Showing ${quality === 'all' ? 'all' : quality} responses`);
     }
 
     function selectResponse(cardElement, response) {
@@ -751,8 +614,67 @@
       showNotification(`Selected response from ${response.studentName || 'student'}`);
     }
 
+    // Display Mode Functions
+    function openScrollView() {
+      // Update active state
+      updateDisplayButtons('scroll-btn');
+      
+      // Add loading state
+      const button = document.getElementById('scroll-btn');
+      const originalContent = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
+      
+      setTimeout(() => {
+        // Open the scroll view display
+        window.open('../displays/display1.html', '_blank');
+        
+        // Reset button after delay
+        setTimeout(() => {
+          button.innerHTML = originalContent;
+        }, 1000);
+      }, 500);
+    }
+
+    function openStackedView() {
+      // Update active state
+      updateDisplayButtons('stacked-btn');
+      
+      // For now, show notification that this is the current view
+      showNotification('Stacked view - current display mode', 'success');
+      
+      // TODO: This will be implemented to show cards stacked like a deck
+      console.log('Stacked view activated - cards will appear as a deck');
+    }
+
+    function openSpreadView() {
+      // Update active state  
+      updateDisplayButtons('spread-btn');
+      
+      // Add loading state
+      const button = document.getElementById('spread-btn');
+      const originalContent = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
+      
+      setTimeout(() => {
+        // Open the spread out mind map display
+        window.open('../displays/display3.html', '_blank');
+        
+        // Reset button after delay
+        setTimeout(() => {
+          button.innerHTML = originalContent;
+        }, 1000);
+      }, 500);
+    }
+
+    function updateDisplayButtons(activeId) {
+      // Remove active class from all display buttons
+      document.querySelectorAll('.display-btn').forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
+      document.getElementById(activeId).classList.add('active');
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-      populateQuestionSelector();
       generateResponseCards();
     });
   </script>
