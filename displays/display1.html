@@ -1,1 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Touch-Controlled Interactive Reading Wizard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      /* INTUITY Brand Colors */
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
+      --accent-teal: #2dd4bf;
+      --accent-electric: #0066ff;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --success: #10b981;
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      
+      /* Enhanced dimensions for 9cm smartphone width */
+      --card-width: 340px; /* ~9cm */
+      --card-height: 252px;
+      --card-spacing: 36px;
+      --card-min-scale: 0.6;
+      --card-max-scale: 1.5;
+      
+      /* Animation timings */
+      --transition-fast: 0.2s;
+      --transition-medium: 0.4s;
+      --transition-slow: 0.6s;
+      
+      /* Effects */
+      --blur: blur(20px);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      touch-action: pan-y;
+    }
+    
+    /* Enhanced Constellation Background */
+    .constellation-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+    
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: twinkle 4s infinite alternate;
+    }
+    
+    .star:nth-child(even) {
+      animation-delay: 2s;
+      background: var(--accent-teal);
+    }
+    
+    .star:nth-child(3n) {
+      animation-delay: 1s;
+      background: var(--accent-electric);
+      opacity: 0.6;
+    }
+    
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 0.9; transform: scale(1.2); }
+    }
+    
+    /* Wizard Header */
+    .wizard-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    
+    .brand-name::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      font-size: 1.2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+    }
+    
+    .wizard-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .wizard-progress {
+      margin-top: 1rem;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--intuity-teal), var(--intuity-gold));
+      width: 0%;
+      transition: width var(--transition-medium) ease;
+      border-radius: 2px;
+    }
+    
+    /* Touch Scroll Indicator */
+    .scroll-indicator {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 999;
+      opacity: 0.6;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .scroll-indicator.visible {
+      opacity: 1;
+    }
+    
+    .scroll-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .scroll-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+    
+    .scroll-dot.active {
+      background: var(--accent-teal);
+      transform: scale(1.3);
+    }
+    
+    /* Vertical Carousel Container */
+    .carousel-container {
+      position: fixed;
+      top: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: var(--card-width);
+      height: calc(100vh - 220px);
+      overflow: hidden;
+      z-index: 10;
+      touch-action: pan-y;
+    }
+    
+    .carousel-track {
+      position: relative;
+      height: 100%;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+    
+    .carousel-track.dragging {
+      transition: none;
+    }
+    
+    /* Enhanced Interactive Cards */
+    .interactive-card {
+      position: absolute;
+      width: var(--card-width);
+      height: var(--card-height);
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transform-origin: center;
+      scale: 1;
+      touch-action: manipulation;
+      will-change: transform, box-shadow;
+    }
+    
+    .interactive-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-teal);
+    }
+    
+    .interactive-card.focused {
+      border-color: var(--accent-gold);
+      box-shadow: var(--shadow-active);
+      scale: var(--card-max-scale);
+      z-index: 100;
+    }
+    
+    .interactive-card.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--success);
+    }
+    
+    /* Enhanced Touch Feedback */
+    .interactive-card.touch-active {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--shadow-active);
+      border-color: var(--accent-gold);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .interactive-card.touch-feedback {
+      animation: touchPulse 0.3s ease-out;
+    }
+    
+    @keyframes touchPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    
+    .interactive-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition-medium) ease;
+    }
+    
+    .interactive-card:hover::before,
+    .interactive-card.focused::before {
+      transform: scaleX(1);
+    }
+    
+    /* Card Content */
+    .card-number {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--accent-teal);
+      color: var(--bg-primary);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    
+    .card-name-input {
+      width: calc(70% - 35px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      transition: all var(--transition-fast) ease;
+      margin-bottom: 8px;
+      touch-action: manipulation;
+    }
+    
+    .card-name-input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    
+    .card-name-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.2);
+    }
+    
+    /* Interactive Input Field */
+    .card-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition-fast) ease;
+      resize: none;
+      min-height: 140px; /* Increased to maximum available space */
+      touch-action: manipulation;
+    }
+    
+    .card-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .card-input:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+    }
+    
+    .card-input:not(:placeholder-shown) {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    /* Progress Indicator */
+    .card-progress {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .card-progress-fill {
+      height: 100%;
+      background: var(--success);
+      width: 0%;
+      transition: width var(--transition-medium) ease;
+      border-radius: 2px;
+    }
+    
+    /* Bottom Navigation */
+    .wizard-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-top: 1px solid var(--card-border);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .nav-btn {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast) ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      touch-action: manipulation;
+    }
+    
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      transform: translateY(-2px);
+    }
+    
+    .nav-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+    }
+    
+    .nav-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-2px) scale(1.05);
+    }
+    
+    .wizard-info {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+    
+    /* Touch Instructions */
+    .touch-hint {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(45, 212, 191, 0.9);
+      color: var(--bg-primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 999;
+      opacity: 0;
+      animation: fadeInOut 4s ease-in-out;
+      pointer-events: none;
+    }
+    
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 400px) {
+      :root {
+        --card-width: 95vw;
+      }
+      
+      .carousel-container {
+        width: 95vw;
+      }
+      
+      .brand-name {
+        font-size: 1.5rem;
+      }
+      
+      .scroll-indicator {
+        right: 10px;
+      }
+    }
+    
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .carousel-track {
+        transition: none;
+      }
+      
+      .interactive-card {
+        transition: none;
+      }
+      
+      .touch-hint {
+        animation: none;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Enhanced Constellation Background -->
+  <div class="constellation-bg" id="constellation"></div>
+  
+  <!-- Touch Hint -->
+  <div class="touch-hint" id="touchHint">
+    👆 Swipe up/down to navigate through cards
+  </div>
+  
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" id="scrollIndicator">
+    <div class="scroll-dots" id="scrollDots"></div>
+  </div>
+  
+  <!-- Wizard Header -->
+  <header class="wizard-header">
+    <div class="brand-name">INTUITY</div>
+    <div class="wizard-subtitle">Touch-Controlled Interactive Reading Wizard</div>
+    <div class="wizard-progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </header>
+  
+  <!-- Vertical Carousel Container -->
+  <div class="carousel-container" id="carouselContainer">
+    <div class="carousel-track" id="carouselTrack">
+      <!-- Cards will be populated here -->
+    </div>
+  </div>
+  
+  <!-- Bottom Navigation -->
+  <nav class="wizard-nav">
+    <a href="#" class="nav-btn" id="resetBtn">
+      <i class="fas fa-refresh"></i> Reset
+    </a>
+    <div class="wizard-info">
+      <div id="completedCount">0 / 10 Complete</div>
+      <div style="font-size: 0.7rem; margin-top: 2px;">Enter name + 15 words • Swipe to navigate • Touch for focus</div>
+    </div>
+    <a href="#" class="nav-btn primary" id="nextBtn">
+      Next <i class="fas fa-arrow-right"></i>
+    </a>
+  </nav>
 
+  <script>
+    const testData = [
+      { id: 1, title: "The Digital Green Revolution", progress: 0, content: "", name: "", placeholder: "What are the main benefits of digital agriculture?" },
+      { id: 2, title: "The Memory Palace Technique", progress: 0, content: "", name: "", placeholder: "Describe how you would build a memory palace..." },
+      { id: 3, title: "Climate Change Solutions", progress: 0, content: "", name: "", placeholder: "List three innovative solutions to climate change..." },
+      { id: 4, title: "Future of AI in Education", progress: 75, content: "", name: "", placeholder: "How can AI personalize learning experiences?" },
+      { id: 5, title: "Sustainable Energy Systems", progress: 100, content: "", name: "", placeholder: "Compare solar vs wind energy efficiency..." },
+      { id: 6, title: "Saving Languages in the Digital Age", progress: 50, content: "", name: "", placeholder: "How can technology preserve endangered languages?" },
+      { id: 7, title: "Space Exploration Ethics", progress: 0, content: "", name: "", placeholder: "What ethical considerations should guide space exploration?" },
+      { id: 8, title: "Neuroscience and Learning", progress: 100, content: "", name: "", placeholder: "How does the brain adapt when learning new languages?" },
+      { id: 9, title: "Cultural Exchange Online", progress: 25, content: "", name: "", placeholder: "Describe the impact of digital cultural exchange..." },
+      { id: 10, title: "The Future of Work", progress: 0, content: "", name: "", placeholder: "How will remote work change society?" }
+    ];
+
+    let completedTests = 0;
+    let focusedCard = null;
+    let currentScrollPosition = 0;
+    let cardHeight = 252;
+    let cardSpacing = 36;
+    let cardStep = cardHeight + cardSpacing;
+
+    // Touch/scroll control variables
+    let track = null;
+    let container = null;
+
+    // Enhanced constellation
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      const starCount = 80;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (2 + Math.random() * 4) + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    // Create scroll indicator dots
+    function createScrollIndicator() {
+      const scrollDots = document.getElementById('scrollDots');
+      
+      testData.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'scroll-dot';
+        if (index === 0) dot.classList.add('active');
+        scrollDots.appendChild(dot);
+      });
+    }
+
+    // Update scroll indicator
+    function updateScrollIndicator() {
+      const dots = document.querySelectorAll('.scroll-dot');
+      const currentIndex = Math.round(Math.abs(currentScrollPosition) / cardStep);
+      
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    // Create vertical carousel cards
+    function createCarouselCards() {
+      track = document.getElementById('carouselTrack');
+      container = document.getElementById('carouselContainer');
+      
+      // Create cards with proper spacing
+      testData.forEach((test, index) => {
+        const card = document.createElement('div');
+        card.className = `interactive-card ${test.progress === 100 ? 'completed' : ''}`;
+        card.id = `card-${test.id}`;
+        
+        // Position cards vertically with spacing
+        const yPosition = index * cardStep;
+        
+        card.style.top = yPosition + 'px';
+        card.style.left = '0px';
+        
+        card.innerHTML = `
+          <div class="card-number">${test.id}</div>
+          <input 
+            type="text" 
+            class="card-name-input" 
+            placeholder="Enter your name..." 
+            value="${test.name}"
+          />
+          <textarea 
+            class="card-input" 
+            placeholder="${test.placeholder}"
+            rows="2"
+          >${test.content}</textarea>
+          <div class="card-progress">
+            <div class="card-progress-fill" style="width: ${test.progress}%"></div>
+          </div>
+        `;
+        
+        setupCardInteractions(card, test);
+        track.appendChild(card);
+        
+        if (test.progress === 100) completedTests++;
+      });
+      
+      updateProgress();
+      setupTouchControls();
+    }
+
+    // Enhanced touch controls with improved sensitivity and smoothness
+    function setupTouchControls() {
+      let startY = 0;
+      let startScrollPosition = 0;
+      let isScrolling = false;
+      let velocityTracker = [];
+      let lastTouchTime = 0;
+      let touchStartTime = 0;
+      
+      // Enhanced touch sensitivity settings
+      const touchSensitivity = 1.2; // Increased sensitivity
+      const momentumMultiplier = 400; // Stronger momentum
+      const frictionRate = 0.94; // Smoother deceleration
+      const snapThreshold = 20; // More forgiving snap threshold
+      
+      // Touch events for mobile with enhanced sensitivity
+      container.addEventListener('touchstart', (e) => {
+        // Allow interaction with input fields and buttons
+        if (e.target.closest('.card-input') || 
+            e.target.closest('.card-name-input')) {
+          return;
+        }
+        
+        startY = e.touches[0].clientY;
+        startScrollPosition = currentScrollPosition;
+        isScrolling = true;
+        velocityTracker = [];
+        touchStartTime = Date.now();
+        lastTouchTime = touchStartTime;
+        
+        // Enhanced touch feedback
+        const touchedCard = e.target.closest('.interactive-card');
+        if (touchedCard && !touchedCard.classList.contains('focused')) {
+          touchedCard.classList.add('touch-active');
+        }
+        
+        track.classList.add('dragging');
+        e.preventDefault();
+      }, { passive: false });
+      
+      container.addEventListener('touchmove', (e) => {
+        if (!isScrolling) return;
+        
+        // Allow interaction with input fields
+        if (e.target.closest('.card-input') || 
+            e.target.closest('.card-name-input')) {
+          return;
+        }
+        
+        const currentY = e.touches[0].clientY;
+        const deltaY = (currentY - startY) * touchSensitivity;
+        const newPosition = startScrollPosition + deltaY;
+        const currentTime = Date.now();
+        
+        // Enhanced velocity tracking with more data points
+        velocityTracker.push({ 
+          pos: deltaY, 
+          time: currentTime 
+        });
+        
+        // Keep more velocity data for smoother calculations
+        if (velocityTracker.length > 8) {
+          velocityTracker.shift();
+        }
+        
+        setScrollPosition(newPosition);
+        lastTouchTime = currentTime;
+        e.preventDefault();
+      }, { passive: false });
+      
+      container.addEventListener('touchend', (e) => {
+        if (!isScrolling) return;
+        
+        isScrolling = false;
+        track.classList.remove('dragging');
+        
+        // Remove touch feedback from all cards
+        document.querySelectorAll('.touch-active').forEach(card => {
+          card.classList.remove('touch-active');
+        });
+        
+        const touchDuration = Date.now() - touchStartTime;
+        const touchDistance = Math.abs(currentScrollPosition - startScrollPosition);
+        
+        // Enhanced velocity calculation with weighted average
+        let velocity = 0;
+        if (velocityTracker.length >= 3) {
+          const recentData = velocityTracker.slice(-5);
+          let weightedVelocity = 0;
+          let totalWeight = 0;
+          
+          for (let i = 1; i < recentData.length; i++) {
+            const timeDelta = recentData[i].time - recentData[i-1].time;
+            const posDelta = recentData[i].pos - recentData[i-1].pos;
+            
+            if (timeDelta > 0) {
+              const weight = Math.max(1, 6 - i); // More weight to recent movements
+              weightedVelocity += (posDelta / timeDelta) * weight;
+              totalWeight += weight;
+            }
+          }
+          
+          if (totalWeight > 0) {
+            velocity = weightedVelocity / totalWeight;
+          }
+        }
+        
+        // Quick tap detection for enhanced interactivity
+        if (touchDuration < 200 && touchDistance < 10) {
+          const touchedCard = e.target.closest('.interactive-card');
+          if (touchedCard) {
+            touchedCard.classList.add('touch-feedback');
+            setTimeout(() => {
+              touchedCard.classList.remove('touch-feedback');
+            }, 300);
+          }
+        }
+        
+        // Apply momentum or snap with enhanced sensitivity
+        if (Math.abs(velocity) > 0.2) {
+          applyEnhancedMomentum(velocity);
+        } else if (Math.abs(currentScrollPosition - startScrollPosition) > snapThreshold) {
+          snapToNearestCard();
+        } else {
+          // Very small movements snap back to original position
+          snapToNearestCard();
+        }
+        
+        e.preventDefault();
+      }, { passive: false });
+      
+      // Enhanced mouse events for desktop
+      let isMouseDown = false;
+      
+      container.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.card-input') || 
+            e.target.closest('.card-name-input')) {
+          return;
+        }
+        
+        startY = e.clientY;
+        startScrollPosition = currentScrollPosition;
+        isScrolling = true;
+        isMouseDown = true;
+        velocityTracker = [];
+        
+        const touchedCard = e.target.closest('.interactive-card');
+        if (touchedCard) {
+          touchedCard.classList.add('touch-active');
+        }
+        
+        track.classList.add('dragging');
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!isScrolling || !isMouseDown) return;
+        
+        const deltaY = (e.clientY - startY) * 0.8; // Slightly less sensitive for mouse
+        const newPosition = startScrollPosition + deltaY;
+        
+        // Track mouse velocity
+        velocityTracker.push({
+          pos: deltaY,
+          time: Date.now()
+        });
+        
+        if (velocityTracker.length > 5) {
+          velocityTracker.shift();
+        }
+        
+        setScrollPosition(newPosition);
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mouseup', (e) => {
+        if (!isScrolling) return;
+        
+        isScrolling = false;
+        isMouseDown = false;
+        track.classList.remove('dragging');
+        
+        // Remove touch feedback
+        document.querySelectorAll('.touch-active').forEach(card => {
+          card.classList.remove('touch-active');
+        });
+        
+        // Calculate mouse velocity and apply momentum
+        let velocity = 0;
+        if (velocityTracker.length >= 2) {
+          const recent = velocityTracker.slice(-3);
+          const totalTime = recent[recent.length - 1].time - recent[0].time;
+          const totalDistance = recent[recent.length - 1].pos - recent[0].pos;
+          
+          if (totalTime > 0) {
+            velocity = totalDistance / totalTime;
+          }
+        }
+        
+        if (Math.abs(velocity) > 0.3) {
+          applyEnhancedMomentum(velocity);
+        } else {
+          snapToNearestCard();
+        }
+      });
+      
+      // Enhanced wheel scrolling with improved sensitivity
+      container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        
+        const deltaY = e.deltaY * -1.2; // Increased wheel sensitivity
+        const newPosition = currentScrollPosition + deltaY;
+        setScrollPosition(newPosition);
+        
+        // Shorter debounce for more responsive feel
+        clearTimeout(container.wheelTimeout);
+        container.wheelTimeout = setTimeout(() => {
+          snapToNearestCard();
+        }, 100);
+      }, { passive: false });
+    }
+
+    // Set scroll position with bounds checking
+    function setScrollPosition(position) {
+      const maxScroll = -(testData.length - 1) * cardStep;
+      const minScroll = 0;
+      
+      currentScrollPosition = Math.max(maxScroll, Math.min(minScroll, position));
+      track.style.transform = `translateY(${currentScrollPosition}px)`;
+      updateScrollIndicator();
+    }
+
+    // Enhanced momentum scrolling with improved physics
+    function applyEnhancedMomentum(initialVelocity) {
+      const friction = 0.94; // Smoother friction
+      const minVelocity = 0.3; // Lower threshold for smoother stops
+      const maxVelocity = 8; // Cap velocity to prevent excessive scrolling
+      
+      let velocity = Math.max(-maxVelocity, Math.min(maxVelocity, initialVelocity * 400));
+      
+      const animate = () => {
+        velocity *= friction;
+        
+        // More gradual stopping
+        if (Math.abs(velocity) < minVelocity) {
+          snapToNearestCard();
+          return;
+        }
+        
+        const newPosition = currentScrollPosition + velocity;
+        setScrollPosition(newPosition);
+        
+        requestAnimationFrame(animate);
+      };
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Snap to nearest card
+    function snapToNearestCard() {
+      const targetIndex = Math.round(Math.abs(currentScrollPosition) / cardStep);
+      const targetPosition = -targetIndex * cardStep;
+      
+      // Smooth transition to target
+      const startPosition = currentScrollPosition;
+      const distance = targetPosition - startPosition;
+      const duration = 300;
+      let startTime = null;
+      
+      const animate = (currentTime) => {
+        if (!startTime) startTime = currentTime;
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        
+        const newPosition = startPosition + distance * easedProgress;
+        setScrollPosition(newPosition);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Setup card interactions with enhanced touch responsiveness
+    function setupCardInteractions(card, testData) {
+      const nameInput = card.querySelector('.card-name-input');
+      const contentInput = card.querySelector('.card-input');
+      
+      // Enhanced focus/unfocus functionality with smooth transitions
+      card.addEventListener('click', (e) => {
+        if (e.target.classList.contains('card-input')) return;
+        if (e.target.classList.contains('card-name-input')) return;
+        
+        if (focusedCard && focusedCard !== card) {
+          focusedCard.classList.remove('focused');
+        }
+        
+        if (focusedCard === card) {
+          card.classList.remove('focused');
+          focusedCard = null;
+        } else {
+          card.classList.add('focused');
+          focusedCard = card;
+          
+          // Add subtle haptic feedback simulation
+          card.style.transform = 'scale(1.01)';
+          setTimeout(() => {
+            card.style.transform = '';
+          }, 150);
+        }
+      });
+      
+      // Enhanced input interactions with better touch responsiveness
+      nameInput.addEventListener('input', (e) => {
+        testData.name = e.target.value;
+        updateCardProgress(card, testData);
+      });
+      
+      nameInput.addEventListener('focus', () => {
+        nameInput.parentNode.style.transform = 'translateY(-2px)';
+      });
+      
+      nameInput.addEventListener('blur', () => {
+        nameInput.parentNode.style.transform = '';
+      });
+      
+      contentInput.addEventListener('input', (e) => {
+        testData.content = e.target.value;
+        updateCardProgress(card, testData);
+      });
+      
+      contentInput.addEventListener('focus', () => {
+        card.style.borderColor = 'var(--accent-teal)';
+      });
+      
+      contentInput.addEventListener('blur', () => {
+        card.style.borderColor = '';
+      });
+    }
+
+    // Update card progress based on input
+    function updateCardProgress(card, testData) {
+      const nameInput = card.querySelector('.card-name-input');
+      const contentInput = card.querySelector('.card-input');
+      const progressFill = card.querySelector('.card-progress-fill');
+      
+      const nameContent = nameInput.value.trim();
+      const contentContent = contentInput.value.trim();
+      const contentWords = contentContent ? contentContent.split(/\s+/).length : 0;
+      
+      // Progress calculation: 20% for name, 80% for content (min 15 words)
+      let progress = 0;
+      
+      if (nameContent.length > 0) {
+        progress += 20; // 20% for having a name
+      }
+      
+      const targetWords = 15;
+      const contentProgress = Math.min(80, (contentWords / targetWords) * 80);
+      progress += contentProgress;
+      
+      testData.progress = progress;
+      progressFill.style.width = progress + '%';
+      
+      // Update completion status
+      if (progress >= 100 && !card.classList.contains('completed')) {
+        card.classList.add('completed');
+        completedTests++;
+        updateProgress();
+      } else if (progress < 100 && card.classList.contains('completed')) {
+        card.classList.remove('completed');
+        completedTests--;
+        updateProgress();
+      }
+    }
+
+    // Update overall progress
+    function updateProgress() {
+      const progressBar = document.getElementById('progressBar');
+      const completedCount = document.getElementById('completedCount');
+      
+      const percentage = (completedTests / testData.length) * 100;
+      progressBar.style.width = percentage + '%';
+      completedCount.textContent = `${completedTests} / ${testData.length} Complete`;
+    }
+
+    // Navigation event listeners
+    document.getElementById('resetBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Reset to first card with smooth animation
+      setScrollPosition(0);
+      snapToNearestCard();
+      
+      // Unfocus any focused card with smooth transition
+      if (focusedCard) {
+        focusedCard.classList.remove('focused');
+        focusedCard = null;
+      }
+      
+      // Clear any active touch states
+      document.querySelectorAll('.touch-active').forEach(card => {
+        card.classList.remove('touch-active');
+      });
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      if (completedTests === testData.length) {
+        alert('🎉 Congratulations! All reading exercises completed!\n\nYour responses show great engagement with the material.');
+      } else {
+        alert(`📝 Complete ${testData.length - completedTests} more exercises to continue.\n\nTip: Enter your name and write at least 15 words in each response field.`);
+      }
+    });
+
+    // Enhanced click outside to unfocus with smooth animations
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.interactive-card') && focusedCard) {
+        focusedCard.classList.remove('focused');
+        focusedCard = null;
+      }
+    });
+
+    // Show touch hint after initial load
+    function showTouchHint() {
+      const touchHint = document.getElementById('touchHint');
+      setTimeout(() => {
+        touchHint.style.animation = 'fadeInOut 4s ease-in-out';
+      }, 1000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createConstellation();
+      createScrollIndicator();
+      createCarouselCards();
+      showTouchHint();
+      
+      // Show scroll indicator initially
+      const scrollIndicator = document.getElementById('scrollIndicator');
+      scrollIndicator.classList.add('visible');
+      
+      // Hide scroll indicator after some time
+      setTimeout(() => {
+        scrollIndicator.classList.remove('visible');
+      }, 3000);
+    });
+
+    // Prevent page scroll when interacting with carousel
+    document.body.addEventListener('touchmove', (e) => {
+      if (e.target.closest('.carousel-container')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+  </script>
+</body>
+</html>
