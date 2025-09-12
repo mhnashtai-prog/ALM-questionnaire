@@ -1,1 +1,761 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTUITY - Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-teal: #2dd4bf;
+      --accent-lime: #32d74b;
+      --accent-orange: #ff9500;
+      --accent-brick: #c44536;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --blur: blur(20px);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 100px;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(26, 35, 50, 0.9);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: var(--space-lg);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-top: var(--space-sm);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-lg);
+      position: relative;
+      z-index: 10;
+    }
+
+    .controls-container {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+    }
+
+    .controls-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .question-selector {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: var(--blur);
+      min-width: 300px;
+    }
+
+    .question-selector:focus {
+      outline: none;
+      border-color: var(--accent-teal);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-md) var(--space-lg);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: var(--blur);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      transform: translateY(-1px);
+    }
+
+    .filter-btn.active {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+      color: #000;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      backdrop-filter: var(--blur);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .responses-container {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+    }
+
+    .responses-header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .responses-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .responses-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .response-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .response-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: var(--space-xl);
+      backdrop-filter: var(--blur);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+    }
+
+    .response-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    }
+
+    .response-card.excellent {
+      border-color: var(--accent-lime);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(50, 215, 75, 0.1));
+    }
+
+    .response-card.good {
+      border-color: var(--accent-orange);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 159, 10, 0.1));
+    }
+
+    .response-card.needs-work {
+      border-color: var(--accent-brick);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(196, 69, 54, 0.1));
+    }
+
+    .student-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .student-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-lime));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 700;
+      font-size: 1.25rem;
+      border: 2px solid var(--card-border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .student-info {
+      flex: 1;
+    }
+
+    .student-name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .response-meta {
+      display: flex;
+      gap: var(--space-md);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .quality-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .quality-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .excellent .quality-indicator {
+      background: var(--accent-lime);
+      box-shadow: 0 0 8px rgba(50, 215, 75, 0.5);
+    }
+
+    .good .quality-indicator {
+      background: var(--accent-orange);
+      box-shadow: 0 0 8px rgba(255, 159, 10, 0.5);
+    }
+
+    .needs-work .quality-indicator {
+      background: var(--accent-brick);
+      box-shadow: 0 0 8px rgba(196, 69, 54, 0.5);
+    }
+
+    .response-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .response-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.85rem;
+    }
+
+    .stat-group {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      color: var(--text-muted);
+    }
+
+    .glass-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-top: 1px solid var(--card-border);
+      padding: var(--space-lg);
+      z-index: 100;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: var(--space-md);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+    }
+
+    .footer-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .footer-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: var(--blur);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-width: 80px;
+      height: 60px;
+      text-decoration: none;
+    }
+
+    .footer-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
+    }
+
+    .footer-btn i {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+    }
+
+    .footer-btn span {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-btn.active {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+      color: #000;
+    }
+
+    @media (max-width: 768px) {
+      .controls-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .question-selector {
+        min-width: auto;
+      }
+
+      .filter-controls {
+        justify-content: center;
+      }
+
+      .stats-bar {
+        flex-direction: column;
+        gap: var(--space-md);
+      }
+
+      .response-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-buttons {
+        flex-wrap: wrap;
+        gap: var(--space-md);
+      }
+    }
+
+    .notification {
+      position: fixed;
+      top: 100px;
+      right: var(--space-lg);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: var(--space-md);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      border-color: var(--accent-lime);
+    }
+
+    .notification.error {
+      border-color: var(--accent-brick);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="brand-name">INTUITY</div>
+      <div class="brand-subtitle">Analytics</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="controls-container">
+      <div class="controls-header">
+        <select class="question-selector" id="question-selector" onchange="switchQuestion()">
+          <option value="1">Question 1: Digital Technology Impact</option>
+          <option value="2">Question 2: Online vs Traditional Learning</option>
+          <option value="3">Question 3: Language Learning Strategies</option>
+          <option value="4">Question 4: Cultural Understanding</option>
+          <option value="5">Question 5: Motivation in Learning</option>
+          <option value="6">Question 6: Assessment Methods</option>
+        </select>
+        
+        <div class="filter-controls">
+          <button class="filter-btn active" onclick="filterByQuality('all')" id="filter-all">
+            <i class="fas fa-list"></i>
+            <span>All</span>
+          </button>
+          <button class="filter-btn" onclick="filterByQuality('excellent')" id="filter-excellent">
+            <i class="fas fa-star"></i>
+            <span>Excellent</span>
+          </button>
+          <button class="filter-btn" onclick="filterByQuality('good')" id="filter-good">
+            <i class="fas fa-thumbs-up"></i>
+            <span>Good</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-value" id="total-responses">0</div>
+          <div class="stat-label">Total Responses</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="avg-words">0</div>
+          <div class="stat-label">Avg Words</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="excellent-count">0</div>
+          <div class="stat-label">Excellent</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="good-count">0</div>
+          <div class="stat-label">Good</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="needs-work-count">0</div>
+          <div class="stat-label">Needs Work</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="responses-container">
+      <div class="responses-header">
+        <div class="responses-title" id="responses-title">Student Responses - Question 1</div>
+        <div class="responses-subtitle">Click on any response to select for classroom discussion</div>
+      </div>
+
+      <div class="response-grid" id="response-grid">
+        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+          No student responses yet. Questions will appear here once students start submitting answers.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-footer">
+    <div class="footer-container">
+      <div class="footer-buttons">
+        
+        <a href="../teachers/questions/" class="footer-btn">
+          <i class="fas fa-plus"></i>
+          <span>Create</span>
+        </a>
+
+        <button class="footer-btn active">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analytics</span>
+        </button>
+
+        <a href="../" class="footer-btn">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">
+    <div id="notification-content"></div>
+  </div>
+
+  <script>
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      const content = document.getElementById('notification-content');
+      
+      content.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Load responses from localStorage (integrated with teacher system)
+    function loadStudentResponses() {
+      try {
+        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        return responses;
+      } catch (error) {
+        console.error('Error loading responses:', error);
+        return [];
+      }
+    }
+
+    let currentQuestion = 1;
+    let currentFilter = 'all';
+
+    function generateResponseCards() {
+      const container = document.getElementById('response-grid');
+      const responses = loadStudentResponses().filter(r => r.questionId === currentQuestion) || [];
+      
+      container.innerHTML = '';
+      
+      document.getElementById('responses-title').textContent = `Student Responses - Question ${currentQuestion}`;
+      
+      let filteredResponses = responses;
+      if (currentFilter !== 'all') {
+        filteredResponses = responses.filter(r => r.quality === currentFilter);
+      }
+      
+      updateStats(responses);
+      
+      if (filteredResponses.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            ${responses.length === 0 ? 
+              'No student responses yet. Questions will appear here once students start submitting answers.' :
+              `No ${currentFilter === 'all' ? '' : currentFilter + ' '}responses found for this question.`
+            }
+          </div>
+        `;
+        return;
+      }
+      
+      filteredResponses.forEach((response, index) => {
+        const card = document.createElement('div');
+        card.className = `response-card ${response.quality}`;
+        card.setAttribute('data-response-id', response.id);
+        
+        const avatarColors = [
+          'linear-gradient(135deg, #007AFF, #BF5AF2)',
+          'linear-gradient(135deg, #30D158, #64D2FF)', 
+          'linear-gradient(135deg, #FF9F0A, #FF2D92)',
+          'linear-gradient(135deg, #FF453A, #BF5AF2)',
+          'linear-gradient(135deg, #5E5CE6, #007AFF)',
+          'linear-gradient(135deg, #64D2FF, #30D158)'
+        ];
+        
+        card.innerHTML = `
+          <div class="student-header">
+            <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
+              ${response.studentName ? response.studentName.substring(0, 2).toUpperCase() : 'ST'}
+            </div>
+            <div class="student-info">
+              <div class="student-name">${response.studentName || 'Student ' + (index + 1)}</div>
+              <div class="response-meta">
+                <span>📝 ${response.wordCount} words</span>
+                <span>🔑 ${response.keywords || 0}/4</span>
+                <span>⏰ ${response.timestamp}</span>
+              </div>
+            </div>
+            <div class="quality-badge">
+              <div class="quality-indicator"></div>
+              <span>${response.score || 0}%</span>
+            </div>
+          </div>
+          
+          <div class="response-text">
+            ${response.answer}
+          </div>
+          
+          <div class="response-stats">
+            <div class="stat-group">
+              <div class="stat">
+                <span>${getQualityEmoji(response.quality)}</span>
+                <span>${capitalizeFirst(response.quality)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        card.addEventListener('click', () => selectResponse(card, response));
+        container.appendChild(card);
+      });
+    }
+
+    function getQualityEmoji(quality) {
+      const emojis = {
+        'excellent': '🟢',
+        'good': '🟡', 
+        'needs-work': '🔴'
+      };
+      return emojis[quality] || '⚪';
+    }
+
+    function capitalizeFirst(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
+    }
+
+    function updateStats(responses) {
+      const total = responses.length;
+      const avgWords = total > 0 ? Math.round(responses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / total) : 0;
+      const excellent = responses.filter(r => r.quality === 'excellent').length;
+      const good = responses.filter(r => r.quality === 'good').length; 
+      const needsWork = responses.filter(r => r.quality === 'needs-work').length;
+      
+      document.getElementById('total-responses').textContent = total;
+      document.getElementById('avg-words').textContent = avgWords;
+      document.getElementById('excellent-count').textContent = excellent;
+      document.getElementById('good-count').textContent = good;
+      document.getElementById('needs-work-count').textContent = needsWork;
+    }
+
+    function switchQuestion() {
+      currentQuestion = parseInt(document.getElementById('question-selector').value);
+      generateResponseCards();
+    }
+
+    function filterByQuality(quality) {
+      currentFilter = quality;
+      
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`filter-${quality}`).classList.add('active');
+      
+      generateResponseCards();
+      showNotification(`Showing ${quality === 'all' ? 'all' : quality} responses`);
+    }
+
+    function selectResponse(cardElement, response) {
+      document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
+      cardElement.classList.add('selected');
+      
+      showNotification(`Selected response from ${response.studentName || 'student'}`);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      populateQuestionSelector();
+      generateResponseCards();
+    });
+  </script>
+</body>
+</html>
