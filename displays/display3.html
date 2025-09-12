@@ -1,1 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Interactive Reading Wizard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      /* INTUITY Brand Colors */
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
+      --accent-teal: #2dd4bf;
+      --accent-electric: #0066ff;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --success: #10b981;
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      
+      /* Touch-optimized spacing */
+      --touch-target: 44px;
+      --card-min-size: 120px;
+      --card-max-size: 320px;
+      
+      /* Animation timings */
+      --transition-fast: 0.2s;
+      --transition-medium: 0.4s;
+      --transition-slow: 0.6s;
+      
+      /* Effects */
+      --blur: blur(20px);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --shadow-drag: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      touch-action: pan-x pan-y;
+    }
+    
+    /* Enhanced Constellation Background */
+    .constellation-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+    
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: twinkle 4s infinite alternate;
+    }
+    
+    .star:nth-child(even) {
+      animation-delay: 2s;
+      background: var(--accent-teal);
+    }
+    
+    .star:nth-child(3n) {
+      animation-delay: 1s;
+      background: var(--accent-electric);
+      opacity: 0.6;
+    }
+    
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 0.9; transform: scale(1.2); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+      50% { transform: translateY(-10px) rotateZ(1deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Wizard Header */
+    .wizard-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    
+    .brand-name::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      font-size: 1.2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+    }
+    
+    .wizard-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    /* Wizard Progress */
+    .wizard-progress {
+      margin-top: 1rem;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--intuity-teal), var(--intuity-gold));
+      width: 0%;
+      transition: width var(--transition-medium) ease;
+      border-radius: 2px;
+    }
+    
+    /* Main Wizard Container */
+    .wizard-container {
+      position: fixed;
+      top: 120px;
+      left: 0;
+      right: 0;
+      bottom: 80px;
+      overflow: hidden;
+      z-index: 10;
+    }
+    
+    /* Floating Cards Container */
+    .cards-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 1rem;
+    }
+    
+    /* Enhanced Floating Cards */
+    .floating-card {
+      position: absolute;
+      min-width: var(--card-min-size);
+      max-width: var(--card-max-size);
+      width: 200px;
+      height: 120px;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1rem;
+      cursor: grab;
+      transition: all var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+      z-index: 100;
+      animation: float 6s ease-in-out infinite;
+      touch-action: none;
+      overflow: hidden;
+    }
+    
+    .floating-card:active {
+      cursor: grabbing;
+    }
+    
+    .floating-card.dragging {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: var(--shadow-drag);
+      z-index: 1000;
+      animation: none;
+      transition: none;
+    }
+    
+    .floating-card.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--success);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .floating-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition-medium) ease;
+    }
+    
+    .floating-card:hover::before,
+    .floating-card.active::before {
+      transform: scaleX(1);
+    }
+    
+    /* Card Content */
+    .card-number {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--accent-teal);
+      color: var(--bg-primary);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-top: 0.5rem;
+    }
+    
+    .card-progress {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    
+    .card-progress-fill {
+      height: 100%;
+      background: var(--success);
+      width: 0%;
+      transition: width var(--transition-medium) ease;
+      border-radius: 1px;
+    }
+    
+    /* Resize Handle */
+    .resize-handle {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--accent-gold);
+      border-radius: 50% 0;
+      cursor: se-resize;
+      opacity: 0;
+      transition: opacity var(--transition-fast) ease;
+    }
+    
+    .floating-card:hover .resize-handle {
+      opacity: 0.7;
+    }
+    
+    .resize-handle:hover {
+      opacity: 1;
+    }
+    
+    /* Bottom Navigation */
+    .wizard-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-top: 1px solid var(--card-border);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .nav-btn {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast) ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: var(--touch-target);
+    }
+    
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      transform: translateY(-2px);
+    }
+    
+    .nav-btn:active {
+      transform: translateY(0);
+    }
+    
+    .nav-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+    }
+    
+    .nav-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-2px) scale(1.05);
+    }
+    
+    .wizard-info {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+    
+    /* Gesture Indicators */
+    .gesture-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      animation: fadeInOut 3s ease-in-out infinite;
+    }
+    
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.7; }
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .floating-card {
+        width: 180px;
+        height: 100px;
+        padding: 0.75rem;
+      }
+      
+      .brand-name {
+        font-size: 1.5rem;
+      }
+      
+      .nav-btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .wizard-header {
+        padding: 0.75rem;
+      }
+      
+      .wizard-container {
+        top: 100px;
+        bottom: 70px;
+      }
+      
+      .floating-card {
+        width: 160px;
+        height: 90px;
+        padding: 0.5rem;
+      }
+      
+      .card-title {
+        font-size: 0.8rem;
+      }
+      
+      .nav-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+    }
+    
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .star {
+        width: 1px;
+        height: 1px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Enhanced Constellation Background -->
+  <div class="constellation-bg" id="constellation"></div>
+  
+  <!-- Wizard Header -->
+  <header class="wizard-header">
+    <div class="brand-name">INTUITY</div>
+    <div class="wizard-subtitle">Interactive Reading Wizard</div>
+    <div class="wizard-progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </header>
+  
+  <!-- Main Wizard Container -->
+  <div class="wizard-container">
+    <div class="cards-container" id="cardsContainer">
+      <div class="gesture-hint" id="gestureHint">
+        <i class="fas fa-hand-paper"></i><br>
+        Drag, swipe & resize cards
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom Navigation -->
+  <nav class="wizard-nav">
+    <a href="#" class="nav-btn" id="resetBtn">
+      <i class="fas fa-refresh"></i> Reset
+    </a>
+    <div class="wizard-info">
+      <div id="completedCount">0 / 10 Complete</div>
+    </div>
+    <a href="#" class="nav-btn primary" id="nextBtn">
+      Next <i class="fas fa-arrow-right"></i>
+    </a>
+  </nav>
 
+  <script>
+    const testData = [
+      { id: 1, title: "The Digital Green Revolution", progress: 0 },
+      { id: 2, title: "The Digital Green Revolution", progress: 30 },
+      { id: 3, title: "The Memory Palace", progress: 0 },
+      { id: 4, title: "There's No Stopping Her!", progress: 75 },
+      { id: 5, title: "The Red Planet Challenge", progress: 100 },
+      { id: 6, title: "Saving Languages in the Digital Age", progress: 50 },
+      { id: 7, title: "See and Be Seen", progress: 0 },
+      { id: 8, title: "Specialist Music Schools", progress: 100 },
+      { id: 9, title: "A Stitch in Time", progress: 25 },
+      { id: 10, title: "The Future of Work: Beyond the Office", progress: 0 }
+    ];
+
+    let draggedCard = null;
+    let dragOffset = { x: 0, y: 0 };
+    let resizingCard = null;
+    let lastTouchTime = 0;
+    let completedTests = 0;
+
+    // Enhanced constellation
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      const starCount = 50;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (2 + Math.random() * 4) + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    // Create floating cards
+    function createFloatingCards() {
+      const container = document.getElementById('cardsContainer');
+      const containerRect = container.getBoundingClientRect();
+      
+      testData.forEach((test, index) => {
+        const card = document.createElement('div');
+        card.className = `floating-card ${test.progress === 100 ? 'completed' : ''}`;
+        card.id = `card-${test.id}`;
+        card.style.animationDelay = (index * 0.2) + 's';
+        
+        // Random initial positions (avoiding edges)
+        const margin = 50;
+        const x = margin + Math.random() * (containerRect.width - 250 - margin);
+        const y = margin + Math.random() * (containerRect.height - 150 - margin);
+        
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+        
+        card.innerHTML = `
+          <div class="card-number">${test.id}</div>
+          <div class="card-title">${test.title}</div>
+          <div class="card-progress">
+            <div class="card-progress-fill" style="width: ${test.progress}%"></div>
+          </div>
+          <div class="resize-handle"></div>
+        `;
+        
+        setupCardInteractions(card, test);
+        container.appendChild(card);
+        
+        if (test.progress === 100) completedTests++;
+      });
+      
+      updateProgress();
+      
+      // Hide gesture hint after cards are loaded
+      setTimeout(() => {
+        document.getElementById('gestureHint').style.display = 'none';
+      }, 4000);
+    }
+
+    // Setup card interactions
+    function setupCardInteractions(card, testData) {
+      const resizeHandle = card.querySelector('.resize-handle');
+      
+      // Mouse events
+      card.addEventListener('mousedown', (e) => startDrag(e, card));
+      resizeHandle.addEventListener('mousedown', (e) => startResize(e, card));
+      
+      // Touch events
+      card.addEventListener('touchstart', (e) => handleTouchStart(e, card), { passive: false });
+      card.addEventListener('touchmove', (e) => handleTouchMove(e), { passive: false });
+      card.addEventListener('touchend', (e) => handleTouchEnd(e), { passive: false });
+      
+      // Double tap to toggle completion
+      card.addEventListener('click', (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTouchTime;
+        
+        if (tapLength < 500 && tapLength > 0) {
+          toggleCompletion(card, testData);
+        }
+        
+        lastTouchTime = currentTime;
+      });
+    }
+
+    // Drag functionality
+    function startDrag(e, card) {
+      if (e.target.classList.contains('resize-handle')) return;
+      
+      draggedCard = card;
+      card.classList.add('dragging');
+      
+      const rect = card.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      
+      e.preventDefault();
+    }
+
+    function handleTouchStart(e, card) {
+      if (e.target.classList.contains('resize-handle')) {
+        startResize(e.touches[0], card);
+        return;
+      }
+      
+      startDrag(e.touches[0], card);
+    }
+
+    function handleTouchMove(e) {
+      e.preventDefault();
+      
+      if (draggedCard) {
+        const touch = e.touches[0];
+        const container = document.getElementById('cardsContainer');
+        const containerRect = container.getBoundingClientRect();
+        
+        let x = touch.clientX - containerRect.left - dragOffset.x;
+        let y = touch.clientY - containerRect.top - dragOffset.y;
+        
+        // Boundary constraints
+        x = Math.max(0, Math.min(x, containerRect.width - draggedCard.offsetWidth));
+        y = Math.max(0, Math.min(y, containerRect.height - draggedCard.offsetHeight));
+        
+        draggedCard.style.left = x + 'px';
+        draggedCard.style.top = y + 'px';
+      }
+      
+      if (resizingCard) {
+        const touch = e.touches[0];
+        const container = document.getElementById('cardsContainer');
+        const containerRect = container.getBoundingClientRect();
+        const cardRect = resizingCard.getBoundingClientRect();
+        
+        const newWidth = Math.max(120, Math.min(320, touch.clientX - cardRect.left));
+        const newHeight = Math.max(80, Math.min(200, touch.clientY - cardRect.top));
+        
+        resizingCard.style.width = newWidth + 'px';
+        resizingCard.style.height = newHeight + 'px';
+      }
+    }
+
+    function handleTouchEnd(e) {
+      if (draggedCard) {
+        draggedCard.classList.remove('dragging');
+        draggedCard = null;
+      }
+      
+      if (resizingCard) {
+        resizingCard = null;
+      }
+    }
+
+    // Mouse drag events
+    document.addEventListener('mousemove', (e) => {
+      if (draggedCard) {
+        const container = document.getElementById('cardsContainer');
+        const containerRect = container.getBoundingClientRect();
+        
+        let x = e.clientX - containerRect.left - dragOffset.x;
+        let y = e.clientY - containerRect.top - dragOffset.y;
+        
+        x = Math.max(0, Math.min(x, containerRect.width - draggedCard.offsetWidth));
+        y = Math.max(0, Math.min(y, containerRect.height - draggedCard.offsetHeight));
+        
+        draggedCard.style.left = x + 'px';
+        draggedCard.style.top = y + 'px';
+      }
+      
+      if (resizingCard) {
+        const cardRect = resizingCard.getBoundingClientRect();
+        const newWidth = Math.max(120, Math.min(320, e.clientX - cardRect.left));
+        const newHeight = Math.max(80, Math.min(200, e.clientY - cardRect.top));
+        
+        resizingCard.style.width = newWidth + 'px';
+        resizingCard.style.height = newHeight + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (draggedCard) {
+        draggedCard.classList.remove('dragging');
+        draggedCard = null;
+      }
+      
+      if (resizingCard) {
+        resizingCard = null;
+      }
+    });
+
+    // Resize functionality
+    function startResize(e, card) {
+      resizingCard = card;
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Toggle completion
+    function toggleCompletion(card, testData) {
+      const isCompleted = card.classList.contains('completed');
+      
+      if (isCompleted) {
+        card.classList.remove('completed');
+        testData.progress = 0;
+        completedTests--;
+      } else {
+        card.classList.add('completed');
+        testData.progress = 100;
+        completedTests++;
+      }
+      
+      const progressFill = card.querySelector('.card-progress-fill');
+      progressFill.style.width = testData.progress + '%';
+      
+      updateProgress();
+    }
+
+    // Update overall progress
+    function updateProgress() {
+      const progressBar = document.getElementById('progressBar');
+      const completedCount = document.getElementById('completedCount');
+      
+      const percentage = (completedTests / testData.length) * 100;
+      progressBar.style.width = percentage + '%';
+      completedCount.textContent = `${completedTests} / ${testData.length} Complete`;
+    }
+
+    // Reset functionality
+    document.getElementById('resetBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const cards = document.querySelectorAll('.floating-card');
+      cards.forEach((card, index) => {
+        // Reset positions
+        const margin = 50;
+        const container = document.getElementById('cardsContainer');
+        const containerRect = container.getBoundingClientRect();
+        
+        const x = margin + Math.random() * (containerRect.width - 250 - margin);
+        const y = margin + Math.random() * (containerRect.height - 150 - margin);
+        
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+        card.style.width = '200px';
+        card.style.height = '120px';
+        
+        // Reset completion
+        card.classList.remove('completed');
+        const progressFill = card.querySelector('.card-progress-fill');
+        progressFill.style.width = '0%';
+        
+        testData[index].progress = 0;
+      });
+      
+      completedTests = 0;
+      updateProgress();
+    });
+
+    // Next button functionality
+    document.getElementById('nextBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      if (completedTests === testData.length) {
+        alert('🎉 Congratulations! All tests completed!');
+      } else {
+        alert(`Complete ${testData.length - completedTests} more tests to continue.`);
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createConstellation();
+      createFloatingCards();
+      
+      // Add some initial animations
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.floating-card');
+        cards.forEach((card, index) => {
+          setTimeout(() => {
+            card.style.transform = 'scale(1)';
+            card.style.opacity = '1';
+          }, index * 100);
+        });
+      }, 500);
+    });
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        // Recalculate vertical positions if needed
+        const cards = document.querySelectorAll('.floating-card');
+        cards.forEach(card => {
+          const container = document.getElementById('cardsContainer');
+          const containerRect = container.getBoundingClientRect();
+          const cardRect = card.getBoundingClientRect();
+          
+          // Only ensure cards stay within vertical bounds (Y-axis only)
+          let y = parseInt(card.style.top);
+          
+          y = Math.max(0, Math.min(y, containerRect.height - cardRect.height));
+          
+          card.style.top = y + 'px';
+          // X position remains unchanged
+        });
+      }, 300);
+    });
+  </script>
+</body>
+</html>
