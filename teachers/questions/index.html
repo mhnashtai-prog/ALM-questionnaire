@@ -1,54 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - ALM Digital Questionnaire</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>INTUITY - Teacher Question Creator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <style>
     :root {
+      /* INTUITY Brand Colors */
       --bg-primary: #1a2332;
       --bg-secondary: #243447;
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
       --accent-gold: #f4a261;
       --accent-teal: #2dd4bf;
-      --accent-lime: #32d74b;
-      --accent-orange: #ff9500;
-      --accent-brick: #c44536;
+      --accent-electric: #0066ff;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
+      --success: #10b981;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      --btn-grey: rgba(255, 255, 255, 0.2);
-      --space-xs: 0.25rem;
-      --space-sm: 0.5rem;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
+      
+      /* Animation timings */
+      --transition-fast: 0.2s;
+      --transition-medium: 0.4s;
+      --transition-slow: 0.6s;
+      
+      /* Effects */
       --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
       overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      touch-action: manipulation;
       padding-bottom: 100px;
     }
-
+    
+    /* Enhanced Constellation Background */
     .constellation-bg {
       position: fixed;
       top: 0;
@@ -57,47 +65,49 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.3;
+      opacity: 0.4;
     }
-
+    
     .star {
       position: absolute;
       width: 2px;
       height: 2px;
       background: var(--accent-gold);
       border-radius: 50%;
-      animation: twinkle 3s infinite alternate;
+      animation: twinkle 4s infinite alternate;
     }
-
+    
     .star:nth-child(even) {
-      animation-delay: 1.5s;
+      animation-delay: 2s;
       background: var(--accent-teal);
     }
-
+    
+    .star:nth-child(3n) {
+      animation-delay: 1s;
+      background: var(--accent-electric);
+      opacity: 0.6;
+    }
+    
     @keyframes twinkle {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.8; }
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 0.9; transform: scale(1.2); }
     }
-
-    .header {
-      position: sticky;
+    
+    /* Simple Header */
+    .simple-header {
+      position: fixed;
       top: 0;
-      z-index: 100;
-      background: rgba(26, 35, 50, 0.9);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--card-border);
-      padding: var(--space-lg);
-    }
-
-    .header-content {
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 1.5rem;
       text-align: center;
     }
-
+    
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 2.5rem;
@@ -106,837 +116,317 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 4px;
+      margin-bottom: 0.3rem;
       position: relative;
     }
-
+    
     .brand-name::after {
       content: '✨';
       position: absolute;
-      top: -10px;
+      top: -8px;
       right: -20px;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       animation: sparkle 3s ease-in-out infinite;
     }
-
+    
     @keyframes sparkle {
-      0%, 100% { 
-        opacity: 0.5; 
-        transform: scale(1) rotate(0deg); 
-      }
-      50% { 
-        opacity: 1; 
-        transform: scale(1.3) rotate(180deg); 
-      }
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
     }
-
-    .brand-subtitle {
-      font-size: 1rem;
+    
+    .author-name {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+    
+    .simple-subtitle {
       color: var(--text-secondary);
+      font-size: 0.9rem;
       font-weight: 500;
-      margin-top: var(--space-sm);
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: var(--space-xl) var(--space-lg);
-      position: relative;
+    
+    /* Main Container - Centered Single Card */
+    .main-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 700px;
       z-index: 10;
     }
-
-    .questionnaire-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
+    
+    /* The One Question Creator Card */
+    .question-card {
+      background: var(--card-bg);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: var(--shadow-active);
       position: relative;
       overflow: hidden;
+      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    .questionnaire-container::before {
+    
+    .question-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      pointer-events: none;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      border-radius: 24px 24px 0 0;
     }
-
-    .form-section {
-      position: relative;
-      z-index: 2;
-    }
-
-    .form-row {
-      display: flex;
-      align-items: center;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-      flex-wrap: wrap;
-    }
-
-    .form-label {
+    
+    /* Question Label */
+    .question-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
       font-weight: 600;
-      color: var(--accent-gold);
-      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 1.5rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      min-width: 120px;
     }
-
-    .compact-header {
-      font-size: 0.63rem;
-    }
-
-    .standalone-input-row {
+    
+    /* Question Input */
+    .question-input {
       width: 100%;
-      margin-bottom: var(--space-lg);
-    }
-
-    .compact-row {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-      flex-wrap: wrap;
-    }
-
-    .compact-btn {
-      background: var(--accent-lime);
-      border: 1px solid var(--accent-lime);
-      border-radius: 0.5rem;
-      padding: var(--space-sm) var(--space-md);
-      color: #000;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(50, 215, 75, 0.3);
-      height: 35px;
-      min-width: 120px;
-    }
-
-    .compact-btn:hover {
-      background: #28c441;
-      border-color: #28c441;
-      transform: translateY(-1px);
-      box-shadow: 0 3px 12px rgba(50, 215, 75, 0.4);
-    }
-
-    .compact-btn i {
-      font-size: 0.8rem;
-    }
-
-    .compact-label {
-      font-weight: 600;
-      color: var(--accent-gold);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      min-width: 80px;
-    }
-
-    .compact-input {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.5rem;
-      padding: var(--space-sm);
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
       color: var(--text-primary);
+      font-size: 1.1rem;
       font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      max-width: 80px;
-      height: 35px;
-    }
-
-    .compact-input:focus {
       outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 2px rgba(38, 166, 154, 0.15);
+      transition: all var(--transition-fast) ease;
+      resize: vertical;
+      min-height: 120px;
     }
-
-    .form-input {
-      flex: 1;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      min-width: 200px;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
-      transform: translateY(-1px);
-    }
-
-    .form-input::placeholder {
+    
+    .question-input::placeholder {
       color: var(--text-muted);
       font-style: italic;
     }
-
-    .dropdown-input {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      min-width: 250px;
-    }
-
-    .dropdown-input:focus {
-      outline: none;
-      border-color: var(--accent-teal);
+    
+    .question-input:focus {
       background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
-    }
-
-    .dropdown-input option {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: var(--space-sm);
-    }
-
-    .add-question-btn {
-      background: var(--accent-lime);
-      border: 1px solid var(--accent-lime);
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-xl);
-      color: #000;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(50, 215, 75, 0.3);
-    }
-
-    .add-question-btn:hover {
-      background: #28c441;
-      border-color: #28c441;
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
       transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(50, 215, 75, 0.4);
     }
-
-    .add-question-btn i {
-      font-size: 1rem;
-    }
-
-    .glass-footer {
+    
+    /* Minimalist Footer */
+    .simple-footer {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(26, 35, 50, 0.95);
+      background: rgba(26, 35, 50, 0.9);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
-      padding: var(--space-lg);
-      z-index: 100;
+      padding: 1rem;
+      z-index: 1000;
     }
-
-    .footer-container {
-      max-width: 800px;
+    
+    .footer-content {
+      max-width: 700px;
       margin: 0 auto;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .footer-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      pointer-events: none;
-    }
-
-    .footer-buttons {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      gap: var(--space-sm);
-      position: relative;
-      z-index: 2;
+      gap: 2rem;
     }
-
+    
     .footer-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
+      border-radius: 8px;
+      padding: 0.75rem;
       color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all var(--transition-fast);
       backdrop-filter: var(--blur);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: var(--space-xs);
-      min-width: 80px;
-      height: 60px;
-      text-decoration: none;
-      border: none;
-    }
-
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
-    }
-
-    .footer-btn i {
-      font-size: 1.2rem;
-      margin-bottom: 2px;
-    }
-
-    .footer-btn span {
-      font-size: 0.7rem;
+      gap: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      min-width: 80px;
+      justify-content: center;
     }
-
-    .footer-btn.primary {
-      background: var(--accent-teal);
+    
+    .footer-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
       border-color: var(--accent-teal);
-      color: #000;
+      transform: translateY(-1px);
     }
-
-    .footer-btn.primary:hover {
-      background: var(--accent-lime);
-      border-color: var(--accent-lime);
-      transform: translateY(-3px);
+    
+    .footer-btn i {
+      font-size: 0.9rem;
     }
-
-    .footer-btn.danger {
-      background: var(--accent-brick);
-      border-color: var(--accent-brick);
-    }
-
-    .footer-btn.warning {
-      background: var(--accent-orange);
-      border-color: var(--accent-orange);
-      color: #000;
-    }
-
-    /* QR Code Modal - Responsive Design */
-    .qr-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: var(--blur);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: var(--space-lg);
-    }
-
-    .qr-modal.show {
-      display: flex;
-    }
-
-    .qr-content {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .qr-code-display {
-      width: 200px;
-      height: 200px;
-      margin: var(--space-lg) auto;
-      background: white;
-      border-radius: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--space-md);
-    }
-
-    .qr-code-display img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: var(--space-md);
-      right: var(--space-md);
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: var(--space-sm);
-      border-radius: 0.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .close-modal:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 2rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      backdrop-filter: var(--blur);
-      margin-bottom: var(--space-lg);
-    }
-
-    .status-indicator.success {
-      border-color: var(--accent-lime);
-      color: var(--accent-lime);
-    }
-
-    .status-indicator.warning {
-      border-color: var(--accent-orange);
-      color: var(--accent-orange);
-    }
-
-    .status-indicator.error {
-      border-color: var(--accent-brick);
-      color: var(--accent-brick);
-    }
-
+    
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
+      .main-container {
+        width: 95%;
+        top: 45%;
+      }
+      
+      .question-card {
+        padding: 2rem;
+      }
+      
       .brand-name {
         font-size: 2rem;
       }
-
-      .form-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--space-md);
-      }
-
-      .form-label {
-        min-width: auto;
-      }
-
-      .compact-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--space-sm);
-      }
-
-      .compact-btn {
-        min-width: 100px;
-        height: 40px;
-      }
-
-      .compact-input {
-        max-width: 100px;
-      }
-
-      .footer-buttons {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .footer-btn {
-        min-width: 70px;
-        height: 55px;
-      }
-
-      .footer-btn span {
-        font-size: 0.6rem;
-      }
-
-      .qr-content {
-        margin: var(--space-md);
-        padding: var(--space-lg);
-      }
-
-      .qr-code-display {
-        width: 160px;
-        height: 160px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: var(--space-lg) var(--space-md);
-      }
-
-      .questionnaire-container {
-        padding: var(--space-lg);
-      }
-
-      .footer-btn {
-        min-width: 60px;
-        height: 50px;
-      }
-
-      .footer-btn i {
+      
+      .question-input {
+        min-height: 100px;
+        padding: 1.25rem;
         font-size: 1rem;
       }
-
-      .footer-btn span {
-        font-size: 0.55rem;
+      
+      .footer-content {
+        gap: 1rem;
       }
-
-      .qr-modal {
-        padding: var(--space-md);
-      }
-
-      .qr-content {
-        padding: var(--space-md);
-      }
-
-      .qr-code-display {
-        width: 140px;
-        height: 140px;
+      
+      .footer-btn {
+        min-width: 70px;
+        padding: 0.6rem;
       }
     }
-
-    .notification {
-      position: fixed;
-      top: 100px;
-      right: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      z-index: 1000;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-      max-width: 300px;
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
     }
-
-    .notification.show {
-      transform: translateX(0);
-    }
-
-    .notification.success {
-      border-color: var(--accent-lime);
-    }
-
-    .notification.error {
-      border-color: var(--accent-brick);
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
+  <!-- Enhanced Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
-
-  <header class="header">
-    <div class="header-content">
-      <div class="brand-name">INTUITY</div>
-      <div class="brand-subtitle">ALM Digital Questionnaire</div>
-    </div>
+  
+  <!-- Simple Header -->
+  <header class="simple-header">
+    <div class="brand-name">INTUITY</div>
+    <div class="author-name">by Majid Nashtai</div>
+    <div class="simple-subtitle">TEACHER QUESTION CREATOR</div>
   </header>
-
-  <div class="container">
-    <div class="questionnaire-container">
-      <div class="form-section">
-        
-        <!-- Line 1: Enter your question header -->
-        <div class="form-row">
-          <label class="form-label compact-header">Enter your question</label>
-        </div>
-
-        <!-- Line 2: Text Input for new question -->
-        <div class="standalone-input-row">
-          <input 
-            type="text" 
-            class="form-input" 
-            id="question-input"
-            placeholder="Type your question here..."
-          >
-        </div>
-
-        <!-- Line 3: Select existing question header -->
-        <div class="form-row">
-          <label class="form-label compact-header">Or select from existing</label>
-        </div>
-
-        <!-- Line 4: Dropdown for existing questions -->
-        <div class="standalone-input-row">
-          <select class="dropdown-input" id="question-dropdown">
-            <option value="">Choose from existing questions...</option>
-          </select>
-        </div>
-
-        <!-- Line 5: Status Indicator -->
-        <div class="status-indicator" id="status-indicator">
-          <i class="fas fa-info-circle"></i>
-          <span>Ready to create new question</span>
-        </div>
-
-        <!-- Line 6: Compact Row - Button + Min Words -->
-        <div class="compact-row">
-          <button class="add-question-btn compact-btn" onclick="addQuestion()" title="Add Question">
-            <i class="fas fa-plus"></i>
-            <span>ADD QUESTION</span>
-          </button>
-          <label class="form-label compact-label">Minimum words</label>
-          <input 
-            type="number" 
-            class="form-input compact-input" 
-            id="min-words-input"
-            placeholder="50"
-            min="10"
-            max="500"
-          >
-        </div>
-
-      </div>
+  
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="question-card" id="questionCard">
+      
+      <div class="question-label">Create Your Question</div>
+      
+      <textarea 
+        class="question-input" 
+        id="questionInput"
+        placeholder="What would you like to ask your students?"
+        rows="4"
+      ></textarea>
+      
     </div>
   </div>
 
-  <!-- QR Code Modal -->
-  <div class="qr-modal" id="qr-modal">
-    <div class="qr-content">
-      <button class="close-modal" onclick="closeQRModal()">
-        <i class="fas fa-times"></i>
+  <!-- Minimalist Footer -->
+  <div class="simple-footer">
+    <div class="footer-content">
+      <button class="footer-btn" id="clearBtn">
+        <i class="fas fa-eraser"></i>
+        <span>Clear</span>
       </button>
-      <h3 style="margin-bottom: var(--space-lg); color: var(--text-primary);">Student Access QR Code</h3>
-      <div class="qr-code-display" id="qr-display">
-        <div style="color: #666;">Generating QR Code...</div>
-      </div>
-      <p style="color: var(--text-secondary); margin-top: var(--space-lg); font-size: 0.9rem;">
-        Students can scan this code to access the questionnaire
-      </p>
+      
+      <button class="footer-btn" id="editBtn">
+        <i class="fas fa-edit"></i>
+        <span>Edit</span>
+      </button>
+      
+      <button class="footer-btn" id="qrBtn">
+        <i class="fas fa-qrcode"></i>
+        <span>QR Code</span>
+      </button>
+      
+      <button class="footer-btn" id="shareBtn">
+        <i class="fas fa-share"></i>
+        <span>Share</span>
+      </button>
+      
+      <button class="footer-btn" id="analyticsBtn">
+        <i class="fas fa-chart-bar"></i>
+        <span>Analytics</span>
+      </button>
     </div>
   </div>
 
-  <div class="glass-footer">
-    <div class="footer-container">
-      <div class="footer-buttons">
-        
-        <button class="footer-btn" onclick="generateQR()" title="Generate QR Code">
-          <i class="fas fa-qrcode"></i>
-          <span>QR Code</span>
-        </button>
-
-        <button class="footer-btn" onclick="shareLink()" title="Share Link">
-          <i class="fas fa-share-alt"></i>
-          <span>Share</span>
-        </button>
-
-        <button class="footer-btn primary" onclick="submitQuestion()" title="Submit Question">
-          <i class="fas fa-check"></i>
-          <span>Submit</span>
-        </button>
-
-        <button class="footer-btn danger" onclick="deleteQuestion()" title="Delete Question">
-          <i class="fas fa-trash"></i>
-          <span>Delete</span>
-        </button>
-
-        <button class="footer-btn" onclick="editQuestion()" title="Edit Question">
-          <i class="fas fa-edit"></i>
-          <span>Edit</span>
-        </button>
-
-        <button class="footer-btn warning" onclick="sendQuestion()" title="Send Question">
-          <i class="fas fa-paper-plane"></i>
-          <span>Send</span>
-        </button>
-
+  <!-- QR Modal -->
+  <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1.5rem; padding: 2rem; backdrop-filter: var(--blur); text-align: center; max-width: 400px; margin: 1rem;">
+      <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Student Access QR Code</h3>
+      <div id="qrDisplay" style="width: 200px; height: 200px; margin: 1rem auto; background: white; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+        <div style="color: #666;">Generating...</div>
       </div>
+      <p style="color: var(--text-secondary); margin-top: 1rem;">Students scan this to access your question</p>
+      <button onclick="closeQRModal()" style="margin-top: 1.5rem; background: var(--accent-teal); border: none; border-radius: 8px; padding: 0.75rem 1.5rem; color: var(--bg-primary); font-weight: 600; cursor: pointer;">Close</button>
     </div>
-  </div>
-
-  <div class="notification" id="notification">
-    <div id="notification-content"></div>
   </div>
 
   <script>
-    // Data storage and management
-    const DataManager = {
-      saveQuestion: function(questionData) {
-        try {
-          let questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
-          const newQuestion = {
-            id: Date.now(),
-            text: questionData.text,
-            minWords: parseInt(questionData.minWords),
-            keywords: questionData.keywords || [],
-            created: new Date().toISOString()
-          };
-          questions.push(newQuestion);
-          localStorage.setItem('alm_questions', JSON.stringify(questions));
-          return newQuestion;
-        } catch (error) {
-          console.error('Error saving question:', error);
-          return null;
-        }
-      },
-
-      loadQuestions: function() {
-        try {
-          return JSON.parse(localStorage.getItem('alm_questions') || '[]');
-        } catch (error) {
-          console.error('Error loading questions:', error);
-          return [];
-        }
-      },
-
-      deleteQuestion: function(questionId) {
-        try {
-          let questions = this.loadQuestions();
-          questions = questions.filter(q => q.id !== questionId);
-          localStorage.setItem('alm_questions', JSON.stringify(questions));
-          return true;
-        } catch (error) {
-          console.error('Error deleting question:', error);
-          return false;
-        }
-      }
-    };
-
-    // Create constellation background
+    // Enhanced constellation
     function createConstellation() {
       const constellation = document.getElementById('constellation');
-      for (let i = 0; i < 30; i++) {
+      const starCount = 60;
+      
+      for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (3 + Math.random() * 4) + 's';
         constellation.appendChild(star);
       }
     }
 
-    // Notification system
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      const content = document.getElementById('notification-content');
-      
-      content.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
+    // Footer functions
+    function clearQuestion() {
+      document.getElementById('questionInput').value = '';
+      document.getElementById('questionInput').focus();
     }
 
-    // Update status indicator
-    function updateStatus() {
-      const questionInput = document.getElementById('question-input').value;
-      const minWords = document.getElementById('min-words-input').value;
-      const statusIndicator = document.getElementById('status-indicator');
-      
-      try {
-        const questionsData = DataManager.loadQuestions();
-        const totalQuestions = questionsData.length;
-        
-        if (questionInput && minWords) {
-          statusIndicator.className = 'status-indicator success';
-          statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to save question</span>';
-        } else if (questionInput || minWords) {
-          statusIndicator.className = 'status-indicator warning';
-          statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Please complete all fields</span>';
-        } else if (totalQuestions > 0) {
-          statusIndicator.className = 'status-indicator success';
-          statusIndicator.innerHTML = `<i class="fas fa-database"></i><span>Connected: ${totalQuestions} questions stored</span>`;
-        } else {
-          statusIndicator.className = 'status-indicator';
-          statusIndicator.innerHTML = '<i class="fas fa-database"></i><span>Ready to create first question</span>';
-        }
-      } catch (error) {
-        statusIndicator.className = 'status-indicator error';
-        statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>Data storage error</span>';
-      }
+    function editQuestion() {
+      // Focus on the question input for editing
+      const questionInput = document.getElementById('questionInput');
+      questionInput.focus();
+      // Move cursor to end of text
+      questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
     }
 
-    // Load existing questions into dropdown
-    function loadQuestionDropdown() {
-      const dropdown = document.getElementById('question-dropdown');
-      const questions = DataManager.loadQuestions();
-      
-      // Clear existing options except the first one
-      dropdown.innerHTML = '<option value="">Choose from existing questions...</option>';
-      
-      questions.forEach(question => {
-        const option = document.createElement('option');
-        option.value = question.id;
-        option.textContent = question.text.substring(0, 60) + (question.text.length > 60 ? '...' : '');
-        dropdown.appendChild(option);
-      });
-    }
-
-    // QR Code generation with responsive modal
     function generateQR() {
-      const modal = document.getElementById('qr-modal');
-      const display = document.getElementById('qr-display');
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
       
-      modal.classList.add('show');
+      modal.style.display = 'flex';
       
       // Generate QR code URL for student interface
       const studentURL = window.location.origin + window.location.pathname.replace('teachers/questions/', 'students/answers/');
@@ -944,225 +434,51 @@
       
       setTimeout(() => {
         display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
-        showNotification('QR code generated successfully!');
       }, 500);
     }
 
     function closeQRModal() {
-      document.getElementById('qr-modal').classList.remove('show');
+      document.getElementById('qrModal').style.display = 'none';
     }
 
-    // Footer button functions
-    function shareLink() {
+    function shareQuestion() {
       const studentURL = window.location.origin + window.location.pathname.replace('teachers/questions/', 'students/answers/');
       
       if (navigator.share) {
         navigator.share({
-          title: 'INTUITY Questionnaire',
-          text: 'Complete this educational questionnaire',
+          title: 'INTUITY Question',
+          text: 'Answer this question',
           url: studentURL
-        }).then(() => {
-          showNotification('Link shared successfully!');
-        }).catch(() => {
-          copyToClipboard(studentURL);
         });
-      } else {
-        copyToClipboard(studentURL);
-      }
-    }
-
-    function copyToClipboard(text) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          showNotification('Link copied to clipboard!');
-        }).catch(() => {
-          showNotification('Failed to copy link', 'error');
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(studentURL).then(() => {
+          alert('Link copied to clipboard!');
         });
-      } else {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-          document.execCommand('copy');
-          showNotification('Link copied to clipboard!');
-        } catch (err) {
-          showNotification('Failed to copy link', 'error');
-        }
-        document.body.removeChild(textArea);
       }
     }
 
-    function addQuestion() {
-      const questionInput = document.getElementById('question-input').value;
-      const minWords = document.getElementById('min-words-input').value;
-      
-      if (!questionInput || !minWords) {
-        showNotification('Please complete all fields before adding!', 'error');
-        return;
-      }
-      
-      const btn = event.target.closest('.compact-btn');
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Adding...</span>';
-      
-      setTimeout(() => {
-        const questionData = {
-          text: questionInput,
-          minWords: minWords
-        };
-        
-        const savedQuestion = DataManager.saveQuestion(questionData);
-        
-        if (savedQuestion) {
-          btn.innerHTML = originalHTML;
-          showNotification('Question added successfully!');
-          loadQuestionDropdown();
-          updateStatus();
-        } else {
-          btn.innerHTML = originalHTML;
-          showNotification('Failed to save question', 'error');
-        }
-      }, 1500);
-    }
-
-    function submitQuestion() {
-      const questionInput = document.getElementById('question-input').value;
-      const minWords = document.getElementById('min-words-input').value;
-      
-      if (!questionInput || !minWords) {
-        showNotification('Please complete all fields before submitting!', 'error');
-        return;
-      }
-      
-      const btn = event.target.closest('.footer-btn');
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting</span>';
-      
-      setTimeout(() => {
-        const questionData = {
-          text: questionInput,
-          minWords: minWords
-        };
-        
-        const savedQuestion = DataManager.saveQuestion(questionData);
-        
-        if (savedQuestion) {
-          btn.innerHTML = originalHTML;
-          showNotification('Question submitted successfully!');
-          clearForm();
-          loadQuestionDropdown();
-        } else {
-          btn.innerHTML = originalHTML;
-          showNotification('Failed to submit question', 'error');
-        }
-      }, 2000);
-    }
-
-    function deleteQuestion() {
-      const dropdown = document.getElementById('question-dropdown');
-      if (!dropdown.value) {
-        showNotification('Please select a question to delete', 'error');
-        return;
-      }
-      
-      if (confirm('Are you sure you want to delete this question?')) {
-        const success = DataManager.deleteQuestion(parseInt(dropdown.value));
-        if (success) {
-          clearForm();
-          loadQuestionDropdown();
-          showNotification('Question deleted successfully!');
-          updateStatus();
-        } else {
-          showNotification('Failed to delete question', 'error');
-        }
-      }
-    }
-
-    function editQuestion() {
-      const dropdown = document.getElementById('question-dropdown');
-      if (dropdown.value) {
-        loadQuestionFromDropdown();
-        showNotification('Question loaded for editing');
-      } else {
-        showNotification('Please select a question to edit', 'error');
-      }
-    }
-
-    function sendQuestion() {
-      const questionInput = document.getElementById('question-input').value;
-      if (!questionInput) {
-        showNotification('Please create or select a question first', 'error');
-        return;
-      }
-      showNotification('Question sent to students!', 'success');
-    }
-
-    function clearForm() {
-      document.getElementById('question-input').value = '';
-      document.getElementById('min-words-input').value = '';
-      document.getElementById('question-dropdown').value = '';
-      updateStatus();
-    }
-
-    function loadQuestionFromDropdown() {
-      const dropdown = document.getElementById('question-dropdown');
-      const selectedValue = dropdown.value;
-      
-      if (selectedValue) {
-        const questions = DataManager.loadQuestions();
-        const question = questions.find(q => q.id == selectedValue);
-        
-        if (question) {
-          document.getElementById('question-input').value = question.text;
-          document.getElementById('min-words-input').value = question.minWords;
-          updateStatus();
-        }
-      }
+    function openAnalytics() {
+      window.location.href = '../../visualisation/';
     }
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
       createConstellation();
-      loadQuestionDropdown();
       
-      // Add input event listener for real-time status updates
-      document.getElementById('question-input').addEventListener('input', updateStatus);
-      document.getElementById('min-words-input').addEventListener('input', updateStatus);
-      document.getElementById('question-dropdown').addEventListener('change', loadQuestionFromDropdown);
+      // Set up footer handlers
+      document.getElementById('clearBtn').addEventListener('click', clearQuestion);
+      document.getElementById('editBtn').addEventListener('click', editQuestion);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('shareBtn').addEventListener('click', shareQuestion);
+      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
       
       // Close modal on outside click
-      document.getElementById('qr-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'qr-modal') {
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
           closeQRModal();
         }
       });
-      
-      // Initialize status
-      updateStatus();
     });
-
-    // Add CSS animation for success popup
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes successPop {
-        0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-      }
-      
-      @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-      }
-      
-      @keyframes fadeOut {
-        0% { opacity: 1; }
-        100% { opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
   </script>
 </body>
 </html>
