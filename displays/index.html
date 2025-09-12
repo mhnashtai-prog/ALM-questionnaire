@@ -1,1 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Display Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      /* INTUITY Brand Colors */
+      --bg-primary: #1a2332;
+      --bg-secondary: #243447;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
+      --accent-teal: #2dd4bf;
+      --accent-electric: #0066ff;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --intuity-gold: #ffd54f;
+      --intuity-teal: #26a69a;
+      
+      /* Animation timings */
+      --transition-fast: 0.2s;
+      --transition-medium: 0.4s;
+      
+      /* Effects */
+      --blur: blur(20px);
+      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      touch-action: manipulation;
+    }
+    
+    /* Subtle Constellation Background */
+    .constellation-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+    }
+    
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: twinkle 4s infinite alternate;
+    }
+    
+    .star:nth-child(even) {
+      animation-delay: 2s;
+      background: var(--accent-teal);
+    }
+    
+    .star:nth-child(3n) {
+      animation-delay: 1s;
+      background: var(--accent-electric);
+      opacity: 0.4;
+    }
+    
+    @keyframes twinkle {
+      0% { opacity: 0.1; transform: scale(0.8); }
+      100% { opacity: 0.6; transform: scale(1.1); }
+    }
+    
+    /* Simple Header */
+    .simple-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+      position: relative;
+    }
+    
+    .brand-name::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      font-size: 1.2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+    }
+    
+    .author-name {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+    
+    .simple-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    /* Main Container - Centered Single Card */
+    .main-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 520px;
+      z-index: 10;
+    }
+    
+    /* The Display Selection Card */
+    .display-card {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: var(--shadow-active);
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+    }
+    
+    .display-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Display Label */
+    .display-label {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Display Options */
+    .display-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    
+    .display-option {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.25rem 2rem;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all var(--transition-fast) ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      backdrop-filter: var(--blur);
+      cursor: pointer;
+      border: none;
+    }
+    
+    .display-option:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-teal);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(45, 212, 191, 0.2);
+    }
+    
+    .display-option:active {
+      transform: translateY(0);
+    }
+    
+    .display-option i {
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+    
+    /* Status indicator */
+    .option-status {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .main-container {
+        width: 95%;
+        top: 45%;
+      }
+      
+      .display-card {
+        padding: 2.5rem;
+      }
+      
+      .brand-name {
+        font-size: 2rem;
+      }
+      
+      .display-option {
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Subtle Constellation Background -->
+  <div class="constellation-bg" id="constellation"></div>
+  
+  <!-- Simple Header -->
+  <header class="simple-header">
+    <div class="brand-name">INTUITY</div>
+    <div class="author-name">by Majid Nashtai</div>
+    <div class="simple-subtitle">Classroom Display Hub</div>
+  </header>
+  
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="display-card">
+      <div class="display-label">Choose Display Mode</div>
+      
+      <div class="display-options">
+        <button class="display-option" onclick="openDisplay('live')">
+          <i class="fas fa-stream"></i>
+          <span>Live Responses</span>
+          <span class="option-status">Real-time</span>
+        </button>
+        
+        <button class="display-option" onclick="openDisplay('summary')">
+          <i class="fas fa-chart-pie"></i>
+          <span>Response Summary</span>
+          <span class="option-status">Overview</span>
+        </button>
+        
+        <button class="display-option" onclick="openDisplay('discussion')">
+          <i class="fas fa-comments"></i>
+          <span>Discussion Board</span>
+          <span class="option-status">Interactive</span>
+        </button>
+        
+        <button class="display-option" onclick="openDisplay('analytics')">
+          <i class="fas fa-chart-line"></i>
+          <span>Full Analytics</span>
+          <span class="option-status">Detailed</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    // Subtle constellation
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      const starCount = 40;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (4 + Math.random() * 4) + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    // Display mode functions
+    function openDisplay(mode) {
+      // Add subtle loading state
+      const button = event.target.closest('.display-option');
+      const originalContent = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
+      
+      setTimeout(() => {
+        switch(mode) {
+          case 'live':
+            // Open live response feed (fullscreen for projector)
+            window.open('../displays/live.html', '_blank');
+            break;
+          case 'summary':
+            // Open summary view
+            window.open('../displays/summary.html', '_blank');
+            break;
+          case 'discussion':
+            // Open discussion board
+            window.open('../displays/discussion.html', '_blank');
+            break;
+          case 'analytics':
+            // Navigate to full analytics
+            window.location.href = '../visualisation/';
+            break;
+        }
+        
+        // Reset button after delay
+        setTimeout(() => {
+          button.innerHTML = originalContent;
+        }, 1000);
+      }, 800);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createConstellation();
+    });
+  </script>
+</body>
+</html>
