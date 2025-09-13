@@ -212,7 +212,6 @@
       transition: all var(--transition-fast) ease;
       resize: vertical;
       min-height: 120px;
-      margin-bottom: 2rem;
     }
     
     .question-input::placeholder {
@@ -225,36 +224,6 @@
       border-color: var(--accent-teal);
       box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
       transform: translateY(-2px);
-    }
-
-    /* Status indicator */
-    .question-status {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-    }
-
-    .status-text {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .char-count {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
-    .status-ready {
-      background: rgba(16, 185, 129, 0.1);
-      border-color: var(--success);
-    }
-
-    .status-ready .status-text {
-      color: var(--success);
     }
     
     /* Minimalist Footer */
@@ -382,6 +351,17 @@
         min-width: 70px;
         padding: 0.6rem;
       }
+      
+      .home-btn {
+        top: 0.75rem;
+        left: 0.75rem;
+        padding: 0.4rem;
+        font-size: 0.8rem;
+      }
+      
+      .home-btn span {
+        display: none;
+      }
     }
     
     /* Loading Animation */
@@ -477,11 +457,6 @@
         placeholder="What would you like to ask your students? Be specific and thought-provoking..."
         rows="4"
       ></textarea>
-
-      <div class="question-status" id="questionStatus">
-        <div class="status-text" id="statusText">Start typing your question...</div>
-        <div class="char-count" id="charCount">0 characters</div>
-      </div>
       
     </div>
   </div>
@@ -554,33 +529,18 @@
       }
     }
 
-    // Handle question input changes
+    // Simplified question input handler
     function handleQuestionInput() {
       const input = document.getElementById('questionInput');
-      const status = document.getElementById('questionStatus');
-      const statusText = document.getElementById('statusText');
-      const charCount = document.getElementById('charCount');
       const publishBtn = document.getElementById('publishBtn');
 
       const text = input.value.trim();
-      const length = text.length;
 
-      // Update character count
-      charCount.textContent = `${length} characters`;
-
-      // Update status and enable/disable publish button
-      if (length === 0) {
-        statusText.textContent = 'Start typing your question...';
-        status.classList.remove('status-ready');
-        publishBtn.disabled = true;
-      } else if (length < 10) {
-        statusText.textContent = 'Keep writing... (need a few more characters)';
-        status.classList.remove('status-ready');
-        publishBtn.disabled = true;
-      } else if (length >= 10) {
-        statusText.textContent = 'Question ready to publish!';
-        status.classList.add('status-ready');
+      // Enable/disable publish button based on content
+      if (text.length >= 10) {
         publishBtn.disabled = false;
+      } else {
+        publishBtn.disabled = true;
       }
 
       // Auto-save draft
@@ -598,7 +558,7 @@
       }
     }
 
-    // Publish question function - THE KEY MISSING PIECE
+    // Publish question function
     function publishQuestion() {
       const questionText = document.getElementById('questionInput').value.trim();
       
@@ -733,6 +693,7 @@
       document.getElementById('clearBtn').addEventListener('click', clearQuestion);
       document.getElementById('editBtn').addEventListener('click', editQuestion);
       document.getElementById('publishBtn').addEventListener('click', publishQuestion);
+      document.getElementById('shareLinkBtn').addEventListener('click', shareStudentLink);
       document.getElementById('qrBtn').addEventListener('click', generateQR);
       document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
       
