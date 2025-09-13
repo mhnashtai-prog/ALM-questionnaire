@@ -23,6 +23,7 @@
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       --accent-red: #ef4444;
       --success: #10b981;
+      --warning: #f59e0b;
     }
 
     * {
@@ -130,6 +131,28 @@
       padding: 0.75rem;
     }
 
+    /* Data Status */
+    .data-status {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .data-status.has-data {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .data-status.no-data {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
     /* Current Question Display */
     .current-question-box {
       background: rgba(255, 255, 255, 0.05);
@@ -154,6 +177,192 @@
       font-size: 1.1rem;
       line-height: 1.6;
       max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Statistics Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      backdrop-filter: var(--blur);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-teal);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Responses Container */
+    .responses-section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+    }
+
+    .responses-title {
+      color: var(--text-primary);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .responses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .response-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      backdrop-filter: var(--blur);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .response-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-teal);
+      box-shadow: 0 10px 30px rgba(45, 212, 191, 0.2);
+    }
+
+    .response-card.excellent {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .response-card.good {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .response-card.needs-work {
+      border-color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .student-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .response-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quality-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quality-badge.excellent {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .quality-badge.good {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+
+    .quality-badge.needs-work {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+    }
+
+    .response-text {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      max-height: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .response-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .word-count {
+      color: var(--accent-teal);
+      font-weight: 600;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .empty-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .empty-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 400px;
       margin: 0 auto;
     }
 
@@ -358,195 +567,6 @@
       font-size: 1rem;
     }
 
-    /* Photo Management Modal */
-    .photo-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(26, 35, 50, 0.98);
-      backdrop-filter: var(--blur);
-      z-index: 2000;
-      display: none;
-      flex-direction: column;
-    }
-
-    .photo-modal.active {
-      display: flex;
-    }
-
-    .modal-header {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-bottom: 2px solid var(--accent-teal);
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .modal-close {
-      background: none;
-      border: 2px solid var(--accent-teal);
-      color: var(--accent-teal);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .modal-close:hover {
-      background: var(--accent-teal);
-      color: white;
-      transform: rotate(90deg) scale(1.1);
-    }
-
-    .photo-gallery-container {
-      flex: 1;
-      padding: 2rem;
-      overflow-y: auto;
-    }
-
-    .gallery-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .gallery-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 1rem;
-    }
-
-    .gallery-subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .student-photo-card {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .student-photo-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent-teal);
-      box-shadow: 0 10px 30px rgba(45, 212, 191, 0.3);
-    }
-
-    .student-photo-large {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--accent-teal);
-      margin-bottom: 1rem;
-      box-shadow: 0 5px 15px rgba(45, 212, 191, 0.3);
-    }
-
-    .student-card-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .student-card-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .gallery-empty {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-muted);
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-actions {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-top: 2px solid var(--accent-teal);
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .modal-btn {
-      background: var(--card-bg);
-      border: 2px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem 2rem;
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .modal-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-    }
-
-    .modal-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      color: var(--bg-primary);
-    }
-
-    .modal-btn.danger {
-      border-color: var(--accent-red);
-      color: var(--accent-red);
-    }
-
-    .modal-btn.danger:hover {
-      background: var(--accent-red);
-      color: white;
-    }
-
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
@@ -555,7 +575,8 @@
 
       .question-box,
       .display-box,
-      .current-question-box {
+      .current-question-box,
+      .responses-section {
         padding: 1.25rem;
         margin-bottom: 1.25rem;
       }
@@ -603,14 +624,14 @@
         font-size: 1rem;
       }
 
-      .modal-actions {
-        padding: 1rem;
+      .responses-grid {
+        grid-template-columns: 1fr;
         gap: 1rem;
       }
 
-      .modal-btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
       }
     }
 
@@ -726,6 +747,97 @@
       border-color: var(--accent-red);
       color: var(--accent-red);
     }
+
+    /* Response Modal */
+    .response-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+    }
+
+    .response-modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      backdrop-filter: var(--blur);
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .modal-student-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .modal-response-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-response-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .meta-item {
+      text-align: center;
+    }
+
+    .meta-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .meta-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
   </style>
 </head>
 
@@ -738,37 +850,74 @@
 
   <div class="container">
     
+    <!-- Data Status -->
+    <div class="data-status" id="dataStatus">
+      <i class="fas fa-sync fa-spin"></i> Loading student response data...
+    </div>
+
     <!-- Question Selector -->
     <div class="question-box">
       <div class="question-title">
         <i class="fas fa-question-circle"></i>
-        Select Question to Display
+        Select Question to Analyze
       </div>
       <select class="question-dropdown" id="questionSelector">
-        <option value="1">Question 1: How has digital technology impacted your daily learning?</option>
-        <option value="2">Question 2: Compare online vs traditional classroom learning methods</option>
-        <option value="3">Question 3: What are the most effective language learning strategies?</option>
-        <option value="4">Question 4: How can we better understand different cultures?</option>
-        <option value="5">Question 5: What motivates you most in your learning journey?</option>
-        <option value="6">Question 6: Describe your ideal assessment method</option>
-        <option value="7">Question 7: How do you see the future of education?</option>
-        <option value="8">Question 8: What role should technology play in classrooms?</option>
+        <option value="">Loading questions...</option>
       </select>
     </div>
 
     <!-- Current Question Display -->
-    <div class="current-question-box">
+    <div class="current-question-box" id="currentQuestionBox" style="display: none;">
       <div class="current-question-title" id="currentQuestionTitle">
-        Question 1: How has digital technology impacted your daily learning?
+        Select a question to view details
       </div>
-      <div class="current-question-text">
-        This question will be displayed to students in your chosen presentation mode
+      <div class="current-question-text" id="currentQuestionText">
+        Question details will appear here
+      </div>
+    </div>
+
+    <!-- Statistics Grid -->
+    <div class="stats-grid" id="statsGrid" style="display: none;">
+      <div class="stat-card">
+        <div class="stat-value" id="totalResponses">0</div>
+        <div class="stat-label">Total Responses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="avgWords">0</div>
+        <div class="stat-label">Avg Words</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="avgScore">0%</div>
+        <div class="stat-label">Avg Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="excellentCount">0</div>
+        <div class="stat-label">Excellent</div>
+      </div>
+    </div>
+
+    <!-- Responses Section -->
+    <div class="responses-section" id="responsesSection" style="display: none;">
+      <div class="responses-title">
+        <i class="fas fa-comments"></i>
+        Student Responses
+      </div>
+      <div class="responses-grid" id="responsesGrid">
+        <!-- Responses will be populated here -->
+      </div>
+      
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">No Student Responses</div>
+        <div class="empty-text">
+          Students haven't submitted responses to this question yet. Share the QR code or student link to collect responses.
+        </div>
       </div>
     </div>
 
     <!-- Display Mode Selection -->
-    <div class="display-box">
-      <div class="display-title">Choose Presentation Mode</div>
+    <div class="display-box" id="displayBox" style="display: none;">
+      <div class="display-title">Visual Presentation Modes</div>
       <div class="display-buttons">
         
         <a href="../displays/display1.html" class="display-btn" target="_blank">
@@ -814,7 +963,7 @@
           <div class="display-btn-desc">Interactive floating cards that can be dragged and arranged</div>
         </a>
 
-        <a href="cosmic-galaxy.html" class="display-btn" target="_blank">
+        <a href="../displays/display4.html" class="display-btn" target="_blank">
           <svg class="doodle" viewBox="0 0 80 80">
             <circle cx="40" cy="40" r="6" fill="currentColor" />
             <circle cx="40" cy="40" r="15" fill="none" />
@@ -834,6 +983,35 @@
 
   </div>
 
+  <!-- Response Detail Modal -->
+  <div class="response-modal" id="responseModal">
+    <div class="response-modal-content">
+      <div class="modal-response-header">
+        <div class="modal-student-name" id="modalStudentName">Student Name</div>
+        <button class="modal-close-btn" onclick="closeResponseModal()">&times;</button>
+      </div>
+      <div class="modal-response-text" id="modalResponseText">Response text will appear here...</div>
+      <div class="modal-response-meta">
+        <div class="meta-item">
+          <div class="meta-label">Word Count</div>
+          <div class="meta-value" id="modalWordCount">0</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Quality</div>
+          <div class="meta-value" id="modalQuality">-</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Score</div>
+          <div class="meta-value" id="modalScore">0%</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Submitted</div>
+          <div class="meta-value" id="modalTimestamp">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer Navigation -->
   <footer class="footer">
     <div class="footer-container">
@@ -842,11 +1020,9 @@
         <span>Create Question</span>
       </a>
 
-      <!-- NEW: Photo Management Button -->
-      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Manage Student Photos">
-        <i class="fas fa-camera"></i>
-        <span>Photos</span>
-        <div class="photo-count" id="photoCount">0</div>
+      <button class="footer-btn" id="refreshBtn">
+        <i class="fas fa-sync"></i>
+        <span>Refresh Data</span>
       </button>
       
       <button class="footer-btn delete-btn" onclick="confirmDeleteCurrentQuestion()" id="deleteBtn" disabled>
@@ -860,48 +1036,6 @@
       </a>
     </div>
   </footer>
-
-  <!-- Photo Management Modal -->
-  <div class="photo-modal" id="photoModal">
-    <div class="modal-header">
-      <div class="modal-title">📸 Student Photo Gallery</div>
-      <button class="modal-close" id="closePhotoModal">&times;</button>
-    </div>
-
-    <div class="photo-gallery-container">
-      <div class="gallery-header">
-        <div class="gallery-title">Captured Student Photos</div>
-        <div class="gallery-subtitle">These photos enhance all display modes, especially the Cosmic Galaxy experience</div>
-      </div>
-
-      <div class="photo-grid" id="photoGrid">
-        <!-- Student photos will be populated here -->
-      </div>
-
-      <div class="gallery-empty" id="galleryEmpty" style="display: none;">
-        <div class="empty-icon">📷</div>
-        <div style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600;">No Photos Captured</div>
-        <div>Use the Question Creator to capture student photos for an enhanced display experience.</div>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="modal-btn" id="captureMoreBtn">
-        <i class="fas fa-camera"></i>
-        <span>Capture Photos</span>
-      </button>
-      
-      <button class="modal-btn danger" id="clearAllPhotosBtn">
-        <i class="fas fa-trash"></i>
-        <span>Clear All</span>
-      </button>
-      
-      <button class="modal-btn primary" id="viewCosmicBtn">
-        <i class="fas fa-rocket"></i>
-        <span>Cosmic Galaxy</span>
-      </button>
-    </div>
-  </div>
 
   <!-- Delete Confirmation Modal -->
   <div class="modal" id="delete-modal">
@@ -926,194 +1060,417 @@
   </div>
 
   <script>
-    // Question data
-    const questions = {
-      1: "How has digital technology impacted your daily learning?",
-      2: "Compare online vs traditional classroom learning methods", 
-      3: "What are the most effective language learning strategies?",
-      4: "How can we better understand different cultures?",
-      5: "What motivates you most in your learning journey?",
-      6: "Describe your ideal assessment method",
-      7: "How do you see the future of education?",
-      8: "What role should technology play in classrooms?"
-    };
+    // Global variables
+    let allQuestions = [];
+    let allResponses = [];
+    let currentSelectedQuestion = null;
+    let filteredResponses = [];
 
-    let currentSelectedQuestion = 1;
-    let studentPhotos = [];
-
-    // Load student photos
-    function loadStudentPhotos() {
-      try {
-        const savedPhotos = localStorage.getItem('student_photos');
-        if (savedPhotos) {
-          studentPhotos = JSON.parse(savedPhotos);
-          updatePhotoCount();
-          console.log(`Loaded ${studentPhotos.length} student photos`);
+    // Load all data from localStorage
+    function loadAllData() {
+      console.log('🔄 Loading all data from localStorage...');
+      
+      // Load questions from multiple possible keys
+      const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
+      allQuestions = [];
+      
+      questionKeys.forEach(key => {
+        try {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            
+            if (key === 'current_question' && parsed.text) {
+              // Single current question
+              if (!allQuestions.find(q => q.id === parsed.id)) {
+                allQuestions.push(parsed);
+              }
+            } else if (Array.isArray(parsed)) {
+              // Array of questions
+              parsed.forEach(question => {
+                if (question && question.text && !allQuestions.find(q => q.id === question.id)) {
+                  allQuestions.push(question);
+                }
+              });
+            }
+          }
+        } catch (e) {
+          console.log(`❌ Error parsing ${key}:`, e);
         }
-      } catch (error) {
-        console.error('Error loading student photos:', error);
-        studentPhotos = [];
+      });
+
+      // Load responses from multiple possible keys
+      const responseKeys = [
+        'alm_student_responses', 
+        'intuity_responses', 
+        'student_responses',
+        'intuity_student_data'
+      ];
+      allResponses = [];
+      const seenIds = new Set();
+      
+      responseKeys.forEach(key => {
+        try {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed)) {
+              parsed.forEach(response => {
+                if (response && response.id && !seenIds.has(response.id)) {
+                  seenIds.add(response.id);
+                  allResponses.push(response);
+                }
+              });
+            }
+          }
+        } catch (e) {
+          console.log(`❌ Error parsing ${key}:`, e);
+        }
+      });
+
+      // Also check for individual response keys
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('response_')) {
+          try {
+            const response = JSON.parse(localStorage.getItem(key));
+            if (response && response.id && !seenIds.has(response.id)) {
+              seenIds.add(response.id);
+              allResponses.push(response);
+            }
+          } catch (e) {
+            console.log(`❌ Error parsing individual response ${key}:`, e);
+          }
+        }
+      }
+
+      console.log(`✅ Loaded ${allQuestions.length} questions and ${allResponses.length} responses`);
+      
+      // Update status
+      updateDataStatus();
+      populateQuestionSelector();
+    }
+
+    // Update data status indicator
+    function updateDataStatus() {
+      const statusElement = document.getElementById('dataStatus');
+      
+      if (allQuestions.length === 0 && allResponses.length === 0) {
+        statusElement.className = 'data-status no-data';
+        statusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> No questions or responses found. Create a question first!';
+      } else if (allQuestions.length > 0 && allResponses.length === 0) {
+        statusElement.className = 'data-status no-data';
+        statusElement.innerHTML = `<i class="fas fa-clock"></i> ${allQuestions.length} questions created, waiting for student responses...`;
+      } else {
+        statusElement.className = 'data-status has-data';
+        statusElement.innerHTML = `<i class="fas fa-check-circle"></i> ${allQuestions.length} questions • ${allResponses.length} student responses loaded`;
       }
     }
 
-    function updatePhotoCount() {
-      const countElement = document.getElementById('photoCount');
-      const count = studentPhotos.length;
+    // Populate question selector dropdown
+    function populateQuestionSelector() {
+      const selector = document.getElementById('questionSelector');
       
-      countElement.textContent = count;
-      countElement.classList.toggle('show', count > 0);
-    }
-
-    function openPhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.add('active');
-      renderPhotoGallery();
-    }
-
-    function closePhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.remove('active');
-    }
-
-    function renderPhotoGallery() {
-      const photoGrid = document.getElementById('photoGrid');
-      const galleryEmpty = document.getElementById('galleryEmpty');
-
-      if (studentPhotos.length === 0) {
-        photoGrid.innerHTML = '';
-        galleryEmpty.style.display = 'block';
+      if (allQuestions.length === 0) {
+        selector.innerHTML = '<option value="">No questions available - create one first!</option>';
         return;
       }
-
-      galleryEmpty.style.display = 'none';
       
-      photoGrid.innerHTML = studentPhotos.map(photo => `
-        <div class="student-photo-card" data-photo-id="${photo.id}" onclick="selectPhotoForRemoval(${photo.id}, '${photo.name}')">
-          <img 
-            src="${photo.photo}" 
-            alt="${photo.name}" 
-            class="student-photo-large"
-          />
-          <div class="student-card-name">${photo.name}</div>
-          <div class="student-card-meta">Captured: ${photo.timestamp}</div>
-        </div>
-      `).join('');
+      // Sort questions by creation date (newest first)
+      const sortedQuestions = allQuestions.sort((a, b) => {
+        const dateA = new Date(a.timestamp || a.publishedAt || 0);
+        const dateB = new Date(b.timestamp || b.publishedAt || 0);
+        return dateB - dateA;
+      });
+      
+      selector.innerHTML = '<option value="">Select a question to analyze...</option>';
+      
+      sortedQuestions.forEach(question => {
+        const option = document.createElement('option');
+        option.value = question.id;
+        
+        // Truncate long questions
+        const displayText = question.text.length > 80 
+          ? question.text.substring(0, 80) + '...' 
+          : question.text;
+        
+        const responseCount = allResponses.filter(r => 
+          r.questionId === question.id || 
+          r.questionText === question.text
+        ).length;
+        
+        option.textContent = `${displayText} (${responseCount} responses)`;
+        selector.appendChild(option);
+      });
     }
 
-    function selectPhotoForRemoval(photoId, studentName) {
-      if (confirm(`Remove photo of ${studentName}? This will also remove them from display modes that use photos.`)) {
-        removeStudentPhoto(photoId);
-      }
-    }
-
-    function removeStudentPhoto(photoId) {
-      studentPhotos = studentPhotos.filter(p => p.id !== photoId);
-      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
-      updatePhotoCount();
-      renderPhotoGallery();
-      showNotification('Photo removed successfully', 'success');
-    }
-
-    function clearAllPhotos() {
-      if (confirm('Clear all student photos? This cannot be undone and will affect photo-enabled display modes.')) {
-        studentPhotos = [];
-        localStorage.removeItem('student_photos');
-        updatePhotoCount();
-        renderPhotoGallery();
-        showNotification('All photos cleared', 'success');
-      }
-    }
-
-    function goToQuestionCreator() {
-      window.location.href = '../teachers/questions/';
-    }
-
-    function openCosmicDisplay() {
-      if (studentPhotos.length === 0) {
-        if (confirm('No student photos captured yet. The Cosmic Galaxy will show default avatars. Continue anyway?')) {
-          window.open('cosmic-galaxy.html', '_blank');
-        }
-      } else {
-        showNotification(`Opening Cosmic Galaxy with ${studentPhotos.length} student photos!`, 'success');
-        setTimeout(() => {
-          window.open('cosmic-galaxy.html', '_blank');
-        }, 1000);
-      }
-    }
-
-    // Update question display when dropdown changes
-    function updateQuestion() {
+    // Handle question selection
+    function onQuestionSelect() {
       const selector = document.getElementById('questionSelector');
-      const selectedValue = selector.value;
-      const questionText = questions[selectedValue];
-      const titleElement = document.getElementById('currentQuestionTitle');
+      const selectedId = selector.value;
       
-      titleElement.textContent = `Question ${selectedValue}: ${questionText}`;
-      currentSelectedQuestion = parseInt(selectedValue);
+      if (!selectedId) {
+        hideQuestionDetails();
+        return;
+      }
       
-      document.getElementById('deleteBtn').disabled = false;
+      currentSelectedQuestion = allQuestions.find(q => q.id == selectedId);
       
-      console.log(`Teacher selected: Question ${selectedValue}`);
+      if (currentSelectedQuestion) {
+        showQuestionDetails(currentSelectedQuestion);
+        loadResponsesForQuestion(currentSelectedQuestion);
+      }
     }
 
+    // Show question details
+    function showQuestionDetails(question) {
+      const titleElement = document.getElementById('currentQuestionTitle');
+      const textElement = document.getElementById('currentQuestionText');
+      const boxElement = document.getElementById('currentQuestionBox');
+      
+      titleElement.textContent = `Question: ${question.text}`;
+      
+      const createdDate = new Date(question.timestamp || question.publishedAt).toLocaleDateString();
+      textElement.textContent = `Created: ${createdDate} • ID: ${question.id}`;
+      
+      boxElement.style.display = 'block';
+      
+      // Enable delete button
+      document.getElementById('deleteBtn').disabled = false;
+    }
+
+    // Hide question details
+    function hideQuestionDetails() {
+      document.getElementById('currentQuestionBox').style.display = 'none';
+      document.getElementById('statsGrid').style.display = 'none';
+      document.getElementById('responsesSection').style.display = 'none';
+      document.getElementById('displayBox').style.display = 'none';
+      document.getElementById('deleteBtn').disabled = true;
+      currentSelectedQuestion = null;
+      filteredResponses = [];
+    }
+
+    // Load responses for selected question
+    function loadResponsesForQuestion(question) {
+      console.log(`🔍 Loading responses for question ${question.id}...`);
+      
+      // Filter responses by question ID or text
+      filteredResponses = allResponses.filter(response => {
+        return response.questionId === question.id || 
+               response.questionText === question.text ||
+               (response.questionId && response.questionId.toString() === question.id.toString());
+      });
+      
+      console.log(`✅ Found ${filteredResponses.length} responses for this question`);
+      
+      updateStatistics();
+      renderResponses();
+      
+      // Show sections
+      document.getElementById('statsGrid').style.display = filteredResponses.length > 0 ? 'grid' : 'none';
+      document.getElementById('responsesSection').style.display = 'block';
+      document.getElementById('displayBox').style.display = filteredResponses.length > 0 ? 'block' : 'none';
+    }
+
+    // Update statistics
+    function updateStatistics() {
+      const totalCount = filteredResponses.length;
+      
+      if (totalCount === 0) {
+        document.getElementById('totalResponses').textContent = '0';
+        document.getElementById('avgWords').textContent = '0';
+        document.getElementById('avgScore').textContent = '0%';
+        document.getElementById('excellentCount').textContent = '0';
+        return;
+      }
+      
+      const avgWords = Math.round(
+        filteredResponses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / totalCount
+      );
+      
+      const avgScore = Math.round(
+        filteredResponses.reduce((sum, r) => sum + (r.score || 0), 0) / totalCount
+      );
+      
+      const excellentCount = filteredResponses.filter(r => r.quality === 'excellent').length;
+      
+      document.getElementById('totalResponses').textContent = totalCount;
+      document.getElementById('avgWords').textContent = avgWords;
+      document.getElementById('avgScore').textContent = avgScore + '%';
+      document.getElementById('excellentCount').textContent = excellentCount;
+    }
+
+    // Render responses
+    function renderResponses() {
+      const grid = document.getElementById('responsesGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredResponses.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      // Sort responses by submission time (newest first)
+      const sortedResponses = filteredResponses.sort((a, b) => {
+        const dateA = new Date(a.submittedAt || a.timestamp);
+        const dateB = new Date(b.submittedAt || b.timestamp);
+        return dateB - dateA;
+      });
+      
+      grid.innerHTML = sortedResponses.map(response => {
+        const quality = response.quality || 'needs-work';
+        const displayText = response.answer && response.answer.length > 120 
+          ? response.answer.substring(0, 120) + '...' 
+          : (response.answer || 'No response text');
+        
+        const submissionTime = new Date(response.submittedAt || response.timestamp).toLocaleString();
+        
+        return `
+          <div class="response-card ${quality}" onclick="showResponseDetail(${response.id})">
+            <div class="response-header">
+              <div class="student-name">${response.studentName || 'Anonymous'}</div>
+              <div class="quality-badge ${quality}">${quality.replace('-', ' ')}</div>
+            </div>
+            <div class="response-text">${displayText}</div>
+            <div class="response-footer">
+              <div class="response-meta">
+                <i class="fas fa-clock"></i>
+                <span>${submissionTime}</span>
+              </div>
+              <div class="word-count">${response.wordCount || 0} words • ${response.score || 0}%</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Show response detail modal
+    function showResponseDetail(responseId) {
+      const response = filteredResponses.find(r => r.id === responseId);
+      if (!response) return;
+      
+      document.getElementById('modalStudentName').textContent = response.studentName || 'Anonymous';
+      document.getElementById('modalResponseText').textContent = response.answer || 'No response text provided';
+      document.getElementById('modalWordCount').textContent = response.wordCount || 0;
+      document.getElementById('modalQuality').textContent = (response.quality || 'needs-work').replace('-', ' ');
+      document.getElementById('modalScore').textContent = (response.score || 0) + '%';
+      document.getElementById('modalTimestamp').textContent = new Date(response.submittedAt || response.timestamp).toLocaleString();
+      
+      document.getElementById('responseModal').style.display = 'flex';
+    }
+
+    // Close response detail modal
+    function closeResponseModal() {
+      document.getElementById('responseModal').style.display = 'none';
+    }
+
+    // Refresh data
+    function refreshData() {
+      const btn = document.getElementById('refreshBtn');
+      const originalContent = btn.innerHTML;
+      
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        const oldResponseCount = allResponses.length;
+        loadAllData();
+        
+        if (currentSelectedQuestion) {
+          loadResponsesForQuestion(currentSelectedQuestion);
+        }
+        
+        const newResponseCount = allResponses.length;
+        if (newResponseCount > oldResponseCount) {
+          showNotification(`${newResponseCount - oldResponseCount} new responses loaded!`, 'success');
+        } else {
+          showNotification('Data refreshed', 'success');
+        }
+        
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+      }, 1000);
+    }
+
+    // Show current view (placeholder)
     function showCurrentView() {
-      alert('You are currently viewing the Grid View (Analytics Dashboard)');
+      showNotification('You are currently viewing the Analytics Grid View', 'success');
     }
 
     // Delete functionality
     function confirmDeleteCurrentQuestion() {
-      const questionText = questions[currentSelectedQuestion];
+      if (!currentSelectedQuestion) return;
+      
       const modal = document.getElementById('delete-modal');
       const confirmText = document.getElementById('delete-confirmation-text');
       
-      const preview = questionText.length > 50 
-        ? questionText.substring(0, 50) + '...' 
-        : questionText;
+      const preview = currentSelectedQuestion.text.length > 50 
+        ? currentSelectedQuestion.text.substring(0, 50) + '...' 
+        : currentSelectedQuestion.text;
       
       confirmText.innerHTML = `
         Are you sure you want to delete this question?<br>
         <strong>"${preview}"</strong><br><br>
-        <em>This action cannot be undone and will also delete all student responses.</em>
+        <em>This will also delete ${filteredResponses.length} student responses.</em>
       `;
       
       modal.style.display = 'flex';
     }
 
     function executeDeleteQuestion() {
+      if (!currentSelectedQuestion) return;
+      
       try {
-        delete questions[currentSelectedQuestion];
+        // Remove from questions array
+        allQuestions = allQuestions.filter(q => q.id !== currentSelectedQuestion.id);
         
-        const selector = document.getElementById('questionSelector');
-        const optionToRemove = selector.querySelector(`option[value="${currentSelectedQuestion}"]`);
-        if (optionToRemove) {
-          optionToRemove.remove();
+        // Remove responses for this question
+        allResponses = allResponses.filter(r => 
+          r.questionId !== currentSelectedQuestion.id && 
+          r.questionText !== currentSelectedQuestion.text
+        );
+        
+        // Update localStorage
+        const questionKeys = ['alm_questions', 'intuity_questions'];
+        questionKeys.forEach(key => {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              let questions = JSON.parse(stored);
+              questions = questions.filter(q => q.id !== currentSelectedQuestion.id);
+              localStorage.setItem(key, JSON.stringify(questions));
+            } catch (e) {
+              console.error(`Error updating ${key}:`, e);
+            }
+          }
+        });
+        
+        // Remove from current_question if it matches
+        const currentQ = localStorage.getItem('current_question');
+        if (currentQ) {
+          try {
+            const parsed = JSON.parse(currentQ);
+            if (parsed.id === currentSelectedQuestion.id) {
+              localStorage.removeItem('current_question');
+            }
+          } catch (e) {}
         }
         
-        // Remove associated data
-        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        const filteredResponses = responses.filter(r => r.questionId !== currentSelectedQuestion);
-        localStorage.setItem('alm_student_responses', JSON.stringify(filteredResponses));
+        // Update response storage
+        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+        responseKeys.forEach(key => {
+          localStorage.setItem(key, JSON.stringify(allResponses));
+        });
         
-        const storedQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
-        const filteredQuestions = storedQuestions.filter(q => q.id !== currentSelectedQuestion);
-        localStorage.setItem('alm_questions', JSON.stringify(filteredQuestions));
-        
-        const currentQuestionInStorage = JSON.parse(localStorage.getItem('current_question') || 'null');
-        if (currentQuestionInStorage && currentQuestionInStorage.id === currentSelectedQuestion) {
-          localStorage.removeItem('current_question');
-        }
-        
-        showNotification('Question deleted successfully', 'success');
+        showNotification('Question and responses deleted successfully', 'success');
         closeDeleteModal();
         
-        const remainingOptions = selector.querySelectorAll('option');
-        if (remainingOptions.length > 0) {
-          selector.value = remainingOptions[0].value;
-          updateQuestion();
-        } else {
-          document.getElementById('currentQuestionTitle').textContent = 'No questions available';
-          document.getElementById('deleteBtn').disabled = true;
-        }
+        // Refresh UI
+        populateQuestionSelector();
+        hideQuestionDetails();
         
       } catch (error) {
         console.error('Error deleting question:', error);
@@ -1140,42 +1497,53 @@
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('INTUITY Analytics Dashboard with Photo Management Loaded');
+      console.log('🚀 INTUITY Analytics Dashboard Loaded');
       
-      // Load photos
-      loadStudentPhotos();
+      // Load all data
+      loadAllData();
       
       // Set up dropdown change listener
       const selector = document.getElementById('questionSelector');
-      selector.addEventListener('change', updateQuestion);
+      selector.addEventListener('change', onQuestionSelect);
       
-      // Initialize with first question
-      updateQuestion();
-
-      // Photo management event listeners
-      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
-      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
-      document.getElementById('captureMoreBtn').addEventListener('click', goToQuestionCreator);
-      document.getElementById('clearAllPhotosBtn').addEventListener('click', clearAllPhotos);
-      document.getElementById('viewCosmicBtn').addEventListener('click', openCosmicDisplay);
-
-      // Close modal when clicking outside
+      // Set up refresh button
+      document.getElementById('refreshBtn').addEventListener('click', refreshData);
+      
+      // Close modals when clicking outside
       document.getElementById('delete-modal').addEventListener('click', (e) => {
         if (e.target.id === 'delete-modal') {
           closeDeleteModal();
         }
       });
-
-      // Close photo modal on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          if (document.getElementById('photoModal').classList.contains('active')) {
-            closePhotoModal();
-          } else if (document.getElementById('delete-modal').style.display === 'flex') {
-            closeDeleteModal();
-          }
+      
+      document.getElementById('responseModal').addEventListener('click', (e) => {
+        if (e.target.id === 'responseModal') {
+          closeResponseModal();
         }
       });
+
+      // Debug: Log localStorage contents
+      console.log('📊 localStorage contents:');
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('question') || key.includes('response') || key.includes('alm') || key.includes('intuity'))) {
+          const value = localStorage.getItem(key);
+          console.log(`  ${key}:`, value ? JSON.parse(value) : 'null');
+        }
+      }
+
+      // Auto-refresh every 30 seconds
+      setInterval(() => {
+        const oldCount = allResponses.length;
+        loadAllData();
+        
+        if (currentSelectedQuestion && allResponses.length > oldCount) {
+          loadResponsesForQuestion(currentSelectedQuestion);
+          console.log(`🔄 Auto-refresh: ${allResponses.length - oldCount} new responses detected`);
+        }
+      }, 30000);
+
+      console.log('✅ Analytics dashboard ready!');
     });
   </script>
 
