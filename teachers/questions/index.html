@@ -748,13 +748,19 @@
     }
 
     function generateQR() {
+      if (!currentQuestion) {
+        alert('Please publish a question first before generating QR code.');
+        return;
+      }
+
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
       
       modal.style.display = 'flex';
       
-      // Generate QR code URL for student interface
-      const studentURL = CONFIG.baseURL + CONFIG.studentPath;
+      // Generate QR code URL for student interface WITH question ID
+      const baseStudentURL = CONFIG.baseURL + CONFIG.studentPath;
+      const studentURL = `${baseStudentURL}?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
       
       setTimeout(() => {
