@@ -144,6 +144,30 @@
       position: relative;
     }
     
+    /* Connection Status */
+    .connection-status {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    .connection-status.connected {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .connection-status.disconnected {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+    
     /* Question Container */
     .question-container {
       background: var(--card-bg);
@@ -614,6 +638,11 @@
   <!-- Main Container -->
   <div class="main-container">
     
+    <!-- Connection Status -->
+    <div class="connection-status" id="connectionStatus">
+      <i class="fas fa-wifi"></i> Checking connection to teacher's question...
+    </div>
+    
     <!-- Question Display -->
     <div class="question-container" id="questionContainer">
       <div class="question-meta">Question from your teacher</div>
@@ -750,8 +779,23 @@
       }
     }
 
+    // Update connection status
+    function updateConnectionStatus(isConnected, message = '') {
+      const statusElement = document.getElementById('connectionStatus');
+      
+      if (isConnected) {
+        statusElement.className = 'connection-status connected';
+        statusElement.innerHTML = `<i class="fas fa-check-circle"></i> Connected - ${message || 'Question loaded successfully'}`;
+      } else {
+        statusElement.className = 'connection-status disconnected';
+        statusElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message || 'No connection to teacher question'}`;
+      }
+    }
+
     // Load question from URL parameters or localStorage
     function loadQuestion() {
+      console.log('🔍 Loading question...');
+      
       try {
         // Check URL parameters first (from QR code)
         const urlParams = new URLSearchParams(window.location.search);
@@ -763,9 +807,11 @@
           currentQuestion = {
             id: parseInt(questionId),
             text: decodeURIComponent(questionText),
-            source: 'url'
+            source: 'url',
+            isReal: true
           };
-          console.log('Loaded question from URL:', currentQuestion);
+          console.log('✅ Loaded question from URL:', currentQuestion);
+          updateConnectionStatus(true, 'Question from QR code');
           return displayQuestion();
         }
         
@@ -779,29 +825,42 @@
               const parsed = JSON.parse(stored);
               
               if (key === 'current_question' && parsed.text) {
-                currentQuestion = parsed;
-                console.log('Loaded current question from localStorage:', currentQuestion);
+                currentQuestion = {
+                  ...parsed,
+                  source: 'localStorage',
+                  isReal: true
+                };
+                console.log('✅ Loaded current question from localStorage:', currentQuestion);
+                updateConnectionStatus(true, 'Current question active');
                 return displayQuestion();
               } else if (Array.isArray(parsed) && parsed.length > 0) {
                 // Get the most recent question
                 const latestQuestion = parsed[parsed.length - 1];
                 if (latestQuestion && latestQuestion.text) {
-                  currentQuestion = latestQuestion;
-                  console.log('Loaded latest question from array:', currentQuestion);
+                  currentQuestion = {
+                    ...latestQuestion,
+                    source: 'localStorage',
+                    isReal: true
+                  };
+                  console.log('✅ Loaded latest question from array:', currentQuestion);
+                  updateConnectionStatus(true, 'Latest question loaded');
                   return displayQuestion();
                 }
               }
             } catch (e) {
-              console.log(`Error parsing ${key}:`, e);
+              console.log(`❌ Error parsing ${key}:`, e);
             }
           }
         }
         
         // No question found
+        console.log('❌ No question found');
+        updateConnectionStatus(false, 'No active question found');
         showNoQuestion();
         
       } catch (error) {
-        console.error('Error loading question:', error);
+        console.error('❌ Error loading question:', error);
+        updateConnectionStatus(false, 'Error loading question');
         showNoQuestion();
       }
     }
@@ -822,7 +881,7 @@
         // Enable the interface
         enableInterface();
         
-        console.log('Question displayed successfully');
+        console.log('✅ Question displayed successfully');
       } else {
         showNoQuestion();
       }
@@ -841,7 +900,7 @@
       // Enable demo mode for the interface
       enableDemoMode();
       
-      console.log('No question available - showing demo mode');
+      console.log('📝 No question available - showing demo mode');
     }
 
     // Enable interface functionality
@@ -863,7 +922,7 @@
       document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
       submitBtn.addEventListener('click', submitResponse);
       
-      console.log('Interface enabled');
+      console.log('✅ Interface enabled for real question');
     }
 
     // Enable demo mode (no question available)
@@ -881,11 +940,12 @@
       nameInput.addEventListener('input', validateInput);
       answerInput.addEventListener('input', handleAnswerInput);
       
-      // Footer button listeners
+      // Footer button listeners (submit will show different message)
       document.getElementById('clearBtn').addEventListener('click', clearForm);
       document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
+      document.getElementById('submitBtn').addEventListener('click', submitDemoResponse);
       
-      console.log('Demo mode enabled');
+      console.log('🎭 Demo mode enabled');
     }
 
     // Handle answer input and update word count
@@ -981,7 +1041,7 @@
       });
     }
 
-    // Submit response
+    // Submit real response
     function submitResponse() {
       if (isSubmitted) return;
       
@@ -1013,39 +1073,56 @@
       // Simulate network delay
       setTimeout(() => {
         try {
-          // Create response object
+          // Create response object with GUARANTEED SAVE
           const response = {
             id: Date.now(),
-            questionId: currentQuestion ? currentQuestion.id : 'demo',
+            questionId: currentQuestion.id || Date.now(),
+            questionText: currentQuestion.text || '',
             studentName: studentName,
             answer: studentAnswer,
             wordCount: wordCount,
             timestamp: new Date().toLocaleString(),
             submittedAt: new Date().toISOString(),
             quality: determineQuality(wordCount),
-            score: calculateScore(wordCount, studentAnswer)
+            score: calculateScore(wordCount, studentAnswer),
+            source: currentQuestion.source || 'unknown'
           };
 
-          // Save to localStorage (only if real question)
-          if (currentQuestion && currentQuestion.text && !currentQuestion.demo) {
-            const existingResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-            existingResponses.push(response);
-            localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
-            
-            // Also save in alternative format for compatibility
-            localStorage.setItem('intuity_responses', JSON.stringify(existingResponses));
-            
-            console.log('Response saved:', response);
-          } else {
-            console.log('Demo response created:', response);
-          }
+          console.log('💾 Saving response:', response);
+
+          // SAVE TO MULTIPLE KEYS FOR RELIABILITY
+          const storageKeys = [
+            'alm_student_responses',
+            'intuity_responses', 
+            'student_responses',
+            'intuity_student_data'
+          ];
+
+          storageKeys.forEach(key => {
+            try {
+              const existingResponses = JSON.parse(localStorage.getItem(key) || '[]');
+              existingResponses.push(response);
+              localStorage.setItem(key, JSON.stringify(existingResponses));
+              console.log(`✅ Saved to ${key}:`, existingResponses.length, 'responses');
+            } catch (e) {
+              console.error(`❌ Error saving to ${key}:`, e);
+            }
+          });
+
+          // Also save individual response with timestamp key
+          const individualKey = `response_${response.id}`;
+          localStorage.setItem(individualKey, JSON.stringify(response));
+          console.log(`✅ Individual response saved as ${individualKey}`);
+
+          // Update connection status
+          updateConnectionStatus(true, `Response submitted for Question ${currentQuestion.id}`);
 
           // Show success state
           showSuccess();
           isSubmitted = true;
           
         } catch (error) {
-          console.error('Error submitting response:', error);
+          console.error('❌ Error submitting response:', error);
           alert('Error submitting response. Please try again.');
           
           // Reset button
@@ -1053,6 +1130,27 @@
           submitBtn.disabled = false;
         }
       }, 1500);
+    }
+
+    // Submit demo response (different behavior)
+    function submitDemoResponse() {
+      if (isSubmitted) return;
+      
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      
+      const studentName = nameInput.value.trim();
+      const studentAnswer = answerInput.value.trim();
+      
+      if (!studentName || wordCount < minWordCount) {
+        alert('Please complete all fields to see the demo submission.');
+        return;
+      }
+
+      // Show demo success
+      alert(`Demo Mode: Your response would be submitted!\n\nName: ${studentName}\nWords: ${wordCount}\nResponse: ${studentAnswer.substring(0, 100)}${studentAnswer.length > 100 ? '...' : ''}\n\nTo submit real responses, your teacher needs to create an active question.`);
+      
+      console.log('🎭 Demo submission completed');
     }
 
     // Determine response quality
@@ -1101,6 +1199,8 @@
       editBtn.style.display = 'none';
       
       clearBtn.onclick = () => window.location.reload();
+
+      console.log('🎉 Success state displayed');
     }
 
     // Clear form
@@ -1134,7 +1234,7 @@
 
     // Initialize the application
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('INTUITY Student Interface initialized');
+      console.log('🚀 INTUITY Student Interface initialized');
       
       // Create background
       createConstellation();
@@ -1142,13 +1242,26 @@
       // Load question and set up interface
       loadQuestion();
       
+      // Debug: Show localStorage contents
+      console.log('📊 Current localStorage contents:');
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.includes('question') || key.includes('response') || key.includes('alm') || key.includes('intuity')) {
+          console.log(`  ${key}:`, localStorage.getItem(key));
+        }
+      }
+      
       // Set up keyboard shortcuts
       document.addEventListener('keydown', (e) => {
         // Ctrl/Cmd + Enter to submit
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const submitBtn = document.getElementById('submitBtn');
           if (!submitBtn.disabled) {
-            submitResponse();
+            if (currentQuestion && currentQuestion.isReal) {
+              submitResponse();
+            } else {
+              submitDemoResponse();
+            }
           }
         }
         
@@ -1158,7 +1271,7 @@
         }
       });
       
-      console.log('Student interface ready!');
+      console.log('✅ Student interface ready!');
     });
   </script>
 </body>
