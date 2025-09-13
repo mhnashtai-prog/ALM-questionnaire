@@ -268,6 +268,7 @@
       letter-spacing: 0.5px;
       min-width: 80px;
       justify-content: center;
+      position: relative;
     }
     
     .footer-btn:hover {
@@ -298,6 +299,267 @@
       font-size: 0.9rem;
     }
 
+    /* Photo Capture Button - Subtle styling */
+    .photo-btn {
+      position: relative;
+    }
+
+    .photo-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-fast);
+      z-index: 1001;
+    }
+
+    .photo-btn:hover::after {
+      opacity: 1;
+    }
+
+    /* Photo count indicator */
+    .photo-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--accent-teal);
+      color: var(--bg-primary);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.2rem 0.4rem;
+      border-radius: 50px;
+      min-width: 16px;
+      text-align: center;
+      display: none;
+    }
+
+    .photo-count.show {
+      display: block;
+    }
+
+    /* Full-Screen Photo Capture Modal */
+    .photo-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .photo-modal.active {
+      display: flex;
+    }
+
+    /* Modal Header */
+    .modal-header {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-bottom: 2px solid var(--accent-teal);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-close {
+      background: none;
+      border: 2px solid var(--accent-teal);
+      color: var(--accent-teal);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all var(--transition-fast);
+    }
+
+    .modal-close:hover {
+      background: var(--accent-teal);
+      color: white;
+      transform: rotate(90deg) scale(1.1);
+    }
+
+    /* Camera Container */
+    .camera-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+      background: #000;
+    }
+
+    .camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .camera-circle {
+      width: 200px;
+      height: 200px;
+      border: 3px solid var(--accent-teal);
+      border-radius: 50%;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      animation: pulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { border-color: var(--accent-teal); }
+      100% { border-color: var(--accent-gold); }
+    }
+
+    /* Camera Controls */
+    .camera-controls {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-top: 2px solid var(--accent-teal);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .current-student {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      backdrop-filter: var(--blur);
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .student-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+
+    .student-input:focus {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+    }
+
+    .capture-btn {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: all var(--transition-fast);
+      box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+    }
+
+    .capture-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
+    }
+
+    .capture-btn:active {
+      transform: scale(1.05);
+    }
+
+    .capture-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Student Gallery */
+    .student-gallery {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem;
+      backdrop-filter: var(--blur);
+      max-width: 400px;
+      max-height: 120px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .gallery-scroll {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .student-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-teal);
+      box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .student-photo:hover {
+      transform: scale(1.1);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 15px rgba(244, 162, 97, 0.5);
+    }
+
+    .gallery-empty {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
     /* Success notification */
     .success-notification {
       position: fixed;
@@ -323,46 +585,26 @@
       to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
     
-    /* Mobile Optimizations */
-    @media (max-width: 768px) {
-      .main-container {
-        width: 95%;
-        top: 45%;
-      }
-      
-      .question-card {
-        padding: 2rem;
-      }
-      
-      .brand-name {
-        font-size: 2rem;
-      }
-      
-      .question-input {
-        min-height: 100px;
-        padding: 1.25rem;
-        font-size: 1rem;
-      }
-      
-      .footer-content {
-        gap: 1rem;
-      }
-      
-      .footer-btn {
-        min-width: 70px;
-        padding: 0.6rem;
-      }
-      
-      .home-btn {
-        top: 0.75rem;
-        left: 0.75rem;
-        padding: 0.4rem;
-        font-size: 0.8rem;
-      }
-      
-      .home-btn span {
-        display: none;
-      }
+    /* Share notification */
+    .share-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(45, 212, 191, 0.15);
+      border: 2px solid var(--accent-teal);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--accent-teal);
+      font-weight: 600;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: var(--blur);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
     }
     
     /* Loading Animation */
@@ -433,27 +675,51 @@
       font-weight: 600;
       cursor: pointer;
     }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .main-container {
+        width: 95%;
+        top: 45%;
+      }
+      
+      .question-card {
+        padding: 2rem;
+      }
+      
+      .brand-name {
+        font-size: 2rem;
+      }
+      
+      .question-input {
+        min-height: 100px;
+        padding: 1.25rem;
+        font-size: 1rem;
+      }
+      
+      .footer-content {
+        gap: 1rem;
+      }
+      
+      .footer-btn {
+        min-width: 70px;
+        padding: 0.6rem;
+      }
 
-    /* Share notification */
-    .share-notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(45, 212, 191, 0.15);
-      border: 2px solid var(--accent-teal);
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      color: var(--accent-teal);
-      font-weight: 600;
-      z-index: 2000;
-      display: none;
-      backdrop-filter: var(--blur);
-      animation: slideIn 0.3s ease;
-    }
+      .camera-controls {
+        padding: 1rem;
+        gap: 1rem;
+      }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(100%); }
-      to { opacity: 1; transform: translateX(0); }
+      .current-student {
+        max-width: none;
+      }
+
+      .capture-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -484,7 +750,7 @@
     </div>
   </div>
 
-  <!-- Minimalist Footer -->
+  <!-- Minimalist Footer with Photo Button -->
   <div class="simple-footer">
     <div class="footer-content">
       <button class="footer-btn" id="clearBtn">
@@ -506,6 +772,13 @@
         <i class="fas fa-share-alt"></i>
         <span>Share</span>
       </button>
+
+      <!-- NEW: Photo Capture Button -->
+      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Capture Student Photos">
+        <i class="fas fa-camera"></i>
+        <span>Photos</span>
+        <div class="photo-count" id="photoCount">0</div>
+      </button>
       
       <button class="footer-btn" id="qrBtn">
         <i class="fas fa-qrcode"></i>
@@ -516,6 +789,46 @@
         <i class="fas fa-chart-bar"></i>
         <span>Analytics</span>
       </button>
+    </div>
+  </div>
+
+  <!-- Full-Screen Photo Capture Modal -->
+  <div class="photo-modal" id="photoModal">
+    <div class="modal-header">
+      <div class="modal-title">📸 INTUITY Photo Capture</div>
+      <button class="modal-close" id="closePhotoModal">&times;</button>
+    </div>
+
+    <div class="camera-container">
+      <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
+      <canvas id="photoCanvas" style="display: none;"></canvas>
+      
+      <div class="camera-overlay">
+        <div class="camera-circle"></div>
+      </div>
+    </div>
+
+    <div class="camera-controls">
+      <div class="current-student">
+        <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Student Name:</label>
+        <input 
+          type="text" 
+          class="student-input" 
+          id="currentStudentName" 
+          placeholder="Enter student's name..."
+          maxlength="50"
+        />
+      </div>
+
+      <button class="capture-btn" id="captureBtn" disabled>
+        <i class="fas fa-camera"></i>
+      </button>
+
+      <div class="student-gallery">
+        <div class="gallery-scroll" id="galleryScroll">
+          <div class="gallery-empty">No photos captured yet</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -546,11 +859,13 @@
 
   <script>
     let currentQuestion = null;
+    let studentPhotos = []; // Array to store captured photos
+    let cameraStream = null;
 
     // Configuration object for easy path management
     const CONFIG = {
-      studentPath: '../../students/answers/', // Correct path to student interface
-      analyticsPath: '../../visualisation/', // Correct path to analytics
+      studentPath: '../../students/answers/',
+      analyticsPath: '../../visualisation/',
       baseURL: window.location.origin + window.location.pathname.replace('/teachers/questions/index.html', '/')
     };
 
@@ -570,21 +885,19 @@
       }
     }
 
-    // Simplified question input handler
+    // Question input handler
     function handleQuestionInput() {
       const input = document.getElementById('questionInput');
       const publishBtn = document.getElementById('publishBtn');
 
       const text = input.value.trim();
 
-      // Enable/disable publish button based on content
       if (text.length >= 10) {
         publishBtn.disabled = false;
       } else {
         publishBtn.disabled = true;
       }
 
-      // Auto-save draft
       if (text) {
         localStorage.setItem('question_draft', text);
       }
@@ -597,6 +910,177 @@
         document.getElementById('questionInput').value = draft;
         handleQuestionInput();
       }
+
+      // Load existing photos
+      const savedPhotos = localStorage.getItem('student_photos');
+      if (savedPhotos) {
+        try {
+          studentPhotos = JSON.parse(savedPhotos);
+          updatePhotoCount();
+          updateGallery();
+        } catch (e) {
+          console.error('Error loading photos:', e);
+        }
+      }
+    }
+
+    // Photo capture functionality
+    async function startCamera() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
+        
+        const video = document.getElementById('cameraVideo');
+        video.srcObject = cameraStream;
+        
+        // Enable capture button when video is ready
+        video.addEventListener('loadedmetadata', () => {
+          document.getElementById('captureBtn').disabled = false;
+        });
+        
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Could not access camera. Please check permissions.');
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+    }
+
+    function openPhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.add('active');
+      startCamera();
+    }
+
+    function closePhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.remove('active');
+      stopCamera();
+      document.getElementById('currentStudentName').value = '';
+      document.getElementById('captureBtn').disabled = true;
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('photoCanvas');
+      const studentName = document.getElementById('currentStudentName').value.trim();
+      
+      if (!studentName) {
+        alert('Please enter the student\'s name before capturing.');
+        document.getElementById('currentStudentName').focus();
+        return;
+      }
+      
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Draw video frame to canvas
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      
+      // Convert to base64
+      const photoDataURL = canvas.toDataURL('image/jpeg', 0.8);
+      
+      // Create photo object
+      const photoData = {
+        id: Date.now(),
+        name: studentName,
+        photo: photoDataURL,
+        timestamp: new Date().toLocaleString()
+      };
+      
+      // Add to photos array
+      studentPhotos.push(photoData);
+      
+      // Save to localStorage
+      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+      
+      // Update UI
+      updatePhotoCount();
+      updateGallery();
+      
+      // Clear input for next student
+      document.getElementById('currentStudentName').value = '';
+      document.getElementById('currentStudentName').focus();
+      
+      // Success feedback
+      showPhotoSuccess(studentName);
+      
+      console.log(`Photo captured for ${studentName}`);
+    }
+
+    function updatePhotoCount() {
+      const countElement = document.getElementById('photoCount');
+      const count = studentPhotos.length;
+      
+      countElement.textContent = count;
+      countElement.classList.toggle('show', count > 0);
+    }
+
+    function updateGallery() {
+      const galleryScroll = document.getElementById('galleryScroll');
+      
+      if (studentPhotos.length === 0) {
+        galleryScroll.innerHTML = '<div class="gallery-empty">No photos captured yet</div>';
+        return;
+      }
+      
+      galleryScroll.innerHTML = studentPhotos.map(photo => `
+        <img 
+          src="${photo.photo}" 
+          alt="${photo.name}"
+          class="student-photo"
+          title="${photo.name} - ${photo.timestamp}"
+          onclick="removePhoto(${photo.id})"
+        />
+      `).join('');
+    }
+
+    function removePhoto(photoId) {
+      if (confirm('Remove this photo?')) {
+        studentPhotos = studentPhotos.filter(p => p.id !== photoId);
+        localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+        updatePhotoCount();
+        updateGallery();
+      }
+    }
+
+    function showPhotoSuccess(studentName) {
+      // Create temporary success message
+      const successDiv = document.createElement('div');
+      successDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(16, 185, 129, 0.15);
+        border: 2px solid var(--success);
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        color: var(--success);
+        font-weight: 600;
+        z-index: 2001;
+        backdrop-filter: blur(20px);
+        animation: fadeInOut 3s ease-in-out;
+      `;
+      successDiv.innerHTML = `<i class="fas fa-camera"></i> Photo captured for ${studentName}!`;
+      
+      document.body.appendChild(successDiv);
+      
+      setTimeout(() => {
+        document.body.removeChild(successDiv);
+      }, 3000);
     }
 
     // Publish question function
@@ -611,11 +1095,9 @@
       const publishBtn = document.getElementById('publishBtn');
       const originalContent = publishBtn.innerHTML;
       
-      // Show loading state
       publishBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Publishing...</span>';
       publishBtn.disabled = true;
 
-      // Create question object
       const question = {
         id: Date.now(),
         text: questionText,
@@ -623,36 +1105,35 @@
         createdBy: 'teacher',
         type: 'open-ended',
         published: true,
-        publishedAt: new Date().toISOString()
+        publishedAt: new Date().toISOString(),
+        hasPhotos: studentPhotos.length > 0,
+        photoCount: studentPhotos.length
       };
 
       setTimeout(() => {
         try {
-          // Save question to localStorage in multiple formats for compatibility
           const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
           existingQuestions.push(question);
           
-          // Save in primary format
           localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
-          
-          // Save as current question (for student interface)
           localStorage.setItem('current_question', JSON.stringify(question));
-          
-          // Save in alternative format for backup
           localStorage.setItem('intuity_questions', JSON.stringify(existingQuestions));
 
-          // Clear the draft
-          localStorage.removeItem('question_draft');
+          // Link photos to the question
+          if (studentPhotos.length > 0) {
+            const questionPhotos = {
+              questionId: question.id,
+              photos: studentPhotos
+            };
+            localStorage.setItem(`photos_${question.id}`, JSON.stringify(questionPhotos));
+          }
 
-          // Store current question reference
+          localStorage.removeItem('question_draft');
           currentQuestion = question;
 
-          console.log('Question published:', question);
-
-          // Show success notification
+          console.log('Question published with photos:', question);
           showSuccessNotification();
 
-          // Reset form after a delay
           setTimeout(() => {
             document.getElementById('questionInput').value = '';
             handleQuestionInput();
@@ -662,7 +1143,6 @@
           console.error('Error publishing question:', error);
           alert('Error publishing question. Please try again.');
         } finally {
-          // Reset button
           publishBtn.innerHTML = originalContent;
           publishBtn.disabled = false;
         }
@@ -703,7 +1183,6 @@
       questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
     }
 
-    // FIXED: Added missing shareStudentLink function
     function shareStudentLink() {
       if (!currentQuestion) {
         alert('Please publish a question first before sharing.');
@@ -712,16 +1191,13 @@
 
       const studentURL = CONFIG.baseURL + CONFIG.studentPath;
       
-      // Try to copy to clipboard
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(studentURL).then(() => {
           showShareNotification();
         }).catch(() => {
-          // Fallback for older browsers
           fallbackCopyToClipboard(studentURL);
         });
       } else {
-        // Fallback for older browsers
         fallbackCopyToClipboard(studentURL);
       }
     }
@@ -758,7 +1234,6 @@
       
       modal.style.display = 'flex';
       
-      // Generate QR code URL for student interface WITH question ID
       const baseStudentURL = CONFIG.baseURL + CONFIG.studentPath;
       const studentURL = `${baseStudentURL}?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
@@ -773,7 +1248,6 @@
     }
 
     function openAnalytics() {
-      // Check if analytics path exists, otherwise show placeholder
       window.location.href = CONFIG.analyticsPath;
     }
 
@@ -782,23 +1256,32 @@
       createConstellation();
       loadDraft();
       
-      // Set up input handler
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
       questionInput.addEventListener('focus', () => {
         console.log('Question input focused');
       });
       
-      // Set up footer handlers
+      // Setup footer handlers
       document.getElementById('clearBtn').addEventListener('click', clearQuestion);
       document.getElementById('editBtn').addEventListener('click', editQuestion);
       document.getElementById('publishBtn').addEventListener('click', publishQuestion);
       
-      // FIXED: Now properly references existing button and function
       const shareLinkBtn = document.getElementById('shareLinkBtn');
       if (shareLinkBtn) {
         shareLinkBtn.addEventListener('click', shareStudentLink);
       }
+
+      // NEW: Photo capture event listeners
+      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
+      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
+      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+      
+      // Student name input validation
+      document.getElementById('currentStudentName').addEventListener('input', (e) => {
+        const captureBtn = document.getElementById('captureBtn');
+        captureBtn.disabled = !e.target.value.trim() || !cameraStream;
+      });
       
       document.getElementById('qrBtn').addEventListener('click', generateQR);
       document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
@@ -810,6 +1293,13 @@
         }
       });
 
+      // Close photo modal on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('photoModal').classList.contains('active')) {
+          closePhotoModal();
+        }
+      });
+
       // Auto-save every 30 seconds
       setInterval(() => {
         const questionText = document.getElementById('questionInput').value.trim();
@@ -818,7 +1308,7 @@
         }
       }, 30000);
 
-      console.log('Teacher Question Creator initialized - All navigation fixed!');
+      console.log('Teacher Question Creator with Photo Capture initialized!');
     });
   </script>
 </body>
