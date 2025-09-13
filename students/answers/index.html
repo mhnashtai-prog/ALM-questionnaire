@@ -1,70 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>INTUITY - Student Response</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <style>
     :root {
+      /* INTUITY Brand Colors */
       --bg-primary: #1a2332;
       --bg-secondary: #243447;
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
       --accent-teal: #2dd4bf;
-      --accent-lime: #32d74b;
-      --accent-orange: #ff9500;
-      --accent-brick: #c44536;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
+      --success: #10b981;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      --space-sm: 0.5rem;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
+      
+      /* Effects */
       --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
       overflow-x: hidden;
+      line-height: 1.5;
       padding-bottom: 100px;
     }
-
-    .header {
-      position: sticky;
+    
+    /* Simple Header */
+    .simple-header {
+      position: fixed;
       top: 0;
-      z-index: 100;
-      background: rgba(26, 35, 50, 0.9);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--card-border);
-      padding: var(--space-lg);
-    }
-
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 1.5rem;
       text-align: center;
     }
-
+    
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 2.5rem;
@@ -73,888 +67,328 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: 0.5rem;
+      position: relative;
     }
-
-    .brand-subtitle {
-      font-size: 1rem;
+    
+    .brand-name::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      font-size: 1.2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+    }
+    
+    .simple-subtitle {
       color: var(--text-secondary);
+      font-size: 0.9rem;
       font-weight: 500;
-      margin-top: var(--space-sm);
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--space-xl) var(--space-lg);
-      position: relative;
+    
+    /* Main Container */
+    .main-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 600px;
       z-index: 10;
     }
-
-    .controls-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .controls-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .question-info {
-      flex: 1;
+    
+    /* The Container Box */
+    .container-box {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: var(--shadow-active);
+      position: relative;
+      overflow: hidden;
     }
-
-    .current-question-text {
+    
+    .container-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Question Display */
+    .question-display {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
       color: var(--text-primary);
-      font-size: 0.9rem;
-      font-weight: 500;
+      text-align: center;
+      margin-bottom: 2.5rem;
       line-height: 1.4;
     }
-
-    .question-meta {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      margin-top: 0.5rem;
-    }
-
-    .display-controls {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .display-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-lg);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .display-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
-    }
-
-    .display-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
-    .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-xl);
-      padding: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      backdrop-filter: var(--blur);
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .responses-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .responses-header {
-      text-align: center;
-      margin-bottom: var(--space-xl);
-    }
-
-    .responses-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .responses-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .response-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: var(--space-lg);
-    }
-
-    .response-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.25rem;
-      padding: var(--space-xl);
-      backdrop-filter: var(--blur);
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      cursor: pointer;
-    }
-
-    .response-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
-    }
-
-    .response-card.selected {
-      border-color: var(--accent-teal);
-      background: rgba(45, 212, 191, 0.1);
-    }
-
-    .response-card.excellent {
-      border-color: var(--accent-lime);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(50, 215, 75, 0.1));
-    }
-
-    .response-card.good {
-      border-color: var(--accent-orange);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 159, 10, 0.1));
-    }
-
-    .response-card.needs-work {
-      border-color: var(--accent-brick);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(196, 69, 54, 0.1));
-    }
-
-    .student-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    .student-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-lime));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-weight: 700;
-      font-size: 1.25rem;
+    
+    /* Input Field */
+    .answer-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
       border: 2px solid var(--card-border);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+      resize: vertical;
+      min-height: 150px;
     }
-
-    .student-info {
-      flex: 1;
+    
+    .answer-input::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
     }
-
-    .student-name {
-      font-size: 1.125rem;
+    
+    .answer-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    /* Default State */
+    .default-state {
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    
+    .default-title {
+      font-size: 1.8rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: var(--space-sm);
+      margin-bottom: 1.5rem;
     }
-
-    .response-meta {
-      display: flex;
-      gap: var(--space-md);
-      font-size: 0.8rem;
+    
+    .default-text {
       color: var(--text-secondary);
-    }
-
-    .quality-badge {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .quality-indicator {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .excellent .quality-indicator {
-      background: var(--accent-lime);
-      box-shadow: 0 0 8px rgba(50, 215, 75, 0.5);
-    }
-
-    .good .quality-indicator {
-      background: var(--accent-orange);
-      box-shadow: 0 0 8px rgba(255, 159, 10, 0.5);
-    }
-
-    .needs-work .quality-indicator {
-      background: var(--accent-brick);
-      box-shadow: 0 0 8px rgba(196, 69, 54, 0.5);
-    }
-
-    .response-text {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.95rem;
+      font-size: 1.1rem;
       line-height: 1.6;
-      color: var(--text-secondary);
-      margin-bottom: var(--space-lg);
-      max-height: 120px;
-      overflow: hidden;
-      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
-    .response-text.expanded {
-      max-height: none;
-      overflow: visible;
+    .demo-input {
+      margin-top: 2rem;
+      opacity: 0.7;
     }
-
-    .response-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: var(--space-md);
-      border-top: 1px solid var(--card-border);
-      font-size: 0.85rem;
-    }
-
-    .stat-group {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      color: var(--text-muted);
-    }
-
-    .glass-footer {
+    
+    /* Footer */
+    .simple-footer {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(26, 35, 50, 0.95);
+      background: rgba(26, 35, 50, 0.9);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
-      padding: var(--space-lg);
-      z-index: 100;
+      padding: 1rem;
+      z-index: 1000;
     }
-
-    .footer-container {
-      max-width: 1200px;
+    
+    .footer-content {
+      max-width: 600px;
       margin: 0 auto;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-    }
-
-    .footer-buttons {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: var(--space-lg);
+      gap: 2rem;
     }
-
+    
     .footer-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
       color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: var(--blur);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
-      min-width: 80px;
-      height: 60px;
-      text-decoration: none;
-    }
-
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
-    }
-
-    .footer-btn i {
-      font-size: 1.2rem;
-      margin-bottom: 2px;
-    }
-
-    .footer-btn span {
-      font-size: 0.7rem;
+      gap: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      min-width: 100px;
+      justify-content: center;
     }
-
-    .footer-btn.active {
-      background: var(--accent-teal);
+    
+    .footer-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
       border-color: var(--accent-teal);
-      color: #000;
+      transform: translateY(-2px);
     }
-
-    .clear-data-btn {
-      background: var(--accent-brick);
-      border-color: var(--accent-brick);
-      color: white;
+    
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+      font-weight: 700;
     }
-
-    .clear-data-btn:hover {
-      background: #d55545;
-      border-color: #d55545;
+    
+    .footer-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-2px) scale(1.05);
     }
-
+    
+    .footer-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .footer-btn i {
+      font-size: 1rem;
+    }
+    
+    /* Success Message */
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid var(--success);
+      border-radius: 16px;
+      color: var(--success);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
-      .controls-header {
-        flex-direction: column;
-        align-items: stretch;
+      .main-container {
+        width: 95%;
+        top: 45%;
       }
-
-      .display-controls {
-        flex-direction: column;
-        align-items: center;
-        gap: var(--space-sm);
+      
+      .container-box {
+        padding: 2rem;
       }
-
-      .display-btn {
-        min-width: 200px;
-        padding: var(--space-sm) var(--space-md);
+      
+      .brand-name {
+        font-size: 2rem;
       }
-
-      .stats-bar {
-        flex-direction: column;
-        gap: var(--space-md);
+      
+      .question-display {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
       }
-
-      .response-grid {
-        grid-template-columns: 1fr;
+      
+      .answer-input {
+        min-height: 120px;
+        padding: 1.25rem;
+        font-size: 1rem;
       }
-
-      .footer-buttons {
-        flex-wrap: wrap;
-        gap: var(--space-md);
+      
+      .footer-content {
+        gap: 1rem;
+      }
+      
+      .footer-btn {
+        min-width: 80px;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
       }
     }
-
-    .notification {
-      position: fixed;
-      top: 100px;
-      right: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      z-index: 1000;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-      max-width: 300px;
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
     }
-
-    .notification.show {
-      transform: translateX(0);
-    }
-
-    .notification.success {
-      border-color: var(--accent-lime);
-    }
-
-    .notification.error {
-      border-color: var(--accent-brick);
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="header-content">
-      <div class="brand-name">INTUITY</div>
-      <div class="brand-subtitle">Analytics Dashboard</div>
-    </div>
+  <!-- Simple Header -->
+  <header class="simple-header">
+    <div class="brand-name">INTUITY</div>
+    <div class="simple-subtitle">Student Response</div>
   </header>
-
-  <div class="container">
-    <div class="controls-container">
-      <div class="controls-header">
-        <div class="question-info">
-          <div class="current-question-text" id="currentQuestionText">
-            No active question found. Create a question to see student responses here.
-          </div>
-          <div class="question-meta" id="questionMeta">
-            Connect your teacher interface to see live data
-          </div>
+  
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="container-box">
+      
+      <!-- Default State -->
+      <div class="default-state">
+        <div class="default-title">Student Response Interface</div>
+        <div class="default-text">
+          This is where students would see questions from their teacher and submit responses.<br><br>
+          In a live classroom setting, this interface would be connected to the teacher's question system.
         </div>
         
-        <div class="display-controls">
-          <button class="display-btn" onclick="openScrollView()" id="scroll-btn">
-            <i class="fas fa-arrows-alt-v"></i>
-            <span>Scroll View</span>
-          </button>
-          
-          <button class="display-btn active" onclick="openStackedView()" id="stacked-btn">
-            <i class="fas fa-layer-group"></i>
-            <span>Grid View</span>
-          </button>
-          
-          <button class="display-btn" onclick="openSpreadView()" id="spread-btn">
-            <i class="fas fa-project-diagram"></i>
-            <span>Mind Map</span>
-          </button>
-
-          <button class="display-btn clear-data-btn" onclick="clearAllData()" id="clear-btn">
-            <i class="fas fa-trash"></i>
-            <span>Clear Data</span>
-          </button>
+        <div class="demo-input">
+          <textarea 
+            class="answer-input" 
+            placeholder="Demo: This is where students would type their responses..."
+            rows="4"
+            disabled
+          ></textarea>
         </div>
       </div>
-
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value" id="total-responses">0</div>
-          <div class="stat-label">Total Responses</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="avg-words">0</div>
-          <div class="stat-label">Avg Words</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="excellent-count">0</div>
-          <div class="stat-label">Excellent</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="good-count">0</div>
-          <div class="stat-label">Good</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="needs-work-count">0</div>
-          <div class="stat-label">Needs Work</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="responses-container">
-      <div class="responses-header">
-        <div class="responses-title" id="responses-title">Student Responses</div>
-        <div class="responses-subtitle">Click on any response to select for classroom discussion</div>
-      </div>
-
-      <div class="response-grid" id="response-grid">
-        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-          <i class="fas fa-chart-line" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i><br>
-          No student responses yet.<br>
-          <small>Questions will appear here once students start submitting answers.</small>
-        </div>
-      </div>
+      
     </div>
   </div>
 
-  <div class="glass-footer">
-    <div class="footer-container">
-      <div class="footer-buttons">
-        
-        <a href="../teachers/questions/" class="footer-btn">
-          <i class="fas fa-plus"></i>
-          <span>Create</span>
-        </a>
-
-        <button class="footer-btn active">
-          <i class="fas fa-chart-bar"></i>
-          <span>Analytics</span>
-        </button>
-
-        <a href="../" class="footer-btn">
-          <i class="fas fa-home"></i>
-          <span>Home</span>
-        </a>
-
-      </div>
+  <!-- Footer -->
+  <div class="simple-footer">
+    <div class="footer-content">
+      <button class="footer-btn" disabled>
+        <i class="fas fa-edit"></i>
+        <span>Edit</span>
+      </button>
+      
+      <button class="footer-btn primary" disabled>
+        <i class="fas fa-paper-plane"></i>
+        <span>Submit</span>
+      </button>
+      
+      <button class="footer-btn" disabled>
+        <i class="fas fa-share"></i>
+        <span>Send</span>
+      </button>
     </div>
-  </div>
-
-  <div class="notification" id="notification">
-    <div id="notification-content"></div>
   </div>
 
   <script>
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      const content = document.getElementById('notification-content');
-      
-      content.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
-
-    // ENHANCED: Load responses from localStorage with better error handling
-    function loadStudentResponses() {
-      try {
-        // Try multiple storage keys for compatibility
-        const keys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
-        let responses = [];
-        
-        for (const key of keys) {
-          const data = localStorage.getItem(key);
-          if (data) {
-            const parsed = JSON.parse(data);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              responses = parsed;
-              break;
-            }
-          }
-        }
-        
-        console.log('Loaded responses:', responses);
-        return responses;
-      } catch (error) {
-        console.error('Error loading responses:', error);
-        return [];
-      }
-    }
-
-    // ENHANCED: Load current question information
-    function loadCurrentQuestion() {
-      try {
-        // Try multiple question sources
-        const keys = ['current_question', 'alm_questions', 'intuity_questions'];
-        
-        for (const key of keys) {
-          const data = localStorage.getItem(key);
-          if (data) {
-            const parsed = JSON.parse(data);
-            if (key === 'current_question' && parsed.text) {
-              return parsed;
-            } else if (Array.isArray(parsed) && parsed.length > 0) {
-              return parsed[parsed.length - 1]; // Get latest question
-            }
-          }
-        }
-        
-        return null;
-      } catch (error) {
-        console.error('Error loading question:', error);
-        return null;
-      }
-    }
-
-    // ENHANCED: Generate response cards with better data handling
-    function generateResponseCards() {
-      const container = document.getElementById('response-grid');
-      const responses = loadStudentResponses();
-      const currentQuestion = loadCurrentQuestion();
-      
-      // Update question display
-      updateQuestionDisplay(currentQuestion);
-      
-      container.innerHTML = '';
-      
-      if (responses.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-            <i class="fas fa-chart-line" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i><br>
-            No student responses yet.<br>
-            <small>Responses will appear here once students submit answers.</small><br><br>
-            <small style="opacity: 0.6;">Make sure students are accessing the correct student interface URL.</small>
-          </div>
-        `;
-        updateStats(responses);
-        return;
-      }
-      
-      updateStats(responses);
-      
-      responses.forEach((response, index) => {
-        const card = document.createElement('div');
-        const quality = response.quality || 'needs-work';
-        card.className = `response-card ${quality}`;
-        card.setAttribute('data-response-id', response.id);
-        
-        const avatarColors = [
-          'linear-gradient(135deg, #007AFF, #BF5AF2)',
-          'linear-gradient(135deg, #30D158, #64D2FF)', 
-          'linear-gradient(135deg, #FF9F0A, #FF2D92)',
-          'linear-gradient(135deg, #FF453A, #BF5AF2)',
-          'linear-gradient(135deg, #5E5CE6, #007AFF)',
-          'linear-gradient(135deg, #64D2FF, #30D158)'
-        ];
-        
-        // Ensure we have all required fields with defaults
-        const studentName = response.studentName || `Student ${index + 1}`;
-        const wordCount = response.wordCount || 0;
-        const timestamp = response.timestamp || 'Just now';
-        const score = response.score || 0;
-        const answer = response.answer || 'No response text available';
-        
-        card.innerHTML = `
-          <div class="student-header">
-            <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
-              ${studentName.substring(0, 2).toUpperCase()}
-            </div>
-            <div class="student-info">
-              <div class="student-name">${studentName}</div>
-              <div class="response-meta">
-                <span>📝 ${wordCount} words</span>
-                <span>⏰ ${timestamp}</span>
-                <span>📊 ${score}%</span>
-              </div>
-            </div>
-            <div class="quality-badge">
-              <div class="quality-indicator"></div>
-              <span>${getQualityText(quality)}</span>
-            </div>
-          </div>
-          
-          <div class="response-text" onclick="toggleExpanded(this)">
-            ${answer}
-          </div>
-          
-          <div class="response-stats">
-            <div class="stat-group">
-              <div class="stat">
-                <span>${getQualityEmoji(quality)}</span>
-                <span>${getQualityText(quality)}</span>
-              </div>
-            </div>
-            <div class="stat">
-              <span>💬 Click to expand</span>
-            </div>
-          </div>
-        `;
-        
-        card.addEventListener('click', () => selectResponse(card, response));
-        container.appendChild(card);
-      });
-    }
-
-    function updateQuestionDisplay(question) {
-      const questionTextEl = document.getElementById('currentQuestionText');
-      const questionMetaEl = document.getElementById('questionMeta');
-      
-      if (question && question.text) {
-        questionTextEl.textContent = question.text;
-        const timestamp = question.publishedAt || question.timestamp || '';
-        const timeStr = timestamp ? new Date(timestamp).toLocaleString() : '';
-        questionMetaEl.textContent = `Published: ${timeStr}`;
-      } else {
-        questionTextEl.textContent = 'No active question found. Create a question to see student responses here.';
-        questionMetaEl.textContent = 'Connect your teacher interface to see live data';
-      }
-    }
-
-    function toggleExpanded(element) {
-      element.classList.toggle('expanded');
-      event.stopPropagation();
-    }
-
-    function getQualityEmoji(quality) {
-      const emojis = {
-        'excellent': '🟢',
-        'good': '🟡', 
-        'needs-work': '🔴'
-      };
-      return emojis[quality] || '⚪';
-    }
-
-    function getQualityText(quality) {
-      const texts = {
-        'excellent': 'Excellent',
-        'good': 'Good',
-        'needs-work': 'Needs Work'
-      };
-      return texts[quality] || 'Unknown';
-    }
-
-    // ENHANCED: Update statistics with better error handling
-    function updateStats(responses) {
-      const total = responses.length;
-      const avgWords = total > 0 ? Math.round(responses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / total) : 0;
-      const excellent = responses.filter(r => r.quality === 'excellent').length;
-      const good = responses.filter(r => r.quality === 'good').length; 
-      const needsWork = responses.filter(r => r.quality === 'needs-work').length;
-      
-      document.getElementById('total-responses').textContent = total;
-      document.getElementById('avg-words').textContent = avgWords;
-      document.getElementById('excellent-count').textContent = excellent;
-      document.getElementById('good-count').textContent = good;
-      document.getElementById('needs-work-count').textContent = needsWork;
-    }
-
-    function selectResponse(cardElement, response) {
-      document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
-      cardElement.classList.add('selected');
-      
-      showNotification(`Selected response from ${response.studentName || 'student'}`);
-    }
-
-    // FIXED: Clear all data function
-    function clearAllData() {
-      if (confirm('Are you sure you want to clear all student responses and questions? This cannot be undone.')) {
-        try {
-          // Clear all possible storage keys
-          const keysToRemove = [
-            'alm_student_responses',
-            'intuity_responses', 
-            'student_responses',
-            'current_question',
-            'alm_questions',
-            'intuity_questions',
-            'question_draft'
-          ];
-          
-          keysToRemove.forEach(key => {
-            localStorage.removeItem(key);
-          });
-          
-          console.log('All data cleared');
-          showNotification('All data cleared successfully', 'success');
-          
-          // Refresh the display
-          setTimeout(() => {
-            generateResponseCards();
-          }, 1000);
-          
-        } catch (error) {
-          console.error('Error clearing data:', error);
-          showNotification('Error clearing data', 'error');
-        }
-      }
-    }
-
-    // Display Mode Functions - FIXED paths
-    function openScrollView() {
-      updateDisplayButtons('scroll-btn');
-      
-      const button = document.getElementById('scroll-btn');
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
-      
-      setTimeout(() => {
-        // FIXED: Correct path to displays
-        window.open('../displays/display1.html', '_blank');
-        
-        setTimeout(() => {
-          button.innerHTML = originalContent;
-        }, 1000);
-      }, 500);
-    }
-
-    function openStackedView() {
-      updateDisplayButtons('stacked-btn');
-      showNotification('Grid view - current display mode', 'success');
-    }
-
-    function openSpreadView() {
-      updateDisplayButtons('spread-btn');
-      
-      const button = document.getElementById('spread-btn');
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
-      
-      setTimeout(() => {
-        // FIXED: Correct path to displays
-        window.open('../displays/display3.html', '_blank');
-        
-        setTimeout(() => {
-          button.innerHTML = originalContent;
-        }, 1000);
-      }, 500);
-    }
-
-    function updateDisplayButtons(activeId) {
-      document.querySelectorAll('.display-btn').forEach(btn => {
-        if (btn.id !== 'clear-btn') {
-          btn.classList.remove('active');
-        }
-      });
-      document.getElementById(activeId).classList.add('active');
-    }
-
-    // Auto-refresh data every 10 seconds
-    function startAutoRefresh() {
-      setInterval(() => {
-        const oldResponseCount = loadStudentResponses().length;
-        generateResponseCards();
-        const newResponseCount = loadStudentResponses().length;
-        
-        if (newResponseCount > oldResponseCount) {
-          showNotification(`${newResponseCount - oldResponseCount} new response(s) received!`);
-        }
-      }, 10000);
-    }
-
-    // Initialize on page load
+    // Simple initialization without localStorage
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('Analytics Dashboard Initialized');
-      
-      // Load initial data
-      generateResponseCards();
-      
-      // Start auto-refresh
-      startAutoRefresh();
-      
-      // Log current data for debugging
-      const responses = loadStudentResponses();
-      const question = loadCurrentQuestion();
-      console.log('Current responses:', responses);
-      console.log('Current question:', question);
-      
-      showNotification('Analytics dashboard ready', 'success');
+      console.log('INTUITY Student Interface - Demo Mode');
     });
   </script>
 </body>
