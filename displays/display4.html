@@ -1,760 +1,1262 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>INTUITY - Cosmic Galaxy Display</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <style>
     :root {
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --accent-teal: #2dd4bf;
-      --accent-lime: #32d74b;
-      --accent-orange: #ff9500;
-      --accent-brick: #c44536;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --intuity-gold: #ffd54f;
-      --intuity-teal: #26a69a;
-      --space-sm: 0.5rem;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
-      --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      /* INTUITY Cosmic Colors */
+      --bg-space: #0a0a0f;
+      --bg-nebula: #1a1a2e;
+      --cosmic-purple: #6a4c93;
+      --cosmic-blue: #00d4ff;
+      --cosmic-pink: #ff006e;
+      --cosmic-gold: #ffbd00;
+      --cosmic-green: #00ff88;
+      --text-cosmic: #ffffff;
+      --text-stardust: rgba(255, 255, 255, 0.8);
+      --text-nebula: rgba(255, 255, 255, 0.6);
+      --energy-field: rgba(0, 212, 255, 0.3);
+      --quantum-glow: rgba(255, 189, 0, 0.5);
+      
+      /* 3D Perspective */
+      --perspective: 1000px;
+      --depth: 500px;
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      color: var(--text-primary);
+      background: radial-gradient(ellipse at center, var(--bg-nebula) 0%, var(--bg-space) 70%);
+      color: var(--text-cosmic);
       min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
-      padding-bottom: 100px;
+      overflow: hidden;
+      cursor: grab;
+      perspective: var(--perspective);
+      user-select: none;
     }
-
-    .header {
-      position: sticky;
+    
+    body.grabbing {
+      cursor: grabbing;
+    }
+    
+    /* Cosmic Background with Multiple Layers */
+    .cosmic-background {
+      position: fixed;
       top: 0;
-      z-index: 100;
-      background: rgba(26, 35, 50, 0.9);
-      backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: var(--space-lg);
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
-
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
+    
+    .starfield {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      animation: rotate360 200s linear infinite;
+    }
+    
+    .star-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .cosmic-star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite alternate;
+    }
+    
+    .cosmic-star.tiny { width: 1px; height: 1px; opacity: 0.6; }
+    .cosmic-star.small { width: 2px; height: 2px; opacity: 0.8; }
+    .cosmic-star.medium { width: 3px; height: 3px; opacity: 1; }
+    .cosmic-star.large { width: 4px; height: 4px; opacity: 1; box-shadow: 0 0 10px currentColor; }
+    
+    @keyframes twinkle {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.5); }
+    }
+    
+    /* Nebula Clouds */
+    .nebula-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 20% 30%, var(--cosmic-purple) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, var(--cosmic-blue) 0%, transparent 60%),
+        radial-gradient(ellipse at 40% 80%, var(--cosmic-pink) 0%, transparent 40%);
+      opacity: 0.3;
+      filter: blur(100px);
+      animation: nebulaDrift 60s ease-in-out infinite alternate;
+    }
+    
+    @keyframes nebulaDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.1); }
+    }
+    
+    /* Holographic HUD Header */
+    .holo-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: linear-gradient(135deg, 
+        rgba(106, 76, 147, 0.2) 0%, 
+        rgba(0, 212, 255, 0.1) 50%,
+        rgba(255, 0, 110, 0.2) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid rgba(0, 212, 255, 0.5);
+      padding: 1rem 2rem;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      text-align: center;
+      box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
     }
-
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+    
+    .cosmic-brand {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, var(--cosmic-gold), var(--cosmic-blue), var(--cosmic-pink));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      text-shadow: 0 0 30px var(--cosmic-blue);
+      animation: holoFlicker 3s ease-in-out infinite alternate;
     }
-
-    .brand-subtitle {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-      margin-top: var(--space-sm);
-      text-transform: uppercase;
-      letter-spacing: 2px;
+    
+    @keyframes holoFlicker {
+      0% { opacity: 0.9; filter: brightness(1); }
+      100% { opacity: 1; filter: brightness(1.2); }
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--space-xl) var(--space-lg);
-      position: relative;
+    
+    .cosmic-stats {
+      display: flex;
+      gap: 2rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem;
+    }
+    
+    .stat-holo {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid var(--cosmic-blue);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      animation: statPulse 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes statPulse {
+      0% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+      100% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
+    }
+    
+    .stat-value {
+      color: var(--cosmic-gold);
+      font-weight: 700;
+    }
+    
+    /* 3D Galaxy Container */
+    .galaxy-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
       z-index: 10;
     }
-
-    .controls-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
+    
+    .galaxy-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      transform: translate(-50%, -50%) translateZ(0);
+      transform-style: preserve-3d;
     }
-
-    .controls-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .question-selector {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      min-width: 300px;
-    }
-
-    .question-selector:focus {
-      outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
-    }
-
-    .filter-controls {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .filter-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md) var(--space-lg);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
-    }
-
-    .filter-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
-    .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-xl);
-      padding: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      backdrop-filter: var(--blur);
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .responses-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .responses-header {
-      text-align: center;
-      margin-bottom: var(--space-xl);
-    }
-
-    .responses-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .responses-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .response-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: var(--space-lg);
-    }
-
-    .response-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.25rem;
-      padding: var(--space-xl);
-      backdrop-filter: var(--blur);
+    
+    /* Central Question Sun */
+    .question-sun {
       position: relative;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      cursor: pointer;
-    }
-
-    .response-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
-    }
-
-    .response-card.excellent {
-      border-color: var(--accent-lime);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(50, 215, 75, 0.1));
-    }
-
-    .response-card.good {
-      border-color: var(--accent-orange);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 159, 10, 0.1));
-    }
-
-    .response-card.needs-work {
-      border-color: var(--accent-brick);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(196, 69, 54, 0.1));
-    }
-
-    .student-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    .student-avatar {
-      width: 56px;
-      height: 56px;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, 
+        var(--cosmic-gold) 0%, 
+        var(--cosmic-pink) 40%,
+        var(--cosmic-purple) 80%,
+        transparent 100%);
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-lime));
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #000;
-      font-weight: 700;
-      font-size: 1.25rem;
-      border: 2px solid var(--card-border);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    .student-info {
-      flex: 1;
-    }
-
-    .student-name {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .response-meta {
-      display: flex;
-      gap: var(--space-md);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .quality-badge {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .quality-indicator {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .excellent .quality-indicator {
-      background: var(--accent-lime);
-      box-shadow: 0 0 8px rgba(50, 215, 75, 0.5);
-    }
-
-    .good .quality-indicator {
-      background: var(--accent-orange);
-      box-shadow: 0 0 8px rgba(255, 159, 10, 0.5);
-    }
-
-    .needs-work .quality-indicator {
-      background: var(--accent-brick);
-      box-shadow: 0 0 8px rgba(196, 69, 54, 0.5);
-    }
-
-    .response-text {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-secondary);
-      margin-bottom: var(--space-lg);
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
+      text-align: center;
+      padding: 2rem;
+      cursor: pointer;
+      animation: sunPulse 4s ease-in-out infinite alternate;
+      box-shadow: 
+        0 0 50px var(--cosmic-gold),
+        0 0 100px var(--cosmic-pink),
+        0 0 150px var(--cosmic-purple);
       overflow: hidden;
     }
-
-    .response-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: var(--space-md);
-      border-top: 1px solid var(--card-border);
-      font-size: 0.85rem;
+    
+    @keyframes sunPulse {
+      0% { 
+        transform: scale(1) rotateY(0deg);
+        box-shadow: 
+          0 0 50px var(--cosmic-gold),
+          0 0 100px var(--cosmic-pink),
+          0 0 150px var(--cosmic-purple);
+      }
+      100% { 
+        transform: scale(1.1) rotateY(360deg);
+        box-shadow: 
+          0 0 80px var(--cosmic-gold),
+          0 0 150px var(--cosmic-pink),
+          0 0 200px var(--cosmic-purple);
+      }
     }
-
-    .stat-group {
-      display: flex;
-      gap: var(--space-md);
+    
+    .question-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-cosmic);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      z-index: 2;
+      position: relative;
+      line-height: 1.3;
     }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      color: var(--text-muted);
+    
+    /* Solar Flares */
+    .solar-flare {
+      position: absolute;
+      width: 2px;
+      height: 100px;
+      background: linear-gradient(to top, var(--cosmic-gold), transparent);
+      top: -50px;
+      left: 50%;
+      transform-origin: bottom;
+      animation: solarFlare 3s ease-in-out infinite;
     }
-
-    .glass-footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-top: 1px solid var(--card-border);
-      padding: var(--space-lg);
+    
+    .solar-flare:nth-child(2) { transform: rotate(60deg); animation-delay: 1s; }
+    .solar-flare:nth-child(3) { transform: rotate(120deg); animation-delay: 2s; }
+    .solar-flare:nth-child(4) { transform: rotate(180deg); animation-delay: 0.5s; }
+    .solar-flare:nth-child(5) { transform: rotate(240deg); animation-delay: 1.5s; }
+    .solar-flare:nth-child(6) { transform: rotate(300deg); animation-delay: 2.5s; }
+    
+    @keyframes solarFlare {
+      0%, 100% { opacity: 0.3; height: 100px; }
+      50% { opacity: 0.8; height: 150px; }
+    }
+    
+    /* Orbital Response Planets */
+    .orbit-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotate360 30s linear infinite;
+    }
+    
+    .orbit-ring.orbit-1 { 
+      width: 350px; 
+      height: 350px; 
+      animation-duration: 20s; 
+      border-color: rgba(255, 189, 0, 0.3);
+    }
+    .orbit-ring.orbit-2 { 
+      width: 500px; 
+      height: 500px; 
+      animation-duration: 35s; 
+      border-color: rgba(0, 255, 136, 0.3);
+    }
+    .orbit-ring.orbit-3 { 
+      width: 650px; 
+      height: 650px; 
+      animation-duration: 50s; 
+      border-color: rgba(255, 0, 110, 0.3);
+    }
+    
+    @keyframes rotate360 {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    .response-planet {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+    
+    .response-planet.excellent {
+      background: radial-gradient(circle at 30% 30%, 
+        var(--cosmic-green) 0%, 
+        #00cc66 50%, 
+        #004d1a  100%);
+      box-shadow: 
+        0 0 30px var(--cosmic-green),
+        inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .response-planet.good {
+      background: radial-gradient(circle at 30% 30%, 
+        var(--cosmic-gold) 0%, 
+        #cc9900 50%, 
+        #4d3300 100%);
+      box-shadow: 
+        0 0 30px var(--cosmic-gold),
+        inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .response-planet.needs-work {
+      background: radial-gradient(circle at 30% 30%, 
+        var(--cosmic-pink) 0%, 
+        #cc0055 50%, 
+        #4d001a 100%);
+      box-shadow: 
+        0 0 30px var(--cosmic-pink),
+        inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .response-planet:hover {
+      transform: scale(1.5) translateZ(50px);
       z-index: 100;
+      box-shadow: 
+        0 0 50px currentColor,
+        0 0 100px currentColor,
+        inset -20px -20px 40px rgba(0, 0, 0, 0.3);
     }
-
-    .footer-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
+    
+    .response-planet.selected {
+      transform: scale(2) translateZ(100px);
+      z-index: 200;
+      animation: selectedPlanet 2s ease-in-out infinite alternate;
     }
-
-    .footer-buttons {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--space-lg);
+    
+    @keyframes selectedPlanet {
+      0% { 
+        transform: scale(2) translateZ(100px) rotateY(0deg);
+        box-shadow: 0 0 60px currentColor, 0 0 120px currentColor;
+      }
+      100% { 
+        transform: scale(2.2) translateZ(100px) rotateY(180deg);
+        box-shadow: 0 0 80px currentColor, 0 0 160px currentColor;
+      }
     }
-
-    .footer-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
+    
+    /* Planet Atmosphere */
+    .planet-atmosphere {
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, transparent 60%, currentColor 100%);
+      opacity: 0.3;
+      animation: atmosphereShimmer 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes atmosphereShimmer {
+      0% { opacity: 0.2; transform: scale(1); }
+      100% { opacity: 0.5; transform: scale(1.1); }
+    }
+    
+    /* Planet Content */
+    .planet-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-sm);
-      min-width: 80px;
-      height: 60px;
-      text-decoration: none;
+      text-align: center;
+      padding: 0.5rem;
+      z-index: 2;
     }
-
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
+    
+    .planet-avatar {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      margin-bottom: 0.25rem;
     }
-
-    .footer-btn i {
-      font-size: 1.2rem;
-      margin-bottom: 2px;
+    
+    .planet-info {
+      font-size: 0.6rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+      font-weight: 600;
     }
-
-    .footer-btn span {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    
+    /* Particle Trails */
+    .particle-trail {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
     }
-
-    .footer-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
+    
+    .trail-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: currentColor;
+      border-radius: 50%;
+      opacity: 0;
+      animation: trailParticle 2s ease-out infinite;
     }
-
-    @media (max-width: 768px) {
-      .controls-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .question-selector {
-        min-width: auto;
-      }
-
-      .filter-controls {
-        justify-content: center;
-      }
-
-      .stats-bar {
-        flex-direction: column;
-        gap: var(--space-md);
-      }
-
-      .response-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-buttons {
-        flex-wrap: wrap;
-        gap: var(--space-md);
-      }
+    
+    @keyframes trailParticle {
+      0% { opacity: 0.8; transform: scale(1) translate(0, 0); }
+      100% { opacity: 0; transform: scale(0) translate(-50px, -30px); }
     }
-
-    .notification {
+    
+    /* Holographic Response Panel */
+    .holo-panel {
       position: fixed;
-      top: 100px;
-      right: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
+      top: 50%;
+      left: 50%;
+      width: 500px;
+      max-width: 90vw;
+      transform: translate(-50%, -50%) translateZ(200px) rotateY(0deg);
+      background: linear-gradient(135deg, 
+        rgba(0, 212, 255, 0.1) 0%, 
+        rgba(106, 76, 147, 0.2) 50%,
+        rgba(255, 0, 110, 0.1) 100%);
+      backdrop-filter: blur(30px);
+      border: 2px solid rgba(0, 212, 255, 0.5);
+      border-radius: 20px;
+      padding: 2rem;
+      z-index: 500;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 0 50px rgba(0, 212, 255, 0.3),
+        0 20px 60px rgba(0, 0, 0, 0.4);
+      transform-style: preserve-3d;
+    }
+    
+    .holo-panel.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) translateZ(200px) rotateY(0deg);
+    }
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    
+    .panel-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cosmic-gold);
+      text-shadow: 0 0 20px var(--cosmic-gold);
+    }
+    
+    .close-btn {
+      background: none;
+      border: 2px solid var(--cosmic-pink);
+      color: var(--cosmic-pink);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .close-btn:hover {
+      background: var(--cosmic-pink);
+      color: white;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 0 20px var(--cosmic-pink);
+    }
+    
+    .panel-content {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-stardust);
+      margin-bottom: 1.5rem;
+    }
+    
+    .panel-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-nebula);
+      font-family: 'Orbitron', monospace;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    /* Control Panel */
+    .cosmic-controls {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
       z-index: 1000;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-      max-width: 300px;
     }
-
-    .notification.show {
-      transform: translateX(0);
+    
+    .control-btn {
+      background: linear-gradient(135deg, 
+        rgba(0, 212, 255, 0.2) 0%, 
+        rgba(106, 76, 147, 0.3) 100%);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(0, 212, 255, 0.5);
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      color: var(--text-cosmic);
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
     }
-
-    .notification.success {
-      border-color: var(--accent-lime);
+    
+    .control-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+      border-color: var(--cosmic-gold);
     }
-
-    .notification.error {
-      border-color: var(--accent-brick);
+    
+    .control-btn i {
+      font-size: 1.1rem;
+    }
+    
+    /* Loading Animation */
+    .cosmic-loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2000;
+      text-align: center;
+    }
+    
+    .loading-spinner {
+      width: 100px;
+      height: 100px;
+      border: 3px solid rgba(0, 212, 255, 0.2);
+      border-top: 3px solid var(--cosmic-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.2rem;
+      color: var(--cosmic-gold);
+      text-shadow: 0 0 20px var(--cosmic-gold);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .cosmic-brand { font-size: 1.5rem; }
+      .cosmic-stats { gap: 1rem; }
+      .question-sun { width: 150px; height: 150px; padding: 1rem; }
+      .question-text { font-size: 0.8rem; }
+      .response-planet { width: 60px; height: 60px; }
+      .holo-panel { width: 90vw; margin: 1rem; padding: 1.5rem; }
+      .cosmic-controls { flex-wrap: wrap; }
+      .control-btn { padding: 0.75rem 1.5rem; font-size: 0.9rem; }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="header-content">
-      <div class="brand-name">INTUITY</div>
-      <div class="brand-subtitle">Analytics</div>
+  
+  <!-- Cosmic Background -->
+  <div class="cosmic-background">
+    <div class="nebula-layer"></div>
+    <div class="starfield">
+      <div class="star-layer" id="starLayer1"></div>
+      <div class="star-layer" id="starLayer2"></div>
+      <div class="star-layer" id="starLayer3"></div>
+    </div>
+  </div>
+  
+  <!-- Holographic Header -->
+  <header class="holo-header">
+    <div class="cosmic-brand">INTUITY COSMOS</div>
+    <div class="cosmic-stats">
+      <div class="stat-holo">
+        <i class="fas fa-globe"></i>
+        <span class="stat-value" id="planetCount">0</span>
+        <span>Worlds</span>
+      </div>
+      <div class="stat-holo">
+        <i class="fas fa-star"></i>
+        <span class="stat-value" id="qualityRating">0.0</span>
+        <span>Quality</span>
+      </div>
+      <div class="stat-holo">
+        <i class="fas fa-rocket"></i>
+        <span class="stat-value" id="avgWords">0</span>
+        <span>Words/World</span>
+      </div>
     </div>
   </header>
-
-  <div class="container">
-    <div class="controls-container">
-      <div class="controls-header">
-        <select class="question-selector" id="question-selector" onchange="switchQuestion()">
-          <option value="1">Question 1: Digital Technology Impact</option>
-          <option value="2">Question 2: Online vs Traditional Learning</option>
-          <option value="3">Question 3: Language Learning Strategies</option>
-          <option value="4">Question 4: Cultural Understanding</option>
-          <option value="5">Question 5: Motivation in Learning</option>
-          <option value="6">Question 6: Assessment Methods</option>
-        </select>
-        
-        <div class="filter-controls">
-          <button class="filter-btn active" onclick="filterByQuality('all')" id="filter-all">
-            <i class="fas fa-list"></i>
-            <span>All</span>
-          </button>
-          <button class="filter-btn" onclick="filterByQuality('excellent')" id="filter-excellent">
-            <i class="fas fa-star"></i>
-            <span>Excellent</span>
-          </button>
-          <button class="filter-btn" onclick="filterByQuality('good')" id="filter-good">
-            <i class="fas fa-thumbs-up"></i>
-            <span>Good</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value" id="total-responses">0</div>
-          <div class="stat-label">Total Responses</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="avg-words">0</div>
-          <div class="stat-label">Avg Words</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="excellent-count">0</div>
-          <div class="stat-label">Excellent</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="good-count">0</div>
-          <div class="stat-label">Good</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="needs-work-count">0</div>
-          <div class="stat-label">Needs Work</div>
+  
+  <!-- 3D Galaxy Container -->
+  <div class="galaxy-container" id="galaxyContainer">
+    
+    <!-- Central Question Sun -->
+    <div class="galaxy-center">
+      <div class="question-sun" id="questionSun">
+        <div class="solar-flare"></div>
+        <div class="solar-flare"></div>
+        <div class="solar-flare"></div>
+        <div class="solar-flare"></div>
+        <div class="solar-flare"></div>
+        <div class="solar-flare"></div>
+        <div class="question-text" id="questionText">
+          Initializing Cosmic Display...
         </div>
       </div>
     </div>
-
-    <div class="responses-container">
-      <div class="responses-header">
-        <div class="responses-title" id="responses-title">Student Responses - Question 1</div>
-        <div class="responses-subtitle">Click on any response to select for classroom discussion</div>
+    
+    <!-- Orbital Rings -->
+    <div class="orbit-ring orbit-1" id="orbit1"></div>
+    <div class="orbit-ring orbit-2" id="orbit2"></div>
+    <div class="orbit-ring orbit-3" id="orbit3"></div>
+    
+  </div>
+  
+  <!-- Holographic Response Panel -->
+  <div class="holo-panel" id="holoPanel">
+    <div class="panel-header">
+      <div class="panel-title" id="panelTitle">Student Response</div>
+      <button class="close-btn" id="closePanel">&times;</button>
+    </div>
+    <div class="panel-content" id="panelContent">
+      Select a planet to view the response...
+    </div>
+    <div class="panel-meta">
+      <div class="meta-item">
+        <i class="fas fa-user-astronaut"></i>
+        <span id="panelStudent">Unknown Explorer</span>
       </div>
-
-      <div class="response-grid" id="response-grid">
-        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-          No student responses yet. Questions will appear here once students start submitting answers.
-        </div>
+      <div class="meta-item">
+        <i class="fas fa-clock"></i>
+        <span id="panelTime">Time Unknown</span>
+      </div>
+      <div class="meta-item">
+        <i class="fas fa-chart-line"></i>
+        <span id="panelScore">0% Quality</span>
       </div>
     </div>
   </div>
-
-  <div class="glass-footer">
-    <div class="footer-container">
-      <div class="footer-buttons">
-        
-        <a href="../teachers/questions/" class="footer-btn">
-          <i class="fas fa-plus"></i>
-          <span>Create</span>
-        </a>
-
-        <button class="footer-btn active">
-          <i class="fas fa-chart-bar"></i>
-          <span>Analytics</span>
-        </button>
-
-        <a href="../" class="footer-btn">
-          <i class="fas fa-home"></i>
-          <span>Home</span>
-        </a>
-
-      </div>
-    </div>
+  
+  <!-- Control Panel -->
+  <div class="cosmic-controls">
+    <button class="control-btn" id="resetViewBtn">
+      <i class="fas fa-home"></i>
+      <span>Reset View</span>
+    </button>
+    
+    <button class="control-btn" id="autoOrbitBtn">
+      <i class="fas fa-sync"></i>
+      <span>Auto Orbit</span>
+    </button>
+    
+    <button class="control-btn" id="warpSpeedBtn">
+      <i class="fas fa-rocket"></i>
+      <span>Warp Speed</span>
+    </button>
+    
+    <button class="control-btn" id="refreshBtn">
+      <i class="fas fa-satellite"></i>
+      <span>Scan Space</span>
+    </button>
   </div>
-
-  <div class="notification" id="notification">
-    <div id="notification-content"></div>
+  
+  <!-- Loading Screen -->
+  <div class="cosmic-loading" id="cosmicLoading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Scanning the Universe...</div>
   </div>
 
   <script>
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      const content = document.getElementById('notification-content');
-      
-      content.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
+    // Global variables
+    let responses = [];
+    let selectedPlanet = null;
+    let isAutoOrbit = false;
+    let isWarpSpeed = false;
+    let rotationSpeed = 1;
+    let mouseX = 0;
+    let mouseY = 0;
+    let isDragging = false;
+    let galaxyRotationX = 0;
+    let galaxyRotationY = 0;
 
-    // Load responses from localStorage (integrated with teacher system)
-    function loadStudentResponses() {
-      try {
-        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        return responses;
-      } catch (error) {
-        console.error('Error loading responses:', error);
-        return [];
-      }
-    }
-
-    let currentQuestion = 1;
-    let currentFilter = 'all';
-
-    function generateResponseCards() {
-      const container = document.getElementById('response-grid');
-      const responses = loadStudentResponses().filter(r => r.questionId === currentQuestion) || [];
+    // Create cosmic starfield
+    function createStarfield() {
+      const layers = ['starLayer1', 'starLayer2', 'starLayer3'];
+      const starCounts = [100, 150, 200];
+      const starTypes = ['tiny', 'small', 'medium', 'large'];
       
-      container.innerHTML = '';
-      
-      document.getElementById('responses-title').textContent = `Student Responses - Question ${currentQuestion}`;
-      
-      let filteredResponses = responses;
-      if (currentFilter !== 'all') {
-        filteredResponses = responses.filter(r => r.quality === currentFilter);
-      }
-      
-      updateStats(responses);
-      
-      if (filteredResponses.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-            ${responses.length === 0 ? 
-              'No student responses yet. Questions will appear here once students start submitting answers.' :
-              `No ${currentFilter === 'all' ? '' : currentFilter + ' '}responses found for this question.`
-            }
-          </div>
-        `;
-        return;
-      }
-      
-      filteredResponses.forEach((response, index) => {
-        const card = document.createElement('div');
-        card.className = `response-card ${response.quality}`;
-        card.setAttribute('data-response-id', response.id);
+      layers.forEach((layerId, layerIndex) => {
+        const layer = document.getElementById(layerId);
+        const count = starCounts[layerIndex];
         
-        const avatarColors = [
-          'linear-gradient(135deg, #007AFF, #BF5AF2)',
-          'linear-gradient(135deg, #30D158, #64D2FF)', 
-          'linear-gradient(135deg, #FF9F0A, #FF2D92)',
-          'linear-gradient(135deg, #FF453A, #BF5AF2)',
-          'linear-gradient(135deg, #5E5CE6, #007AFF)',
-          'linear-gradient(135deg, #64D2FF, #30D158)'
-        ];
-        
-        card.innerHTML = `
-          <div class="student-header">
-            <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
-              ${response.studentName ? response.studentName.substring(0, 2).toUpperCase() : 'ST'}
-            </div>
-            <div class="student-info">
-              <div class="student-name">${response.studentName || 'Student ' + (index + 1)}</div>
-              <div class="response-meta">
-                <span>📝 ${response.wordCount} words</span>
-                <span>🔑 ${response.keywords || 0}/4</span>
-                <span>⏰ ${response.timestamp}</span>
-              </div>
-            </div>
-            <div class="quality-badge">
-              <div class="quality-indicator"></div>
-              <span>${response.score || 0}%</span>
-            </div>
-          </div>
+        for (let i = 0; i < count; i++) {
+          const star = document.createElement('div');
+          star.className = `cosmic-star ${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
           
-          <div class="response-text">
-            ${response.answer}
-          </div>
+          // Random position
+          star.style.left = Math.random() * 100 + '%';
+          star.style.top = Math.random() * 100 + '%';
           
-          <div class="response-stats">
-            <div class="stat-group">
-              <div class="stat">
-                <span>${getQualityEmoji(response.quality)}</span>
-                <span>${capitalizeFirst(response.quality)}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        card.addEventListener('click', () => selectResponse(card, response));
-        container.appendChild(card);
+          // Random color and animation
+          const colors = ['#ffffff', '#ffd700', '#00d4ff', '#ff006e', '#00ff88'];
+          star.style.color = colors[Math.floor(Math.random() * colors.length)];
+          star.style.animationDelay = Math.random() * 3 + 's';
+          star.style.animationDuration = (2 + Math.random() * 3) + 's';
+          
+          layer.appendChild(star);
+        }
       });
     }
 
-    function getQualityEmoji(quality) {
-      const emojis = {
-        'excellent': '🟢',
-        'good': '🟡', 
-        'needs-work': '🔴'
-      };
-      return emojis[quality] || '⚪';
+    // Load data from localStorage
+    function loadCosmicData() {
+      try {
+        // Load question
+        const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
+        let currentQuestion = null;
+        
+        for (const key of questionKeys) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (key === 'current_question' && parsed.text) {
+                currentQuestion = parsed;
+                break;
+              } else if (Array.isArray(parsed) && parsed.length > 0) {
+                const latestQuestion = parsed[parsed.length - 1];
+                if (latestQuestion && latestQuestion.text) {
+                  currentQuestion = latestQuestion;
+                  break;
+                }
+              }
+            } catch (e) {
+              console.log(`Error parsing ${key}:`, e);
+            }
+          }
+        }
+        
+        if (currentQuestion) {
+          document.getElementById('questionText').textContent = currentQuestion.text;
+        } else {
+          document.getElementById('questionText').textContent = 'No active question detected in this dimension...';
+        }
+        
+        // Load responses
+        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+        
+        for (const key of responseKeys) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                responses = parsed;
+                console.log(`Loaded ${responses.length} cosmic responses`);
+                break;
+              }
+            } catch (e) {
+              console.log(`Error parsing ${key}:`, e);
+            }
+          }
+        }
+        
+        updateCosmicStats();
+        generateResponsePlanets();
+        
+      } catch (error) {
+        console.error('Error loading cosmic data:', error);
+        responses = [];
+        document.getElementById('questionText').textContent = 'Error accessing cosmic database...';
+      }
     }
 
-    function capitalizeFirst(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
-    }
-
-    function updateStats(responses) {
-      const total = responses.length;
-      const avgWords = total > 0 ? Math.round(responses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / total) : 0;
-      const excellent = responses.filter(r => r.quality === 'excellent').length;
-      const good = responses.filter(r => r.quality === 'good').length; 
-      const needsWork = responses.filter(r => r.quality === 'needs-work').length;
+    // Update cosmic statistics
+    function updateCosmicStats() {
+      const planetCount = responses.length;
+      const avgWords = planetCount > 0 ? 
+        Math.round(responses.reduce((sum, r) => sum + (r.wordCount || 0), 0) / planetCount) : 0;
       
-      document.getElementById('total-responses').textContent = total;
-      document.getElementById('avg-words').textContent = avgWords;
-      document.getElementById('excellent-count').textContent = excellent;
-      document.getElementById('good-count').textContent = good;
-      document.getElementById('needs-work-count').textContent = needsWork;
-    }
-
-    function switchQuestion() {
-      currentQuestion = parseInt(document.getElementById('question-selector').value);
-      generateResponseCards();
-    }
-
-    function filterByQuality(quality) {
-      currentFilter = quality;
+      // Calculate quality rating
+      let qualityScore = 0;
+      responses.forEach(r => {
+        switch (r.quality) {
+          case 'excellent': qualityScore += 5; break;
+          case 'good': qualityScore += 3; break;
+          case 'needs-work': qualityScore += 1; break;
+        }
+      });
+      const qualityRating = planetCount > 0 ? (qualityScore / (planetCount * 5) * 5).toFixed(1) : '0.0';
       
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`filter-${quality}`).classList.add('active');
-      
-      generateResponseCards();
-      showNotification(`Showing ${quality === 'all' ? 'all' : quality} responses`);
+      document.getElementById('planetCount').textContent = planetCount;
+      document.getElementById('qualityRating').textContent = qualityRating;
+      document.getElementById('avgWords').textContent = avgWords;
     }
 
-    function selectResponse(cardElement, response) {
-      document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
-      cardElement.classList.add('selected');
+    // Generate response planets in 3D orbits
+    function generateResponsePlanets() {
+      const orbits = [
+        { element: document.getElementById('orbit1'), radius: 175, maxPlanets: 4 },
+        { element: document.getElementById('orbit2'), radius: 250, maxPlanets: 6 },
+        { element: document.getElementById('orbit3'), radius: 325, maxPlanets: 8 }
+      ];
       
-      showNotification(`Selected response from ${response.studentName || 'student'}`);
+      // Clear existing planets
+      orbits.forEach(orbit => {
+        const existingPlanets = orbit.element.querySelectorAll('.response-planet');
+        existingPlanets.forEach(planet => planet.remove());
+      });
+      
+      if (responses.length === 0) {
+        return;
+      }
+      
+      // Distribute planets across orbits based on quality
+      const excellentResponses = responses.filter(r => r.quality === 'excellent');
+      const goodResponses = responses.filter(r => r.quality === 'good');
+      const needsWorkResponses = responses.filter(r => r.quality === 'needs-work');
+      
+      let planetIndex = 0;
+      
+      // Place excellent responses in inner orbit
+      excellentResponses.forEach((response, index) => {
+        if (index < orbits[0].maxPlanets) {
+          createResponsePlanet(response, orbits[0], index, excellentResponses.length, planetIndex++);
+        }
+      });
+      
+      // Place good responses in middle orbit
+      goodResponses.forEach((response, index) => {
+        if (index < orbits[1].maxPlanets) {
+          createResponsePlanet(response, orbits[1], index, goodResponses.length, planetIndex++);
+        }
+      });
+      
+      // Place needs-work responses in outer orbit
+      needsWorkResponses.forEach((response, index) => {
+        if (index < orbits[2].maxPlanets) {
+          createResponsePlanet(response, orbits[2], index, needsWorkResponses.length, planetIndex++);
+        }
+      });
+      
+      // Place remaining responses in available slots
+      const remainingResponses = responses.slice(excellentResponses.length + goodResponses.length + needsWorkResponses.length);
+      remainingResponses.forEach((response, index) => {
+        const orbitIndex = index % orbits.length;
+        const orbit = orbits[orbitIndex];
+        const currentPlanets = orbit.element.querySelectorAll('.response-planet').length;
+        
+        if (currentPlanets < orbit.maxPlanets) {
+          createResponsePlanet(response, orbit, currentPlanets, orbit.maxPlanets, planetIndex++);
+        }
+      });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      populateQuestionSelector();
-      generateResponseCards();
-    });
+    // Create individual response planet
+    function createResponsePlanet(response, orbit, positionIndex, totalInOrbit, globalIndex) {
+      const planet = document.createElement('div');
+      planet.className = `response-planet ${response.quality || 'needs-work'}`;
+      planet.dataset.responseId = response.id;
+      planet.dataset.globalIndex = globalIndex;
+      
+      // Calculate position on orbit
+      const angle = (positionIndex / totalInOrbit) * 360;
+      const radian = angle * Math.PI / 180;
+      const x = orbit.radius * Math.cos(radian);
+      const y = orbit.radius * Math.sin(radian);
+      
+      planet.style.left = `calc(50% + ${x}px - 40px)`;
+      planet.style.top = `calc(50% + ${y}px - 40px)`;
+      
+      // Student info
+      const studentName = response.studentName || `Explorer ${globalIndex + 1}`;
+      const initials = studentName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      const wordCount = response.wordCount || 0;
+      
+      planet.innerHTML = `
+        <div class="planet-atmosphere"></div>
+        <div class="planet-content">
+          <div class="planet-avatar">${initials}</div>
+          <div class="planet-info">${wordCount}w</div>
+        </div>
+        <div class="particle-trail">
+          <div class="trail-particle" style="animation-delay: 0s;"></div>
+          <div class="trail-particle" style="animation-delay: 0.5s;"></div>
+          <div class="trail-particle" style="animation-delay: 1s;"></div>
+        </div>
+      `;
+      
+      // Add click event
+      planet.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectPlanet(planet, response);
+      });
+      
+      // Add hover effects
+      planet.addEventListener('mouseenter', () => {
+        if (selectedPlanet !== planet) {
+          planet.style.transform = 'scale(1.3) translateZ(30px)';
+        }
+      });
+      
+      planet.addEventListener('mouseleave', () => {
+        if (selectedPlanet !== planet) {
+          planet.style.transform = 'scale(1) translateZ(0px)';
+        }
+      });
+      
+      orbit.element.appendChild(planet);
+    }
+
+    // Select planet and show response
+    function selectPlanet(planetElement, response) {
+      // Deselect previous planet
+      if (selectedPlanet) {
+        selectedPlanet.classList.remove('selected');
+        selectedPlanet.style.transform = 'scale(1) translateZ(0px)';
+      }
+      
+      // Select new planet
+      selectedPlanet = planetElement;
+      planetElement.classList.add('selected');
+      
+      // Update holographic panel
+      const studentName = response.studentName || 'Unknown Explorer';
+      const timestamp = response.timestamp || 'Time unknown';
+      const score = response.score || 0;
+      const quality = response.quality || 'needs-work';
+      
+      document.getElementById('panelTitle').textContent = `${studentName}'s World`;
+      document.getElementById('panelContent').textContent = response.answer || 'No transmission received from this world...';
+      document.getElementById('panelStudent').textContent = studentName;
+      document.getElementById('panelTime').textContent = timestamp;
+      document.getElementById('panelScore').textContent = `${score}% Quality`;
+      
+      // Show panel with cosmic effect
+      const panel = document.getElementById('holoPanel');
+      panel.classList.add('active');
+      
+      // Add quality-based effects to panel
+      panel.style.borderColor = getQualityColor(quality);
+      panel.style.boxShadow = `0 0 50px ${getQualityColor(quality)}, 0 20px 60px rgba(0, 0, 0, 0.4)`;
+    }
+
+    // Get quality color
+    function getQualityColor(quality) {
+      switch (quality) {
+        case 'excellent': return 'var(--cosmic-green)';
+        case 'good': return 'var(--cosmic-gold)';
+        case 'needs-work': return 'var(--cosmic-pink)';
+        default: return 'var(--cosmic-blue)';
+      }
+    }
+
+    // Close holographic panel
+    function closePanel() {
+      const panel = document.getElementById('holoPanel');
+      panel.classList.remove('active');
+      
+      if (selectedPlanet) {
+        selectedPlanet.classList.remove('selected');
+        selectedPlanet.style.transform = 'scale(1) translateZ(0px)';
+        selectedPlanet = null;
+      }
+    }
+
+    // Mouse/touch controls for 3D navigation
+    function setupGalaxyControls() {
+      const container = document.getElementById('galaxyContainer');
+      
+      // Mouse controls
+      container.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', endDrag);
+      
+      // Touch controls
+      container.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        startDrag({ clientX: touch.clientX, clientY: touch.clientY });
+        e.preventDefault();
+      }, { passive: false });
+      
+      document.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+          const touch = e.touches[0];
+          drag({ clientX: touch.clientX, clientY: touch.clientY });
+          e.preventDefault();
+        }
+      }, { passive: false });
+      
+      document.addEventListener('touchend', endDrag);
+      
+      // Wheel for zoom
+      container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const zoom = e.deltaY > 0 ? 0.9 : 1.1;
+        container.style.transform = `scale(${zoom})`;
+      }, { passive: false });
+    }
+
+    function startDrag(e) {
+      isDragging = true;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      document.body.classList.add('grabbing');
+    }
+
+    function drag(e) {
+      if (!isDragging) return;
+      
+      const deltaX = e.clientX - mouseX;
+      const deltaY = e.clientY - mouseY;
+      
+      galaxyRotationX += deltaY * 0.5;
+      galaxyRotationY += deltaX * 0.5;
+      
+      // Apply 3D rotation to galaxy
+      const container = document.getElementById('galaxyContainer');
+      container.style.transform = `rotateX(${galaxyRotationX}deg) rotateY(${galaxyRotationY}deg)`;
+      
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    }
+
+    function endDrag() {
+      isDragging = false;
+      document.body.classList.remove('grabbing');
+    }
+
+    // Control functions
+    function resetView() {
+      const container = document.getElementById('galaxyContainer');
+      galaxyRotationX = 0;
+      galaxyRotationY = 0;
+      container.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+      closePanel();
+    }
+
+    function toggleAutoOrbit() {
+      isAutoOrbit = !isAutoOrbit;
+      const btn = document.getElementById('autoOrbitBtn');
+      
+      if (isAutoOrbit) {
+        btn.innerHTML = '<i class="fas fa-pause"></i><span>Stop Orbit</span>';
+        btn.style.borderColor = 'var(--cosmic-pink)';
+        startAutoOrbit();
+      } else {
+        btn.innerHTML = '<i class="fas fa-sync"></i><span>Auto Orbit</span>';
+        btn.style.borderColor = 'rgba(0, 212, 255, 0.5)';
+        stopAutoOrbit();
+      }
+    }
+
+    function startAutoOrbit() {
+      const orbits = document.querySelectorAll('.orbit-ring');
+      orbits.forEach(orbit => {
+        orbit.style.animationPlayState = 'running';
+      });
+    }
+
+    function stopAutoOrbit() {
+      const orbits = document.querySelectorAll('.orbit-ring');
+      orbits.forEach(orbit => {
+        orbit.style.animationPlayState = 'paused';
+      });
+    }
+
+    function toggleWarpSpeed() {
+      isWarpSpeed = !isWarpSpeed;
+      const btn = document.getElementById('warpSpeedBtn');
+      
+      if (isWarpSpeed) {
+        rotationSpeed = 5;
+        btn.innerHTML = '<i class="fas fa-tachometer-alt"></i><span>Normal Speed</span>';
+        btn.style.borderColor = 'var(--cosmic-gold)';
+        
+        // Speed up all animations
+        const orbits = document.querySelectorAll('.orbit-ring');
+        orbits.forEach(orbit => {
+          orbit.style.animationDuration = '4s';
+        });
+        
+        document.querySelector('.starfield').style.animationDuration = '40s';
+        document.querySelector('.question-sun').style.animationDuration = '0.8s';
+        
+      } else {
+        rotationSpeed = 1;
+        btn.innerHTML = '<i class="fas fa-rocket"></i><span>Warp Speed</span>';
+        btn.style.borderColor = 'rgba(0, 212, 255, 0.5)';
+        
+        // Restore normal speeds
+        document.getElementById('orbit1').style.animationDuration = '20s';
+        document.getElementById('orbit2').style.animationDuration = '35s';
+        document.getElementById('orbit3').style.animationDuration = '50s';
+        
+        document.querySelector('.starfield').style.animationDuration = '200s';
+        document.querySelector('.question-sun').style.animationDuration = '4s';
+      }
+    }
+
+    function refreshCosmicData() {
+      const btn = document.getElementById('refreshBtn');
+      const originalContent = btn.innerHTML;
+      
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Scanning...</span>';
+      
+      setTimeout(() => {
+        const oldCount = responses.length;
+        loadCosmicData();
+        
+        if (responses.length > oldCount) {
+          console.log(`${responses.length - oldCount} new cosmic entities detected`);
+        }
+        
+        btn.innerHTML = originalContent;
+      }, 1500);
+    }
+
+    // Initialize the cosmic display
+    function initializeCosmos() {
+      console.log('🌌 Initializing INTUITY Cosmos...');
+      
+      // Create starfield
+      createStarfield();
+      
+      // Load cosmic data
+      loadCosmicData();
+      
+      // Setup 3D controls
+      setupGalaxyControls();
+      
+      // Setup event listeners
+      document.getElementById('closePanel').addEventListener('click', closePanel);
+      document.getElementById('resetViewBtn').addEventListener('click', resetView);
+      document.getElementById('autoOrbitBtn').addEventListener('click', toggleAutoOrbit);
+      document.getElementById('warpSpeedBtn').addEventListener('click', toggleWarpSpeed);
+      document.getElementById('refreshBtn').addEventListener('click', refreshCosmicData);
+      
+      // Click outside to deselect
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.response-planet') && !e.target.closest('.holo-panel')) {
+          closePanel();
+        }
+      });
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'Escape':
+            closePanel();
+            break;
+          case ' ':
+            e.preventDefault();
+            toggleAutoOrbit();
+            break;
+          case 'r':
+          case 'R':
+            resetView();
+            break;
+          case 'w':
+          case 'W':
+            toggleWarpSpeed();
+            break;
+          case 'f':
+          case 'F':
+            refreshCosmicData();
+            break;
+        }
+      });
+      
+      // Auto-refresh every 20 seconds
+      setInterval(() => {
+        const oldCount = responses.length;
+        loadCosmicData();
+        
+        if (responses.length > oldCount) {
+          console.log(`🛸 ${responses.length - oldCount} new cosmic transmissions received`);
+        }
+      }, 20000);
+      
+      // Hide loading screen
+      setTimeout(() => {
+        document.getElementById('cosmicLoading').style.display = 'none';
+        console.log('🌟 INTUITY Cosmos fully operational!');
+      }, 3000);
+    }
+
+    // Launch when DOM is ready
+    document.addEventListener('DOMContentLoaded', initializeCosmos);
   </script>
 </body>
 </html>
