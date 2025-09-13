@@ -1,67 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>INTUITY - Teacher Question Creator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <style>
     :root {
+      /* INTUITY Brand Colors */
       --bg-primary: #1a2332;
       --bg-secondary: #243447;
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
+      --accent-gold: #f4a261;
       --accent-teal: #2dd4bf;
+      --accent-electric: #0066ff;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
+      --success: #10b981;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      --space-sm: 0.5rem;
-      --space-md: 1rem;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
+      
+      /* Animation timings */
+      --transition-fast: 0.2s;
+      --transition-medium: 0.4s;
+      --transition-slow: 0.6s;
+      
+      /* Effects */
       --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
       overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      touch-action: manipulation;
       padding-bottom: 100px;
     }
-
-    .header {
-      position: sticky;
+    
+    /* Enhanced Constellation Background */
+    .constellation-bg {
+      position: fixed;
       top: 0;
-      z-index: 100;
-      background: rgba(26, 35, 50, 0.9);
-      backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: var(--space-lg);
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
     }
-
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: twinkle 4s infinite alternate;
+    }
+    
+    .star:nth-child(even) {
+      animation-delay: 2s;
+      background: var(--accent-teal);
+    }
+    
+    .star:nth-child(3n) {
+      animation-delay: 1s;
+      background: var(--accent-electric);
+      opacity: 0.6;
+    }
+    
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 0.9; transform: scale(1.2); }
+    }
+    
+    /* Simple Header */
+    .simple-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1.5rem;
       text-align: center;
     }
-
+    
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 2.5rem;
@@ -70,612 +116,642 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: 0.3rem;
+      position: relative;
     }
-
-    .brand-subtitle {
-      font-size: 1rem;
+    
+    .brand-name::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      font-size: 1.2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+    }
+    
+    .author-name {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+    
+    .simple-subtitle {
       color: var(--text-secondary);
+      font-size: 0.9rem;
       font-weight: 500;
-      margin-top: var(--space-sm);
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--space-xl) var(--space-lg);
-      position: relative;
+    
+    /* Main Container - Centered Single Card */
+    .main-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 700px;
       z-index: 10;
     }
-
-    .controls-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .controls-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .question-selector {
+    
+    /* The One Question Creator Card */
+    .question-card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
       backdrop-filter: var(--blur);
-      min-width: 300px;
+      -webkit-backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: var(--shadow-active);
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    .question-selector:focus {
-      outline: none;
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
+    
+    .question-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      border-radius: 24px 24px 0 0;
     }
-
-    .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-xl);
-      padding: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      backdrop-filter: var(--blur);
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
+    
+    /* Question Label */
+    .question-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
       color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 1.5rem;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
-    .responses-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .responses-header {
-      text-align: center;
-      margin-bottom: var(--space-xl);
-    }
-
-    .responses-title {
-      font-size: 1.5rem;
-      font-weight: 700;
+    
+    /* Question Input */
+    .question-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
       color: var(--text-primary);
-      margin-bottom: var(--space-sm);
+      font-size: 1.1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all var(--transition-fast) ease;
+      resize: vertical;
+      min-height: 120px;
+      margin-bottom: 2rem;
+    }
+    
+    .question-input::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    
+    .question-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      transform: translateY(-2px);
     }
 
-    .responses-subtitle {
+    /* Status indicator */
+    .question-status {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .status-text {
       color: var(--text-secondary);
       font-size: 0.9rem;
+      margin-bottom: 0.5rem;
     }
 
-    .response-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: var(--space-lg);
-    }
-
-    .response-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.25rem;
-      padding: var(--space-xl);
-      backdrop-filter: var(--blur);
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      cursor: pointer;
-    }
-
-    .response-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
-    }
-
-    .student-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    .student-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--intuity-gold));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-weight: 700;
-      font-size: 1.25rem;
-      border: 2px solid var(--card-border);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    .student-info {
-      flex: 1;
-    }
-
-    .student-name {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: var(--space-sm);
-    }
-
-    .response-meta {
-      display: flex;
-      gap: var(--space-md);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .response-text {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-secondary);
-      margin-bottom: var(--space-lg);
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .response-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: var(--space-md);
-      border-top: 1px solid var(--card-border);
-      font-size: 0.85rem;
-    }
-
-    .stat-group {
-      display: flex;
-      gap: var(--space-md);
-    }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
+    .char-count {
       color: var(--text-muted);
+      font-size: 0.8rem;
     }
 
-    .glass-footer {
+    .status-ready {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: var(--success);
+    }
+
+    .status-ready .status-text {
+      color: var(--success);
+    }
+    
+    /* Minimalist Footer */
+    .simple-footer {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(26, 35, 50, 0.95);
+      background: rgba(26, 35, 50, 0.9);
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
-      padding: var(--space-lg);
-      z-index: 100;
+      padding: 1rem;
+      z-index: 1000;
     }
-
-    .footer-container {
-      max-width: 1200px;
+    
+    .footer-content {
+      max-width: 700px;
       margin: 0 auto;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: var(--space-md);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-    }
-
-    .footer-buttons {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: var(--space-lg);
+      gap: 2rem;
     }
-
+    
     .footer-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
+      border-radius: 8px;
+      padding: 0.75rem;
       color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all var(--transition-fast);
       backdrop-filter: var(--blur);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
-      min-width: 80px;
-      height: 60px;
-      text-decoration: none;
-    }
-
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
-    }
-
-    .footer-btn i {
-      font-size: 1.2rem;
-      margin-bottom: 2px;
-    }
-
-    .footer-btn span {
-      font-size: 0.7rem;
+      gap: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      min-width: 80px;
+      justify-content: center;
     }
-
-    .footer-btn.active {
-      background: var(--accent-teal);
+    
+    .footer-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
       border-color: var(--accent-teal);
-      color: #000;
+      transform: translateY(-1px);
     }
 
-    @media (max-width: 768px) {
-      .controls-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .question-selector {
-        min-width: auto;
-      }
-
-      .display-controls {
-        flex-direction: column;
-        align-items: center;
-        gap: var(--space-sm);
-      }
-
-      .display-btn {
-        min-width: 200px;
-        padding: var(--space-sm) var(--space-md);
-      }
-
-      .stats-bar {
-        flex-direction: column;
-        gap: var(--space-md);
-      }
-
-      .response-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-buttons {
-        flex-wrap: wrap;
-        gap: var(--space-md);
-      }
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+      font-weight: 600;
     }
 
-    .notification {
+    .footer-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    .footer-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .footer-btn i {
+      font-size: 0.9rem;
+    }
+
+    /* Success notification */
+    .success-notification {
       position: fixed;
-      top: 100px;
-      right: var(--space-lg);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid var(--success);
+      border-radius: 16px;
+      padding: 2rem;
+      color: var(--success);
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: var(--blur);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .main-container {
+        width: 95%;
+        top: 45%;
+      }
+      
+      .question-card {
+        padding: 2rem;
+      }
+      
+      .brand-name {
+        font-size: 2rem;
+      }
+      
+      .question-input {
+        min-height: 100px;
+        padding: 1.25rem;
+        font-size: 1rem;
+      }
+      
+      .footer-content {
+        gap: 1rem;
+      }
+      
+      .footer-btn {
+        min-width: 70px;
+        padding: 0.6rem;
+      }
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* QR Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: var(--space-md);
+      border-radius: 1.5rem;
+      padding: 2rem;
       backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      z-index: 1000;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-      max-width: 300px;
+      text-align: center;
+      max-width: 400px;
+      margin: 1rem;
     }
 
-    .notification.show {
-      transform: translateX(0);
+    .modal h3 {
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
     }
 
-    .notification.success {
-      border-color: var(--accent-teal);
+    .qr-display {
+      width: 200px;
+      height: 200px;
+      margin: 1rem auto;
+      background: white;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+    }
+
+    .modal p {
+      color: var(--text-secondary);
+      margin-top: 1rem;
+    }
+
+    .modal button {
+      margin-top: 1.5rem;
+      background: var(--accent-teal);
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      color: var(--bg-primary);
+      font-weight: 600;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="header-content">
-      <div class="brand-name">INTUITY</div>
-      <div class="brand-subtitle">Analytics</div>
-    </div>
+  <!-- Enhanced Constellation Background -->
+  <div class="constellation-bg" id="constellation"></div>
+  
+  <!-- Simple Header -->
+  <header class="simple-header">
+    <div class="brand-name">INTUITY</div>
+    <div class="author-name">by Majid Nashtai</div>
+    <div class="simple-subtitle">TEACHER QUESTION CREATOR</div>
   </header>
+  
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="question-card" id="questionCard">
+      
+      <div class="question-label">Create Your Question</div>
+      
+      <textarea 
+        class="question-input" 
+        id="questionInput"
+        placeholder="What would you like to ask your students? Be specific and thought-provoking..."
+        rows="4"
+      ></textarea>
 
-  <div class="container">
-    <div class="controls-container">
-      <div class="controls-header">
-        <select class="question-selector" id="question-selector" onchange="switchQuestion()">
-          <option value="1">Question 1: Digital Technology Impact</option>
-          <option value="2">Question 2: Online vs Traditional Learning</option>
-          <option value="3">Question 3: Language Learning Strategies</option>
-          <option value="4">Question 4: Cultural Understanding</option>
-          <option value="5">Question 5: Motivation in Learning</option>
-          <option value="6">Question 6: Assessment Methods</option>
-        </select>
-        
-        <div class="display-controls">
-          <button class="display-btn" onclick="openScrollView()" id="scroll-btn">
-            <i class="fas fa-arrows-alt-v"></i>
-            <span>Scroll Up</span>
-          </button>
-          
-          <button class="display-btn active" onclick="openStackedView()" id="stacked-btn">
-            <i class="fas fa-layer-group"></i>
-            <span>Stacked</span>
-          </button>
-          
-          <button class="display-btn" onclick="openSpreadView()" id="spread-btn">
-            <i class="fas fa-project-diagram"></i>
-            <span>Spread Out</span>
-          </button>
-        </div>
+      <div class="question-status" id="questionStatus">
+        <div class="status-text" id="statusText">Start typing your question...</div>
+        <div class="char-count" id="charCount">0 characters</div>
       </div>
-
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value" id="total-responses">0</div>
-          <div class="stat-label">Total Responses</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="responses-container">
-      <div class="responses-header">
-        <div class="responses-title" id="responses-title">Student Responses - Question 1</div>
-        <div class="responses-subtitle">Click on any response to select for classroom discussion</div>
-      </div>
-
-      <div class="response-grid" id="response-grid">
-        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-          No student responses yet. Questions will appear here once students start submitting answers.
-        </div>
-      </div>
+      
     </div>
   </div>
 
-  <div class="glass-footer">
-    <div class="footer-container">
-      <div class="footer-buttons">
-        
-        <a href="../teachers/questions/" class="footer-btn">
-          <i class="fas fa-plus"></i>
-          <span>Create</span>
-        </a>
+  <!-- Minimalist Footer -->
+  <div class="simple-footer">
+    <div class="footer-content">
+      <button class="footer-btn" id="clearBtn">
+        <i class="fas fa-eraser"></i>
+        <span>Clear</span>
+      </button>
+      
+      <button class="footer-btn" id="editBtn">
+        <i class="fas fa-edit"></i>
+        <span>Edit</span>
+      </button>
 
-        <button class="footer-btn active">
-          <i class="fas fa-chart-bar"></i>
-          <span>Analytics</span>
-        </button>
-
-        <a href="../" class="footer-btn">
-          <i class="fas fa-home"></i>
-          <span>Home</span>
-        </a>
-
-      </div>
+      <button class="footer-btn primary" id="publishBtn" disabled>
+        <i class="fas fa-paper-plane"></i>
+        <span>Publish</span>
+      </button>
+      
+      <button class="footer-btn" id="qrBtn">
+        <i class="fas fa-qrcode"></i>
+        <span>QR Code</span>
+      </button>
+      
+      <button class="footer-btn" id="analyticsBtn">
+        <i class="fas fa-chart-bar"></i>
+        <span>Analytics</span>
+      </button>
     </div>
   </div>
 
-  <div class="notification" id="notification">
-    <div id="notification-content"></div>
+  <!-- Success Notification -->
+  <div class="success-notification" id="successNotification">
+    <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+    Question published successfully!<br>
+    Students can now access and respond to your question.
+  </div>
+
+  <!-- QR Modal -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content">
+      <h3>Student Access QR Code</h3>
+      <div id="qrDisplay" class="qr-display">
+        <div>Generating...</div>
+      </div>
+      <p>Students scan this to access your question</p>
+      <button onclick="closeQRModal()">Close</button>
+    </div>
   </div>
 
   <script>
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      const content = document.getElementById('notification-content');
+    let currentQuestion = null;
+
+    // Enhanced constellation
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      const starCount = 60;
       
-      content.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.classList.add('show');
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (3 + Math.random() * 4) + 's';
+        constellation.appendChild(star);
+      }
+    }
+
+    // Handle question input changes
+    function handleQuestionInput() {
+      const input = document.getElementById('questionInput');
+      const status = document.getElementById('questionStatus');
+      const statusText = document.getElementById('statusText');
+      const charCount = document.getElementById('charCount');
+      const publishBtn = document.getElementById('publishBtn');
+
+      const text = input.value.trim();
+      const length = text.length;
+
+      // Update character count
+      charCount.textContent = `${length} characters`;
+
+      // Update status and enable/disable publish button
+      if (length === 0) {
+        statusText.textContent = 'Start typing your question...';
+        status.classList.remove('status-ready');
+        publishBtn.disabled = true;
+      } else if (length < 10) {
+        statusText.textContent = 'Keep writing... (need a few more characters)';
+        status.classList.remove('status-ready');
+        publishBtn.disabled = true;
+      } else if (length >= 10) {
+        statusText.textContent = 'Question ready to publish!';
+        status.classList.add('status-ready');
+        publishBtn.disabled = false;
+      }
+
+      // Auto-save draft
+      if (text) {
+        localStorage.setItem('question_draft', text);
+      }
+    }
+
+    // Load any existing draft
+    function loadDraft() {
+      const draft = localStorage.getItem('question_draft');
+      if (draft) {
+        document.getElementById('questionInput').value = draft;
+        handleQuestionInput();
+      }
+    }
+
+    // Publish question function - THE KEY MISSING PIECE
+    function publishQuestion() {
+      const questionText = document.getElementById('questionInput').value.trim();
+      
+      if (!questionText || questionText.length < 10) {
+        alert('Please write a more detailed question before publishing.');
+        return;
+      }
+
+      const publishBtn = document.getElementById('publishBtn');
+      const originalContent = publishBtn.innerHTML;
+      
+      // Show loading state
+      publishBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Publishing...</span>';
+      publishBtn.disabled = true;
+
+      // Create question object
+      const question = {
+        id: Date.now(),
+        text: questionText,
+        timestamp: new Date().toISOString(),
+        createdBy: 'teacher',
+        type: 'open-ended',
+        published: true,
+        publishedAt: new Date().toISOString()
+      };
+
+      setTimeout(() => {
+        try {
+          // Save question to localStorage in multiple formats for compatibility
+          const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          existingQuestions.push(question);
+          
+          // Save in primary format
+          localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
+          
+          // Save as current question (for student interface)
+          localStorage.setItem('current_question', JSON.stringify(question));
+          
+          // Save in alternative format for backup
+          localStorage.setItem('intuity_questions', JSON.stringify(existingQuestions));
+
+          // Clear the draft
+          localStorage.removeItem('question_draft');
+
+          // Store current question reference
+          currentQuestion = question;
+
+          console.log('Question published:', question);
+
+          // Show success notification
+          showSuccessNotification();
+
+          // Reset form after a delay
+          setTimeout(() => {
+            document.getElementById('questionInput').value = '';
+            handleQuestionInput();
+          }, 2000);
+
+        } catch (error) {
+          console.error('Error publishing question:', error);
+          alert('Error publishing question. Please try again.');
+        } finally {
+          // Reset button
+          publishBtn.innerHTML = originalContent;
+          publishBtn.disabled = false;
+        }
+      }, 1500);
+    }
+
+    function showSuccessNotification() {
+      const notification = document.getElementById('successNotification');
+      notification.style.display = 'block';
       
       setTimeout(() => {
-        notification.classList.remove('show');
+        notification.style.display = 'none';
       }, 3000);
     }
 
-    // Load responses from localStorage (integrated with teacher system)
-    function loadStudentResponses() {
-      try {
-        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        return responses;
-      } catch (error) {
-        console.error('Error loading responses:', error);
-        return [];
+    // Footer functions
+    function clearQuestion() {
+      if (confirm('Clear the current question? Any unsaved changes will be lost.')) {
+        document.getElementById('questionInput').value = '';
+        localStorage.removeItem('question_draft');
+        handleQuestionInput();
+        document.getElementById('questionInput').focus();
       }
     }
 
-    let currentQuestion = 1;
-
-    function generateResponseCards() {
-      const container = document.getElementById('response-grid');
-      const responses = loadStudentResponses().filter(r => r.questionId === currentQuestion) || [];
-      
-      container.innerHTML = '';
-      
-      document.getElementById('responses-title').textContent = `Student Responses - Question ${currentQuestion}`;
-      
-      updateStats(responses);
-      
-      if (responses.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-            No student responses yet. Questions will appear here once students start submitting answers.
-          </div>
-        `;
-        return;
-      }
-      
-      responses.forEach((response, index) => {
-        const card = document.createElement('div');
-        card.className = 'response-card';
-        card.setAttribute('data-response-id', response.id);
-        
-        const avatarColors = [
-          'linear-gradient(135deg, #007AFF, #BF5AF2)',
-          'linear-gradient(135deg, #30D158, #64D2FF)', 
-          'linear-gradient(135deg, #FF9F0A, #FF2D92)',
-          'linear-gradient(135deg, #FF453A, #BF5AF2)',
-          'linear-gradient(135deg, #5E5CE6, #007AFF)',
-          'linear-gradient(135deg, #64D2FF, #30D158)'
-        ];
-        
-        card.innerHTML = `
-          <div class="student-header">
-            <div class="student-avatar" style="background: ${avatarColors[index % avatarColors.length]}">
-              ${response.studentName ? response.studentName.substring(0, 2).toUpperCase() : 'ST'}
-            </div>
-            <div class="student-info">
-              <div class="student-name">${response.studentName || 'Student ' + (index + 1)}</div>
-              <div class="response-meta">
-                <span>📝 ${response.wordCount} words</span>
-                <span>⏰ ${response.timestamp}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="response-text">
-            ${response.answer}
-          </div>
-          
-          <div class="response-stats">
-            <div class="stat-group">
-              <div class="stat">
-                <span>💬</span>
-                <span>Response</span>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        card.addEventListener('click', () => selectResponse(card, response));
-        container.appendChild(card);
-      });
+    function editQuestion() {
+      const questionInput = document.getElementById('questionInput');
+      questionInput.focus();
+      questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
     }
 
-    function updateStats(responses) {
-      const total = responses.length;
-      document.getElementById('total-responses').textContent = total;
-    }
-
-    function switchQuestion() {
-      currentQuestion = parseInt(document.getElementById('question-selector').value);
-      generateResponseCards();
-    }
-
-    function selectResponse(cardElement, response) {
-      document.querySelectorAll('.response-card').forEach(card => card.classList.remove('selected'));
-      cardElement.classList.add('selected');
+    function generateQR() {
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
       
-      showNotification(`Selected response from ${response.studentName || 'student'}`);
-    }
-
-    // Display Mode Functions
-    function openScrollView() {
-      // Update active state
-      updateDisplayButtons('scroll-btn');
+      modal.style.display = 'flex';
       
-      // Add loading state
-      const button = document.getElementById('scroll-btn');
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
+      // Generate QR code URL for student interface
+      const baseURL = window.location.origin + window.location.pathname;
+      const studentURL = baseURL.replace('teachers/questions/', 'students/answers/');
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
       
       setTimeout(() => {
-        // Open the scroll view display
-        window.open('../displays/display1.html', '_blank');
-        
-        // Reset button after delay
-        setTimeout(() => {
-          button.innerHTML = originalContent;
-        }, 1000);
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
       }, 500);
     }
 
-    function openStackedView() {
-      // Update active state
-      updateDisplayButtons('stacked-btn');
-      
-      // For now, show notification that this is the current view
-      showNotification('Stacked view - current display mode', 'success');
-      
-      // TODO: This will be implemented to show cards stacked like a deck
-      console.log('Stacked view activated - cards will appear as a deck');
+    function closeQRModal() {
+      document.getElementById('qrModal').style.display = 'none';
     }
 
-    function openSpreadView() {
-      // Update active state  
-      updateDisplayButtons('spread-btn');
-      
-      // Add loading state
-      const button = document.getElementById('spread-btn');
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
-      
-      setTimeout(() => {
-        // Open the spread out mind map display
-        window.open('../displays/display3.html', '_blank');
-        
-        // Reset button after delay
-        setTimeout(() => {
-          button.innerHTML = originalContent;
-        }, 1000);
-      }, 500);
+    function openAnalytics() {
+      window.location.href = '../../visualisation/';
     }
 
-    function updateDisplayButtons(activeId) {
-      // Remove active class from all display buttons
-      document.querySelectorAll('.display-btn').forEach(btn => btn.classList.remove('active'));
-      
-      // Add active class to clicked button
-      document.getElementById(activeId).classList.add('active');
-    }
-
+    // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
-      generateResponseCards();
+      createConstellation();
+      loadDraft();
+      
+      // Set up input handler
+      const questionInput = document.getElementById('questionInput');
+      questionInput.addEventListener('input', handleQuestionInput);
+      questionInput.addEventListener('focus', () => {
+        console.log('Question input focused');
+      });
+      
+      // Set up footer handlers
+      document.getElementById('clearBtn').addEventListener('click', clearQuestion);
+      document.getElementById('editBtn').addEventListener('click', editQuestion);
+      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
+      
+      // Close modal on outside click
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQRModal();
+        }
+      });
+
+      // Auto-save every 30 seconds
+      setInterval(() => {
+        const questionText = document.getElementById('questionInput').value.trim();
+        if (questionText) {
+          localStorage.setItem('question_draft', questionText);
+        }
+      }, 30000);
+
+      console.log('Teacher Question Creator initialized');
     });
   </script>
 </body>
