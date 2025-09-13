@@ -779,7 +779,7 @@
       }
     }
 
-    // Update connection status
+    // FIXED: Enhanced connection status with detailed logging
     function updateConnectionStatus(isConnected, message = '') {
       const statusElement = document.getElementById('connectionStatus');
       
@@ -790,9 +790,12 @@
         statusElement.className = 'connection-status disconnected';
         statusElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message || 'No connection to teacher question'}`;
       }
+      
+      // Enhanced logging for debugging
+      console.log(`🔗 Connection Status: ${isConnected ? 'Connected' : 'Disconnected'} - ${message}`);
     }
 
-    // Load question from URL parameters or localStorage
+    // FIXED: Enhanced question loading with better ID handling
     function loadQuestion() {
       console.log('🔍 Loading question...');
       
@@ -802,16 +805,19 @@
         const questionId = urlParams.get('q');
         const questionText = urlParams.get('t');
         
+        console.log('📋 URL Parameters:', { questionId, questionText });
+        
         if (questionId && questionText) {
-          // Question from URL parameters
+          // Question from URL parameters - keep ID as string for consistency
           currentQuestion = {
-            id: parseInt(questionId),
+            id: questionId, // Keep as string to avoid type conversion issues
             text: decodeURIComponent(questionText),
             source: 'url',
-            isReal: true
+            isReal: true,
+            loadedFrom: 'url_parameters'
           };
           console.log('✅ Loaded question from URL:', currentQuestion);
-          updateConnectionStatus(true, 'Question from QR code');
+          updateConnectionStatus(true, `Question loaded from QR code (ID: ${questionId})`);
           return displayQuestion();
         }
         
@@ -820,6 +826,8 @@
         
         for (const key of storageKeys) {
           const stored = localStorage.getItem(key);
+          console.log(`🔍 Checking ${key}:`, stored ? 'Data found' : 'No data');
+          
           if (stored) {
             try {
               const parsed = JSON.parse(stored);
@@ -827,23 +835,28 @@
               if (key === 'current_question' && parsed.text) {
                 currentQuestion = {
                   ...parsed,
+                  id: String(parsed.id), // Ensure ID is string for consistency
                   source: 'localStorage',
-                  isReal: true
+                  isReal: true,
+                  loadedFrom: key
                 };
                 console.log('✅ Loaded current question from localStorage:', currentQuestion);
-                updateConnectionStatus(true, 'Current question active');
+                updateConnectionStatus(true, `Current question active (ID: ${currentQuestion.id})`);
                 return displayQuestion();
+                
               } else if (Array.isArray(parsed) && parsed.length > 0) {
                 // Get the most recent question
                 const latestQuestion = parsed[parsed.length - 1];
                 if (latestQuestion && latestQuestion.text) {
                   currentQuestion = {
                     ...latestQuestion,
+                    id: String(latestQuestion.id), // Ensure ID is string for consistency
                     source: 'localStorage',
-                    isReal: true
+                    isReal: true,
+                    loadedFrom: key
                   };
                   console.log('✅ Loaded latest question from array:', currentQuestion);
-                  updateConnectionStatus(true, 'Latest question loaded');
+                  updateConnectionStatus(true, `Latest question loaded (ID: ${currentQuestion.id})`);
                   return displayQuestion();
                 }
               }
@@ -853,8 +866,17 @@
           }
         }
         
-        // No question found
-        console.log('❌ No question found');
+        // No question found - enhanced debugging
+        console.log('❌ No question found in any storage location');
+        console.log('📊 Available localStorage keys:', Object.keys(localStorage));
+        
+        // Check for any question-related data for debugging
+        const allKeys = Object.keys(localStorage);
+        const questionRelatedKeys = allKeys.filter(k => 
+          k.includes('question') || k.includes('alm') || k.includes('intuity')
+        );
+        console.log('🔍 Question-related keys found:', questionRelatedKeys);
+        
         updateConnectionStatus(false, 'No active question found');
         showNoQuestion();
         
@@ -1041,7 +1063,7 @@
       });
     }
 
-    // Submit real response
+    // FIXED: Enhanced submit response with guaranteed data consistency
     function submitResponse() {
       if (isSubmitted) return;
       
@@ -1073,11 +1095,17 @@
       // Simulate network delay
       setTimeout(() => {
         try {
+          // ENSURE QUESTION ID IS PROPERLY SET
+          let responseQuestionId = 'no_question';
+          if (currentQuestion && currentQuestion.id) {
+            responseQuestionId = String(currentQuestion.id); // Convert to string for consistency
+          }
+
           // Create response object with GUARANTEED SAVE
           const response = {
             id: Date.now(),
-            questionId: currentQuestion.id || Date.now(),
-            questionText: currentQuestion.text || '',
+            questionId: responseQuestionId, // Use the properly set ID
+            questionText: currentQuestion ? currentQuestion.text : 'No question text',
             studentName: studentName,
             answer: studentAnswer,
             wordCount: wordCount,
@@ -1085,10 +1113,19 @@
             submittedAt: new Date().toISOString(),
             quality: determineQuality(wordCount),
             score: calculateScore(wordCount, studentAnswer),
-            source: currentQuestion.source || 'unknown'
+            source: currentQuestion ? currentQuestion.source : 'unknown',
+            // Add additional metadata for debugging
+            browserInfo: {
+              userAgent: navigator.userAgent,
+              url: window.location.href,
+              params: window.location.search
+            }
           };
 
-          console.log('💾 Saving response:', response);
+          console.log('=== SUBMITTING RESPONSE ===');
+          console.log('📝 Current Question:', currentQuestion);
+          console.log('🆔 Response Question ID:', responseQuestionId);
+          console.log('📊 Response Object:', response);
 
           // SAVE TO MULTIPLE KEYS FOR RELIABILITY
           const storageKeys = [
@@ -1098,32 +1135,73 @@
             'intuity_student_data'
           ];
 
+          let saveSuccessCount = 0;
+
           storageKeys.forEach(key => {
             try {
               const existingResponses = JSON.parse(localStorage.getItem(key) || '[]');
               existingResponses.push(response);
               localStorage.setItem(key, JSON.stringify(existingResponses));
-              console.log(`✅ Saved to ${key}:`, existingResponses.length, 'responses');
+              saveSuccessCount++;
+              
+              console.log(`✅ Saved to ${key}:`, existingResponses.length, 'total responses');
+              
+              // Verify the save
+              const verification = JSON.parse(localStorage.getItem(key) || '[]');
+              const lastSaved = verification[verification.length - 1];
+              if (lastSaved && lastSaved.id === response.id) {
+                console.log(`✅ Verification passed for ${key}`);
+              } else {
+                console.error(`❌ Verification failed for ${key}`);
+              }
+              
             } catch (e) {
               console.error(`❌ Error saving to ${key}:`, e);
             }
           });
 
-          // Also save individual response with timestamp key
-          const individualKey = `response_${response.id}`;
-          localStorage.setItem(individualKey, JSON.stringify(response));
-          console.log(`✅ Individual response saved as ${individualKey}`);
+          // Also save individual response with unique key
+          const individualKey = `response_${response.id}_${responseQuestionId}`;
+          try {
+            localStorage.setItem(individualKey, JSON.stringify(response));
+            console.log(`✅ Individual response saved as ${individualKey}`);
+          } catch (e) {
+            console.error('❌ Failed to save individual response:', e);
+          }
 
-          // Update connection status
-          updateConnectionStatus(true, `Response submitted for Question ${currentQuestion.id}`);
+          // Log final localStorage state for debugging
+          console.log('=== FINAL LOCALSTORAGE STATE ===');
+          storageKeys.forEach(key => {
+            const data = localStorage.getItem(key);
+            if (data) {
+              try {
+                const parsed = JSON.parse(data);
+                console.log(`${key}: ${parsed.length} responses`);
+                // Show last few responses
+                const recent = parsed.slice(-2);
+                console.log(`Recent responses in ${key}:`, recent);
+              } catch (e) {
+                console.log(`${key}: Invalid JSON`);
+              }
+            } else {
+              console.log(`${key}: No data`);
+            }
+          });
 
-          // Show success state
-          showSuccess();
-          isSubmitted = true;
+          if (saveSuccessCount > 0) {
+            // Update connection status
+            updateConnectionStatus(true, `Response submitted successfully to ${saveSuccessCount} storage locations`);
+
+            // Show success state
+            showSuccess();
+            isSubmitted = true;
+          } else {
+            throw new Error('Failed to save to any storage location');
+          }
           
         } catch (error) {
           console.error('❌ Error submitting response:', error);
-          alert('Error submitting response. Please try again.');
+          alert('Error submitting response. Please try again or contact your teacher.');
           
           // Reset button
           submitBtn.innerHTML = originalContent;
