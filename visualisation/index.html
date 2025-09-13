@@ -22,6 +22,7 @@
       --blur: blur(20px);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       --accent-red: #ef4444;
+      --success: #10b981;
     }
 
     * {
@@ -179,7 +180,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1.5rem;
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
@@ -260,6 +261,7 @@
       display: flex;
       justify-content: center;
       gap: 2rem;
+      flex-wrap: wrap;
     }
 
     .footer-btn {
@@ -278,6 +280,7 @@
       align-items: center;
       gap: 0.5rem;
       text-decoration: none;
+      position: relative;
     }
 
     .footer-btn:hover {
@@ -309,8 +312,239 @@
       transform: none;
     }
 
+    /* Photo Button Styling */
+    .photo-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1001;
+    }
+
+    .photo-btn:hover::after {
+      opacity: 1;
+    }
+
+    .photo-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--accent-teal);
+      color: var(--bg-primary);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.2rem 0.4rem;
+      border-radius: 50px;
+      min-width: 16px;
+      text-align: center;
+      display: none;
+    }
+
+    .photo-count.show {
+      display: block;
+    }
+
     .footer-btn i {
       font-size: 1rem;
+    }
+
+    /* Photo Management Modal */
+    .photo-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(26, 35, 50, 0.98);
+      backdrop-filter: var(--blur);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .photo-modal.active {
+      display: flex;
+    }
+
+    .modal-header {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-bottom: 2px solid var(--accent-teal);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-close {
+      background: none;
+      border: 2px solid var(--accent-teal);
+      color: var(--accent-teal);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--accent-teal);
+      color: white;
+      transform: rotate(90deg) scale(1.1);
+    }
+
+    .photo-gallery-container {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .gallery-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .gallery-subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .student-photo-card {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .student-photo-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-teal);
+      box-shadow: 0 10px 30px rgba(45, 212, 191, 0.3);
+    }
+
+    .student-photo-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-teal);
+      margin-bottom: 1rem;
+      box-shadow: 0 5px 15px rgba(45, 212, 191, 0.3);
+    }
+
+    .student-card-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .student-card-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .gallery-empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-actions {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-top: 2px solid var(--accent-teal);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-btn {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: var(--blur);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .modal-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      transform: translateY(-2px);
+    }
+
+    .modal-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+    }
+
+    .modal-btn.danger {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .modal-btn.danger:hover {
+      background: var(--accent-red);
+      color: white;
     }
 
     /* Mobile Responsive */
@@ -367,6 +601,16 @@
 
       .current-question-text {
         font-size: 1rem;
+      }
+
+      .modal-actions {
+        padding: 1rem;
+        gap: 1rem;
+      }
+
+      .modal-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
       }
     }
 
@@ -437,7 +681,7 @@
       justify-content: center;
     }
 
-    .modal-btn {
+    .modal-btn-small {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 0.5rem;
@@ -447,7 +691,7 @@
       transition: all 0.3s ease;
     }
 
-    .modal-btn.danger {
+    .modal-btn-small.danger {
       background: var(--accent-red);
       border-color: var(--accent-red);
       color: white;
@@ -529,13 +773,10 @@
         
         <a href="../displays/display1.html" class="display-btn" target="_blank">
           <svg class="doodle" viewBox="0 0 80 80">
-            <!-- Phone/tablet outline -->
             <rect x="15" y="10" width="50" height="60" rx="6" ry="6" />
-            <!-- Screen content lines with wavy scroll effect -->
             <path d="M25 20 Q35 18 45 20 T65 20" />
             <path d="M25 26 Q35 24 45 26 T65 26" />
             <path d="M25 32 Q35 30 45 32 T55 32" />
-            <!-- Scroll arrow -->
             <path d="M70 35 L70 45 M66 41 L70 45 L74 41" />
           </svg>
           <div class="display-btn-title">Scroll</div>
@@ -544,12 +785,10 @@
 
         <button class="display-btn current" onclick="showCurrentView()">
           <svg class="doodle" viewBox="0 0 80 80">
-            <!-- Hand-drawn grid squares -->
             <rect x="15" y="15" width="18" height="18" rx="2" />
             <rect x="47" y="15" width="18" height="18" rx="2" />
             <rect x="15" y="47" width="18" height="18" rx="2" />
             <rect x="47" y="47" width="18" height="18" rx="2" />
-            <!-- Little dots in corners to show it's active -->
             <circle cx="24" cy="24" r="1.5" fill="currentColor" />
             <circle cx="56" cy="24" r="1.5" fill="currentColor" />
             <circle cx="24" cy="56" r="1.5" fill="currentColor" />
@@ -561,13 +800,11 @@
 
         <a href="../displays/display3.html" class="display-btn" target="_blank">
           <svg class="doodle" viewBox="0 0 80 80">
-            <!-- Connected thought bubbles -->
             <circle cx="25" cy="25" r="8" />
             <circle cx="55" cy="20" r="6" />
             <circle cx="40" cy="45" r="7" />
             <circle cx="60" cy="50" r="5" />
             <circle cx="20" cy="55" r="6" />
-            <!-- Connecting lines (slightly wavy) -->
             <path d="M33 25 Q38 20 49 20" />
             <path d="M31 32 Q35 38 33 45" />
             <path d="M47 45 Q52 47 55 50" />
@@ -575,6 +812,21 @@
           </svg>
           <div class="display-btn-title">Map</div>
           <div class="display-btn-desc">Interactive floating cards that can be dragged and arranged</div>
+        </a>
+
+        <a href="cosmic-galaxy.html" class="display-btn" target="_blank">
+          <svg class="doodle" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="6" fill="currentColor" />
+            <circle cx="40" cy="40" r="15" fill="none" />
+            <circle cx="40" cy="40" r="25" fill="none" />
+            <circle cx="40" cy="40" r="35" fill="none" />
+            <circle cx="55" cy="40" r="3" fill="currentColor" />
+            <circle cx="65" cy="40" r="2" fill="currentColor" />
+            <circle cx="25" cy="40" r="2" fill="currentColor" />
+            <path d="M40 34 L42 38 L40 42 L38 38 Z" fill="currentColor" />
+          </svg>
+          <div class="display-btn-title">Cosmic</div>
+          <div class="display-btn-desc">3D galaxy with student photos as planets orbiting the question</div>
         </a>
 
       </div>
@@ -589,6 +841,13 @@
         <i class="fas fa-plus"></i>
         <span>Create Question</span>
       </a>
+
+      <!-- NEW: Photo Management Button -->
+      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Manage Student Photos">
+        <i class="fas fa-camera"></i>
+        <span>Photos</span>
+        <div class="photo-count" id="photoCount">0</div>
+      </button>
       
       <button class="footer-btn delete-btn" onclick="confirmDeleteCurrentQuestion()" id="deleteBtn" disabled>
         <i class="fas fa-trash"></i>
@@ -602,6 +861,48 @@
     </div>
   </footer>
 
+  <!-- Photo Management Modal -->
+  <div class="photo-modal" id="photoModal">
+    <div class="modal-header">
+      <div class="modal-title">📸 Student Photo Gallery</div>
+      <button class="modal-close" id="closePhotoModal">&times;</button>
+    </div>
+
+    <div class="photo-gallery-container">
+      <div class="gallery-header">
+        <div class="gallery-title">Captured Student Photos</div>
+        <div class="gallery-subtitle">These photos enhance all display modes, especially the Cosmic Galaxy experience</div>
+      </div>
+
+      <div class="photo-grid" id="photoGrid">
+        <!-- Student photos will be populated here -->
+      </div>
+
+      <div class="gallery-empty" id="galleryEmpty" style="display: none;">
+        <div class="empty-icon">📷</div>
+        <div style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600;">No Photos Captured</div>
+        <div>Use the Question Creator to capture student photos for an enhanced display experience.</div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn" id="captureMoreBtn">
+        <i class="fas fa-camera"></i>
+        <span>Capture Photos</span>
+      </button>
+      
+      <button class="modal-btn danger" id="clearAllPhotosBtn">
+        <i class="fas fa-trash"></i>
+        <span>Clear All</span>
+      </button>
+      
+      <button class="modal-btn primary" id="viewCosmicBtn">
+        <i class="fas fa-rocket"></i>
+        <span>Cosmic Galaxy</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Delete Confirmation Modal -->
   <div class="modal" id="delete-modal">
     <div class="modal-content">
@@ -611,8 +912,8 @@
         <strong>This action cannot be undone.</strong>
       </p>
       <div class="modal-buttons">
-        <button class="modal-btn" onclick="closeDeleteModal()">Cancel</button>
-        <button class="modal-btn danger" onclick="executeDeleteQuestion()">
+        <button class="modal-btn-small" onclick="closeDeleteModal()">Cancel</button>
+        <button class="modal-btn-small danger" onclick="executeDeleteQuestion()">
           <i class="fas fa-trash"></i> Delete Question
         </button>
       </div>
@@ -625,7 +926,7 @@
   </div>
 
   <script>
-    // Question data - ORIGINAL WORKING VERSION
+    // Question data
     const questions = {
       1: "How has digital technology impacted your daily learning?",
       2: "Compare online vs traditional classroom learning methods", 
@@ -638,8 +939,109 @@
     };
 
     let currentSelectedQuestion = 1;
+    let studentPhotos = [];
 
-    // ORIGINAL FUNCTION 1: Update question display when dropdown changes
+    // Load student photos
+    function loadStudentPhotos() {
+      try {
+        const savedPhotos = localStorage.getItem('student_photos');
+        if (savedPhotos) {
+          studentPhotos = JSON.parse(savedPhotos);
+          updatePhotoCount();
+          console.log(`Loaded ${studentPhotos.length} student photos`);
+        }
+      } catch (error) {
+        console.error('Error loading student photos:', error);
+        studentPhotos = [];
+      }
+    }
+
+    function updatePhotoCount() {
+      const countElement = document.getElementById('photoCount');
+      const count = studentPhotos.length;
+      
+      countElement.textContent = count;
+      countElement.classList.toggle('show', count > 0);
+    }
+
+    function openPhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.add('active');
+      renderPhotoGallery();
+    }
+
+    function closePhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.remove('active');
+    }
+
+    function renderPhotoGallery() {
+      const photoGrid = document.getElementById('photoGrid');
+      const galleryEmpty = document.getElementById('galleryEmpty');
+
+      if (studentPhotos.length === 0) {
+        photoGrid.innerHTML = '';
+        galleryEmpty.style.display = 'block';
+        return;
+      }
+
+      galleryEmpty.style.display = 'none';
+      
+      photoGrid.innerHTML = studentPhotos.map(photo => `
+        <div class="student-photo-card" data-photo-id="${photo.id}" onclick="selectPhotoForRemoval(${photo.id}, '${photo.name}')">
+          <img 
+            src="${photo.photo}" 
+            alt="${photo.name}" 
+            class="student-photo-large"
+          />
+          <div class="student-card-name">${photo.name}</div>
+          <div class="student-card-meta">Captured: ${photo.timestamp}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectPhotoForRemoval(photoId, studentName) {
+      if (confirm(`Remove photo of ${studentName}? This will also remove them from display modes that use photos.`)) {
+        removeStudentPhoto(photoId);
+      }
+    }
+
+    function removeStudentPhoto(photoId) {
+      studentPhotos = studentPhotos.filter(p => p.id !== photoId);
+      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+      updatePhotoCount();
+      renderPhotoGallery();
+      showNotification('Photo removed successfully', 'success');
+    }
+
+    function clearAllPhotos() {
+      if (confirm('Clear all student photos? This cannot be undone and will affect photo-enabled display modes.')) {
+        studentPhotos = [];
+        localStorage.removeItem('student_photos');
+        updatePhotoCount();
+        renderPhotoGallery();
+        showNotification('All photos cleared', 'success');
+      }
+    }
+
+    function goToQuestionCreator() {
+      window.location.href = '../teachers/questions/';
+    }
+
+    function openCosmicDisplay() {
+      if (studentPhotos.length === 0) {
+        if (confirm('No student photos captured yet. The Cosmic Galaxy will show default avatars. Continue anyway?')) {
+          window.open('cosmic-galaxy.html', '_blank');
+        }
+      } else {
+        showNotification(`Opening Cosmic Galaxy with ${studentPhotos.length} student photos!`, 'success');
+        setTimeout(() => {
+          window.open('cosmic-galaxy.html', '_blank');
+        }, 1000);
+      }
+    }
+
+    // Update question display when dropdown changes
     function updateQuestion() {
       const selector = document.getElementById('questionSelector');
       const selectedValue = selector.value;
@@ -649,18 +1051,16 @@
       titleElement.textContent = `Question ${selectedValue}: ${questionText}`;
       currentSelectedQuestion = parseInt(selectedValue);
       
-      // Enable delete button when question is selected
       document.getElementById('deleteBtn').disabled = false;
       
       console.log(`Teacher selected: Question ${selectedValue}`);
     }
 
-    // ORIGINAL FUNCTION 2: Show feedback for current view button
     function showCurrentView() {
       alert('You are currently viewing the Grid View (Analytics Dashboard)');
     }
 
-    // NEW FUNCTION 3: Delete functionality
+    // Delete functionality
     function confirmDeleteCurrentQuestion() {
       const questionText = questions[currentSelectedQuestion];
       const modal = document.getElementById('delete-modal');
@@ -681,27 +1081,23 @@
 
     function executeDeleteQuestion() {
       try {
-        // Remove from questions object
         delete questions[currentSelectedQuestion];
         
-        // Remove from dropdown
         const selector = document.getElementById('questionSelector');
         const optionToRemove = selector.querySelector(`option[value="${currentSelectedQuestion}"]`);
         if (optionToRemove) {
           optionToRemove.remove();
         }
         
-        // Remove associated responses from localStorage
+        // Remove associated data
         const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
         const filteredResponses = responses.filter(r => r.questionId !== currentSelectedQuestion);
         localStorage.setItem('alm_student_responses', JSON.stringify(filteredResponses));
         
-        // Update stored questions
         const storedQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
         const filteredQuestions = storedQuestions.filter(q => q.id !== currentSelectedQuestion);
         localStorage.setItem('alm_questions', JSON.stringify(filteredQuestions));
         
-        // Clear current question if it matches
         const currentQuestionInStorage = JSON.parse(localStorage.getItem('current_question') || 'null');
         if (currentQuestionInStorage && currentQuestionInStorage.id === currentSelectedQuestion) {
           localStorage.removeItem('current_question');
@@ -710,13 +1106,11 @@
         showNotification('Question deleted successfully', 'success');
         closeDeleteModal();
         
-        // Reset to first available question
         const remainingOptions = selector.querySelectorAll('option');
         if (remainingOptions.length > 0) {
           selector.value = remainingOptions[0].value;
           updateQuestion();
         } else {
-          // No questions left
           document.getElementById('currentQuestionTitle').textContent = 'No questions available';
           document.getElementById('deleteBtn').disabled = true;
         }
@@ -744,9 +1138,12 @@
       }, 3000);
     }
 
-    // ORIGINAL INITIALIZATION - RESTORED
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('INTUITY Analytics Dashboard Loaded Successfully');
+      console.log('INTUITY Analytics Dashboard with Photo Management Loaded');
+      
+      // Load photos
+      loadStudentPhotos();
       
       // Set up dropdown change listener
       const selector = document.getElementById('questionSelector');
@@ -755,10 +1152,28 @@
       // Initialize with first question
       updateQuestion();
 
+      // Photo management event listeners
+      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
+      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
+      document.getElementById('captureMoreBtn').addEventListener('click', goToQuestionCreator);
+      document.getElementById('clearAllPhotosBtn').addEventListener('click', clearAllPhotos);
+      document.getElementById('viewCosmicBtn').addEventListener('click', openCosmicDisplay);
+
       // Close modal when clicking outside
       document.getElementById('delete-modal').addEventListener('click', (e) => {
         if (e.target.id === 'delete-modal') {
           closeDeleteModal();
+        }
+      });
+
+      // Close photo modal on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('photoModal').classList.contains('active')) {
+            closePhotoModal();
+          } else if (document.getElementById('delete-modal').style.display === 'flex') {
+            closeDeleteModal();
+          }
         }
       });
     });
