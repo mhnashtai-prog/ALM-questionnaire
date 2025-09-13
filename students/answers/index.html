@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response (DEBUG)</title>
+  <title>INTUITY - Student Response</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -68,6 +68,21 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0.5rem;
+      position: relative;
+    }
+    
+    .brand-name::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      font-size: 1.2rem;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
     }
     
     .simple-subtitle {
@@ -152,24 +167,10 @@
       transform: translateY(-2px);
     }
     
-    /* Debug Info */
-    .debug-info {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem;
-      margin-top: 1rem;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    
     /* Waiting State */
     .waiting-state {
       text-align: center;
-      padding: 2rem;
+      padding: 3rem 2rem;
     }
     
     .waiting-title {
@@ -183,26 +184,6 @@
       color: var(--text-secondary);
       font-size: 1rem;
       line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-    
-    /* Test Button */
-    .test-btn {
-      background: var(--accent-teal);
-      border: none;
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      color: var(--bg-primary);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 0.5rem;
-      transition: all 0.3s ease;
-    }
-    
-    .test-btn:hover {
-      background: var(--accent-gold);
-      transform: translateY(-1px);
     }
     
     /* Footer */
@@ -332,13 +313,24 @@
         font-size: 0.8rem;
       }
     }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <!-- Simple Header -->
   <header class="simple-header">
     <div class="brand-name">INTUITY</div>
-    <div class="simple-subtitle">Student Response (DEBUG MODE)</div>
+    <div class="simple-subtitle">Student Response</div>
   </header>
   
   <!-- Main Container -->
@@ -347,23 +339,10 @@
       
       <!-- Waiting State (shown when no question) -->
       <div class="waiting-state" id="waitingState">
-        <div class="waiting-title">🔍 Checking for Questions...</div>
-        <div class="waiting-text" id="statusText">
-          Looking for questions from teacher...
-        </div>
-        
-        <!-- Test Buttons -->
-        <div>
-          <button class="test-btn" onclick="checkStorage()">Check Storage</button>
-          <button class="test-btn" onclick="createTestQuestion()">Create Test Question</button>
-          <button class="test-btn" onclick="clearStorage()">Clear Storage</button>
-          <button class="test-btn" onclick="forceRefresh()">Force Refresh</button>
-        </div>
-        
-        <!-- Debug Info -->
-        <div class="debug-info" id="debugInfo">
-          <strong>🐛 DEBUG INFO:</strong><br>
-          <span id="debugContent">Loading debug information...</span>
+        <div class="waiting-title">Waiting for Question</div>
+        <div class="waiting-text">
+          Your teacher will share a question with you soon.<br>
+          This page will update automatically when ready.
         </div>
       </div>
       
@@ -411,159 +390,63 @@
 
   <script>
     let currentQuestion = null;
-    let debugLog = [];
 
-    function log(message) {
-      const timestamp = new Date().toLocaleTimeString();
-      const logEntry = `[${timestamp}] ${message}`;
-      debugLog.push(logEntry);
-      console.log(logEntry);
-      updateDebugDisplay();
-    }
-
-    function updateDebugDisplay() {
-      const debugContent = document.getElementById('debugContent');
-      if (debugContent) {
-        debugContent.innerHTML = debugLog.slice(-10).join('<br>'); // Show last 10 entries
-      }
-    }
-
-    // Check what's in localStorage
-    function checkStorage() {
-      log('=== CHECKING LOCALSTORAGE ===');
-      
-      const keys = [
-        'alm_questions', 
-        'intuity_questions', 
-        'current_question', 
-        'alm_student_responses',
-        'question_draft'
-      ];
-      
-      keys.forEach(key => {
-        const data = localStorage.getItem(key);
-        if (data) {
-          try {
-            const parsed = JSON.parse(data);
-            if (Array.isArray(parsed)) {
-              log(`✅ ${key}: Array with ${parsed.length} items`);
-            } else {
-              log(`✅ ${key}: Object found`);
-            }
-          } catch {
-            log(`✅ ${key}: Text data found`);
-          }
-        } else {
-          log(`❌ ${key}: NOT FOUND`);
-        }
-      });
-      
-      // Check current URL and localStorage scope
-      log(`📍 Current URL: ${window.location.href}`);
-      log(`🌐 Origin: ${window.location.origin}`);
-      log(`📁 Pathname: ${window.location.pathname}`);
-    }
-
-    // Create a test question for debugging
-    function createTestQuestion() {
-      log('🧪 Creating test question...');
-      
-      const testQuestion = {
-        id: Date.now(),
-        text: "This is a test question for debugging. How are you feeling about this INTUITY platform?",
-        timestamp: new Date().toISOString(),
-        createdBy: 'teacher',
-        type: 'open-ended',
-        published: true
-      };
-      
-      try {
-        // Save in ALL possible formats
-        localStorage.setItem('current_question', JSON.stringify(testQuestion));
-        localStorage.setItem('alm_questions', JSON.stringify([testQuestion]));
-        localStorage.setItem('intuity_questions', JSON.stringify([testQuestion]));
-        
-        log('✅ Test question created and saved!');
-        
-        setTimeout(() => {
-          loadQuestion();
-        }, 500);
-        
-      } catch (error) {
-        log(`❌ Error creating test question: ${error.message}`);
-      }
-    }
-
-    // Clear all storage
-    function clearStorage() {
-      if (confirm('Clear all storage? This will remove everything.')) {
-        localStorage.clear();
-        log('🗑️ All localStorage cleared');
-        location.reload();
-      }
-    }
-
-    // Force refresh
-    function forceRefresh() {
-      log('🔄 Force refreshing...');
-      location.reload();
-    }
-
-    // Main function to load question
+    // Simple function to load question
     function loadQuestion() {
-      log('🔍 Loading question...');
+      console.log('Loading question...');
       
       try {
-        // Method 1: Check current_question
-        let questionData = localStorage.getItem('current_question');
-        if (questionData) {
-          log('✅ Found current_question');
-          const question = JSON.parse(questionData);
+        // Method 1: Check URL parameters first (most reliable)
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionText = urlParams.get('t'); // 't' for text
+        const questionId = urlParams.get('q'); // 'q' for question id
+        
+        if (questionText) {
+          console.log('Question found in URL parameters');
+          const question = {
+            id: questionId || Date.now(),
+            text: decodeURIComponent(questionText),
+            timestamp: new Date().toISOString(),
+            source: 'url'
+          };
           showQuestion(question);
           return;
         }
         
-        // Method 2: Check alm_questions array
-        const almQuestions = localStorage.getItem('alm_questions');
-        if (almQuestions) {
-          log('✅ Found alm_questions');
-          const questions = JSON.parse(almQuestions);
-          if (questions.length > 0) {
-            const latestQuestion = questions[questions.length - 1];
-            showQuestion(latestQuestion);
-            return;
+        // Method 2: Check localStorage (fallback)
+        let questionData = localStorage.getItem('current_question');
+        if (!questionData) {
+          const questions = localStorage.getItem('alm_questions');
+          if (questions) {
+            const parsedQuestions = JSON.parse(questions);
+            if (parsedQuestions.length > 0) {
+              questionData = JSON.stringify(parsedQuestions[parsedQuestions.length - 1]);
+            }
           }
         }
         
-        // Method 3: Check intuity_questions array
-        const intuityQuestions = localStorage.getItem('intuity_questions');
-        if (intuityQuestions) {
-          log('✅ Found intuity_questions');
-          const questions = JSON.parse(intuityQuestions);
-          if (questions.length > 0) {
-            const latestQuestion = questions[questions.length - 1];
-            showQuestion(latestQuestion);
-            return;
-          }
+        if (questionData) {
+          const question = JSON.parse(questionData);
+          question.source = 'localStorage';
+          showQuestion(question);
+        } else {
+          showWaiting();
         }
-        
-        log('❌ No questions found anywhere');
-        showWaiting();
         
       } catch (error) {
-        log(`❌ Error loading question: ${error.message}`);
+        console.error('Error loading question:', error);
         showWaiting();
       }
     }
 
     // Show the question
     function showQuestion(questionData) {
-      log(`✅ Showing question: "${questionData.text}"`);
+      console.log('Showing question:', questionData);
       
       document.getElementById('waitingState').style.display = 'none';
       document.getElementById('questionState').style.display = 'block';
       
-      const questionText = questionData.text || questionData.question || 'No question text available';
+      const questionText = questionData.text || questionData.question || 'No question available';
       document.getElementById('questionText').textContent = questionText;
       
       currentQuestion = questionData;
@@ -576,12 +459,8 @@
 
     // Show waiting state
     function showWaiting() {
-      log('⏳ Showing waiting state');
       document.getElementById('waitingState').style.display = 'block';
       document.getElementById('questionState').style.display = 'none';
-      
-      const statusText = document.getElementById('statusText');
-      statusText.textContent = 'No questions found. Use debug buttons below to investigate.';
     }
 
     // Handle input changes
@@ -607,10 +486,8 @@
         return;
       }
       
-      log('📤 Submitting response...');
-      
       const submitBtn = document.getElementById('submitBtn');
-      submitBtn.innerHTML = '<i class="fas fa-spinner"></i><span>Submitting...</span>';
+      submitBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Submitting...</span>';
       submitBtn.disabled = true;
       
       setTimeout(() => {
@@ -634,7 +511,7 @@
           responses.push(response);
           localStorage.setItem('alm_student_responses', JSON.stringify(responses));
           
-          log(`✅ Response saved: ${wordCount} words`);
+          console.log('Response saved:', response);
           
           // Show success
           document.getElementById('successMessage').style.display = 'block';
@@ -648,7 +525,7 @@
           }, 3000);
           
         } catch (error) {
-          log(`❌ Error submitting response: ${error.message}`);
+          console.error('Error submitting response:', error);
           submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Error</span>';
           submitBtn.disabled = false;
         }
@@ -672,12 +549,6 @@
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
-      log('🚀 INTUITY Student Interface Starting (DEBUG MODE)');
-      
-      // Initial storage check
-      checkStorage();
-      
-      // Load question
       loadQuestion();
       
       // Set up input handler
@@ -689,14 +560,14 @@
       document.getElementById('editBtn').addEventListener('click', editAnswer);
       document.getElementById('sendBtn').addEventListener('click', sendAnswer);
       
-      // Auto-refresh every 5 seconds to check for new questions
+      // Auto-refresh every 10 seconds to check for new questions
       setInterval(() => {
         if (document.getElementById('waitingState').style.display !== 'none') {
           loadQuestion();
         }
-      }, 5000);
+      }, 10000);
       
-      log('✅ Student interface ready');
+      console.log('Student interface ready');
     });
   </script>
 </body>
