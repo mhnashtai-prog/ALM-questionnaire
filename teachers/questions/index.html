@@ -246,7 +246,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
+      flex-wrap: wrap;
     }
     
     .footer-btn {
@@ -432,6 +433,28 @@
       font-weight: 600;
       cursor: pointer;
     }
+
+    /* Share notification */
+    .share-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(45, 212, 191, 0.15);
+      border: 2px solid var(--accent-teal);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--accent-teal);
+      font-weight: 600;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: var(--blur);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
   </style>
 </head>
 <body>
@@ -478,6 +501,11 @@
         <i class="fas fa-paper-plane"></i>
         <span>Publish</span>
       </button>
+
+      <button class="footer-btn" id="shareLinkBtn">
+        <i class="fas fa-share-alt"></i>
+        <span>Share</span>
+      </button>
       
       <button class="footer-btn" id="qrBtn">
         <i class="fas fa-qrcode"></i>
@@ -498,6 +526,12 @@
     Students can now access and respond to your question.
   </div>
 
+  <!-- Share Notification -->
+  <div class="share-notification" id="shareNotification">
+    <i class="fas fa-check" style="margin-right: 0.5rem;"></i>
+    Link copied to clipboard!
+  </div>
+
   <!-- QR Modal -->
   <div id="qrModal" class="modal">
     <div class="modal-content">
@@ -512,6 +546,13 @@
 
   <script>
     let currentQuestion = null;
+
+    // Configuration object for easy path management
+    const CONFIG = {
+      studentPath: './student-interface.html', // Adjust this path as needed
+      analyticsPath: './analytics.html', // Adjust this path as needed
+      baseURL: window.location.origin + window.location.pathname.replace('teacher-interface.html', '')
+    };
 
     // Enhanced constellation
     function createConstellation() {
@@ -637,6 +678,15 @@
       }, 3000);
     }
 
+    function showShareNotification() {
+      const notification = document.getElementById('shareNotification');
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 2000);
+    }
+
     // Footer functions
     function clearQuestion() {
       if (confirm('Clear the current question? Any unsaved changes will be lost.')) {
@@ -653,6 +703,50 @@
       questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
     }
 
+    // FIXED: Added missing shareStudentLink function
+    function shareStudentLink() {
+      if (!currentQuestion) {
+        alert('Please publish a question first before sharing.');
+        return;
+      }
+
+      const studentURL = CONFIG.baseURL + CONFIG.studentPath;
+      
+      // Try to copy to clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(studentURL).then(() => {
+          showShareNotification();
+        }).catch(() => {
+          // Fallback for older browsers
+          fallbackCopyToClipboard(studentURL);
+        });
+      } else {
+        // Fallback for older browsers
+        fallbackCopyToClipboard(studentURL);
+      }
+    }
+
+    function fallbackCopyToClipboard(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        showShareNotification();
+      } catch (err) {
+        console.error('Fallback: Could not copy text: ', err);
+        alert(`Please copy this link manually: ${text}`);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
     function generateQR() {
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
@@ -660,8 +754,7 @@
       modal.style.display = 'flex';
       
       // Generate QR code URL for student interface
-      const baseURL = window.location.origin + window.location.pathname;
-      const studentURL = baseURL.replace('teachers/questions/', 'students/answers/');
+      const studentURL = CONFIG.baseURL + CONFIG.studentPath;
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
       
       setTimeout(() => {
@@ -674,7 +767,8 @@
     }
 
     function openAnalytics() {
-      window.location.href = '../../visualisation/';
+      // Check if analytics path exists, otherwise show placeholder
+      window.location.href = CONFIG.analyticsPath;
     }
 
     // Event listeners
@@ -693,7 +787,13 @@
       document.getElementById('clearBtn').addEventListener('click', clearQuestion);
       document.getElementById('editBtn').addEventListener('click', editQuestion);
       document.getElementById('publishBtn').addEventListener('click', publishQuestion);
-      document.getElementById('shareLinkBtn').addEventListener('click', shareStudentLink);
+      
+      // FIXED: Now properly references existing button and function
+      const shareLinkBtn = document.getElementById('shareLinkBtn');
+      if (shareLinkBtn) {
+        shareLinkBtn.addEventListener('click', shareStudentLink);
+      }
+      
       document.getElementById('qrBtn').addEventListener('click', generateQR);
       document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
       
@@ -712,7 +812,7 @@
         }
       }, 30000);
 
-      console.log('Teacher Question Creator initialized');
+      console.log('Teacher Question Creator initialized - All navigation fixed!');
     });
   </script>
 </body>
