@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response (FIXED)</title>
+  <title>INTUITY - Student Response</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -648,7 +649,7 @@
   <!-- Header -->
   <header class="simple-header">
     <div class="brand-name">INTUITY</div>
-    <div class="simple-subtitle">Student Response (FIXED)</div>
+    <div class="simple-subtitle">Student Response</div>
   </header>
   
   <!-- Main Container -->
@@ -1083,7 +1084,7 @@
       });
     }
 
-    // Submit real response - FIXED VERSION
+    // Submit real response
     function submitResponse() {
       if (isSubmitted) return;
       
@@ -1132,36 +1133,29 @@
 
           console.log('💾 Saving response:', response);
 
-          // FIXED: Save to primary key only to prevent duplication
-          const primaryKey = 'alm_student_responses';
-          try {
-            const existingResponses = JSON.parse(localStorage.getItem(primaryKey) || '[]');
-            
-            // Check if this student already has a response for this question
-            const existingIndex = existingResponses.findIndex(r => 
-              r.studentName === studentName && 
-              (r.questionId === currentQuestion.id || r.questionText === currentQuestion.text)
-            );
-            
-            if (existingIndex !== -1) {
-              // Update existing response
-              existingResponses[existingIndex] = response;
-              console.log('✅ Updated existing response for', studentName);
-            } else {
-              // Add new response
+          // SAVE TO MULTIPLE KEYS FOR RELIABILITY
+          const storageKeys = [
+            'alm_student_responses',
+            'intuity_responses', 
+            'student_responses',
+            'intuity_student_data'
+          ];
+
+          storageKeys.forEach(key => {
+            try {
+              const existingResponses = JSON.parse(localStorage.getItem(key) || '[]');
               existingResponses.push(response);
-              console.log('✅ Added new response for', studentName);
+              localStorage.setItem(key, JSON.stringify(existingResponses));
+              console.log(`✅ Saved to ${key}:`, existingResponses.length, 'responses');
+            } catch (e) {
+              console.error(`❌ Error saving to ${key}:`, e);
             }
-            
-            localStorage.setItem(primaryKey, JSON.stringify(existingResponses));
-            console.log(`✅ Saved to ${primaryKey}:`, existingResponses.length, 'responses');
-          } catch (e) {
-            console.error(`❌ Error saving to ${primaryKey}:`, e);
-            // Fallback: save as individual response
-            const individualKey = `response_${response.id}`;
-            localStorage.setItem(individualKey, JSON.stringify(response));
-            console.log(`✅ Individual response saved as ${individualKey}`);
-          }
+          });
+
+          // Also save individual response with timestamp key
+          const individualKey = `response_${response.id}`;
+          localStorage.setItem(individualKey, JSON.stringify(response));
+          console.log(`✅ Individual response saved as ${individualKey}`);
 
           // Update connection status
           updateConnectionStatus(true, `Response submitted (${wordCount} words)`);
