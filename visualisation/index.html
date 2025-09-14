@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics</title>
+  <title>INTUITY - Analytics Dashboard (FIXED)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -80,7 +80,7 @@
       padding: 2rem;
     }
 
-    /* Compact Status Box */
+    /* Status Box */
     .status-box {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
@@ -229,6 +229,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .student-name {
@@ -275,6 +277,8 @@
       align-items: center;
       font-size: 0.9rem;
       color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .no-responses {
@@ -288,100 +292,38 @@
       margin-bottom: 1rem;
     }
 
-    .no-data {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-    }
-
-    .no-data-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Display Mode Selection */
-    .display-box {
+    /* Debug Panel */
+    .debug-panel {
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .display-title {
-      text-align: center;
-      color: var(--text-primary);
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 2rem;
-    }
-
-    .display-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .display-btn {
-      background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 1rem;
       padding: 1.5rem;
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
+      margin-top: 2rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .debug-header {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      gap: 1rem;
-      text-decoration: none;
-      position: relative;
+      margin-bottom: 1rem;
+      color: var(--accent-teal);
+      font-weight: 600;
     }
 
-    .display-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(45, 212, 191, 0.3);
+    .debug-content {
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
 
-    .display-btn.current {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
-    .display-btn.current .doodle {
-      stroke: #000;
-    }
-
-    .doodle {
-      width: 60px;
-      height: 60px;
-      stroke: var(--accent-teal);
-      fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .display-btn-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .display-btn-desc {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      text-align: center;
-      line-height: 1.4;
+    .debug-item {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 0.5rem;
     }
 
     /* Footer */
@@ -422,7 +364,6 @@
       align-items: center;
       gap: 0.5rem;
       text-decoration: none;
-      position: relative;
     }
 
     .footer-btn:hover {
@@ -441,8 +382,51 @@
       background: linear-gradient(135deg, var(--intuity-gold), var(--accent-teal));
     }
 
+    .footer-btn.debug {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .footer-btn.debug:hover {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: rgb(59, 130, 246);
+    }
+
     .footer-btn i {
       font-size: 1rem;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      backdrop-filter: var(--blur);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .notification.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .notification.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .notification.info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: rgb(59, 130, 246);
     }
 
     /* Mobile Responsive */
@@ -456,42 +440,11 @@
         margin-bottom: 1rem;
       }
 
-      .status-title {
-        font-size: 0.9rem;
-      }
-
       .question-box,
-      .display-box,
       .current-question-box,
       .responses-box {
         padding: 1.25rem;
         margin-bottom: 1.25rem;
-      }
-
-      .display-buttons {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
-      }
-
-      .display-btn {
-        padding: 0.5rem 0.25rem;
-        gap: 0.3rem;
-        min-height: unset;
-      }
-
-      .doodle {
-        width: 32px;
-        height: 32px;
-      }
-
-      .display-btn-title {
-        font-size: 0.85rem;
-        font-weight: 600;
-        line-height: 1.2;
-      }
-
-      .display-btn-desc {
-        display: none;
       }
 
       .footer-container {
@@ -510,29 +463,11 @@
       .current-question-text {
         font-size: 1rem;
       }
-    }
 
-    @media (max-width: 480px) {
-      .display-buttons {
-        gap: 0.25rem;
-      }
-
-      .display-btn {
-        padding: 0.3rem 0.15rem;
-        border-radius: 0.4rem;
-        gap: 0.2rem;
-      }
-
-      .doodle {
-        width: 24px;
-        height: 24px;
-        stroke-width: 2.2;
-      }
-
-      .display-btn-title {
-        font-size: 0.7rem;
-        font-weight: 600;
-        line-height: 1.1;
+      .response-header,
+      .response-meta {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
@@ -542,12 +477,12 @@
   <!-- Header -->
   <header class="header">
     <div class="brand-name">INTUITY</div>
-    <div class="brand-subtitle">Teacher Analytics Dashboard</div>
+    <div class="brand-subtitle">Teacher Analytics Dashboard (FIXED)</div>
   </header>
 
   <div class="container">
     
-    <!-- Compact Status Overview -->
+    <!-- Status Overview -->
     <div class="status-box">
       <div class="status-title">
         <i class="fas fa-users"></i>
@@ -587,69 +522,16 @@
       </div>
     </div>
 
-    <!-- Display Mode Selection -->
-    <div class="display-box">
-      <div class="display-title">Choose Presentation Mode</div>
-      <div class="display-buttons">
-        
-        <a href="../displays/display1.html" class="display-btn" target="_blank">
-          <svg class="doodle" viewBox="0 0 80 80">
-            <rect x="15" y="10" width="50" height="60" rx="6" ry="6" />
-            <path d="M25 20 Q35 18 45 20 T65 20" />
-            <path d="M25 26 Q35 24 45 26 T65 26" />
-            <path d="M25 32 Q35 30 45 32 T55 32" />
-            <path d="M70 35 L70 45 M66 41 L70 45 L74 41" />
-          </svg>
-          <div class="display-btn-title">Scroll</div>
-          <div class="display-btn-desc">Touch-controlled vertical scrolling interface, perfect for tablets</div>
-        </a>
-
-        <button class="display-btn current" onclick="showCurrentView()">
-          <svg class="doodle" viewBox="0 0 80 80">
-            <rect x="15" y="15" width="18" height="18" rx="2" />
-            <rect x="47" y="15" width="18" height="18" rx="2" />
-            <rect x="15" y="47" width="18" height="18" rx="2" />
-            <rect x="47" y="47" width="18" height="18" rx="2" />
-            <circle cx="24" cy="24" r="1.5" fill="currentColor" />
-            <circle cx="56" cy="24" r="1.5" fill="currentColor" />
-            <circle cx="24" cy="56" r="1.5" fill="currentColor" />
-            <circle cx="56" cy="56" r="1.5" fill="currentColor" />
-          </svg>
-          <div class="display-btn-title">Grid</div>
-          <div class="display-btn-desc">Current analytics dashboard with comprehensive overview</div>
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+      <div class="debug-header">
+        <span>Debug Information</span>
+        <button onclick="document.getElementById('debugPanel').classList.toggle('hidden')">
+          <i class="fas fa-times"></i>
         </button>
-
-        <a href="../displays/display3.html" class="display-btn" target="_blank">
-          <svg class="doodle" viewBox="0 0 80 80">
-            <circle cx="25" cy="25" r="8" />
-            <circle cx="55" cy="20" r="6" />
-            <circle cx="40" cy="45" r="7" />
-            <circle cx="60" cy="50" r="5" />
-            <circle cx="20" cy="55" r="6" />
-            <path d="M33 25 Q38 20 49 20" />
-            <path d="M31 32 Q35 38 33 45" />
-            <path d="M47 45 Q52 47 55 50" />
-            <path d="M33 52 Q28 48 25 42" />
-          </svg>
-          <div class="display-btn-title">Map</div>
-          <div class="display-btn-desc">Interactive floating cards that can be dragged and arranged</div>
-        </a>
-
-        <a href="../displays/display4.html" class="display-btn" target="_blank">
-          <svg class="doodle" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="6" fill="currentColor" />
-            <circle cx="40" cy="40" r="15" fill="none" />
-            <circle cx="40" cy="40" r="25" fill="none" />
-            <circle cx="40" cy="40" r="35" fill="none" />
-            <circle cx="55" cy="40" r="3" fill="currentColor" />
-            <circle cx="65" cy="40" r="2" fill="currentColor" />
-            <circle cx="25" cy="40" r="2" fill="currentColor" />
-            <path d="M40 34 L42 38 L40 42 L38 38 Z" fill="currentColor" />
-          </svg>
-          <div class="display-btn-title">Cosmic</div>
-          <div class="display-btn-desc">3D galaxy with student photos as planets orbiting the question</div>
-        </a>
-
+      </div>
+      <div class="debug-content" id="debugContent">
+        Debug information will appear here after loading data
       </div>
     </div>
 
@@ -668,10 +550,10 @@
         <span>Refresh Data</span>
       </button>
       
-      <a href="../displays/" class="footer-btn">
-        <i class="fas fa-tv"></i>
-        <span>Display Hub</span>
-      </a>
+      <button class="footer-btn debug" onclick="toggleDebug()" id="debugBtn">
+        <i class="fas fa-bug"></i>
+        <span>Debug</span>
+      </button>
       
       <a href="../" class="footer-btn">
         <i class="fas fa-home"></i>
@@ -685,51 +567,94 @@
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
+    let debugMode = false;
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
 
     // Load data from localStorage
     function loadData() {
       console.log('🔄 Loading data from localStorage...');
       
-      // Load questions
-      try {
-        const storedQuestions = localStorage.getItem('alm_questions');
-        if (storedQuestions) {
-          allQuestions = JSON.parse(storedQuestions);
-          console.log(`✅ Loaded ${allQuestions.length} questions`);
-        } else {
-          allQuestions = [];
-          console.log('⚠️ No questions found in localStorage');
+      // Load questions from multiple possible keys
+      const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
+      for (const key of questionKeys) {
+        try {
+          const storedQuestions = localStorage.getItem(key);
+          if (storedQuestions) {
+            const parsed = JSON.parse(storedQuestions);
+            
+            if (Array.isArray(parsed)) {
+              allQuestions = parsed;
+              console.log(`✅ Loaded ${allQuestions.length} questions from ${key}`);
+              break;
+            } else if (typeof parsed === 'object' && parsed.text) {
+              // Handle single question object
+              allQuestions = [parsed];
+              console.log(`✅ Loaded single question from ${key}`);
+              break;
+            }
+          }
+        } catch (error) {
+          console.error(`❌ Error loading questions from ${key}:`, error);
         }
-      } catch (error) {
-        console.error('❌ Error loading questions:', error);
-        allQuestions = [];
       }
 
-      // Load responses
-      try {
-        const storedResponses = localStorage.getItem('alm_student_responses');
-        if (storedResponses) {
-          allResponses = JSON.parse(storedResponses);
-          console.log(`✅ Loaded ${allResponses.length} responses`);
-        } else {
-          allResponses = [];
-          console.log('⚠️ No responses found in localStorage');
+      // Load responses from multiple possible keys
+      const responseKeys = [
+        'alm_student_responses', 
+        'intuity_responses', 
+        'student_responses', 
+        'intuity_student_data'
+      ];
+      
+      allResponses = [];
+      
+      for (const key of responseKeys) {
+        try {
+          const storedResponses = localStorage.getItem(key);
+          if (storedResponses) {
+            const parsed = JSON.parse(storedResponses);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              // Add responses from this key
+              allResponses = allResponses.concat(parsed);
+              console.log(`✅ Loaded ${parsed.length} responses from ${key}`);
+            }
+          }
+        } catch (error) {
+          console.error(`❌ Error loading responses from ${key}:`, error);
         }
-      } catch (error) {
-        console.error('❌ Error loading responses:', error);
-        allResponses = [];
       }
 
-      // Load current question
-      try {
-        const currentQuestion = localStorage.getItem('current_question');
-        if (currentQuestion) {
-          const parsed = JSON.parse(currentQuestion);
-          console.log('✅ Current question loaded:', parsed.text);
+      // Also check for individual response keys
+      console.log('🔍 Checking for individual response keys...');
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('response_')) {
+          try {
+            const response = JSON.parse(localStorage.getItem(key));
+            allResponses.push(response);
+          } catch (error) {
+            console.error(`❌ Error parsing response from ${key}:`, error);
+          }
         }
-      } catch (error) {
-        console.error('❌ Error loading current question:', error);
       }
+      
+      console.log(`✅ Total responses loaded: ${allResponses.length}`);
 
       updateUI();
     }
@@ -744,7 +669,7 @@
       updateResponsesDisplay();
     }
 
-    // Update status numbers - SIMPLIFIED
+    // Update status numbers
     function updateStatusNumbers() {
       const totalResponses = allResponses.length;
       document.getElementById('totalResponses').textContent = totalResponses;
@@ -766,7 +691,8 @@
       allQuestions.forEach((question, index) => {
         const option = document.createElement('option');
         option.value = question.id || index;
-        option.textContent = `Question ${index + 1}: ${question.text}`;
+        option.textContent = `Question ${index + 1}: ${question.text.substring(0, 60)}${question.text.length > 60 ? '...' : ''}`;
+        option.setAttribute('data-full-text', question.text);
         selector.appendChild(option);
       });
 
@@ -793,7 +719,7 @@
       textElement.textContent = currentSelectedQuestion.text;
     }
 
-    // Update responses display
+    // Update responses display - FIXED VERSION
     function updateResponsesDisplay() {
       const responsesBox = document.getElementById('responsesBox');
       const responsesList = document.getElementById('responsesList');
@@ -804,23 +730,30 @@
         return;
       }
 
-   // Updated filtering logic - should replace the current filter
-const questionResponses = allResponses.filter(response => {
-  return (
-    // Match by numeric ID
-    response.questionId === currentSelectedQuestion.id ||
-    // Match by question text
-    response.questionId === currentSelectedQuestion.text ||
-    // Match question text to response's questionText field
-    response.questionText === currentSelectedQuestion.text ||
-    // Handle cases where questionId might be stored as string
-    response.questionId == currentSelectedQuestion.id || // Loose equality
-    // Fallback for legacy data
-    (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0)
-  );
-});
+      // Filter responses for current question - FIXED LOGIC
+      const questionResponses = allResponses.filter(response => {
+        // Multiple ways to match responses to questions
+        return (
+          // Match by numeric ID (exact match)
+          response.questionId === currentSelectedQuestion.id ||
+          // Match by question text (exact match)
+          response.questionId === currentSelectedQuestion.text ||
+          // Match question text to response's questionText field
+          response.questionText === currentSelectedQuestion.text ||
+          // Handle cases where questionId might be stored as string
+          response.questionId == currentSelectedQuestion.id || // Loose equality
+          // Handle cases where questionId is stored as text that matches the ID
+          (currentSelectedQuestion.id && response.questionId === currentSelectedQuestion.id.toString()) ||
+          // Fallback for legacy data
+          (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0)
+        );
+      });
 
       console.log(`📊 Found ${questionResponses.length} responses for current question`);
+
+      if (debugMode) {
+        updateDebugInfo(questionResponses);
+      }
 
       responsesBox.style.display = 'block';
       responseCount.textContent = questionResponses.length;
@@ -857,10 +790,53 @@ const questionResponses = allResponses.filter(response => {
       `).join('');
     }
 
+    // Update debug information
+    function updateDebugInfo(questionResponses) {
+      const debugContent = document.getElementById('debugContent');
+      
+      let debugHTML = `
+        <div class="debug-item"><strong>Selected Question:</strong> ${JSON.stringify(currentSelectedQuestion, null, 2)}</div>
+        <div class="debug-item"><strong>Total Responses Found:</strong> ${questionResponses.length}</div>
+        <div class="debug-item"><strong>All Questions:</strong> ${allQuestions.length}</div>
+        <div class="debug-item"><strong>All Responses:</strong> ${allResponses.length}</div>
+        <div class="debug-item"><strong>Matching Responses:</strong></div>
+      `;
+      
+      questionResponses.forEach((response, index) => {
+        debugHTML += `
+          <div class="debug-item">
+            <strong>Response ${index + 1}:</strong><br>
+            Student: ${response.studentName || 'Unknown'}<br>
+            Question ID in response: ${response.questionId || 'None'}<br>
+            Question Text in response: ${response.questionText || 'None'}<br>
+            Matching Method: ${getMatchingMethod(response)}
+          </div>
+        `;
+      });
+      
+      // Add info about all responses for debugging
+      debugHTML += `<div class="debug-item"><strong>All Response IDs:</strong> ${allResponses.map(r => r.questionId).join(', ')}</div>`;
+      
+      debugContent.innerHTML = debugHTML;
+    }
+
+    // Determine how a response matches the current question
+    function getMatchingMethod(response) {
+      if (response.questionId === currentSelectedQuestion.id) return "Exact ID match";
+      if (response.questionId === currentSelectedQuestion.text) return "Question text as ID match";
+      if (response.questionText === currentSelectedQuestion.text) return "Question text match";
+      if (response.questionId == currentSelectedQuestion.id) return "Loose ID match";
+      if (currentSelectedQuestion.id && response.questionId === currentSelectedQuestion.id.toString()) return "String ID match";
+      if (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0) return "Legacy fallback match";
+      return "Unknown match method";
+    }
+
     // Handle question selection change
     function handleQuestionChange() {
       const selector = document.getElementById('questionSelector');
       const selectedValue = selector.value;
+      const selectedIndex = selector.selectedIndex;
+      const selectedOption = selector.options[selectedIndex];
       
       if (!selectedValue) {
         currentSelectedQuestion = null;
@@ -874,6 +850,14 @@ const questionResponses = allResponses.filter(response => {
         q.id == selectedValue || 
         allQuestions.indexOf(q) == selectedValue
       );
+
+      // If not found by ID, try to find by index
+      if (!currentSelectedQuestion && selectedOption && selectedOption.getAttribute('data-full-text')) {
+        currentSelectedQuestion = {
+          id: selectedValue,
+          text: selectedOption.getAttribute('data-full-text')
+        };
+      }
 
       console.log('📋 Selected question:', currentSelectedQuestion);
       
@@ -892,52 +876,31 @@ const questionResponses = allResponses.filter(response => {
         loadData();
         refreshBtn.innerHTML = originalContent;
         console.log('✅ Data refreshed');
-        
-        // Show notification
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: rgba(45, 212, 191, 0.1);
-          border: 1px solid var(--accent-teal);
-          color: var(--accent-teal);
-          padding: 1rem 1.5rem;
-          border-radius: 8px;
-          backdrop-filter: blur(20px);
-          z-index: 1000;
-          transition: all 0.3s ease;
-        `;
-        notification.innerHTML = '<i class="fas fa-check"></i> Data refreshed successfully!';
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-          notification.style.opacity = '0';
-          setTimeout(() => notification.remove(), 300);
-        }, 2000);
+        showNotification('Data refreshed successfully!', 'success');
       }, 1000);
     }
 
-    function showCurrentView() {
-      alert('You are currently viewing the Analytics Dashboard with real-time data!');
-    }
-
-    // Auto-refresh every 30 seconds
-    function startAutoRefresh() {
-      setInterval(() => {
-        const oldResponseCount = allResponses.length;
-        loadData();
-        
-        if (allResponses.length > oldResponseCount) {
-          console.log(`🔔 ${allResponses.length - oldResponseCount} new responses detected`);
-        }
-      }, 30000);
+    // Toggle debug panel
+    function toggleDebug() {
+      debugMode = !debugMode;
+      const debugPanel = document.getElementById('debugPanel');
+      const debugBtn = document.getElementById('debugBtn');
+      
+      if (debugMode) {
+        debugPanel.style.display = 'block';
+        debugBtn.innerHTML = '<i class="fas fa-bug"></i><span>Hide Debug</span>';
+        updateResponsesDisplay(); // Refresh to show debug info
+        showNotification('Debug mode enabled', 'info');
+      } else {
+        debugPanel.style.display = 'none';
+        debugBtn.innerHTML = '<i class="fas fa-bug"></i><span>Debug</span>';
+        showNotification('Debug mode disabled', 'info');
+      }
     }
 
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics Dashboard - CLEAN VERSION LOADED');
-      console.log('📊 Now showing only: Student Response Count');
+      console.log('🚀 INTUITY Analytics Dashboard - FIXED VERSION LOADED');
       
       // Load initial data
       loadData();
@@ -945,9 +908,6 @@ const questionResponses = allResponses.filter(response => {
       // Set up event listeners
       const questionSelector = document.getElementById('questionSelector');
       questionSelector.addEventListener('change', handleQuestionChange);
-      
-      // Start auto-refresh
-      startAutoRefresh();
       
       console.log('✅ Analytics dashboard fully initialized and connected!');
     });
