@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher´s Question Quiz</title>
+  <title>INTUITY - Teacher Quiz Creator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
@@ -23,6 +23,13 @@
       --success: #10b981;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
+      
+      /* Enhanced dimensions */
+      --card-width: 340px;
+      --card-height: 252px;
+      --card-spacing: 36px;
+      --card-min-scale: 0.6;
+      --card-max-scale: 1.5;
       
       /* Animation timings */
       --transition-fast: 0.2s;
@@ -52,8 +59,7 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
-      touch-action: manipulation;
-      padding-bottom: 100px;
+      touch-action: pan-y;
     }
     
     /* Enhanced Constellation Background */
@@ -93,8 +99,8 @@
       100% { opacity: 0.9; transform: scale(1.2); }
     }
     
-    /* Simple Header */
-    .simple-header {
+    /* Wizard Header */
+    .wizard-header {
       position: fixed;
       top: 0;
       left: 0;
@@ -104,20 +110,28 @@
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--card-border);
-      padding: 1.5rem;
+      padding: 1rem;
       text-align: center;
     }
     
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: 700;
       background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.2rem;
       position: relative;
+    }
+    
+    .quiz-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.3rem;
     }
     
     .brand-name::after {
@@ -134,48 +148,180 @@
       50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
     }
     
-    .author-name {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      font-weight: 400;
-      margin-bottom: 0.5rem;
-      font-style: italic;
-    }
-    
-    .simple-subtitle {
+    .author-credit {
       color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 400;
+      margin-bottom: 0;
+    }
+    
+    /* Question Counter - Updated for cards */
+    .question-counter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+    
+    .counter-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .counter-input {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      color: var(--text-primary);
       font-size: 0.9rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-weight: 600;
+      width: 45px;
+      text-align: center;
+      outline: none;
     }
     
-    /* Main Container - Centered Single Card */
-    .main-container {
+    .counter-input:focus {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+    }
+    
+    .counter-btn {
+      background: var(--accent-teal);
+      border: none;
+      border-radius: 4px;
+      color: var(--bg-primary);
+      width: 26px;
+      height: 26px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .counter-btn:hover {
+      transform: scale(1.1);
+      background: var(--accent-gold);
+    }
+    
+    /* Touch Scroll Indicator */
+    .scroll-indicator {
       position: fixed;
+      right: 20px;
       top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 700px;
-      z-index: 10;
+      transform: translateY(-50%);
+      z-index: 999;
+      opacity: 0.6;
+      transition: opacity var(--transition-fast);
     }
     
-    /* The One Question Creator Card */
-    .question-card {
+    .scroll-indicator.visible {
+      opacity: 1;
+    }
+    
+    .scroll-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .scroll-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+    
+    .scroll-dot.active {
+      background: var(--accent-teal);
+      transform: scale(1.3);
+    }
+    
+    /* Vertical Carousel Container */
+    .carousel-container {
+      position: fixed;
+      top: 170px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: var(--card-width);
+      height: calc(100vh - 250px);
+      overflow: hidden;
+      z-index: 10;
+      touch-action: pan-y;
+    }
+    
+    .carousel-track {
+      position: relative;
+      height: 100%;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+    
+    .carousel-track.dragging {
+      transition: none;
+    }
+    
+    /* Enhanced Interactive Cards */
+    .interactive-card {
+      position: absolute;
+      width: var(--card-width);
+      height: var(--card-height);
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border: 2px solid var(--card-border);
-      border-radius: 24px;
-      padding: 3rem;
-      box-shadow: var(--shadow-active);
-      position: relative;
-      overflow: hidden;
+      border-radius: 20px;
+      padding: 1.5rem;
+      cursor: pointer;
       transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transform-origin: center;
+      scale: 1;
+      touch-action: manipulation;
+      will-change: transform, box-shadow;
     }
     
-    .question-card::before {
+    .interactive-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-teal);
+    }
+    
+    .interactive-card.focused {
+      border-color: var(--accent-gold);
+      box-shadow: var(--shadow-active);
+      scale: var(--card-max-scale);
+      z-index: 100;
+    }
+    
+    .interactive-card.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--success);
+    }
+    
+    /* Enhanced Touch Feedback */
+    .interactive-card.touch-active {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--shadow-active);
+      border-color: var(--accent-gold);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .interactive-card.touch-feedback {
+      animation: touchPulse 0.3s ease-out;
+    }
+    
+    @keyframes touchPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    
+    .interactive-card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -183,542 +329,199 @@
       right: 0;
       height: 4px;
       background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
-      border-radius: 24px 24px 0 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition-medium) ease;
     }
     
-    /* Question Label */
-    .question-label {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 600;
+    .interactive-card:hover::before,
+    .interactive-card.focused::before {
+      transform: scaleX(1);
+    }
+    
+    /* Card Content Layout */
+    .card-line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .card-line:last-child {
+      margin-bottom: 0;
+    }
+    
+    .teacher-label {
       color: var(--text-secondary);
-      text-align: center;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      min-width: 120px;
     }
     
-    /* Question Input */
+    .question-counter-display {
+      background: var(--accent-teal);
+      color: var(--bg-primary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    
     .question-input {
-      width: 100%;
+      flex: 1;
       background: rgba(255, 255, 255, 0.08);
-      border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
       color: var(--text-primary);
-      font-size: 1.1rem;
-      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-family: inherit;
       outline: none;
       transition: all var(--transition-fast) ease;
-      resize: vertical;
-      min-height: 120px;
+      resize: none;
+      min-height: 80px;
     }
     
     .question-input::placeholder {
       color: var(--text-muted);
-      font-style: italic;
     }
     
     .question-input:focus {
       background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
-      transform: translateY(-2px);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.2);
     }
     
-    /* Minimalist Footer */
-    .simple-footer {
+    .save-btn {
+      background: var(--success);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .save-btn:hover {
+      transform: scale(1.05);
+      background: var(--accent-gold);
+    }
+    
+    .questions-dropdown {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition-fast) ease;
+      cursor: pointer;
+    }
+    
+    .questions-dropdown:focus {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+    }
+    
+    /* Bottom Navigation */
+    .wizard-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(26, 35, 50, 0.9);
+      background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
       padding: 1rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
       z-index: 1000;
     }
     
-    .footer-content {
-      max-width: 700px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .footer-btn {
+    .nav-icon-btn {
       background: var(--card-bg);
+      backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.75rem;
       color: var(--text-primary);
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      min-width: 80px;
-      justify-content: center;
-      position: relative;
-    }
-    
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
-    }
-
-    .footer-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      color: var(--bg-primary);
-      font-weight: 600;
-    }
-
-    .footer-btn.primary:hover {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      transform: translateY(-2px) scale(1.05);
-    }
-
-    .footer-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    .footer-btn i {
-      font-size: 0.9rem;
-    }
-
-    /* Photo Capture Button - Subtle styling */
-    .photo-btn {
-      position: relative;
-    }
-
-    .photo-btn::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 120%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-secondary);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.7rem;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--transition-fast);
-      z-index: 1001;
-    }
-
-    .photo-btn:hover::after {
-      opacity: 1;
-    }
-
-    /* Photo count indicator */
-    .photo-count {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--accent-teal);
-      color: var(--bg-primary);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.2rem 0.4rem;
-      border-radius: 50px;
-      min-width: 16px;
-      text-align: center;
-      display: none;
-    }
-
-    .photo-count.show {
-      display: block;
-    }
-
-    /* Full-Screen Photo Capture Modal */
-    .photo-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: var(--bg-primary);
-      z-index: 2000;
-      display: none;
-      flex-direction: column;
-    }
-
-    .photo-modal.active {
-      display: flex;
-    }
-
-    /* Modal Header */
-    .modal-header {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-bottom: 2px solid var(--accent-teal);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .modal-close {
-      background: none;
-      border: 2px solid var(--accent-teal);
-      color: var(--accent-teal);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: all var(--transition-fast);
-    }
-
-    .modal-close:hover {
-      background: var(--accent-teal);
-      color: white;
-      transform: rotate(90deg) scale(1.1);
-    }
-
-    /* Camera Container */
-    .camera-container {
-      flex: 1;
-      display: flex;
-      position: relative;
-      background: #000;
-    }
-
-    .camera-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .camera-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .camera-circle {
-      width: 200px;
-      height: 200px;
-      border: 3px solid var(--accent-teal);
-      border-radius: 50%;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-      animation: pulse 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulse {
-      0% { border-color: var(--accent-teal); }
-      100% { border-color: var(--accent-gold); }
-    }
-
-    /* Camera Controls */
-    .camera-controls {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-top: 2px solid var(--accent-teal);
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .current-student {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      backdrop-filter: var(--blur);
-      flex: 1;
-      max-width: 300px;
-    }
-
-    .student-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.75rem;
-      color: var(--text-primary);
-      font-size: 1rem;
-      outline: none;
-      transition: all var(--transition-fast);
-    }
-
-    .student-input:focus {
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
-    }
-
-    .capture-btn {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      color: var(--bg-primary);
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      transition: all var(--transition-fast);
-      box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
-    }
-
-    .capture-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
-    }
-
-    .capture-btn:active {
-      transform: scale(1.05);
-    }
-
-    .capture-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Student Gallery */
-    .student-gallery {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem;
-      backdrop-filter: var(--blur);
-      max-width: 400px;
-      max-height: 120px;
-      overflow-x: auto;
-      overflow-y: hidden;
-    }
-
-    .gallery-scroll {
-      display: flex;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-
-    .student-photo {
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-teal);
-      box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
-      flex-shrink: 0;
+      font-size: 1.2rem;
       cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-
-    .student-photo:hover {
-      transform: scale(1.1);
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 15px rgba(244, 162, 97, 0.5);
-    }
-
-    .gallery-empty {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-align: center;
-      padding: 1rem;
-    }
-
-    /* Success notification */
-    .success-notification {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(16, 185, 129, 0.15);
-      border: 2px solid var(--success);
-      border-radius: 16px;
-      padding: 2rem;
-      color: var(--success);
-      font-size: 1.1rem;
-      font-weight: 600;
-      text-align: center;
-      z-index: 2000;
-      display: none;
-      backdrop-filter: var(--blur);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
-    
-    /* Share notification */
-    .share-notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(45, 212, 191, 0.15);
-      border: 2px solid var(--accent-teal);
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      color: var(--accent-teal);
-      font-weight: 600;
-      z-index: 2000;
-      display: none;
-      backdrop-filter: var(--blur);
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(100%); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    
-    /* Loading Animation */
-    .loading {
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* QR Modal */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      backdrop-filter: var(--blur);
-      text-align: center;
-      max-width: 400px;
-      margin: 1rem;
-    }
-
-    .modal h3 {
-      margin-bottom: 1.5rem;
-      color: var(--text-primary);
-    }
-
-    .qr-display {
-      width: 200px;
-      height: 200px;
-      margin: 1rem auto;
-      background: white;
-      border-radius: 1rem;
+      transition: all var(--transition-fast) ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #666;
+      touch-action: manipulation;
     }
-
-    .modal p {
-      color: var(--text-secondary);
-      margin-top: 1rem;
+    
+    .nav-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-teal);
+      transform: translateY(-3px) scale(1.05);
     }
-
-    .modal button {
-      margin-top: 1.5rem;
-      background: var(--accent-teal);
+    
+    .nav-icon-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
       border: none;
-      border-radius: 8px;
-      padding: 0.75rem 1.5rem;
       color: var(--bg-primary);
-      font-weight: 600;
-      cursor: pointer;
+    }
+    
+    .nav-icon-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-3px) scale(1.1);
+    }
+    
+    .nav-icon-btn.danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: none;
+      color: white;
+    }
+    
+    .nav-icon-btn.danger:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
     }
     
     /* Mobile Optimizations */
-    @media (max-width: 768px) {
-      .main-container {
-        width: 95%;
-        top: 45%;
+    @media (max-width: 400px) {
+      :root {
+        --card-width: 95vw;
       }
       
-      .question-card {
-        padding: 2rem;
+      .carousel-container {
+        width: 95vw;
       }
       
       .brand-name {
-        font-size: 2rem;
-      }
-      
-      .question-input {
-        min-height: 100px;
-        padding: 1.25rem;
-        font-size: 1rem;
-      }
-      
-      .footer-content {
-        gap: 1rem;
-      }
-      
-      .footer-btn {
-        min-width: 70px;
-        padding: 0.6rem;
-      }
-
-      .camera-controls {
-        padding: 1rem;
-        gap: 1rem;
-      }
-
-      .current-student {
-        max-width: none;
-      }
-
-      .capture-btn {
-        width: 60px;
-        height: 60px;
         font-size: 1.5rem;
+      }
+      
+      .scroll-indicator {
+        right: 10px;
+      }
+    }
+    
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .carousel-track {
+        transition: none;
+      }
+      
+      .interactive-card {
+        transition: none;
       }
     }
   </style>
@@ -727,152 +530,55 @@
   <!-- Enhanced Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
-  <!-- Simple Header -->
-  <header class="simple-header">
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" id="scrollIndicator">
+    <div class="scroll-dots" id="scrollDots"></div>
+  </div>
+  
+  <!-- Wizard Header -->
+  <header class="wizard-header">
     <div class="brand-name">INTUITY</div>
-    <div class="author-name">by Majid Nashtai</div>
-    <div class="simple-subtitle">TEACHER QUESTION CREATOR</div>
+    <div class="quiz-title">QUIZ</div>
+    <div class="author-credit">by Majid Nashtai</div>
   </header>
   
-  <!-- Main Container -->
-  <div class="main-container">
-    <div class="question-card" id="questionCard">
-      
-      <div class="question-label">Create Your Question</div>
-      
-      <textarea 
-        class="question-input" 
-        id="questionInput"
-        placeholder="What would you like to ask your students? Be specific and thought-provoking..."
-        rows="4"
-      ></textarea>
-      
+  <!-- Vertical Carousel Container -->
+  <div class="carousel-container" id="carouselContainer">
+    <div class="carousel-track" id="carouselTrack">
+      <!-- Cards will be populated here -->
     </div>
   </div>
-
-  <!-- Minimalist Footer with Photo Button -->
-  <div class="simple-footer">
-    <div class="footer-content">
-      <button class="footer-btn" id="clearBtn">
-        <i class="fas fa-eraser"></i>
-        <span>Clear</span>
-      </button>
-      
-      <button class="footer-btn" id="editBtn">
-        <i class="fas fa-edit"></i>
-        <span>Edit</span>
-      </button>
-
-      <button class="footer-btn primary" id="publishBtn" disabled>
-        <i class="fas fa-paper-plane"></i>
-        <span>Publish</span>
-      </button>
-
-      <button class="footer-btn" id="shareLinkBtn">
-        <i class="fas fa-share-alt"></i>
-        <span>Share</span>
-      </button>
-
-      <!-- NEW: Photo Capture Button -->
-      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Capture Student Photos">
-        <i class="fas fa-camera"></i>
-        <span>Photos</span>
-        <div class="photo-count" id="photoCount">0</div>
-      </button>
-      
-      <button class="footer-btn" id="qrBtn">
-        <i class="fas fa-qrcode"></i>
-        <span>QR Code</span>
-      </button>
-      
-      <button class="footer-btn" id="analyticsBtn">
-        <i class="fas fa-chart-bar"></i>
-        <span>Analytics</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Full-Screen Photo Capture Modal -->
-  <div class="photo-modal" id="photoModal">
-    <div class="modal-header">
-      <div class="modal-title">📸 INTUITY Photo Capture</div>
-      <button class="modal-close" id="closePhotoModal">&times;</button>
-    </div>
-
-    <div class="camera-container">
-      <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
-      <canvas id="photoCanvas" style="display: none;"></canvas>
-      
-      <div class="camera-overlay">
-        <div class="camera-circle"></div>
-      </div>
-    </div>
-
-    <div class="camera-controls">
-      <div class="current-student">
-        <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Student Name:</label>
-        <input 
-          type="text" 
-          class="student-input" 
-          id="currentStudentName" 
-          placeholder="Enter student's name..."
-          maxlength="50"
-        />
-      </div>
-
-      <button class="capture-btn" id="captureBtn" disabled>
-        <i class="fas fa-camera"></i>
-      </button>
-
-      <div class="student-gallery">
-        <div class="gallery-scroll" id="galleryScroll">
-          <div class="gallery-empty">No photos captured yet</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Success Notification -->
-  <div class="success-notification" id="successNotification">
-    <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-    Question published successfully!<br>
-    Students can now access and respond to your question.
-  </div>
-
-  <!-- Share Notification -->
-  <div class="share-notification" id="shareNotification">
-    <i class="fas fa-check" style="margin-right: 0.5rem;"></i>
-    Link copied to clipboard!
-  </div>
-
-  <!-- QR Modal -->
-  <div id="qrModal" class="modal">
-    <div class="modal-content">
-      <h3>Student Access QR Code</h3>
-      <div id="qrDisplay" class="qr-display">
-        <div>Generating...</div>
-      </div>
-      <p>Students scan this to access your question</p>
-      <button onclick="closeQRModal()">Close</button>
-    </div>
-  </div>
+  
+  <!-- Bottom Navigation -->
+  <nav class="wizard-nav">
+    <button class="nav-icon-btn" id="qrBtn" title="Generate QR Code">
+      <i class="fas fa-qrcode"></i>
+    </button>
+    <button class="nav-icon-btn primary" id="submitBtn" title="Submit Quiz">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+    <button class="nav-icon-btn danger" id="newBtn" title="New Quiz">
+      <i class="fas fa-plus"></i>
+    </button>
+  </nav>
 
   <script>
-    let currentQuestion = null;
-    let studentPhotos = []; // Array to store captured photos
-    let cameraStream = null;
+    let questionData = [];
+    let savedQuestions = [];
+    let focusedCard = null;
+    let currentScrollPosition = 0;
+    let cardHeight = 252;
+    let cardSpacing = 36;
+    let cardStep = cardHeight + cardSpacing;
 
-    // Configuration object for easy path management
-    const CONFIG = {
-      studentPath: '../../students/answers/',
-      analyticsPath: '../../visualisation/',
-      baseURL: window.location.origin + window.location.pathname.replace('/teachers/questions/index.html', '/')
-    };
+    // Touch/scroll control variables
+    let track = null;
+    let container = null;
 
     // Enhanced constellation
     function createConstellation() {
       const constellation = document.getElementById('constellation');
-      const starCount = 60;
+      const starCount = 80;
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -880,436 +586,555 @@
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
         star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (3 + Math.random() * 4) + 's';
+        star.style.animationDuration = (2 + Math.random() * 4) + 's';
         constellation.appendChild(star);
       }
     }
 
-    // Question input handler
-    function handleQuestionInput() {
-      const input = document.getElementById('questionInput');
-      const publishBtn = document.getElementById('publishBtn');
-
-      const text = input.value.trim();
-
-      if (text.length >= 10) {
-        publishBtn.disabled = false;
-      } else {
-        publishBtn.disabled = true;
-      }
-
-      if (text) {
-        localStorage.setItem('question_draft', text);
-      }
+    // Create scroll indicator dots
+    function createScrollIndicator() {
+      const scrollDots = document.getElementById('scrollDots');
+      scrollDots.innerHTML = '';
+      
+      questionData.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'scroll-dot';
+        if (index === 0) dot.classList.add('active');
+        scrollDots.appendChild(dot);
+      });
     }
 
-    // Load any existing draft
-    function loadDraft() {
-      const draft = localStorage.getItem('question_draft');
-      if (draft) {
-        document.getElementById('questionInput').value = draft;
-        handleQuestionInput();
-      }
-
-      // Load existing photos
-      const savedPhotos = localStorage.getItem('student_photos');
-      if (savedPhotos) {
-        try {
-          studentPhotos = JSON.parse(savedPhotos);
-          updatePhotoCount();
-          updateGallery();
-        } catch (e) {
-          console.error('Error loading photos:', e);
-        }
-      }
+    // Update scroll indicator
+    function updateScrollIndicator() {
+      const dots = document.querySelectorAll('.scroll-dot');
+      const currentIndex = Math.round(Math.abs(currentScrollPosition) / cardStep);
+      
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
     }
 
-    // Photo capture functionality
-    async function startCamera() {
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
-            facingMode: 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          } 
+    // Generate question data array
+    function generateQuestionData(count) {
+      questionData = [];
+      for (let i = 1; i <= count; i++) {
+        questionData.push({
+          id: i,
+          teacher: '',
+          question: '',
+          saved: false
         });
+      }
+    }
+
+    // Create vertical carousel cards
+    function createCarouselCards() {
+      track = document.getElementById('carouselTrack');
+      container = document.getElementById('carouselContainer');
+      track.innerHTML = '';
+      
+      // Create cards with proper spacing
+      questionData.forEach((question, index) => {
+        const card = document.createElement('div');
+        card.className = `interactive-card ${question.saved ? 'completed' : ''}`;
+        card.id = `card-${question.id}`;
         
-        const video = document.getElementById('cameraVideo');
-        video.srcObject = cameraStream;
+        // Position cards vertically with spacing
+        const yPosition = index * cardStep;
+        card.style.top = yPosition + 'px';
+        card.style.left = '0px';
         
-        // Enable capture button when video is ready
-        video.addEventListener('loadedmetadata', () => {
-          document.getElementById('captureBtn').disabled = false;
-        });
-        
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        alert('Could not access camera. Please check permissions.');
-      }
-    }
-
-    function stopCamera() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-      }
-    }
-
-    function openPhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.add('active');
-      startCamera();
-    }
-
-    function closePhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.remove('active');
-      stopCamera();
-      document.getElementById('currentStudentName').value = '';
-      document.getElementById('captureBtn').disabled = true;
-    }
-
-    function capturePhoto() {
-      const video = document.getElementById('cameraVideo');
-      const canvas = document.getElementById('photoCanvas');
-      const studentName = document.getElementById('currentStudentName').value.trim();
-      
-      if (!studentName) {
-        alert('Please enter the student\'s name before capturing.');
-        document.getElementById('currentStudentName').focus();
-        return;
-      }
-      
-      // Set canvas dimensions to match video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      // Draw video frame to canvas
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0);
-      
-      // Convert to base64
-      const photoDataURL = canvas.toDataURL('image/jpeg', 0.8);
-      
-      // Create photo object
-      const photoData = {
-        id: Date.now(),
-        name: studentName,
-        photo: photoDataURL,
-        timestamp: new Date().toLocaleString()
-      };
-      
-      // Add to photos array
-      studentPhotos.push(photoData);
-      
-      // Save to localStorage
-      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
-      
-      // Update UI
-      updatePhotoCount();
-      updateGallery();
-      
-      // Clear input for next student
-      document.getElementById('currentStudentName').value = '';
-      document.getElementById('currentStudentName').focus();
-      
-      // Success feedback
-      showPhotoSuccess(studentName);
-      
-      console.log(`Photo captured for ${studentName}`);
-    }
-
-    function updatePhotoCount() {
-      const countElement = document.getElementById('photoCount');
-      const count = studentPhotos.length;
-      
-      countElement.textContent = count;
-      countElement.classList.toggle('show', count > 0);
-    }
-
-    function updateGallery() {
-      const galleryScroll = document.getElementById('galleryScroll');
-      
-      if (studentPhotos.length === 0) {
-        galleryScroll.innerHTML = '<div class="gallery-empty">No photos captured yet</div>';
-        return;
-      }
-      
-      galleryScroll.innerHTML = studentPhotos.map(photo => `
-        <img 
-          src="${photo.photo}" 
-          alt="${photo.name}"
-          class="student-photo"
-          title="${photo.name} - ${photo.timestamp}"
-          onclick="removePhoto(${photo.id})"
-        />
-      `).join('');
-    }
-
-    function removePhoto(photoId) {
-      if (confirm('Remove this photo?')) {
-        studentPhotos = studentPhotos.filter(p => p.id !== photoId);
-        localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
-        updatePhotoCount();
-        updateGallery();
-      }
-    }
-
-    function showPhotoSuccess(studentName) {
-      // Create temporary success message
-      const successDiv = document.createElement('div');
-      successDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(16, 185, 129, 0.15);
-        border: 2px solid var(--success);
-        border-radius: 12px;
-        padding: 1rem 2rem;
-        color: var(--success);
-        font-weight: 600;
-        z-index: 2001;
-        backdrop-filter: blur(20px);
-        animation: fadeInOut 3s ease-in-out;
-      `;
-      successDiv.innerHTML = `<i class="fas fa-camera"></i> Photo captured for ${studentName}!`;
-      
-      document.body.appendChild(successDiv);
-      
-      setTimeout(() => {
-        document.body.removeChild(successDiv);
-      }, 3000);
-    }
-
-    // Publish question function
-    function publishQuestion() {
-      const questionText = document.getElementById('questionInput').value.trim();
-      
-      if (!questionText || questionText.length < 10) {
-        alert('Please write a more detailed question before publishing.');
-        return;
-      }
-
-      const publishBtn = document.getElementById('publishBtn');
-      const originalContent = publishBtn.innerHTML;
-      
-      publishBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Publishing...</span>';
-      publishBtn.disabled = true;
-
-      const question = {
-        id: Date.now(),
-        text: questionText,
-        timestamp: new Date().toISOString(),
-        createdBy: 'teacher',
-        type: 'open-ended',
-        published: true,
-        publishedAt: new Date().toISOString(),
-        hasPhotos: studentPhotos.length > 0,
-        photoCount: studentPhotos.length
-      };
-
-      setTimeout(() => {
-        try {
-          const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
-          existingQuestions.push(question);
+        card.innerHTML = `
+          <div class="card-line">
+            <div class="question-counter">
+              <span class="teacher-label">Number of questions</span>
+              <div class="counter-controls">
+                <input type="number" class="counter-input question-count-input" value="5" min="1" max="50">
+              </div>
+              <div class="question-counter-display">${question.id}</div>
+            </div>
+          </div>
           
-          localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
-          localStorage.setItem('current_question', JSON.stringify(question));
-          localStorage.setItem('intuity_questions', JSON.stringify(existingQuestions));
-
-          // Link photos to the question
-          if (studentPhotos.length > 0) {
-            const questionPhotos = {
-              questionId: question.id,
-              photos: studentPhotos
-            };
-            localStorage.setItem(`photos_${question.id}`, JSON.stringify(questionPhotos));
-          }
-
-          localStorage.removeItem('question_draft');
-          currentQuestion = question;
-
-          console.log('Question published with photos:', question);
-          showSuccessNotification();
-
-          setTimeout(() => {
-            document.getElementById('questionInput').value = '';
-            handleQuestionInput();
-          }, 2000);
-
-        } catch (error) {
-          console.error('Error publishing question:', error);
-          alert('Error publishing question. Please try again.');
-        } finally {
-          publishBtn.innerHTML = originalContent;
-          publishBtn.disabled = false;
-        }
-      }, 1500);
-    }
-
-    function showSuccessNotification() {
-      const notification = document.getElementById('successNotification');
-      notification.style.display = 'block';
+          <div class="card-line">
+            <textarea 
+              class="question-input" 
+              placeholder="Enter your question here..."
+              rows="3"
+            >${question.question}</textarea>
+            <button class="save-btn">SAVE</button>
+          </div>
+          
+          <div class="card-line">
+            <select class="questions-dropdown">
+              <option value="">Select saved question...</option>
+            </select>
+          </div>
+        `;
+        
+        setupCardInteractions(card, question);
+        track.appendChild(card);
+      });
       
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, 3000);
+      updateDropdowns();
+      setupTouchControls();
+      setupCounterControls();
     }
 
-    function showShareNotification() {
-      const notification = document.getElementById('shareNotification');
-      notification.style.display = 'block';
-      
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, 2000);
-    }
-
-    // Footer functions
-    function clearQuestion() {
-      if (confirm('Clear the current question? Any unsaved changes will be lost.')) {
-        document.getElementById('questionInput').value = '';
-        localStorage.removeItem('question_draft');
-        handleQuestionInput();
-        document.getElementById('questionInput').focus();
-      }
-    }
-
-    function editQuestion() {
-      const questionInput = document.getElementById('questionInput');
-      questionInput.focus();
-      questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
-    }
-
-    function shareStudentLink() {
-      if (!currentQuestion) {
-        alert('Please publish a question first before sharing.');
-        return;
-      }
-
-      const studentURL = CONFIG.baseURL + CONFIG.studentPath;
-      
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(studentURL).then(() => {
-          showShareNotification();
-        }).catch(() => {
-          fallbackCopyToClipboard(studentURL);
+    // Update all dropdowns with saved questions
+    function updateDropdowns() {
+      const dropdowns = document.querySelectorAll('.questions-dropdown');
+      dropdowns.forEach(dropdown => {
+        // Keep current selection
+        const currentValue = dropdown.value;
+        dropdown.innerHTML = '<option value="">Select saved question...</option>';
+        
+        savedQuestions.forEach((q, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = q.length > 50 ? q.substring(0, 50) + '...' : q;
+          dropdown.appendChild(option);
         });
-      } else {
-        fallbackCopyToClipboard(studentURL);
+        
+        // Restore selection if still valid
+        if (currentValue && savedQuestions[currentValue]) {
+          dropdown.value = currentValue;
+        }
+      });
+    }
+
+    // Enhanced touch controls
+    function setupTouchControls() {
+      let startY = 0;
+      let startScrollPosition = 0;
+      let isScrolling = false;
+      let velocityTracker = [];
+      let lastTouchTime = 0;
+      let touchStartTime = 0;
+      
+      const touchSensitivity = 1.2;
+      const momentumMultiplier = 400;
+      const frictionRate = 0.94;
+      const snapThreshold = 20;
+      
+      // Touch events
+      container.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.question-input') || 
+            e.target.closest('.questions-dropdown') ||
+            e.target.closest('.save-btn') ||
+            e.target.closest('.counter-input')) {
+          return;
+        }
+        
+        startY = e.touches[0].clientY;
+        startScrollPosition = currentScrollPosition;
+        isScrolling = true;
+        velocityTracker = [];
+        touchStartTime = Date.now();
+        lastTouchTime = touchStartTime;
+        
+        const touchedCard = e.target.closest('.interactive-card');
+        if (touchedCard && !touchedCard.classList.contains('focused')) {
+          touchedCard.classList.add('touch-active');
+        }
+        
+        track.classList.add('dragging');
+        e.preventDefault();
+      }, { passive: false });
+      
+      container.addEventListener('touchmove', (e) => {
+        if (!isScrolling) return;
+        
+        if (e.target.closest('.question-input') || 
+            e.target.closest('.questions-dropdown') ||
+            e.target.closest('.counter-input')) {
+          return;
+        }
+        
+        const currentY = e.touches[0].clientY;
+        const deltaY = (currentY - startY) * touchSensitivity;
+        const newPosition = startScrollPosition + deltaY;
+        const currentTime = Date.now();
+        
+        velocityTracker.push({ 
+          pos: deltaY, 
+          time: currentTime 
+        });
+        
+        if (velocityTracker.length > 8) {
+          velocityTracker.shift();
+        }
+        
+        setScrollPosition(newPosition);
+        lastTouchTime = currentTime;
+        e.preventDefault();
+      }, { passive: false });
+      
+      container.addEventListener('touchend', (e) => {
+        if (!isScrolling) return;
+        
+        isScrolling = false;
+        track.classList.remove('dragging');
+        
+        document.querySelectorAll('.touch-active').forEach(card => {
+          card.classList.remove('touch-active');
+        });
+        
+        const touchDuration = Date.now() - touchStartTime;
+        const touchDistance = Math.abs(currentScrollPosition - startScrollPosition);
+        
+        let velocity = 0;
+        if (velocityTracker.length >= 3) {
+          const recentData = velocityTracker.slice(-5);
+          let weightedVelocity = 0;
+          let totalWeight = 0;
+          
+          for (let i = 1; i < recentData.length; i++) {
+            const timeDelta = recentData[i].time - recentData[i-1].time;
+            const posDelta = recentData[i].pos - recentData[i-1].pos;
+            
+            if (timeDelta > 0) {
+              const weight = Math.max(1, 6 - i);
+              weightedVelocity += (posDelta / timeDelta) * weight;
+              totalWeight += weight;
+            }
+          }
+          
+          if (totalWeight > 0) {
+            velocity = weightedVelocity / totalWeight;
+          }
+        }
+        
+        if (touchDuration < 200 && touchDistance < 10) {
+          const touchedCard = e.target.closest('.interactive-card');
+          if (touchedCard) {
+            touchedCard.classList.add('touch-feedback');
+            setTimeout(() => {
+              touchedCard.classList.remove('touch-feedback');
+            }, 300);
+          }
+        }
+        
+        if (Math.abs(velocity) > 0.2) {
+          applyEnhancedMomentum(velocity);
+        } else if (Math.abs(currentScrollPosition - startScrollPosition) > snapThreshold) {
+          snapToNearestCard();
+        } else {
+          snapToNearestCard();
+        }
+        
+        e.preventDefault();
+      }, { passive: false });
+      
+      // Mouse events
+      let isMouseDown = false;
+      
+      container.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.question-input') || 
+            e.target.closest('.questions-dropdown') ||
+            e.target.closest('.save-btn') ||
+            e.target.closest('.counter-input')) {
+          return;
+        }
+        
+        startY = e.clientY;
+        startScrollPosition = currentScrollPosition;
+        isScrolling = true;
+        isMouseDown = true;
+        velocityTracker = [];
+        
+        const touchedCard = e.target.closest('.interactive-card');
+        if (touchedCard) {
+          touchedCard.classList.add('touch-active');
+        }
+        
+        track.classList.add('dragging');
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!isScrolling || !isMouseDown) return;
+        
+        const deltaY = (e.clientY - startY) * 0.8;
+        const newPosition = startScrollPosition + deltaY;
+        
+        velocityTracker.push({
+          pos: deltaY,
+          time: Date.now()
+        });
+        
+        if (velocityTracker.length > 5) {
+          velocityTracker.shift();
+        }
+        
+        setScrollPosition(newPosition);
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mouseup', (e) => {
+        if (!isScrolling) return;
+        
+        isScrolling = false;
+        isMouseDown = false;
+        track.classList.remove('dragging');
+        
+        document.querySelectorAll('.touch-active').forEach(card => {
+          card.classList.remove('touch-active');
+        });
+        
+        let velocity = 0;
+        if (velocityTracker.length >= 2) {
+          const recent = velocityTracker.slice(-3);
+          const totalTime = recent[recent.length - 1].time - recent[0].time;
+          const totalDistance = recent[recent.length - 1].pos - recent[0].pos;
+          
+          if (totalTime > 0) {
+            velocity = totalDistance / totalTime;
+          }
+        }
+        
+        if (Math.abs(velocity) > 0.3) {
+          applyEnhancedMomentum(velocity);
+        } else {
+          snapToNearestCard();
+        }
+      });
+      
+      // Wheel scrolling
+      container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        
+        const deltaY = e.deltaY * -1.2;
+        const newPosition = currentScrollPosition + deltaY;
+        setScrollPosition(newPosition);
+        
+        clearTimeout(container.wheelTimeout);
+        container.wheelTimeout = setTimeout(() => {
+          snapToNearestCard();
+        }, 100);
+      }, { passive: false });
+    }
+
+    // Set scroll position with bounds checking
+    function setScrollPosition(position) {
+      const maxScroll = -(questionData.length - 1) * cardStep;
+      const minScroll = 0;
+      
+      currentScrollPosition = Math.max(maxScroll, Math.min(minScroll, position));
+      track.style.transform = `translateY(${currentScrollPosition}px)`;
+      updateScrollIndicator();
+    }
+
+    // Enhanced momentum scrolling
+    function applyEnhancedMomentum(initialVelocity) {
+      const friction = 0.94;
+      const minVelocity = 0.3;
+      const maxVelocity = 8;
+      
+      let velocity = Math.max(-maxVelocity, Math.min(maxVelocity, initialVelocity * 400));
+      
+      const animate = () => {
+        velocity *= friction;
+        
+        if (Math.abs(velocity) < minVelocity) {
+          snapToNearestCard();
+          return;
+        }
+        
+        const newPosition = currentScrollPosition + velocity;
+        setScrollPosition(newPosition);
+        
+        requestAnimationFrame(animate);
+      };
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Snap to nearest card
+    function snapToNearestCard() {
+      const targetIndex = Math.round(Math.abs(currentScrollPosition) / cardStep);
+      const targetPosition = -targetIndex * cardStep;
+      
+      const startPosition = currentScrollPosition;
+      const distance = targetPosition - startPosition;
+      const duration = 300;
+      let startTime = null;
+      
+      const animate = (currentTime) => {
+        if (!startTime) startTime = currentTime;
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        
+        const newPosition = startPosition + distance * easedProgress;
+        setScrollPosition(newPosition);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Setup card interactions
+    function setupCardInteractions(card, question) {
+      const questionInput = card.querySelector('.question-input');
+      const saveBtn = card.querySelector('.save-btn');
+      const dropdown = card.querySelector('.questions-dropdown');
+      
+      // Question input
+      questionInput.addEventListener('input', (e) => {
+        question.question = e.target.value;
+      });
+      
+      // Save button
+      saveBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (question.question.trim()) {
+          if (!savedQuestions.includes(question.question)) {
+            savedQuestions.push(question.question);
+            updateDropdowns();
+          }
+          question.saved = true;
+          card.classList.add('completed');
+          
+          // Visual feedback
+          saveBtn.style.background = 'var(--success)';
+          setTimeout(() => {
+            saveBtn.style.background = '';
+          }, 500);
+        }
+      });
+      
+      // Dropdown selection
+      dropdown.addEventListener('change', (e) => {
+        if (e.target.value !== '') {
+          questionInput.value = savedQuestions[e.target.value];
+          question.question = savedQuestions[e.target.value];
+        }
+      });
+      
+      // Card focus
+      card.addEventListener('click', (e) => {
+        if (e.target.classList.contains('question-input') || 
+            e.target.classList.contains('save-btn') ||
+            e.target.classList.contains('questions-dropdown') ||
+            e.target.classList.contains('counter-input')) return;
+        
+        if (focusedCard && focusedCard !== card) {
+          focusedCard.classList.remove('focused');
+        }
+        
+        if (focusedCard === card) {
+          card.classList.remove('focused');
+          focusedCard = null;
+        } else {
+          card.classList.add('focused');
+          focusedCard = card;
+        }
+      });
+    }
+
+    // Question counter controls - now in each card
+    function setupCounterControls() {
+      // Get the current question count from the first card's input
+      const getCurrentCount = () => {
+        const firstInput = document.querySelector('.question-count-input');
+        return firstInput ? parseInt(firstInput.value) || 5 : 5;
+      };
+      
+      // Update all counter inputs to show the same value
+      const updateAllCounterInputs = (newCount) => {
+        const allInputs = document.querySelectorAll('.question-count-input');
+        allInputs.forEach(input => {
+          input.value = newCount;
+        });
+      };
+      
+      // Update question count
+      function updateQuestionCount(newCount) {
+        newCount = Math.max(1, Math.min(50, newCount));
+        updateAllCounterInputs(newCount);
+        generateQuestionData(newCount);
+        createCarouselCards();
+        createScrollIndicator();
+        currentScrollPosition = 0;
+        setScrollPosition(0);
       }
+      
+      // Set up event listeners for counter input only
+      
+      document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('question-count-input')) {
+          e.preventDefault();
+          e.stopPropagation();
+          const newCount = parseInt(e.target.value) || 5;
+          updateQuestionCount(newCount);
+        }
+      });
     }
 
-    function fallbackCopyToClipboard(text) {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
-      textArea.style.top = '-999999px';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+    // Navigation event listeners
+    function setupNavigation() {
+      document.getElementById('qrBtn').addEventListener('click', () => {
+        // QR Code generation logic would go here
+        alert('QR Code generation feature');
+      });
       
-      try {
-        document.execCommand('copy');
-        showShareNotification();
-      } catch (err) {
-        console.error('Fallback: Could not copy text: ', err);
-        alert(`Please copy this link manually: ${text}`);
+      document.getElementById('submitBtn').addEventListener('click', () => {
+        const completedQuestions = questionData.filter(q => q.saved).length;
+        if (completedQuestions === 0) {
+          alert('Save at least one question before submitting');
+        } else {
+          alert(`Submitting ${completedQuestions} questions`);
+        }
+      });
+      
+      document.getElementById('newBtn').addEventListener('click', () => {
+        if (confirm('Start a new quiz? All unsaved changes will be lost.')) {
+          savedQuestions = [];
+          const newCount = 5;
+          generateQuestionData(newCount);
+          createCarouselCards();
+          createScrollIndicator();
+          currentScrollPosition = 0;
+          setScrollPosition(0);
+        }
+      });
+    }
+
+    // Click outside to unfocus
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.interactive-card') && focusedCard) {
+        focusedCard.classList.remove('focused');
+        focusedCard = null;
       }
-      
-      document.body.removeChild(textArea);
-    }
+    });
 
-    function generateQR() {
-      if (!currentQuestion) {
-        alert('Please publish a question first before generating QR code.');
-        return;
-      }
-
-      const modal = document.getElementById('qrModal');
-      const display = document.getElementById('qrDisplay');
-      
-      modal.style.display = 'flex';
-      
-      const baseStudentURL = CONFIG.baseURL + CONFIG.studentPath;
-      const studentURL = `${baseStudentURL}?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
-      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
-      
-      setTimeout(() => {
-        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
-      }, 500);
-    }
-
-    function closeQRModal() {
-      document.getElementById('qrModal').style.display = 'none';
-    }
-
-    function openAnalytics() {
-      window.location.href = CONFIG.analyticsPath;
-    }
-
-    // Event listeners
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       createConstellation();
-      loadDraft();
+      generateQuestionData(5);
+      createScrollIndicator();
+      createCarouselCards();
+      setupNavigation();
       
-      const questionInput = document.getElementById('questionInput');
-      questionInput.addEventListener('input', handleQuestionInput);
-      questionInput.addEventListener('focus', () => {
-        console.log('Question input focused');
-      });
+      // Show scroll indicator initially
+      const scrollIndicator = document.getElementById('scrollIndicator');
+      scrollIndicator.classList.add('visible');
       
-      // Setup footer handlers
-      document.getElementById('clearBtn').addEventListener('click', clearQuestion);
-      document.getElementById('editBtn').addEventListener('click', editQuestion);
-      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
-      
-      const shareLinkBtn = document.getElementById('shareLinkBtn');
-      if (shareLinkBtn) {
-        shareLinkBtn.addEventListener('click', shareStudentLink);
-      }
-
-      // NEW: Photo capture event listeners
-      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
-      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
-      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
-      
-      // Student name input validation
-      document.getElementById('currentStudentName').addEventListener('input', (e) => {
-        const captureBtn = document.getElementById('captureBtn');
-        captureBtn.disabled = !e.target.value.trim() || !cameraStream;
-      });
-      
-      document.getElementById('qrBtn').addEventListener('click', generateQR);
-      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
-      
-      // Close modal on outside click
-      document.getElementById('qrModal').addEventListener('click', (e) => {
-        if (e.target.id === 'qrModal') {
-          closeQRModal();
-        }
-      });
-
-      // Close photo modal on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('photoModal').classList.contains('active')) {
-          closePhotoModal();
-        }
-      });
-
-      // Auto-save every 30 seconds
-      setInterval(() => {
-        const questionText = document.getElementById('questionInput').value.trim();
-        if (questionText) {
-          localStorage.setItem('question_draft', questionText);
-        }
-      }, 30000);
-
-      console.log('Teacher Question Creator with Photo Capture initialized!');
+      setTimeout(() => {
+        scrollIndicator.classList.remove('visible');
+      }, 3000);
     });
+
+    // Prevent page scroll when interacting with carousel
+    document.body.addEventListener('touchmove', (e) => {
+      if (e.target.closest('.carousel-container')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
   </script>
 </body>
 </html>
