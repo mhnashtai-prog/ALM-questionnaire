@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics Dashboard (FIXED)</title>
+  <title>INTUITY - Analytics Dashboard (Supabase)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -24,6 +27,7 @@
       --accent-red: #ef4444;
       --success: #10b981;
       --warning: #f59e0b;
+      --error: #ef4444;
     }
 
     * {
@@ -42,10 +46,44 @@
       padding-bottom: 100px;
     }
 
+    /* Connection Status Bar */
+    .connection-status {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+    
+    .connection-status.connected {
+      background: rgba(16, 185, 129, 0.1);
+      border-bottom-color: var(--success);
+      color: var(--success);
+    }
+    
+    .connection-status.offline {
+      background: rgba(245, 158, 11, 0.1);
+      border-bottom-color: var(--warning);
+      color: var(--warning);
+    }
+    
+    .connection-status.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-bottom-color: var(--error);
+      color: var(--error);
+    }
+
     /* Header */
     .header {
       position: sticky;
-      top: 0;
+      top: 35px;
       z-index: 100;
       background: rgba(26, 35, 50, 0.9);
       backdrop-filter: var(--blur);
@@ -80,31 +118,65 @@
       padding: 2rem;
     }
 
-    /* Status Box */
-    .status-box {
+    /* Real-time Stats Overview */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
       border-radius: 1rem;
-      padding: 1rem 1.5rem;
-      margin-bottom: 1.5rem;
+      padding: 1.5rem;
       box-shadow: var(--shadow);
       backdrop-filter: var(--blur);
       text-align: center;
+      transition: all 0.3s ease;
     }
 
-    .status-title {
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-teal);
     }
 
-    .status-title span {
+    .stat-icon {
+      font-size: 2rem;
       color: var(--accent-teal);
+      margin-bottom: 1rem;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
       font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-change {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+    }
+
+    .stat-change.positive {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .stat-change.neutral {
+      background: rgba(107, 114, 128, 0.2);
+      color: var(--text-muted);
     }
 
     /* Question Selector Box */
@@ -185,8 +257,24 @@
       margin: 0 auto;
     }
 
-    /* Responses Box */
-    .responses-box {
+    .question-meta-info {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Live Responses Section */
+    .live-responses {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
       border-radius: 1.5rem;
@@ -196,18 +284,54 @@
       backdrop-filter: var(--blur);
     }
 
-    .responses-title {
+    .live-responses-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .live-responses-title {
       color: var(--text-primary);
       font-size: 1.2rem;
       font-weight: 600;
-      margin-bottom: 1.5rem;
-      text-align: center;
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
     }
 
+    .live-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .auto-refresh-toggle {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .auto-refresh-toggle.active {
+      background: rgba(45, 212, 191, 0.2);
+      border-color: var(--accent-teal);
+      color: var(--accent-teal);
+    }
+
+    /* Response Cards */
     .response-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -216,12 +340,35 @@
       margin-bottom: 1rem;
       backdrop-filter: var(--blur);
       transition: all 0.3s ease;
+      animation: slideInUp 0.3s ease;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .response-card:hover {
       transform: translateY(-2px);
       border-color: var(--accent-teal);
       box-shadow: 0 8px 25px rgba(45, 212, 191, 0.2);
+    }
+
+    .response-card.new {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      animation: newResponse 0.5s ease;
+    }
+
+    @keyframes newResponse {
+      0% { background: rgba(16, 185, 129, 0.3); }
+      100% { background: rgba(16, 185, 129, 0.1); }
     }
 
     .response-header {
@@ -281,6 +428,17 @@
       gap: 0.5rem;
     }
 
+    .response-time {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .response-time.recent {
+      color: var(--success);
+      font-weight: 600;
+    }
+
     .no-responses {
       text-align: center;
       padding: 3rem;
@@ -292,38 +450,19 @@
       margin-bottom: 1rem;
     }
 
-    /* Debug Panel */
-    .debug-panel {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-top: 2rem;
-      font-family: monospace;
-      font-size: 0.85rem;
-      max-height: 300px;
-      overflow-y: auto;
+    /* Loading States */
+    .loading-skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 8px;
+      height: 1rem;
+      margin: 0.5rem 0;
     }
 
-    .debug-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      color: var(--accent-teal);
-      font-weight: 600;
-    }
-
-    .debug-content {
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .debug-item {
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 0.5rem;
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     /* Footer */
@@ -382,16 +521,6 @@
       background: linear-gradient(135deg, var(--intuity-gold), var(--accent-teal));
     }
 
-    .footer-btn.debug {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.5);
-    }
-
-    .footer-btn.debug:hover {
-      background: rgba(59, 130, 246, 0.3);
-      border-color: rgb(59, 130, 246);
-    }
-
     .footer-btn i {
       font-size: 1rem;
     }
@@ -399,7 +528,7 @@
     /* Notification */
     .notification {
       position: fixed;
-      top: 20px;
+      top: 60px;
       right: 20px;
       padding: 1rem 1.5rem;
       border-radius: 8px;
@@ -409,18 +538,17 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      transform: translateX(100%);
+    }
+
+    .notification.show {
+      transform: translateX(0);
     }
 
     .notification.success {
       background: rgba(16, 185, 129, 0.1);
       border: 1px solid var(--success);
       color: var(--success);
-    }
-
-    .notification.error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--accent-red);
-      color: var(--accent-red);
     }
 
     .notification.info {
@@ -435,14 +563,14 @@
         padding: 1rem;
       }
 
-      .status-box {
-        padding: 0.75rem 1rem;
-        margin-bottom: 1rem;
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
       }
 
       .question-box,
       .current-question-box,
-      .responses-box {
+      .live-responses {
         padding: 1.25rem;
         margin-bottom: 1.25rem;
       }
@@ -469,24 +597,57 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
+      .question-meta-info {
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">
+    <i class="fas fa-wifi"></i> Connecting to database...
+  </div>
+
   <!-- Header -->
   <header class="header">
     <div class="brand-name">INTUITY</div>
-    <div class="brand-subtitle">Teacher Analytics Dashboard (FIXED)</div>
+    <div class="brand-subtitle">Real-time Analytics Dashboard (Supabase)</div>
   </header>
 
   <div class="container">
     
-    <!-- Status Overview -->
-    <div class="status-box">
-      <div class="status-title">
-        <i class="fas fa-users"></i>
-        <span id="totalResponses">0</span> Student Responses
+    <!-- Real-time Stats Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-value" id="totalResponses">0</div>
+        <div class="stat-label">Total Responses</div>
+        <div class="stat-change neutral" id="responsesChange">No change</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-question-circle"></i></div>
+        <div class="stat-value" id="totalQuestions">0</div>
+        <div class="stat-label">Active Questions</div>
+        <div class="stat-change neutral" id="questionsChange">No change</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="stat-value" id="avgQuality">0.0</div>
+        <div class="stat-label">Avg Quality Score</div>
+        <div class="stat-change neutral" id="qualityChange">No change</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-value" id="recentResponses">0</div>
+        <div class="stat-label">Last 24 Hours</div>
+        <div class="stat-change neutral" id="recentChange">No change</div>
       </div>
     </div>
     
@@ -497,7 +658,7 @@
         Select Question to Analyze
       </div>
       <select class="question-dropdown" id="questionSelector">
-        <option value="">No questions available - Create one first</option>
+        <option value="">Loading questions from database...</option>
       </select>
     </div>
 
@@ -509,29 +670,36 @@
       <div class="current-question-text" id="currentQuestionText">
         This question will be displayed to students in your chosen presentation mode
       </div>
+      <div class="question-meta-info">
+        <div class="meta-item">
+          <i class="fas fa-calendar"></i>
+          <span id="questionDate">Date not available</span>
+        </div>
+        <div class="meta-item">
+          <i class="fas fa-eye"></i>
+          <span id="questionStatus">Status unknown</span>
+        </div>
+        <div class="meta-item">
+          <i class="fas fa-users"></i>
+          <span id="questionResponses">0 responses</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Student Responses -->
-    <div class="responses-box" id="responsesBox" style="display: none;">
-      <div class="responses-title">
-        <i class="fas fa-comments"></i>
-        Student Responses (<span id="responseCount">0</span>)
+    <!-- Live Student Responses -->
+    <div class="live-responses" id="liveResponses" style="display: none;">
+      <div class="live-responses-header">
+        <div class="live-responses-title">
+          <i class="fas fa-comments"></i>
+          <div class="live-indicator"></div>
+          Live Student Responses (<span id="responseCount">0</span>)
+        </div>
+        <button class="auto-refresh-toggle" id="autoRefreshToggle">
+          <i class="fas fa-sync"></i> Auto-refresh
+        </button>
       </div>
       <div id="responsesList">
         <!-- Responses will be populated here -->
-      </div>
-    </div>
-
-    <!-- Debug Panel -->
-    <div class="debug-panel" id="debugPanel">
-      <div class="debug-header">
-        <span>Debug Information</span>
-        <button onclick="document.getElementById('debugPanel').classList.toggle('hidden')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="debug-content" id="debugContent">
-        Debug information will appear here after loading data
       </div>
     </div>
 
@@ -547,13 +715,18 @@
       
       <button class="footer-btn refresh" onclick="refreshData()" id="refreshBtn">
         <i class="fas fa-sync"></i>
-        <span>Refresh Data</span>
+        <span>Refresh Now</span>
       </button>
       
-      <button class="footer-btn debug" onclick="toggleDebug()" id="debugBtn">
-        <i class="fas fa-bug"></i>
-        <span>Debug</span>
+      <button class="footer-btn" onclick="toggleRealTime()" id="realTimeBtn">
+        <i class="fas fa-satellite"></i>
+        <span>Real-time</span>
       </button>
+      
+      <a href="../displays/" class="footer-btn">
+        <i class="fas fa-tv"></i>
+        <span>Display Mode</span>
+      </a>
       
       <a href="../" class="footer-btn">
         <i class="fas fa-home"></i>
@@ -563,116 +736,294 @@
   </footer>
 
   <script>
+    // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
     // Global data variables
+    let supabase;
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
-    let debugMode = false;
+    let isConnected = false;
+    let isAutoRefresh = false;
+    let autoRefreshInterval = null;
+    let lastResponseCount = 0;
+    let realTimeSubscription = null;
 
-    // Show notification
-    function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-        <span>${message}</span>
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
+    // Initialize Supabase
+    function initSupabase() {
+      try {
+        if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+          throw new Error('Please configure your Supabase credentials');
+        }
+
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        testConnection();
+        return true;
+      } catch (error) {
+        console.error('❌ Error initializing Supabase:', error);
+        updateConnectionStatus('error', 'Configuration Error - Check credentials');
+        return false;
+      }
     }
 
-    // Load data from localStorage
-    function loadData() {
-      console.log('🔄 Loading data from localStorage...');
+    // Test Supabase connection
+    async function testConnection() {
+      try {
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        
+        if (error) throw error;
+        
+        isConnected = true;
+        updateConnectionStatus('connected', 'Connected to Supabase Database');
+        console.log('✅ Supabase connection test successful');
+        
+        // Start loading data
+        await loadInitialData();
+        
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+        isConnected = false;
+        updateConnectionStatus('error', 'Database Connection Failed');
+        
+        // Fallback to localStorage
+        loadLocalStorageData();
+      }
+    }
+
+    // Update connection status UI
+    function updateConnectionStatus(status, message) {
+      const statusElement = document.getElementById('connectionStatus');
       
-      // Load questions from multiple possible keys
-      const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
-      for (const key of questionKeys) {
-        try {
+      statusElement.className = `connection-status ${status}`;
+      
+      const icons = {
+        connected: 'fas fa-check-circle',
+        offline: 'fas fa-wifi',
+        error: 'fas fa-exclamation-triangle'
+      };
+      
+      statusElement.innerHTML = `<i class="${icons[status]}"></i> ${message}`;
+    }
+
+    // Load initial data from Supabase
+    async function loadInitialData() {
+      try {
+        showNotification('Loading data from database...', 'info');
+        
+        // Load questions
+        const { data: questions, error: questionsError } = await supabase
+          .from('questions')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (questionsError) throw questionsError;
+
+        allQuestions = questions || [];
+        console.log(`✅ Loaded ${allQuestions.length} questions from Supabase`);
+
+        // Load responses
+        const { data: responses, error: responsesError } = await supabase
+          .from('student_responses')
+          .select('*, questions!inner(text)')
+          .order('submitted_at', { ascending: false });
+
+        if (responsesError) throw responsesError;
+
+        allResponses = responses || [];
+        console.log(`✅ Loaded ${allResponses.length} responses from Supabase`);
+
+        // Update UI
+        updateAllUI();
+        
+        showNotification('Data loaded successfully!', 'success');
+        
+        // Setup real-time subscriptions
+        setupRealTimeSubscriptions();
+        
+      } catch (error) {
+        console.error('❌ Error loading initial data:', error);
+        showNotification('Error loading data from database', 'error');
+        
+        // Fallback to localStorage
+        loadLocalStorageData();
+      }
+    }
+
+    // Setup real-time subscriptions
+    function setupRealTimeSubscriptions() {
+      if (!isConnected) return;
+
+      try {
+        // Subscribe to new responses
+        realTimeSubscription = supabase
+          .channel('responses')
+          .on('postgres_changes', { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'student_responses' 
+          }, (payload) => {
+            console.log('📡 New response received:', payload.new);
+            handleNewResponse(payload.new);
+          })
+          .on('postgres_changes', { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'questions' 
+          }, (payload) => {
+            console.log('📡 New question received:', payload.new);
+            handleNewQuestion(payload.new);
+          })
+          .subscribe();
+
+        console.log('✅ Real-time subscriptions setup');
+        
+      } catch (error) {
+        console.error('❌ Error setting up real-time subscriptions:', error);
+      }
+    }
+
+    // Handle new real-time response
+    function handleNewResponse(newResponse) {
+      // Add to responses array
+      allResponses.unshift(newResponse);
+      
+      // Update UI
+      updateStatsDisplay();
+      updateResponsesDisplay();
+      
+      // Show notification
+      showNotification(`New response from ${newResponse.student_name}!`, 'success');
+      
+      // Highlight new response
+      setTimeout(() => {
+        const responseElement = document.querySelector(`[data-response-id="${newResponse.id}"]`);
+        if (responseElement) {
+          responseElement.classList.add('new');
+          setTimeout(() => responseElement.classList.remove('new'), 2000);
+        }
+      }, 100);
+    }
+
+    // Handle new real-time question
+    function handleNewQuestion(newQuestion) {
+      // Add to questions array
+      allQuestions.unshift(newQuestion);
+      
+      // Update dropdown
+      populateQuestionDropdown();
+      
+      // Show notification
+      showNotification('New question published!', 'success');
+    }
+
+    // Fallback to localStorage data
+    function loadLocalStorageData() {
+      console.log('📱 Loading data from localStorage fallback...');
+      
+      try {
+        // Load questions from multiple possible keys
+        const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
+        for (const key of questionKeys) {
           const storedQuestions = localStorage.getItem(key);
           if (storedQuestions) {
             const parsed = JSON.parse(storedQuestions);
             
             if (Array.isArray(parsed)) {
               allQuestions = parsed;
-              console.log(`✅ Loaded ${allQuestions.length} questions from ${key}`);
               break;
             } else if (typeof parsed === 'object' && parsed.text) {
-              // Handle single question object
               allQuestions = [parsed];
-              console.log(`✅ Loaded single question from ${key}`);
               break;
             }
           }
-        } catch (error) {
-          console.error(`❌ Error loading questions from ${key}:`, error);
         }
-      }
 
-      // Load responses from multiple possible keys
-      const responseKeys = [
-        'alm_student_responses', 
-        'intuity_responses', 
-        'student_responses', 
-        'intuity_student_data'
-      ];
-      
-      allResponses = [];
-      
-      for (const key of responseKeys) {
-        try {
+        // Load responses from multiple possible keys
+        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+        allResponses = [];
+        
+        for (const key of responseKeys) {
           const storedResponses = localStorage.getItem(key);
           if (storedResponses) {
             const parsed = JSON.parse(storedResponses);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              // Add responses from this key
+            if (Array.isArray(parsed)) {
               allResponses = allResponses.concat(parsed);
-              console.log(`✅ Loaded ${parsed.length} responses from ${key}`);
             }
           }
-        } catch (error) {
-          console.error(`❌ Error loading responses from ${key}:`, error);
         }
-      }
 
-      // Also check for individual response keys
-      console.log('🔍 Checking for individual response keys...');
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('response_')) {
-          try {
-            const response = JSON.parse(localStorage.getItem(key));
-            allResponses.push(response);
-          } catch (error) {
-            console.error(`❌ Error parsing response from ${key}:`, error);
-          }
-        }
+        console.log(`📱 Loaded ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
+        
+        updateAllUI();
+        showNotification('Loaded data from local storage', 'info');
+        
+      } catch (error) {
+        console.error('❌ Error loading localStorage data:', error);
+        updateAllUI();
       }
-      
-      console.log(`✅ Total responses loaded: ${allResponses.length}`);
-
-      updateUI();
     }
 
     // Update all UI elements
-    function updateUI() {
-      console.log('🎨 Updating UI...');
-      
-      updateStatusNumbers();
+    function updateAllUI() {
+      updateStatsDisplay();
       populateQuestionDropdown();
       updateQuestionDisplay();
       updateResponsesDisplay();
     }
 
-    // Update status numbers
-    function updateStatusNumbers() {
+    // Update statistics display
+    function updateStatsDisplay() {
       const totalResponses = allResponses.length;
+      const totalQuestions = allQuestions.filter(q => q.is_published !== false).length;
+      
+      // Calculate average quality score
+      let avgQuality = 0;
+      if (totalResponses > 0) {
+        const qualitySum = allResponses.reduce((sum, r) => {
+          const score = r.score || (r.quality === 'excellent' ? 5 : r.quality === 'good' ? 3 : 1);
+          return sum + score;
+        }, 0);
+        avgQuality = (qualitySum / totalResponses / 5 * 5).toFixed(1);
+      }
+      
+      // Calculate recent responses (last 24 hours)
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const recentResponses = allResponses.filter(r => {
+        const responseDate = new Date(r.submitted_at || r.timestamp || 0);
+        return responseDate > twentyFourHoursAgo;
+      }).length;
+
+      // Update UI
       document.getElementById('totalResponses').textContent = totalResponses;
+      document.getElementById('totalQuestions').textContent = totalQuestions;
+      document.getElementById('avgQuality').textContent = avgQuality;
+      document.getElementById('recentResponses').textContent = recentResponses;
+
+      // Update change indicators
+      const responsesChange = totalResponses - lastResponseCount;
+      updateChangeIndicator('responsesChange', responsesChange, 'responses');
+      
+      lastResponseCount = totalResponses;
+    }
+
+    // Update change indicator
+    function updateChangeIndicator(elementId, change, unit) {
+      const element = document.getElementById(elementId);
+      
+      if (change > 0) {
+        element.textContent = `+${change} new ${unit}`;
+        element.className = 'stat-change positive';
+      } else if (change < 0) {
+        element.textContent = `${change} ${unit}`;
+        element.className = 'stat-change negative';
+      } else {
+        element.textContent = 'No change';
+        element.className = 'stat-change neutral';
+      }
     }
 
     // Populate question dropdown
@@ -684,15 +1035,15 @@
         return;
       }
 
-      // Clear existing options
       selector.innerHTML = '';
 
-      // Add questions to dropdown
       allQuestions.forEach((question, index) => {
         const option = document.createElement('option');
         option.value = question.id || index;
-        option.textContent = `Question ${index + 1}: ${question.text.substring(0, 60)}${question.text.length > 60 ? '...' : ''}`;
-        option.setAttribute('data-full-text', question.text);
+        
+        const questionText = question.text || question.question_text || 'Untitled Question';
+        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 60)}${questionText.length > 60 ? '...' : ''}`;
+        option.setAttribute('data-full-text', questionText);
         selector.appendChild(option);
       });
 
@@ -700,6 +1051,8 @@
       if (!currentSelectedQuestion && allQuestions.length > 0) {
         currentSelectedQuestion = allQuestions[0];
         selector.value = currentSelectedQuestion.id || 0;
+        updateQuestionDisplay();
+        updateResponsesDisplay();
       }
     }
 
@@ -708,6 +1061,9 @@
       const questionBox = document.getElementById('currentQuestionBox');
       const titleElement = document.getElementById('currentQuestionTitle');
       const textElement = document.getElementById('currentQuestionText');
+      const dateElement = document.getElementById('questionDate');
+      const statusElement = document.getElementById('questionStatus');
+      const responsesElement = document.getElementById('questionResponses');
 
       if (!currentSelectedQuestion) {
         questionBox.style.display = 'none';
@@ -715,13 +1071,46 @@
       }
 
       questionBox.style.display = 'block';
-      titleElement.textContent = `Current Question`;
-      textElement.textContent = currentSelectedQuestion.text;
+      
+      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'No question text';
+      titleElement.textContent = 'Current Question';
+      textElement.textContent = questionText;
+      
+      // Format date
+      const createdAt = currentSelectedQuestion.created_at || currentSelectedQuestion.timestamp;
+      if (createdAt) {
+        const date = new Date(createdAt);
+        dateElement.textContent = date.toLocaleDateString();
+      } else {
+        dateElement.textContent = 'Date not available';
+      }
+      
+      // Status
+      const isPublished = currentSelectedQuestion.is_published !== false;
+      statusElement.textContent = isPublished ? 'Published' : 'Draft';
+      statusElement.style.color = isPublished ? 'var(--success)' : 'var(--warning)';
+      
+      // Response count for this question
+      const questionResponses = getResponsesForQuestion(currentSelectedQuestion);
+      responsesElement.textContent = `${questionResponses.length} responses`;
     }
 
-    // Update responses display - FIXED VERSION
+    // Get responses for a specific question
+    function getResponsesForQuestion(question) {
+      return allResponses.filter(response => {
+        return (
+          response.question_id === question.id ||
+          response.questionId === question.id ||
+          response.questionText === (question.text || question.question_text) ||
+          response.question_id == question.id ||
+          (typeof question.id === 'undefined' && response.questionId === 0)
+        );
+      });
+    }
+
+    // Update responses display
     function updateResponsesDisplay() {
-      const responsesBox = document.getElementById('responsesBox');
+      const responsesBox = document.getElementById('liveResponses');
       const responsesList = document.getElementById('responsesList');
       const responseCount = document.getElementById('responseCount');
 
@@ -730,30 +1119,7 @@
         return;
       }
 
-      // Filter responses for current question - FIXED LOGIC
-      const questionResponses = allResponses.filter(response => {
-        // Multiple ways to match responses to questions
-        return (
-          // Match by numeric ID (exact match)
-          response.questionId === currentSelectedQuestion.id ||
-          // Match by question text (exact match)
-          response.questionId === currentSelectedQuestion.text ||
-          // Match question text to response's questionText field
-          response.questionText === currentSelectedQuestion.text ||
-          // Handle cases where questionId might be stored as string
-          response.questionId == currentSelectedQuestion.id || // Loose equality
-          // Handle cases where questionId is stored as text that matches the ID
-          (currentSelectedQuestion.id && response.questionId === currentSelectedQuestion.id.toString()) ||
-          // Fallback for legacy data
-          (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0)
-        );
-      });
-
-      console.log(`📊 Found ${questionResponses.length} responses for current question`);
-
-      if (debugMode) {
-        updateDebugInfo(questionResponses);
-      }
+      const questionResponses = getResponsesForQuestion(currentSelectedQuestion);
 
       responsesBox.style.display = 'block';
       responseCount.textContent = questionResponses.length;
@@ -771,64 +1137,66 @@
         return;
       }
 
+      // Sort responses by submission time (newest first)
+      const sortedResponses = questionResponses.sort((a, b) => {
+        const timeA = new Date(a.submitted_at || a.timestamp || 0);
+        const timeB = new Date(b.submitted_at || b.timestamp || 0);
+        return timeB - timeA;
+      });
+
       // Display responses
-      responsesList.innerHTML = questionResponses.map(response => `
-        <div class="response-card">
-          <div class="response-header">
-            <div class="student-name">${response.studentName || 'Anonymous Student'}</div>
-            <div class="quality-badge ${response.quality || 'needs-work'}">
-              ${(response.quality || 'needs-work').replace('-', ' ')}
+      responsesList.innerHTML = sortedResponses.map(response => {
+        const studentName = response.student_name || response.studentName || 'Anonymous Student';
+        const answer = response.answer || 'No response text';
+        const quality = response.quality || 'needs-work';
+        const score = response.score || 0;
+        const wordCount = response.word_count || response.wordCount || 0;
+        const submittedAt = response.submitted_at || response.timestamp || 'Unknown time';
+        
+        // Format time
+        let timeDisplay = submittedAt;
+        try {
+          const date = new Date(submittedAt);
+          const now = new Date();
+          const diffMs = now - date;
+          const diffMins = Math.floor(diffMs / 60000);
+          
+          if (diffMins < 1) {
+            timeDisplay = 'Just now';
+          } else if (diffMins < 60) {
+            timeDisplay = `${diffMins}m ago`;
+          } else if (diffMins < 1440) {
+            timeDisplay = `${Math.floor(diffMins / 60)}h ago`;
+          } else {
+            timeDisplay = date.toLocaleDateString();
+          }
+        } catch (e) {
+          timeDisplay = submittedAt;
+        }
+        
+        const isRecent = submittedAt !== 'Unknown time' && 
+          (new Date() - new Date(submittedAt)) < 300000; // 5 minutes
+
+        return `
+          <div class="response-card" data-response-id="${response.id}">
+            <div class="response-header">
+              <div class="student-name">${studentName}</div>
+              <div class="quality-badge ${quality}">
+                ${quality.replace('-', ' ')}
+              </div>
+            </div>
+            <div class="response-text">${answer}</div>
+            <div class="response-meta">
+              <div class="response-time ${isRecent ? 'recent' : ''}">
+                <i class="fas fa-clock"></i>
+                <span>${timeDisplay}</span>
+              </div>
+              <span><i class="fas fa-pen"></i> ${wordCount} words</span>
+              <span><i class="fas fa-star"></i> ${score}% score</span>
             </div>
           </div>
-          <div class="response-text">${response.answer || 'No response text'}</div>
-          <div class="response-meta">
-            <span><i class="fas fa-clock"></i> ${response.timestamp || 'Unknown time'}</span>
-            <span><i class="fas fa-pen"></i> ${response.wordCount || 0} words</span>
-            <span><i class="fas fa-star"></i> ${response.score || 0}% score</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Update debug information
-    function updateDebugInfo(questionResponses) {
-      const debugContent = document.getElementById('debugContent');
-      
-      let debugHTML = `
-        <div class="debug-item"><strong>Selected Question:</strong> ${JSON.stringify(currentSelectedQuestion, null, 2)}</div>
-        <div class="debug-item"><strong>Total Responses Found:</strong> ${questionResponses.length}</div>
-        <div class="debug-item"><strong>All Questions:</strong> ${allQuestions.length}</div>
-        <div class="debug-item"><strong>All Responses:</strong> ${allResponses.length}</div>
-        <div class="debug-item"><strong>Matching Responses:</strong></div>
-      `;
-      
-      questionResponses.forEach((response, index) => {
-        debugHTML += `
-          <div class="debug-item">
-            <strong>Response ${index + 1}:</strong><br>
-            Student: ${response.studentName || 'Unknown'}<br>
-            Question ID in response: ${response.questionId || 'None'}<br>
-            Question Text in response: ${response.questionText || 'None'}<br>
-            Matching Method: ${getMatchingMethod(response)}
-          </div>
         `;
-      });
-      
-      // Add info about all responses for debugging
-      debugHTML += `<div class="debug-item"><strong>All Response IDs:</strong> ${allResponses.map(r => r.questionId).join(', ')}</div>`;
-      
-      debugContent.innerHTML = debugHTML;
-    }
-
-    // Determine how a response matches the current question
-    function getMatchingMethod(response) {
-      if (response.questionId === currentSelectedQuestion.id) return "Exact ID match";
-      if (response.questionId === currentSelectedQuestion.text) return "Question text as ID match";
-      if (response.questionText === currentSelectedQuestion.text) return "Question text match";
-      if (response.questionId == currentSelectedQuestion.id) return "Loose ID match";
-      if (currentSelectedQuestion.id && response.questionId === currentSelectedQuestion.id.toString()) return "String ID match";
-      if (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0) return "Legacy fallback match";
-      return "Unknown match method";
+      }).join('');
     }
 
     // Handle question selection change
@@ -865,51 +1233,134 @@
       updateResponsesDisplay();
     }
 
-    // Refresh data
-    function refreshData() {
+    // Toggle auto-refresh
+    function toggleAutoRefresh() {
+      const toggle = document.getElementById('autoRefreshToggle');
+      
+      isAutoRefresh = !isAutoRefresh;
+      
+      if (isAutoRefresh) {
+        toggle.classList.add('active');
+        toggle.innerHTML = '<i class="fas fa-pause"></i> Auto-refresh ON';
+        
+        // Start auto-refresh interval
+        autoRefreshInterval = setInterval(async () => {
+          if (isConnected) {
+            await refreshData();
+          }
+        }, 10000); // Refresh every 10 seconds
+        
+        showNotification('Auto-refresh enabled', 'info');
+      } else {
+        toggle.classList.remove('active');
+        toggle.innerHTML = '<i class="fas fa-sync"></i> Auto-refresh OFF';
+        
+        // Clear interval
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+          autoRefreshInterval = null;
+        }
+        
+        showNotification('Auto-refresh disabled', 'info');
+      }
+    }
+
+    // Refresh data manually
+    async function refreshData() {
       const refreshBtn = document.getElementById('refreshBtn');
       const originalContent = refreshBtn.innerHTML;
       
       refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
       
-      setTimeout(() => {
-        loadData();
-        refreshBtn.innerHTML = originalContent;
-        console.log('✅ Data refreshed');
+      try {
+        if (isConnected) {
+          await loadInitialData();
+        } else {
+          loadLocalStorageData();
+        }
+        
         showNotification('Data refreshed successfully!', 'success');
-      }, 1000);
+      } catch (error) {
+        console.error('❌ Error refreshing data:', error);
+        showNotification('Error refreshing data', 'error');
+      } finally {
+        setTimeout(() => {
+          refreshBtn.innerHTML = originalContent;
+        }, 1000);
+      }
     }
 
-    // Toggle debug panel
-    function toggleDebug() {
-      debugMode = !debugMode;
-      const debugPanel = document.getElementById('debugPanel');
-      const debugBtn = document.getElementById('debugBtn');
+    // Toggle real-time mode
+    function toggleRealTime() {
+      const realTimeBtn = document.getElementById('realTimeBtn');
       
-      if (debugMode) {
-        debugPanel.style.display = 'block';
-        debugBtn.innerHTML = '<i class="fas fa-bug"></i><span>Hide Debug</span>';
-        updateResponsesDisplay(); // Refresh to show debug info
-        showNotification('Debug mode enabled', 'info');
+      if (realTimeSubscription) {
+        // Disable real-time
+        supabase.removeChannel(realTimeSubscription);
+        realTimeSubscription = null;
+        realTimeBtn.innerHTML = '<i class="fas fa-satellite"></i><span>Real-time OFF</span>';
+        realTimeBtn.style.background = 'var(--card-bg)';
+        showNotification('Real-time updates disabled', 'info');
       } else {
-        debugPanel.style.display = 'none';
-        debugBtn.innerHTML = '<i class="fas fa-bug"></i><span>Debug</span>';
-        showNotification('Debug mode disabled', 'info');
+        // Enable real-time
+        setupRealTimeSubscriptions();
+        realTimeBtn.innerHTML = '<i class="fas fa-satellite"></i><span>Real-time ON</span>';
+        realTimeBtn.style.background = 'rgba(45, 212, 191, 0.2)';
+        showNotification('Real-time updates enabled', 'success');
       }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Show notification
+      setTimeout(() => notification.classList.add('show'), 100);
+      
+      // Hide and remove notification
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
     }
 
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics Dashboard - FIXED VERSION LOADED');
+      console.log('🚀 INTUITY Analytics Dashboard with Supabase initializing...');
       
-      // Load initial data
-      loadData();
+      // Initialize Supabase
+      if (initSupabase()) {
+        console.log('✅ Supabase initialization successful');
+      } else {
+        console.log('❌ Supabase initialization failed, using localStorage fallback');
+        loadLocalStorageData();
+      }
       
       // Set up event listeners
       const questionSelector = document.getElementById('questionSelector');
       questionSelector.addEventListener('change', handleQuestionChange);
       
-      console.log('✅ Analytics dashboard fully initialized and connected!');
+      const autoRefreshToggle = document.getElementById('autoRefreshToggle');
+      autoRefreshToggle.addEventListener('click', toggleAutoRefresh);
+      
+      console.log('✅ Analytics dashboard with Supabase fully initialized!');
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (realTimeSubscription) {
+        supabase.removeChannel(realTimeSubscription);
+      }
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
     });
   </script>
 
