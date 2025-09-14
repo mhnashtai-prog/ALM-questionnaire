@@ -631,7 +631,7 @@
 
   <!-- Include the Swiss Watch Data Engine -->
   <script>
-    // EMBEDDED SWISS WATCH DATA ENGINE (simplified version)
+    // 🚀 FIXED SWISS WATCH DATA ENGINE
     class INTUITYSwissWatch {
       constructor() {
         this.questions = [];
@@ -695,14 +695,27 @@
         }
       }
 
+      // 🔧 FIXED: Use global currentQuestion if Swiss Watch currentQuestion is missing
       generateStudentURL(questionId = null) {
         const baseURL = window.location.origin + window.location.pathname.replace(/\/teachers\/questions\/.*/, '/');
         const studentPath = 'students/answers/';
         
-        if (questionId && this.currentQuestion) {
-          return `${baseURL}${studentPath}?q=${encodeURIComponent(questionId)}&t=${encodeURIComponent(this.currentQuestion.text)}`;
+        // Use either the Swiss Watch currentQuestion OR the global currentQuestion
+        const question = this.currentQuestion || window.currentQuestion;
+        
+        console.log('🔍 URL Generation Debug:');
+        console.log('questionId:', questionId);
+        console.log('this.currentQuestion:', this.currentQuestion);
+        console.log('window.currentQuestion:', window.currentQuestion);
+        console.log('Using question:', question);
+        
+        if (questionId && question && question.text) {
+          const url = `${baseURL}${studentPath}?q=${encodeURIComponent(questionId)}&t=${encodeURIComponent(question.text)}`;
+          console.log('✅ Generated URL with parameters:', url);
+          return url;
         }
         
+        console.log('⚠️ Generated URL without parameters:', `${baseURL}${studentPath}`);
         return `${baseURL}${studentPath}`;
       }
 
@@ -819,7 +832,7 @@
       }
     }
 
-    // SWISS ENHANCED: Publish with seamless integration
+    // 🔧 FIXED: Enhanced publish with better synchronization
     function publishQuestion() {
       const questionText = document.getElementById('questionInput').value.trim();
       
@@ -839,14 +852,18 @@
           // Create and add question through Swiss Watch engine
           const question = intuityData.addQuestion({ text: questionText });
           
-          // Publish as current question
+          // 🔧 FIXED: Ensure both variables are synchronized
           intuityData.publishQuestion(question);
-          currentQuestion = question;
+          currentQuestion = question; // Global variable
+          window.currentQuestion = question; // Explicitly set window.currentQuestion
+          
+          console.log('✅ Question published:', question);
+          console.log('✅ Global currentQuestion:', currentQuestion);
+          console.log('✅ Swiss Watch currentQuestion:', intuityData.currentQuestion);
 
           // Clear draft
           localStorage.removeItem('question_draft');
 
-          console.log('✅ Question published with Swiss precision:', question);
           showSuccessNotification('Question published successfully!');
 
           // Add notification indicator to share and QR buttons
@@ -911,12 +928,17 @@
       document.body.removeChild(textArea);
     }
 
-    // Enhanced QR generation
+    // 🔧 FIXED: Enhanced QR generation with debugging
     function generateQR() {
       if (!currentQuestion) {
         alert('Please publish a question first before generating QR code.');
         return;
       }
+
+      console.log('🔍 QR Generation Debug:');
+      console.log('currentQuestion:', currentQuestion);
+      console.log('currentQuestion.id:', currentQuestion.id);
+      console.log('currentQuestion.text:', currentQuestion.text);
 
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
@@ -924,6 +946,8 @@
       modal.style.display = 'flex';
       
       const studentURL = intuityData.generateStudentURL(currentQuestion.id);
+      console.log('🎯 Final QR URL:', studentURL);
+      
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
       
       setTimeout(() => {
@@ -974,7 +998,7 @@
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🎯 INTUITY Swiss Watch Teacher Interface - INITIALIZED');
+      console.log('🎯 INTUITY Swiss Watch Teacher Interface - FIXED VERSION LOADED! ✅');
       
       createConstellation();
       loadDraft();
@@ -1019,7 +1043,7 @@
         }
       }, 30000);
 
-      console.log('✅ Swiss Watch precision engaged - All systems operational!');
+      console.log('✅ QR Code bug FIXED - Students will now see questions from QR codes! 🎯');
     });
   </script>
 </body>
