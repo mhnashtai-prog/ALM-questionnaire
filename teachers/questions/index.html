@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher´s Question Quiz</title>
+  <title>INTUITY - Teacher Questions (Supabase)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
@@ -21,6 +24,8 @@
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
       --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
       
@@ -93,10 +98,44 @@
       100% { opacity: 0.9; transform: scale(1.2); }
     }
     
+    /* Connection Status Bar */
+    .connection-status {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      transition: all var(--transition-fast);
+    }
+    
+    .connection-status.connected {
+      background: rgba(16, 185, 129, 0.1);
+      border-bottom-color: var(--success);
+      color: var(--success);
+    }
+    
+    .connection-status.offline {
+      background: rgba(245, 158, 11, 0.1);
+      border-bottom-color: var(--warning);
+      color: var(--warning);
+    }
+    
+    .connection-status.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-bottom-color: var(--error);
+      color: var(--error);
+    }
+    
     /* Simple Header */
     .simple-header {
       position: fixed;
-      top: 0;
+      top: 35px;
       left: 0;
       right: 0;
       z-index: 1000;
@@ -299,267 +338,6 @@
       font-size: 0.9rem;
     }
 
-    /* Photo Capture Button - Subtle styling */
-    .photo-btn {
-      position: relative;
-    }
-
-    .photo-btn::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 120%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-secondary);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.7rem;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--transition-fast);
-      z-index: 1001;
-    }
-
-    .photo-btn:hover::after {
-      opacity: 1;
-    }
-
-    /* Photo count indicator */
-    .photo-count {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--accent-teal);
-      color: var(--bg-primary);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.2rem 0.4rem;
-      border-radius: 50px;
-      min-width: 16px;
-      text-align: center;
-      display: none;
-    }
-
-    .photo-count.show {
-      display: block;
-    }
-
-    /* Full-Screen Photo Capture Modal */
-    .photo-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: var(--bg-primary);
-      z-index: 2000;
-      display: none;
-      flex-direction: column;
-    }
-
-    .photo-modal.active {
-      display: flex;
-    }
-
-    /* Modal Header */
-    .modal-header {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-bottom: 2px solid var(--accent-teal);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .modal-close {
-      background: none;
-      border: 2px solid var(--accent-teal);
-      color: var(--accent-teal);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: all var(--transition-fast);
-    }
-
-    .modal-close:hover {
-      background: var(--accent-teal);
-      color: white;
-      transform: rotate(90deg) scale(1.1);
-    }
-
-    /* Camera Container */
-    .camera-container {
-      flex: 1;
-      display: flex;
-      position: relative;
-      background: #000;
-    }
-
-    .camera-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .camera-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .camera-circle {
-      width: 200px;
-      height: 200px;
-      border: 3px solid var(--accent-teal);
-      border-radius: 50%;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-      animation: pulse 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulse {
-      0% { border-color: var(--accent-teal); }
-      100% { border-color: var(--accent-gold); }
-    }
-
-    /* Camera Controls */
-    .camera-controls {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-top: 2px solid var(--accent-teal);
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .current-student {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      backdrop-filter: var(--blur);
-      flex: 1;
-      max-width: 300px;
-    }
-
-    .student-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.75rem;
-      color: var(--text-primary);
-      font-size: 1rem;
-      outline: none;
-      transition: all var(--transition-fast);
-    }
-
-    .student-input:focus {
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
-    }
-
-    .capture-btn {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      color: var(--bg-primary);
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      transition: all var(--transition-fast);
-      box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
-    }
-
-    .capture-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
-    }
-
-    .capture-btn:active {
-      transform: scale(1.05);
-    }
-
-    .capture-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Student Gallery */
-    .student-gallery {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem;
-      backdrop-filter: var(--blur);
-      max-width: 400px;
-      max-height: 120px;
-      overflow-x: auto;
-      overflow-y: hidden;
-    }
-
-    .gallery-scroll {
-      display: flex;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-
-    .student-photo {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-teal);
-      box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-
-    .student-photo:hover {
-      transform: scale(1.1);
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 15px rgba(244, 162, 97, 0.5);
-    }
-
-    .gallery-empty {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-align: center;
-      padding: 1rem;
-    }
-
     /* Success notification */
     .success-notification {
       position: fixed;
@@ -705,21 +483,6 @@
         min-width: 70px;
         padding: 0.6rem;
       }
-
-      .camera-controls {
-        padding: 1rem;
-        gap: 1rem;
-      }
-
-      .current-student {
-        max-width: none;
-      }
-
-      .capture-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-      }
     }
   </style>
 </head>
@@ -727,11 +490,16 @@
   <!-- Enhanced Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">
+    <i class="fas fa-wifi"></i> Connecting to Supabase...
+  </div>
+  
   <!-- Simple Header -->
   <header class="simple-header">
     <div class="brand-name">INTUITY</div>
     <div class="author-name">by Majid Nashtai</div>
-    <div class="simple-subtitle">TEACHER QUESTION CREATOR</div>
+    <div class="simple-subtitle">TEACHER QUESTION CREATOR (SUPABASE)</div>
   </header>
   
   <!-- Main Container -->
@@ -750,7 +518,7 @@
     </div>
   </div>
 
-  <!-- Minimalist Footer with Photo Button -->
+  <!-- Minimalist Footer -->
   <div class="simple-footer">
     <div class="footer-content">
       <button class="footer-btn" id="clearBtn">
@@ -772,13 +540,6 @@
         <i class="fas fa-share-alt"></i>
         <span>Share</span>
       </button>
-
-      <!-- NEW: Photo Capture Button -->
-      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Capture Student Photos">
-        <i class="fas fa-camera"></i>
-        <span>Photos</span>
-        <div class="photo-count" id="photoCount">0</div>
-      </button>
       
       <button class="footer-btn" id="qrBtn">
         <i class="fas fa-qrcode"></i>
@@ -792,50 +553,10 @@
     </div>
   </div>
 
-  <!-- Full-Screen Photo Capture Modal -->
-  <div class="photo-modal" id="photoModal">
-    <div class="modal-header">
-      <div class="modal-title">📸 INTUITY Photo Capture</div>
-      <button class="modal-close" id="closePhotoModal">&times;</button>
-    </div>
-
-    <div class="camera-container">
-      <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
-      <canvas id="photoCanvas" style="display: none;"></canvas>
-      
-      <div class="camera-overlay">
-        <div class="camera-circle"></div>
-      </div>
-    </div>
-
-    <div class="camera-controls">
-      <div class="current-student">
-        <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Student Name:</label>
-        <input 
-          type="text" 
-          class="student-input" 
-          id="currentStudentName" 
-          placeholder="Enter student's name..."
-          maxlength="50"
-        />
-      </div>
-
-      <button class="capture-btn" id="captureBtn" disabled>
-        <i class="fas fa-camera"></i>
-      </button>
-
-      <div class="student-gallery">
-        <div class="gallery-scroll" id="galleryScroll">
-          <div class="gallery-empty">No photos captured yet</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Success Notification -->
   <div class="success-notification" id="successNotification">
     <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-    Question published successfully!<br>
+    Question published successfully to Supabase!<br>
     Students can now access and respond to your question.
   </div>
 
@@ -857,17 +578,93 @@
     </div>
   </div>
 
+  <!-- Include the Supabase Data Layer -->
   <script>
-    let currentQuestion = null;
-    let studentPhotos = []; // Array to store captured photos
-    let cameraStream = null;
+    // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
 
-    // Configuration object for easy path management
-    const CONFIG = {
-      studentPath: '../../students/answers/',
-      analyticsPath: '../../visualisation/',
-      baseURL: window.location.origin + window.location.pathname.replace('/teachers/questions/index.html', '/')
-    };
+    // Supabase client
+    let supabase;
+    let intuityData;
+    let currentQuestion = null;
+
+    // Connection status
+    let isConnected = false;
+    let isOnline = navigator.onLine;
+
+    // Initialize Supabase
+    function initSupabase() {
+      try {
+        if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+          throw new Error('Please configure your Supabase credentials');
+        }
+
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        testConnection();
+        return true;
+      } catch (error) {
+        console.error('❌ Error initializing Supabase:', error);
+        updateConnectionStatus('error', 'Configuration Error - Check credentials');
+        return false;
+      }
+    }
+
+    // Test Supabase connection
+    async function testConnection() {
+      try {
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        
+        if (error) throw error;
+        
+        isConnected = true;
+        updateConnectionStatus('connected', 'Connected to Supabase Database');
+        console.log('✅ Supabase connection test successful');
+        
+        // Initialize data layer
+        initDataLayer();
+        
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+        isConnected = false;
+        updateConnectionStatus('error', 'Database Connection Failed - Using offline mode');
+      }
+    }
+
+    // Initialize data layer
+    function initDataLayer() {
+      intuityData = new INTUITYDataLayer();
+      console.log('✅ INTUITY Data Layer initialized');
+    }
+
+    // Update connection status UI
+    function updateConnectionStatus(status, message) {
+      const statusElement = document.getElementById('connectionStatus');
+      
+      statusElement.className = `connection-status ${status}`;
+      
+      const icons = {
+        connected: 'fas fa-check-circle',
+        offline: 'fas fa-wifi',
+        error: 'fas fa-exclamation-triangle'
+      };
+      
+      statusElement.innerHTML = `<i class="${icons[status]}"></i> ${message}`;
+    }
+
+    // Monitor online/offline status
+    window.addEventListener('online', () => {
+      isOnline = true;
+      updateConnectionStatus('connected', 'Back online - Reconnecting to Supabase...');
+      testConnection();
+    });
+
+    window.addEventListener('offline', () => {
+      isOnline = false;
+      updateConnectionStatus('offline', 'Offline - Questions will be saved locally');
+    });
 
     // Enhanced constellation
     function createConstellation() {
@@ -882,6 +679,158 @@
         star.style.animationDelay = Math.random() * 4 + 's';
         star.style.animationDuration = (3 + Math.random() * 4) + 's';
         constellation.appendChild(star);
+      }
+    }
+
+    // Data Access Layer for INTUITY with Supabase
+    class INTUITYDataLayer {
+      constructor() {
+        this.isOnline = navigator.onLine;
+        this.setupOfflineHandling();
+      }
+
+      setupOfflineHandling() {
+        window.addEventListener('online', () => {
+          this.isOnline = true;
+          console.log('🌐 Back online - syncing data...');
+          this.syncOfflineData();
+        });
+
+        window.addEventListener('offline', () => {
+          this.isOnline = false;
+          console.log('📱 Offline mode activated');
+        });
+      }
+
+      async fallbackToLocalStorage(operation, data, key) {
+        console.log(`📱 Using localStorage fallback for ${operation}`);
+        
+        switch (operation) {
+          case 'get':
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : null;
+          case 'set':
+            localStorage.setItem(key, JSON.stringify(data));
+            return data;
+          case 'getArray':
+            const storedArray = localStorage.getItem(key);
+            return storedArray ? JSON.parse(storedArray) : [];
+          default:
+            return null;
+        }
+      }
+
+      async syncOfflineData() {
+        const offlineQuestions = localStorage.getItem('offline_questions');
+        
+        try {
+          if (offlineQuestions) {
+            const questions = JSON.parse(offlineQuestions);
+            for (const question of questions) {
+              await this.createQuestion(question);
+            }
+            localStorage.removeItem('offline_questions');
+            console.log('✅ Offline questions synced');
+          }
+        } catch (error) {
+          console.error('❌ Error syncing offline data:', error);
+        }
+      }
+
+      async createQuestion(questionData) {
+        if (!this.isOnline || !isConnected) {
+          // Store offline
+          const offlineQuestions = JSON.parse(localStorage.getItem('offline_questions') || '[]');
+          const questionWithId = {
+            ...questionData,
+            id: Date.now(),
+            offline_created: new Date().toISOString()
+          };
+          offlineQuestions.push(questionWithId);
+          localStorage.setItem('offline_questions', JSON.stringify(offlineQuestions));
+          
+          // Also store in legacy format
+          localStorage.setItem('current_question', JSON.stringify(questionWithId));
+          
+          return questionWithId;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('questions')
+            .insert([{
+              text: questionData.text,
+              question_type: questionData.type || 'open-ended',
+              is_published: questionData.published || false,
+              published_at: questionData.published ? new Date().toISOString() : null,
+              has_photos: questionData.hasPhotos || false,
+              photo_count: questionData.photoCount || 0,
+              settings: questionData.settings || {},
+              metadata: questionData.metadata || {}
+            }])
+            .select();
+
+          if (error) throw error;
+
+          console.log('✅ Question created in Supabase:', data[0]);
+          
+          // Also update localStorage for backward compatibility
+          this.updateLocalStorageQuestions(data[0]);
+          localStorage.setItem('current_question', JSON.stringify(data[0]));
+          
+          return data[0];
+        } catch (error) {
+          console.error('❌ Error creating question:', error);
+          throw error;
+        }
+      }
+
+      async publishQuestion(questionId) {
+        if (!this.isOnline || !isConnected) {
+          console.log('📱 Cannot publish question while offline');
+          throw new Error('Cannot publish while offline');
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('questions')
+            .update({
+              is_published: true,
+              published_at: new Date().toISOString()
+            })
+            .eq('id', questionId)
+            .select();
+
+          if (error) throw error;
+
+          console.log('✅ Question published:', data[0]);
+          
+          // Update localStorage
+          this.updateLocalStorageQuestions(data[0]);
+          localStorage.setItem('current_question', JSON.stringify(data[0]));
+          
+          return data[0];
+        } catch (error) {
+          console.error('❌ Error publishing question:', error);
+          throw error;
+        }
+      }
+
+      updateLocalStorageQuestions(question) {
+        try {
+          const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          const index = existingQuestions.findIndex(q => q.id === question.id);
+          
+          if (index >= 0) {
+            existingQuestions[index] = question;
+          } else {
+            existingQuestions.push(question);
+          }
+          
+          localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
+        } catch (error) {
+          console.error('Error updating localStorage questions:', error);
+        }
       }
     }
 
@@ -910,181 +859,10 @@
         document.getElementById('questionInput').value = draft;
         handleQuestionInput();
       }
-
-      // Load existing photos
-      const savedPhotos = localStorage.getItem('student_photos');
-      if (savedPhotos) {
-        try {
-          studentPhotos = JSON.parse(savedPhotos);
-          updatePhotoCount();
-          updateGallery();
-        } catch (e) {
-          console.error('Error loading photos:', e);
-        }
-      }
     }
 
-    // Photo capture functionality
-    async function startCamera() {
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
-            facingMode: 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          } 
-        });
-        
-        const video = document.getElementById('cameraVideo');
-        video.srcObject = cameraStream;
-        
-        // Enable capture button when video is ready
-        video.addEventListener('loadedmetadata', () => {
-          document.getElementById('captureBtn').disabled = false;
-        });
-        
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        alert('Could not access camera. Please check permissions.');
-      }
-    }
-
-    function stopCamera() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-      }
-    }
-
-    function openPhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.add('active');
-      startCamera();
-    }
-
-    function closePhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.remove('active');
-      stopCamera();
-      document.getElementById('currentStudentName').value = '';
-      document.getElementById('captureBtn').disabled = true;
-    }
-
-    function capturePhoto() {
-      const video = document.getElementById('cameraVideo');
-      const canvas = document.getElementById('photoCanvas');
-      const studentName = document.getElementById('currentStudentName').value.trim();
-      
-      if (!studentName) {
-        alert('Please enter the student\'s name before capturing.');
-        document.getElementById('currentStudentName').focus();
-        return;
-      }
-      
-      // Set canvas dimensions to match video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      // Draw video frame to canvas
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0);
-      
-      // Convert to base64
-      const photoDataURL = canvas.toDataURL('image/jpeg', 0.8);
-      
-      // Create photo object
-      const photoData = {
-        id: Date.now(),
-        name: studentName,
-        photo: photoDataURL,
-        timestamp: new Date().toLocaleString()
-      };
-      
-      // Add to photos array
-      studentPhotos.push(photoData);
-      
-      // Save to localStorage
-      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
-      
-      // Update UI
-      updatePhotoCount();
-      updateGallery();
-      
-      // Clear input for next student
-      document.getElementById('currentStudentName').value = '';
-      document.getElementById('currentStudentName').focus();
-      
-      // Success feedback
-      showPhotoSuccess(studentName);
-      
-      console.log(`Photo captured for ${studentName}`);
-    }
-
-    function updatePhotoCount() {
-      const countElement = document.getElementById('photoCount');
-      const count = studentPhotos.length;
-      
-      countElement.textContent = count;
-      countElement.classList.toggle('show', count > 0);
-    }
-
-    function updateGallery() {
-      const galleryScroll = document.getElementById('galleryScroll');
-      
-      if (studentPhotos.length === 0) {
-        galleryScroll.innerHTML = '<div class="gallery-empty">No photos captured yet</div>';
-        return;
-      }
-      
-      galleryScroll.innerHTML = studentPhotos.map(photo => `
-        <img 
-          src="${photo.photo}" 
-          alt="${photo.name}"
-          class="student-photo"
-          title="${photo.name} - ${photo.timestamp}"
-          onclick="removePhoto(${photo.id})"
-        />
-      `).join('');
-    }
-
-    function removePhoto(photoId) {
-      if (confirm('Remove this photo?')) {
-        studentPhotos = studentPhotos.filter(p => p.id !== photoId);
-        localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
-        updatePhotoCount();
-        updateGallery();
-      }
-    }
-
-    function showPhotoSuccess(studentName) {
-      // Create temporary success message
-      const successDiv = document.createElement('div');
-      successDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(16, 185, 129, 0.15);
-        border: 2px solid var(--success);
-        border-radius: 12px;
-        padding: 1rem 2rem;
-        color: var(--success);
-        font-weight: 600;
-        z-index: 2001;
-        backdrop-filter: blur(20px);
-        animation: fadeInOut 3s ease-in-out;
-      `;
-      successDiv.innerHTML = `<i class="fas fa-camera"></i> Photo captured for ${studentName}!`;
-      
-      document.body.appendChild(successDiv);
-      
-      setTimeout(() => {
-        document.body.removeChild(successDiv);
-      }, 3000);
-    }
-
-    // Publish question function
-    function publishQuestion() {
+    // Publish question function with Supabase
+    async function publishQuestion() {
       const questionText = document.getElementById('questionInput').value.trim();
       
       if (!questionText || questionText.length < 10) {
@@ -1098,55 +876,47 @@
       publishBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Publishing...</span>';
       publishBtn.disabled = true;
 
-      const question = {
-        id: Date.now(),
-        text: questionText,
-        timestamp: new Date().toISOString(),
-        createdBy: 'teacher',
-        type: 'open-ended',
-        published: true,
-        publishedAt: new Date().toISOString(),
-        hasPhotos: studentPhotos.length > 0,
-        photoCount: studentPhotos.length
-      };
-
-      setTimeout(() => {
-        try {
-          const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
-          existingQuestions.push(question);
-          
-          localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
-          localStorage.setItem('current_question', JSON.stringify(question));
-          localStorage.setItem('intuity_questions', JSON.stringify(existingQuestions));
-
-          // Link photos to the question
-          if (studentPhotos.length > 0) {
-            const questionPhotos = {
-              questionId: question.id,
-              photos: studentPhotos
-            };
-            localStorage.setItem(`photos_${question.id}`, JSON.stringify(questionPhotos));
+      try {
+        // Create and publish question
+        const questionData = {
+          text: questionText,
+          type: 'open-ended',
+          published: true,
+          hasPhotos: false,
+          photoCount: 0,
+          settings: {},
+          metadata: {
+            createdBy: 'teacher',
+            createdAt: new Date().toISOString()
           }
+        };
 
-          localStorage.removeItem('question_draft');
-          currentQuestion = question;
+        const question = await intuityData.createQuestion(questionData);
+        currentQuestion = question;
 
-          console.log('Question published with photos:', question);
+        console.log('Question published:', question);
+        localStorage.removeItem('question_draft');
+
+        showSuccessNotification();
+
+        setTimeout(() => {
+          document.getElementById('questionInput').value = '';
+          handleQuestionInput();
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error publishing question:', error);
+        
+        if (!isOnline) {
+          alert('Question saved offline. It will be published when connection is restored.');
           showSuccessNotification();
-
-          setTimeout(() => {
-            document.getElementById('questionInput').value = '';
-            handleQuestionInput();
-          }, 2000);
-
-        } catch (error) {
-          console.error('Error publishing question:', error);
+        } else {
           alert('Error publishing question. Please try again.');
-        } finally {
-          publishBtn.innerHTML = originalContent;
-          publishBtn.disabled = false;
         }
-      }, 1500);
+      } finally {
+        publishBtn.innerHTML = originalContent;
+        publishBtn.disabled = false;
+      }
     }
 
     function showSuccessNotification() {
@@ -1189,7 +959,9 @@
         return;
       }
 
-      const studentURL = CONFIG.baseURL + CONFIG.studentPath;
+      // Update this URL to match your deployment
+      const baseURL = window.location.origin;
+      const studentURL = `${baseURL}/students/answers/`;
       
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(studentURL).then(() => {
@@ -1234,8 +1006,8 @@
       
       modal.style.display = 'flex';
       
-      const baseStudentURL = CONFIG.baseURL + CONFIG.studentPath;
-      const studentURL = `${baseStudentURL}?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
+      const baseURL = window.location.origin;
+      const studentURL = `${baseURL}/students/answers/?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
       
       setTimeout(() => {
@@ -1248,13 +1020,24 @@
     }
 
     function openAnalytics() {
-      window.location.href = CONFIG.analyticsPath;
+      window.location.href = '../../visualisation/';
     }
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 INTUITY Teacher Interface with Supabase initializing...');
+      
       createConstellation();
-      loadDraft();
+      
+      // Initialize Supabase
+      if (initSupabase()) {
+        loadDraft();
+      } else {
+        // Fallback to localStorage mode
+        updateConnectionStatus('error', 'Supabase not configured - Using offline mode');
+        intuityData = new INTUITYDataLayer();
+        loadDraft();
+      }
       
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
@@ -1266,23 +1049,7 @@
       document.getElementById('clearBtn').addEventListener('click', clearQuestion);
       document.getElementById('editBtn').addEventListener('click', editQuestion);
       document.getElementById('publishBtn').addEventListener('click', publishQuestion);
-      
-      const shareLinkBtn = document.getElementById('shareLinkBtn');
-      if (shareLinkBtn) {
-        shareLinkBtn.addEventListener('click', shareStudentLink);
-      }
-
-      // NEW: Photo capture event listeners
-      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
-      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
-      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
-      
-      // Student name input validation
-      document.getElementById('currentStudentName').addEventListener('input', (e) => {
-        const captureBtn = document.getElementById('captureBtn');
-        captureBtn.disabled = !e.target.value.trim() || !cameraStream;
-      });
-      
+      document.getElementById('shareLinkBtn').addEventListener('click', shareStudentLink);
       document.getElementById('qrBtn').addEventListener('click', generateQR);
       document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
       
@@ -1290,13 +1057,6 @@
       document.getElementById('qrModal').addEventListener('click', (e) => {
         if (e.target.id === 'qrModal') {
           closeQRModal();
-        }
-      });
-
-      // Close photo modal on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('photoModal').classList.contains('active')) {
-          closePhotoModal();
         }
       });
 
@@ -1308,7 +1068,7 @@
         }
       }, 30000);
 
-      console.log('Teacher Question Creator with Photo Capture initialized!');
+      console.log('✅ Teacher Question Creator with Supabase initialized!');
     });
   </script>
 </body>
