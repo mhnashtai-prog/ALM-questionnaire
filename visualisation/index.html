@@ -804,12 +804,21 @@
         return;
       }
 
-      // Filter responses for current question
-      const questionResponses = allResponses.filter(response => {
-        return response.questionId === currentSelectedQuestion.id || 
-               response.questionId === currentSelectedQuestion.text ||
-               (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0);
-      });
+   // Updated filtering logic - should replace the current filter
+const questionResponses = allResponses.filter(response => {
+  return (
+    // Match by numeric ID
+    response.questionId === currentSelectedQuestion.id ||
+    // Match by question text
+    response.questionId === currentSelectedQuestion.text ||
+    // Match question text to response's questionText field
+    response.questionText === currentSelectedQuestion.text ||
+    // Handle cases where questionId might be stored as string
+    response.questionId == currentSelectedQuestion.id || // Loose equality
+    // Fallback for legacy data
+    (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0)
+  );
+});
 
       console.log(`📊 Found ${questionResponses.length} responses for current question`);
 
