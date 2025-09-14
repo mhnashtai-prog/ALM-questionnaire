@@ -23,6 +23,7 @@
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       --accent-red: #ef4444;
       --success: #10b981;
+      --warning: #f59e0b;
     }
 
     * {
@@ -77,6 +78,33 @@
       max-width: 1000px;
       margin: 0 auto;
       padding: 2rem;
+    }
+
+    /* Compact Status Box */
+    .status-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+      text-align: center;
+    }
+
+    .status-title {
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .status-title span {
+      color: var(--accent-teal);
+      font-weight: 700;
     }
 
     /* Question Selector Box */
@@ -155,6 +183,120 @@
       line-height: 1.6;
       max-width: 600px;
       margin: 0 auto;
+    }
+
+    /* Responses Box */
+    .responses-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--blur);
+    }
+
+    .responses-title {
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .response-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      backdrop-filter: var(--blur);
+      transition: all 0.3s ease;
+    }
+
+    .response-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-teal);
+      box-shadow: 0 8px 25px rgba(45, 212, 191, 0.2);
+    }
+
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .quality-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .quality-badge.excellent {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .quality-badge.good {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+
+    .quality-badge.needs-work {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+    }
+
+    .response-text {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .response-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .no-responses {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    .no-responses-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    .no-data-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
 
     /* Display Mode Selection */
@@ -289,262 +431,18 @@
       transform: translateY(-2px);
     }
 
-    .footer-btn.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
-      color: #000;
-    }
-
-    .footer-btn.delete-btn {
-      background: rgba(239, 68, 68, 0.1);
-      border-color: var(--accent-red);
-      color: var(--accent-red);
-    }
-
-    .footer-btn.delete-btn:hover {
-      background: var(--accent-red);
-      color: white;
-    }
-
-    .footer-btn.delete-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Photo Button Styling */
-    .photo-btn::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 120%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-secondary);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.7rem;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 1001;
-    }
-
-    .photo-btn:hover::after {
-      opacity: 1;
-    }
-
-    .photo-count {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--accent-teal);
-      color: var(--bg-primary);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.2rem 0.4rem;
-      border-radius: 50px;
-      min-width: 16px;
-      text-align: center;
-      display: none;
-    }
-
-    .photo-count.show {
-      display: block;
-    }
-
-    .footer-btn i {
-      font-size: 1rem;
-    }
-
-    /* Photo Management Modal */
-    .photo-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(26, 35, 50, 0.98);
-      backdrop-filter: var(--blur);
-      z-index: 2000;
-      display: none;
-      flex-direction: column;
-    }
-
-    .photo-modal.active {
-      display: flex;
-    }
-
-    .modal-header {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-bottom: 2px solid var(--accent-teal);
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .modal-close {
-      background: none;
-      border: 2px solid var(--accent-teal);
-      color: var(--accent-teal);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .modal-close:hover {
-      background: var(--accent-teal);
-      color: white;
-      transform: rotate(90deg) scale(1.1);
-    }
-
-    .photo-gallery-container {
-      flex: 1;
-      padding: 2rem;
-      overflow-y: auto;
-    }
-
-    .gallery-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .gallery-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 1rem;
-    }
-
-    .gallery-subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .student-photo-card {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .student-photo-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent-teal);
-      box-shadow: 0 10px 30px rgba(45, 212, 191, 0.3);
-    }
-
-    .student-photo-large {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--accent-teal);
-      margin-bottom: 1rem;
-      box-shadow: 0 5px 15px rgba(45, 212, 191, 0.3);
-    }
-
-    .student-card-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .student-card-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .gallery-empty {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-muted);
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-actions {
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      border-top: 2px solid var(--accent-teal);
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .modal-btn {
-      background: var(--card-bg);
-      border: 2px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem 2rem;
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .modal-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-    }
-
-    .modal-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+    .footer-btn.refresh {
+      background: linear-gradient(135deg, var(--accent-teal), var(--intuity-gold));
       border: none;
       color: var(--bg-primary);
     }
 
-    .modal-btn.danger {
-      border-color: var(--accent-red);
-      color: var(--accent-red);
+    .footer-btn.refresh:hover {
+      background: linear-gradient(135deg, var(--intuity-gold), var(--accent-teal));
     }
 
-    .modal-btn.danger:hover {
-      background: var(--accent-red);
-      color: white;
+    .footer-btn i {
+      font-size: 1rem;
     }
 
     /* Mobile Responsive */
@@ -553,9 +451,19 @@
         padding: 1rem;
       }
 
+      .status-box {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .status-title {
+        font-size: 0.9rem;
+      }
+
       .question-box,
       .display-box,
-      .current-question-box {
+      .current-question-box,
+      .responses-box {
         padding: 1.25rem;
         margin-bottom: 1.25rem;
       }
@@ -602,16 +510,6 @@
       .current-question-text {
         font-size: 1rem;
       }
-
-      .modal-actions {
-        padding: 1rem;
-        gap: 1rem;
-      }
-
-      .modal-btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-      }
     }
 
     @media (max-width: 480px) {
@@ -637,95 +535,6 @@
         line-height: 1.1;
       }
     }
-
-    /* Delete Confirmation Modal */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-
-    .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      backdrop-filter: var(--blur);
-      max-width: 500px;
-      margin: 1rem;
-      text-align: center;
-    }
-
-    .modal h3 {
-      color: var(--accent-red);
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-    }
-
-    .modal p {
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    .modal-btn-small {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .modal-btn-small.danger {
-      background: var(--accent-red);
-      border-color: var(--accent-red);
-      color: white;
-    }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: 1rem 1.5rem;
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      z-index: 2000;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-      max-width: 300px;
-    }
-
-    .notification.show {
-      transform: translateX(0);
-    }
-
-    .notification.success {
-      border-color: var(--accent-teal);
-      color: var(--accent-teal);
-    }
-
-    .notification.error {
-      border-color: var(--accent-red);
-      color: var(--accent-red);
-    }
   </style>
 </head>
 
@@ -738,31 +547,43 @@
 
   <div class="container">
     
+    <!-- Compact Status Overview -->
+    <div class="status-box">
+      <div class="status-title">
+        <i class="fas fa-users"></i>
+        <span id="totalResponses">0</span> Student Responses
+      </div>
+    </div>
+    
     <!-- Question Selector -->
     <div class="question-box">
       <div class="question-title">
         <i class="fas fa-question-circle"></i>
-        Select Question to Display
+        Select Question to Analyze
       </div>
       <select class="question-dropdown" id="questionSelector">
-        <option value="1">Question 1: How has digital technology impacted your daily learning?</option>
-        <option value="2">Question 2: Compare online vs traditional classroom learning methods</option>
-        <option value="3">Question 3: What are the most effective language learning strategies?</option>
-        <option value="4">Question 4: How can we better understand different cultures?</option>
-        <option value="5">Question 5: What motivates you most in your learning journey?</option>
-        <option value="6">Question 6: Describe your ideal assessment method</option>
-        <option value="7">Question 7: How do you see the future of education?</option>
-        <option value="8">Question 8: What role should technology play in classrooms?</option>
+        <option value="">No questions available - Create one first</option>
       </select>
     </div>
 
     <!-- Current Question Display -->
-    <div class="current-question-box">
+    <div class="current-question-box" id="currentQuestionBox" style="display: none;">
       <div class="current-question-title" id="currentQuestionTitle">
-        Question 1: How has digital technology impacted your daily learning?
+        Select a question to view details
       </div>
-      <div class="current-question-text">
+      <div class="current-question-text" id="currentQuestionText">
         This question will be displayed to students in your chosen presentation mode
+      </div>
+    </div>
+
+    <!-- Student Responses -->
+    <div class="responses-box" id="responsesBox" style="display: none;">
+      <div class="responses-title">
+        <i class="fas fa-comments"></i>
+        Student Responses (<span id="responseCount">0</span>)
+      </div>
+      <div id="responsesList">
+        <!-- Responses will be populated here -->
       </div>
     </div>
 
@@ -814,7 +635,7 @@
           <div class="display-btn-desc">Interactive floating cards that can be dragged and arranged</div>
         </a>
 
-        <a href="../displays/display4.htm" class="display-btn" target="_blank">
+        <a href="../displays/display4.html" class="display-btn" target="_blank">
           <svg class="doodle" viewBox="0 0 80 80">
             <circle cx="40" cy="40" r="6" fill="currentColor" />
             <circle cx="40" cy="40" r="15" fill="none" />
@@ -841,18 +662,16 @@
         <i class="fas fa-plus"></i>
         <span>Create Question</span>
       </a>
-
-      <!-- NEW: Photo Management Button -->
-      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Manage Student Photos">
-        <i class="fas fa-camera"></i>
-        <span>Photos</span>
-        <div class="photo-count" id="photoCount">0</div>
+      
+      <button class="footer-btn refresh" onclick="refreshData()" id="refreshBtn">
+        <i class="fas fa-sync"></i>
+        <span>Refresh Data</span>
       </button>
       
-      <button class="footer-btn delete-btn" onclick="confirmDeleteCurrentQuestion()" id="deleteBtn" disabled>
-        <i class="fas fa-trash"></i>
-        <span>Delete Question</span>
-      </button>
+      <a href="../displays/" class="footer-btn">
+        <i class="fas fa-tv"></i>
+        <span>Display Hub</span>
+      </a>
       
       <a href="../" class="footer-btn">
         <i class="fas fa-home"></i>
@@ -861,321 +680,267 @@
     </div>
   </footer>
 
-  <!-- Photo Management Modal -->
-  <div class="photo-modal" id="photoModal">
-    <div class="modal-header">
-      <div class="modal-title">📸 Student Photo Gallery</div>
-      <button class="modal-close" id="closePhotoModal">&times;</button>
-    </div>
-
-    <div class="photo-gallery-container">
-      <div class="gallery-header">
-        <div class="gallery-title">Captured Student Photos</div>
-        <div class="gallery-subtitle">These photos enhance all display modes, especially the Cosmic Galaxy experience</div>
-      </div>
-
-      <div class="photo-grid" id="photoGrid">
-        <!-- Student photos will be populated here -->
-      </div>
-
-      <div class="gallery-empty" id="galleryEmpty" style="display: none;">
-        <div class="empty-icon">📷</div>
-        <div style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600;">No Photos Captured</div>
-        <div>Use the Question Creator to capture student photos for an enhanced display experience.</div>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="modal-btn" id="captureMoreBtn">
-        <i class="fas fa-camera"></i>
-        <span>Capture Photos</span>
-      </button>
-      
-      <button class="modal-btn danger" id="clearAllPhotosBtn">
-        <i class="fas fa-trash"></i>
-        <span>Clear All</span>
-      </button>
-      
-      <button class="modal-btn primary" id="viewCosmicBtn">
-        <i class="fas fa-rocket"></i>
-        <span>Cosmic Galaxy</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Delete Confirmation Modal -->
-  <div class="modal" id="delete-modal">
-    <div class="modal-content">
-      <h3><i class="fas fa-exclamation-triangle"></i> Delete Question</h3>
-      <p id="delete-confirmation-text">
-        Are you sure you want to delete this question?<br>
-        <strong>This action cannot be undone.</strong>
-      </p>
-      <div class="modal-buttons">
-        <button class="modal-btn-small" onclick="closeDeleteModal()">Cancel</button>
-        <button class="modal-btn-small danger" onclick="executeDeleteQuestion()">
-          <i class="fas fa-trash"></i> Delete Question
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notification -->
-  <div class="notification" id="notification">
-    <div id="notification-content"></div>
-  </div>
-
   <script>
-    // Question data
-    const questions = {
-      1: "How has digital technology impacted your daily learning?",
-      2: "Compare online vs traditional classroom learning methods", 
-      3: "What are the most effective language learning strategies?",
-      4: "How can we better understand different cultures?",
-      5: "What motivates you most in your learning journey?",
-      6: "Describe your ideal assessment method",
-      7: "How do you see the future of education?",
-      8: "What role should technology play in classrooms?"
-    };
+    // Global data variables
+    let allQuestions = [];
+    let allResponses = [];
+    let currentSelectedQuestion = null;
 
-    let currentSelectedQuestion = 1;
-    let studentPhotos = [];
-
-    // Load student photos
-    function loadStudentPhotos() {
+    // Load data from localStorage
+    function loadData() {
+      console.log('🔄 Loading data from localStorage...');
+      
+      // Load questions
       try {
-        const savedPhotos = localStorage.getItem('student_photos');
-        if (savedPhotos) {
-          studentPhotos = JSON.parse(savedPhotos);
-          updatePhotoCount();
-          console.log(`Loaded ${studentPhotos.length} student photos`);
+        const storedQuestions = localStorage.getItem('alm_questions');
+        if (storedQuestions) {
+          allQuestions = JSON.parse(storedQuestions);
+          console.log(`✅ Loaded ${allQuestions.length} questions`);
+        } else {
+          allQuestions = [];
+          console.log('⚠️ No questions found in localStorage');
         }
       } catch (error) {
-        console.error('Error loading student photos:', error);
-        studentPhotos = [];
+        console.error('❌ Error loading questions:', error);
+        allQuestions = [];
       }
+
+      // Load responses
+      try {
+        const storedResponses = localStorage.getItem('alm_student_responses');
+        if (storedResponses) {
+          allResponses = JSON.parse(storedResponses);
+          console.log(`✅ Loaded ${allResponses.length} responses`);
+        } else {
+          allResponses = [];
+          console.log('⚠️ No responses found in localStorage');
+        }
+      } catch (error) {
+        console.error('❌ Error loading responses:', error);
+        allResponses = [];
+      }
+
+      // Load current question
+      try {
+        const currentQuestion = localStorage.getItem('current_question');
+        if (currentQuestion) {
+          const parsed = JSON.parse(currentQuestion);
+          console.log('✅ Current question loaded:', parsed.text);
+        }
+      } catch (error) {
+        console.error('❌ Error loading current question:', error);
+      }
+
+      updateUI();
     }
 
-    function updatePhotoCount() {
-      const countElement = document.getElementById('photoCount');
-      const count = studentPhotos.length;
+    // Update all UI elements
+    function updateUI() {
+      console.log('🎨 Updating UI...');
       
-      countElement.textContent = count;
-      countElement.classList.toggle('show', count > 0);
+      updateStatusNumbers();
+      populateQuestionDropdown();
+      updateQuestionDisplay();
+      updateResponsesDisplay();
     }
 
-    function openPhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.add('active');
-      renderPhotoGallery();
+    // Update status numbers - SIMPLIFIED
+    function updateStatusNumbers() {
+      const totalResponses = allResponses.length;
+      document.getElementById('totalResponses').textContent = totalResponses;
     }
 
-    function closePhotoModal() {
-      const modal = document.getElementById('photoModal');
-      modal.classList.remove('active');
-    }
-
-    function renderPhotoGallery() {
-      const photoGrid = document.getElementById('photoGrid');
-      const galleryEmpty = document.getElementById('galleryEmpty');
-
-      if (studentPhotos.length === 0) {
-        photoGrid.innerHTML = '';
-        galleryEmpty.style.display = 'block';
+    // Populate question dropdown
+    function populateQuestionDropdown() {
+      const selector = document.getElementById('questionSelector');
+      
+      if (allQuestions.length === 0) {
+        selector.innerHTML = '<option value="">No questions available - Create one first</option>';
         return;
       }
 
-      galleryEmpty.style.display = 'none';
-      
-      photoGrid.innerHTML = studentPhotos.map(photo => `
-        <div class="student-photo-card" data-photo-id="${photo.id}" onclick="selectPhotoForRemoval(${photo.id}, '${photo.name}')">
-          <img 
-            src="${photo.photo}" 
-            alt="${photo.name}" 
-            class="student-photo-large"
-          />
-          <div class="student-card-name">${photo.name}</div>
-          <div class="student-card-meta">Captured: ${photo.timestamp}</div>
+      // Clear existing options
+      selector.innerHTML = '';
+
+      // Add questions to dropdown
+      allQuestions.forEach((question, index) => {
+        const option = document.createElement('option');
+        option.value = question.id || index;
+        option.textContent = `Question ${index + 1}: ${question.text}`;
+        selector.appendChild(option);
+      });
+
+      // Auto-select first question if none selected
+      if (!currentSelectedQuestion && allQuestions.length > 0) {
+        currentSelectedQuestion = allQuestions[0];
+        selector.value = currentSelectedQuestion.id || 0;
+      }
+    }
+
+    // Update question display
+    function updateQuestionDisplay() {
+      const questionBox = document.getElementById('currentQuestionBox');
+      const titleElement = document.getElementById('currentQuestionTitle');
+      const textElement = document.getElementById('currentQuestionText');
+
+      if (!currentSelectedQuestion) {
+        questionBox.style.display = 'none';
+        return;
+      }
+
+      questionBox.style.display = 'block';
+      titleElement.textContent = `Current Question`;
+      textElement.textContent = currentSelectedQuestion.text;
+    }
+
+    // Update responses display
+    function updateResponsesDisplay() {
+      const responsesBox = document.getElementById('responsesBox');
+      const responsesList = document.getElementById('responsesList');
+      const responseCount = document.getElementById('responseCount');
+
+      if (!currentSelectedQuestion) {
+        responsesBox.style.display = 'none';
+        return;
+      }
+
+      // Filter responses for current question
+      const questionResponses = allResponses.filter(response => {
+        return response.questionId === currentSelectedQuestion.id || 
+               response.questionId === currentSelectedQuestion.text ||
+               (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0);
+      });
+
+      console.log(`📊 Found ${questionResponses.length} responses for current question`);
+
+      responsesBox.style.display = 'block';
+      responseCount.textContent = questionResponses.length;
+
+      if (questionResponses.length === 0) {
+        responsesList.innerHTML = `
+          <div class="no-responses">
+            <div class="no-responses-icon">📝</div>
+            <div>No student responses yet for this question</div>
+            <div style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">
+              Share the question with students to start collecting responses
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Display responses
+      responsesList.innerHTML = questionResponses.map(response => `
+        <div class="response-card">
+          <div class="response-header">
+            <div class="student-name">${response.studentName || 'Anonymous Student'}</div>
+            <div class="quality-badge ${response.quality || 'needs-work'}">
+              ${(response.quality || 'needs-work').replace('-', ' ')}
+            </div>
+          </div>
+          <div class="response-text">${response.answer || 'No response text'}</div>
+          <div class="response-meta">
+            <span><i class="fas fa-clock"></i> ${response.timestamp || 'Unknown time'}</span>
+            <span><i class="fas fa-pen"></i> ${response.wordCount || 0} words</span>
+            <span><i class="fas fa-star"></i> ${response.score || 0}% score</span>
+          </div>
         </div>
       `).join('');
     }
 
-    function selectPhotoForRemoval(photoId, studentName) {
-      if (confirm(`Remove photo of ${studentName}? This will also remove them from display modes that use photos.`)) {
-        removeStudentPhoto(photoId);
-      }
-    }
-
-    function removeStudentPhoto(photoId) {
-      studentPhotos = studentPhotos.filter(p => p.id !== photoId);
-      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
-      updatePhotoCount();
-      renderPhotoGallery();
-      showNotification('Photo removed successfully', 'success');
-    }
-
-    function clearAllPhotos() {
-      if (confirm('Clear all student photos? This cannot be undone and will affect photo-enabled display modes.')) {
-        studentPhotos = [];
-        localStorage.removeItem('student_photos');
-        updatePhotoCount();
-        renderPhotoGallery();
-        showNotification('All photos cleared', 'success');
-      }
-    }
-
-    function goToQuestionCreator() {
-      window.location.href = '../teachers/questions/';
-    }
-
-    function openCosmicDisplay() {
-      if (studentPhotos.length === 0) {
-        if (confirm('No student photos captured yet. The Cosmic Galaxy will show default avatars. Continue anyway?')) {
-          window.open('../displays/display4.html', '_blank');
-        }
-      } else {
-        showNotification(`Opening Cosmic Galaxy with ${studentPhotos.length} student photos!`, 'success');
-        setTimeout(() => {
-          window.open('../displays/display4.html', '_blank');
-        }, 1000);
-      }
-    }
-
-    // Update question display when dropdown changes
-    function updateQuestion() {
+    // Handle question selection change
+    function handleQuestionChange() {
       const selector = document.getElementById('questionSelector');
       const selectedValue = selector.value;
-      const questionText = questions[selectedValue];
-      const titleElement = document.getElementById('currentQuestionTitle');
       
-      titleElement.textContent = `Question ${selectedValue}: ${questionText}`;
-      currentSelectedQuestion = parseInt(selectedValue);
+      if (!selectedValue) {
+        currentSelectedQuestion = null;
+        updateQuestionDisplay();
+        updateResponsesDisplay();
+        return;
+      }
+
+      // Find the selected question
+      currentSelectedQuestion = allQuestions.find(q => 
+        q.id == selectedValue || 
+        allQuestions.indexOf(q) == selectedValue
+      );
+
+      console.log('📋 Selected question:', currentSelectedQuestion);
       
-      document.getElementById('deleteBtn').disabled = false;
+      updateQuestionDisplay();
+      updateResponsesDisplay();
+    }
+
+    // Refresh data
+    function refreshData() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      const originalContent = refreshBtn.innerHTML;
       
-      console.log(`Teacher selected: Question ${selectedValue}`);
+      refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
+      
+      setTimeout(() => {
+        loadData();
+        refreshBtn.innerHTML = originalContent;
+        console.log('✅ Data refreshed');
+        
+        // Show notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: rgba(45, 212, 191, 0.1);
+          border: 1px solid var(--accent-teal);
+          color: var(--accent-teal);
+          padding: 1rem 1.5rem;
+          border-radius: 8px;
+          backdrop-filter: blur(20px);
+          z-index: 1000;
+          transition: all 0.3s ease;
+        `;
+        notification.innerHTML = '<i class="fas fa-check"></i> Data refreshed successfully!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.remove(), 300);
+        }, 2000);
+      }, 1000);
     }
 
     function showCurrentView() {
-      alert('You are currently viewing the Grid View (Analytics Dashboard)');
+      alert('You are currently viewing the Analytics Dashboard with real-time data!');
     }
 
-    // Delete functionality
-    function confirmDeleteCurrentQuestion() {
-      const questionText = questions[currentSelectedQuestion];
-      const modal = document.getElementById('delete-modal');
-      const confirmText = document.getElementById('delete-confirmation-text');
-      
-      const preview = questionText.length > 50 
-        ? questionText.substring(0, 50) + '...' 
-        : questionText;
-      
-      confirmText.innerHTML = `
-        Are you sure you want to delete this question?<br>
-        <strong>"${preview}"</strong><br><br>
-        <em>This action cannot be undone and will also delete all student responses.</em>
-      `;
-      
-      modal.style.display = 'flex';
-    }
-
-    function executeDeleteQuestion() {
-      try {
-        delete questions[currentSelectedQuestion];
+    // Auto-refresh every 30 seconds
+    function startAutoRefresh() {
+      setInterval(() => {
+        const oldResponseCount = allResponses.length;
+        loadData();
         
-        const selector = document.getElementById('questionSelector');
-        const optionToRemove = selector.querySelector(`option[value="${currentSelectedQuestion}"]`);
-        if (optionToRemove) {
-          optionToRemove.remove();
+        if (allResponses.length > oldResponseCount) {
+          console.log(`🔔 ${allResponses.length - oldResponseCount} new responses detected`);
         }
-        
-        // Remove associated data
-        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        const filteredResponses = responses.filter(r => r.questionId !== currentSelectedQuestion);
-        localStorage.setItem('alm_student_responses', JSON.stringify(filteredResponses));
-        
-        const storedQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
-        const filteredQuestions = storedQuestions.filter(q => q.id !== currentSelectedQuestion);
-        localStorage.setItem('alm_questions', JSON.stringify(filteredQuestions));
-        
-        const currentQuestionInStorage = JSON.parse(localStorage.getItem('current_question') || 'null');
-        if (currentQuestionInStorage && currentQuestionInStorage.id === currentSelectedQuestion) {
-          localStorage.removeItem('current_question');
-        }
-        
-        showNotification('Question deleted successfully', 'success');
-        closeDeleteModal();
-        
-        const remainingOptions = selector.querySelectorAll('option');
-        if (remainingOptions.length > 0) {
-          selector.value = remainingOptions[0].value;
-          updateQuestion();
-        } else {
-          document.getElementById('currentQuestionTitle').textContent = 'No questions available';
-          document.getElementById('deleteBtn').disabled = true;
-        }
-        
-      } catch (error) {
-        console.error('Error deleting question:', error);
-        showNotification('Error deleting question', 'error');
-      }
+      }, 30000);
     }
 
-    function closeDeleteModal() {
-      document.getElementById('delete-modal').style.display = 'none';
-    }
-
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      const content = document.getElementById('notification-content');
-      
-      content.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'times'}"></i> ${message}`;
-      notification.className = `notification ${type}`;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
-
-    // Initialize
+    // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('INTUITY Analytics Dashboard with Photo Management Loaded');
+      console.log('🚀 INTUITY Analytics Dashboard - CLEAN VERSION LOADED');
+      console.log('📊 Now showing only: Student Response Count');
       
-      // Load photos
-      loadStudentPhotos();
+      // Load initial data
+      loadData();
       
-      // Set up dropdown change listener
-      const selector = document.getElementById('questionSelector');
-      selector.addEventListener('change', updateQuestion);
+      // Set up event listeners
+      const questionSelector = document.getElementById('questionSelector');
+      questionSelector.addEventListener('change', handleQuestionChange);
       
-      // Initialize with first question
-      updateQuestion();
-
-      // Photo management event listeners
-      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
-      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
-      document.getElementById('captureMoreBtn').addEventListener('click', goToQuestionCreator);
-      document.getElementById('clearAllPhotosBtn').addEventListener('click', clearAllPhotos);
-      document.getElementById('viewCosmicBtn').addEventListener('click', openCosmicDisplay);
-
-      // Close modal when clicking outside
-      document.getElementById('delete-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'delete-modal') {
-          closeDeleteModal();
-        }
-      });
-
-      // Close photo modal on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          if (document.getElementById('photoModal').classList.contains('active')) {
-            closePhotoModal();
-          } else if (document.getElementById('delete-modal').style.display === 'flex') {
-            closeDeleteModal();
-          }
-        }
-      });
+      // Start auto-refresh
+      startAutoRefresh();
+      
+      console.log('✅ Analytics dashboard fully initialized and connected!');
     });
   </script>
 
