@@ -1,12 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response</title>
+  <title>INTUITY - Student Response (Supabase)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
@@ -85,10 +87,44 @@
       100% { opacity: 0.6; transform: scale(1.1); }
     }
     
+    /* Connection Status Bar */
+    .connection-status {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      transition: all var(--transition);
+    }
+    
+    .connection-status.connected {
+      background: rgba(16, 185, 129, 0.1);
+      border-bottom-color: var(--success);
+      color: var(--success);
+    }
+    
+    .connection-status.offline {
+      background: rgba(245, 158, 11, 0.1);
+      border-bottom-color: var(--warning);
+      color: var(--warning);
+    }
+    
+    .connection-status.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-bottom-color: var(--error);
+      color: var(--error);
+    }
+    
     /* Header */
     .simple-header {
       position: fixed;
-      top: 0;
+      top: 35px;
       left: 0;
       right: 0;
       z-index: 1000;
@@ -143,30 +179,6 @@
       padding: 2rem;
       z-index: 10;
       position: relative;
-    }
-    
-    /* Connection Status */
-    .connection-status {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-    
-    .connection-status.connected {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-    }
-    
-    .connection-status.disconnected {
-      border-color: var(--warning);
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--warning);
     }
     
     /* Question Container */
@@ -333,7 +345,7 @@
       background: rgba(16, 185, 129, 0.1);
     }
     
-    /* Word Counter - No Restrictions */
+    /* Word Counter */
     .word-counter-container {
       margin-bottom: 1.5rem;
       text-align: center;
@@ -353,25 +365,6 @@
       color: var(--success);
       border-color: var(--success);
       background: rgba(16, 185, 129, 0.1);
-    }
-    
-    /* Debug Info */
-    .debug-info {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-family: monospace;
-      max-height: 100px;
-      overflow-y: auto;
-      display: none;
-    }
-    
-    .debug-info.show {
-      display: block;
     }
     
     /* Validation Messages */
@@ -549,32 +542,6 @@
       font-size: 1rem;
     }
     
-    /* Debug Toggle Button */
-    .debug-toggle {
-      position: fixed;
-      bottom: 140px;
-      right: 20px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 1.2rem;
-      z-index: 999;
-      transition: var(--transition);
-    }
-    
-    .debug-toggle:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--text-primary);
-      transform: scale(1.1);
-    }
-    
     /* Loading Animation */
     .loading {
       display: inline-block;
@@ -622,11 +589,6 @@
         padding: 0.75rem 1rem;
         font-size: 0.8rem;
       }
-      
-      .debug-toggle {
-        bottom: 120px;
-        right: 10px;
-      }
     }
     
     @media (max-width: 480px) {
@@ -646,19 +608,19 @@
   <!-- Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">
+    <i class="fas fa-wifi"></i> Connecting to database...
+  </div>
+  
   <!-- Header -->
   <header class="simple-header">
     <div class="brand-name">INTUITY</div>
-    <div class="simple-subtitle">Student Response</div>
+    <div class="simple-subtitle">Student Response (Supabase)</div>
   </header>
   
   <!-- Main Container -->
   <div class="main-container">
-    
-    <!-- Connection Status -->
-    <div class="connection-status" id="connectionStatus">
-      <i class="fas fa-wifi"></i> Checking connection to teacher's question...
-    </div>
     
     <!-- Question Display -->
     <div class="question-container" id="questionContainer">
@@ -667,7 +629,7 @@
         Loading question...
       </div>
       <div class="question-instructions">
-        Please read carefully and provide your response. No word limits - express yourself freely!
+        Please read carefully and provide your response. Express yourself freely!
       </div>
     </div>
     
@@ -693,18 +655,13 @@
         <textarea 
           class="answer-input" 
           id="studentAnswer"
-          placeholder="Type your response here... Every word counts, including single letters like 'I' and 'a'!"
+          placeholder="Type your response here... Every word counts!"
           rows="6"
         ></textarea>
         
-        <!-- Word Counter - No Restrictions -->
+        <!-- Word Counter -->
         <div class="word-counter-container">
           <div class="word-counter" id="wordCounter">0 words</div>
-        </div>
-        
-        <!-- Debug Info -->
-        <div class="debug-info" id="debugInfo">
-          Words detected: []
         </div>
       </div>
       
@@ -730,7 +687,7 @@
       <div class="success-icon">✨</div>
       <div class="success-title">Response Submitted!</div>
       <div class="success-text">
-        Thank you! Your response has been sent to your teacher and will be included in the class discussion.
+        Thank you! Your response has been saved to the database and sent to your teacher.
       </div>
     </div>
     
@@ -746,16 +703,11 @@
       <div class="demo-mode">
         <div class="demo-text">
           <i class="fas fa-info-circle"></i>
-          Demo Mode: Try typing below to see how the interface works - no restrictions!
+          Demo Mode: Try typing below to see how the interface works!
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Debug Toggle -->
-  <button class="debug-toggle" id="debugToggle" title="Toggle debug info">
-    <i class="fas fa-bug"></i>
-  </button>
 
   <!-- Footer -->
   <div class="simple-footer">
@@ -778,11 +730,92 @@
   </div>
 
   <script>
+    // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
     // Global variables
+    let supabase;
+    let intuityData;
     let currentQuestion = null;
     let isSubmitted = false;
     let wordCount = 0;
-    let debugMode = false;
+    let isConnected = false;
+    let isOnline = navigator.onLine;
+
+    // Initialize Supabase
+    function initSupabase() {
+      try {
+        if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+          throw new Error('Please configure your Supabase credentials');
+        }
+
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        testConnection();
+        return true;
+      } catch (error) {
+        console.error('❌ Error initializing Supabase:', error);
+        updateConnectionStatus('error', 'Configuration Error - Using offline mode');
+        return false;
+      }
+    }
+
+    // Test Supabase connection
+    async function testConnection() {
+      try {
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        
+        if (error) throw error;
+        
+        isConnected = true;
+        updateConnectionStatus('connected', 'Connected to database');
+        console.log('✅ Supabase connection test successful');
+        
+        // Initialize data layer
+        initDataLayer();
+        
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+        isConnected = false;
+        updateConnectionStatus('error', 'Database connection failed - Using offline mode');
+        initDataLayer();
+      }
+    }
+
+    // Initialize data layer
+    function initDataLayer() {
+      intuityData = new INTUITYStudentDataLayer();
+      console.log('✅ INTUITY Student Data Layer initialized');
+    }
+
+    // Update connection status UI
+    function updateConnectionStatus(status, message) {
+      const statusElement = document.getElementById('connectionStatus');
+      
+      statusElement.className = `connection-status ${status}`;
+      
+      const icons = {
+        connected: 'fas fa-check-circle',
+        offline: 'fas fa-wifi',
+        error: 'fas fa-exclamation-triangle'
+      };
+      
+      statusElement.innerHTML = `<i class="${icons[status]}"></i> ${message}`;
+    }
+
+    // Monitor online/offline status
+    window.addEventListener('online', () => {
+      isOnline = true;
+      updateConnectionStatus('connected', 'Back online - Reconnecting...');
+      testConnection();
+    });
+
+    window.addEventListener('offline', () => {
+      isOnline = false;
+      updateConnectionStatus('offline', 'Offline - Responses will be saved locally');
+    });
 
     // Create constellation background
     function createConstellation() {
@@ -800,21 +833,194 @@
       }
     }
 
-    // Update connection status
-    function updateConnectionStatus(isConnected, message = '') {
-      const statusElement = document.getElementById('connectionStatus');
-      
-      if (isConnected) {
-        statusElement.className = 'connection-status connected';
-        statusElement.innerHTML = `<i class="fas fa-check-circle"></i> Connected - ${message || 'Question loaded successfully'}`;
-      } else {
-        statusElement.className = 'connection-status disconnected';
-        statusElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message || 'No connection to teacher question'}`;
+    // Student Data Access Layer for Supabase
+    class INTUITYStudentDataLayer {
+      constructor() {
+        this.isOnline = navigator.onLine;
+        this.setupOfflineHandling();
+      }
+
+      setupOfflineHandling() {
+        window.addEventListener('online', () => {
+          this.isOnline = true;
+          console.log('🌐 Back online - syncing data...');
+          this.syncOfflineData();
+        });
+
+        window.addEventListener('offline', () => {
+          this.isOnline = false;
+          console.log('📱 Offline mode activated');
+        });
+      }
+
+      async fallbackToLocalStorage(operation, data, key) {
+        console.log(`📱 Using localStorage fallback for ${operation}`);
+        
+        switch (operation) {
+          case 'get':
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : null;
+          case 'set':
+            localStorage.setItem(key, JSON.stringify(data));
+            return data;
+          default:
+            return null;
+        }
+      }
+
+      async syncOfflineData() {
+        const offlineResponses = localStorage.getItem('offline_responses');
+        
+        try {
+          if (offlineResponses) {
+            const responses = JSON.parse(offlineResponses);
+            for (const response of responses) {
+              await this.submitResponse(response);
+            }
+            localStorage.removeItem('offline_responses');
+            console.log('✅ Offline responses synced');
+          }
+        } catch (error) {
+          console.error('❌ Error syncing offline data:', error);
+        }
+      }
+
+      async getCurrentQuestion() {
+        if (!this.isOnline || !isConnected) {
+          return this.fallbackToLocalStorage('get', null, 'current_question');
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('is_published', true)
+            .order('published_at', { ascending: false })
+            .limit(1);
+
+          if (error) throw error;
+
+          const currentQuestion = data[0] || null;
+          
+          if (currentQuestion) {
+            // Update localStorage for offline access
+            localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+            console.log('✅ Current question retrieved from Supabase:', currentQuestion);
+          }
+          
+          return currentQuestion;
+        } catch (error) {
+          console.error('❌ Error fetching current question:', error);
+          return this.fallbackToLocalStorage('get', null, 'current_question');
+        }
+      }
+
+      async getQuestionById(questionId) {
+        if (!this.isOnline || !isConnected) {
+          // Try to find in localStorage
+          const storedQuestions = localStorage.getItem('alm_questions');
+          if (storedQuestions) {
+            const questions = JSON.parse(storedQuestions);
+            return questions.find(q => q.id === questionId) || null;
+          }
+          return null;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('id', questionId)
+            .single();
+
+          if (error) throw error;
+
+          console.log('✅ Question retrieved by ID:', data);
+          return data;
+        } catch (error) {
+          console.error('❌ Error fetching question by ID:', error);
+          return null;
+        }
+      }
+
+      async submitResponse(responseData) {
+        if (!this.isOnline || !isConnected) {
+          // Store offline
+          const offlineResponses = JSON.parse(localStorage.getItem('offline_responses') || '[]');
+          const responseWithId = {
+            ...responseData,
+            id: Date.now(),
+            offline_created: new Date().toISOString()
+          };
+          offlineResponses.push(responseWithId);
+          localStorage.setItem('offline_responses', JSON.stringify(offlineResponses));
+          
+          // Also store in legacy format
+          this.updateLocalStorageResponses(responseWithId);
+          
+          return responseWithId;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('student_responses')
+            .insert([{
+              question_id: responseData.questionId,
+              student_name: responseData.studentName,
+              answer: responseData.answer,
+              word_count: responseData.wordCount,
+              quality: responseData.quality,
+              score: responseData.score,
+              source: responseData.source || 'web',
+              metadata: {
+                timestamp: responseData.timestamp,
+                submittedAt: responseData.submittedAt,
+                questionText: responseData.questionText
+              }
+            }])
+            .select();
+
+          if (error) throw error;
+
+          console.log('✅ Response submitted to Supabase:', data[0]);
+          
+          // Also update localStorage for backward compatibility
+          this.updateLocalStorageResponses(data[0]);
+          
+          return data[0];
+        } catch (error) {
+          console.error('❌ Error submitting response:', error);
+          throw error;
+        }
+      }
+
+      updateLocalStorageResponses(response) {
+        try {
+          const existingResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+          const legacyResponse = {
+            id: response.id,
+            questionId: response.question_id || response.questionId,
+            studentName: response.student_name || response.studentName,
+            answer: response.answer,
+            wordCount: response.word_count || response.wordCount,
+            quality: response.quality,
+            score: response.score,
+            source: response.source,
+            timestamp: response.metadata?.timestamp || response.submitted_at || response.timestamp,
+            submittedAt: response.submitted_at || response.submittedAt,
+            questionText: response.metadata?.questionText || response.questionText || ''
+          };
+          
+          existingResponses.push(legacyResponse);
+          localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
+        } catch (error) {
+          console.error('Error updating localStorage responses:', error);
+        }
       }
     }
 
-    // Load question from URL parameters or localStorage
-    function loadQuestion() {
+    // Load question from URL parameters or Supabase
+    async function loadQuestion() {
       console.log('🔍 Loading question...');
       
       try {
@@ -826,62 +1032,47 @@
         if (questionId && questionText) {
           // Question from URL parameters
           currentQuestion = {
-            id: parseInt(questionId),
+            id: questionId,
             text: decodeURIComponent(questionText),
             source: 'url',
             isReal: true
           };
           console.log('✅ Loaded question from URL:', currentQuestion);
-          updateConnectionStatus(true, 'Question from QR code');
           return displayQuestion();
         }
         
-        // Try to load from localStorage (multiple possible keys)
-        const storageKeys = ['current_question', 'alm_questions', 'intuity_questions'];
-        
-        for (const key of storageKeys) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              
-              if (key === 'current_question' && parsed.text) {
-                currentQuestion = {
-                  ...parsed,
-                  source: 'localStorage',
-                  isReal: true
-                };
-                console.log('✅ Loaded current question from localStorage:', currentQuestion);
-                updateConnectionStatus(true, 'Current question active');
-                return displayQuestion();
-              } else if (Array.isArray(parsed) && parsed.length > 0) {
-                // Get the most recent question
-                const latestQuestion = parsed[parsed.length - 1];
-                if (latestQuestion && latestQuestion.text) {
-                  currentQuestion = {
-                    ...latestQuestion,
-                    source: 'localStorage',
-                    isReal: true
-                  };
-                  console.log('✅ Loaded latest question from array:', currentQuestion);
-                  updateConnectionStatus(true, 'Latest question loaded');
-                  return displayQuestion();
-                }
-              }
-            } catch (e) {
-              console.log(`❌ Error parsing ${key}:`, e);
-            }
+        if (questionId && !questionText) {
+          // Try to get full question from Supabase
+          const question = await intuityData.getQuestionById(questionId);
+          if (question) {
+            currentQuestion = {
+              ...question,
+              source: 'supabase',
+              isReal: true
+            };
+            console.log('✅ Loaded question from Supabase by ID:', currentQuestion);
+            return displayQuestion();
           }
+        }
+        
+        // Try to load current question from Supabase
+        const question = await intuityData.getCurrentQuestion();
+        if (question) {
+          currentQuestion = {
+            ...question,
+            source: 'supabase',
+            isReal: true
+          };
+          console.log('✅ Loaded current question from Supabase:', currentQuestion);
+          return displayQuestion();
         }
         
         // No question found
         console.log('❌ No question found');
-        updateConnectionStatus(false, 'No active question found');
         showNoQuestion();
         
       } catch (error) {
         console.error('❌ Error loading question:', error);
-        updateConnectionStatus(false, 'Error loading question');
         showNoQuestion();
       }
     }
@@ -893,8 +1084,9 @@
       const responseForm = document.getElementById('responseForm');
       const noQuestionState = document.getElementById('noQuestionState');
       
-      if (currentQuestion && currentQuestion.text) {
-        questionDisplay.textContent = currentQuestion.text;
+      if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
+        const questionText = currentQuestion.text || currentQuestion.question_text;
+        questionDisplay.textContent = questionText;
         questionContainer.style.display = 'block';
         responseForm.style.display = 'block';
         noQuestionState.style.display = 'none';
@@ -946,7 +1138,7 @@
       console.log('✅ Interface enabled for real question');
     }
 
-    // Enable demo mode (no question available)
+    // Enable demo mode
     function enableDemoMode() {
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
@@ -955,13 +1147,13 @@
       nameInput.disabled = false;
       nameInput.placeholder = "Demo: Enter any name...";
       answerInput.disabled = false;
-      answerInput.placeholder = "Demo: Type here to see unrestricted word counting...";
+      answerInput.placeholder = "Demo: Type here to see word counting...";
       
       // Set up demo event listeners
       nameInput.addEventListener('input', validateInput);
       answerInput.addEventListener('input', handleAnswerInput);
       
-      // Footer button listeners (submit will show different message)
+      // Footer button listeners
       document.getElementById('clearBtn').addEventListener('click', clearForm);
       document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
       document.getElementById('submitBtn').addEventListener('click', submitDemoResponse);
@@ -969,22 +1161,14 @@
       console.log('🎭 Demo mode enabled');
     }
 
-    // Handle answer input - NO WORD RESTRICTIONS
+    // Handle answer input
     function handleAnswerInput() {
       const answerInput = document.getElementById('studentAnswer');
       const text = answerInput.value.trim();
       
-      // Count ALL words regardless of length - including "I", "a", "1", etc.
-      // Split on any whitespace and filter out empty strings
+      // Count words
       const words = text ? text.split(/\s+/).filter(word => word.length > 0) : [];
       wordCount = words.length;
-      
-      // Debug logging
-      if (debugMode) {
-        console.log('🔍 Words detected:', words);
-        console.log('📊 Total count:', wordCount);
-        updateDebugInfo(words);
-      }
       
       updateWordCounter();
       validateInput();
@@ -994,7 +1178,7 @@
       answerInput.style.height = Math.max(180, answerInput.scrollHeight) + 'px';
     }
 
-    // Update word counter display - NO RESTRICTIONS
+    // Update word counter display
     function updateWordCounter() {
       const wordCounter = document.getElementById('wordCounter');
       
@@ -1010,40 +1194,15 @@
       }
     }
 
-    // Update debug info
-    function updateDebugInfo(words) {
-      const debugInfo = document.getElementById('debugInfo');
-      debugInfo.textContent = `Words detected: [${words.map(w => `"${w}"`).join(', ')}]`;
-    }
-
-    // Toggle debug mode
-    function toggleDebug() {
-      debugMode = !debugMode;
-      const debugInfo = document.getElementById('debugInfo');
-      const debugToggle = document.getElementById('debugToggle');
-      
-      debugInfo.classList.toggle('show', debugMode);
-      debugToggle.style.backgroundColor = debugMode ? 'var(--accent-teal)' : 'var(--card-bg)';
-      debugToggle.style.color = debugMode ? 'var(--bg-primary)' : 'var(--text-muted)';
-      
-      if (debugMode) {
-        // Force update debug info
-        const answerInput = document.getElementById('studentAnswer');
-        const text = answerInput.value.trim();
-        const words = text ? text.split(/\s+/).filter(word => word.length > 0) : [];
-        updateDebugInfo(words);
-      }
-    }
-
-    // Validate all inputs - NO WORD MINIMUM
+    // Validate all inputs
     function validateInput() {
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
       const submitBtn = document.getElementById('submitBtn');
       
       const name = nameInput.value.trim();
-      const hasValidName = name.length >= 1; // Just require any name
-      const hasAnyContent = wordCount > 0; // Just require any words
+      const hasValidName = name.length >= 1;
+      const hasAnyContent = wordCount > 0;
       
       // Update input styling
       nameInput.classList.toggle('valid', hasValidName);
@@ -1085,7 +1244,7 @@
     }
 
     // Submit real response
-    function submitResponse() {
+    async function submitResponse() {
       if (isSubmitted) return;
       
       const nameInput = document.getElementById('studentName');
@@ -1113,69 +1272,48 @@
       submitBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Submitting...</span>';
       submitBtn.disabled = true;
 
-      // Simulate network delay
-      setTimeout(() => {
-        try {
-          // Create response object with GUARANTEED SAVE
-          const response = {
-            id: Date.now(),
-            questionId: currentQuestion.id || Date.now(),
-            questionText: currentQuestion.text || '',
-            studentName: studentName,
-            answer: studentAnswer,
-            wordCount: wordCount,
-            timestamp: new Date().toLocaleString(),
-            submittedAt: new Date().toISOString(),
-            quality: determineQuality(wordCount),
-            score: calculateScore(wordCount, studentAnswer),
-            source: currentQuestion.source || 'unknown'
-          };
+      try {
+        // Create response object
+        const response = {
+          questionId: currentQuestion.id,
+          questionText: currentQuestion.text || currentQuestion.question_text || '',
+          studentName: studentName,
+          answer: studentAnswer,
+          wordCount: wordCount,
+          timestamp: new Date().toLocaleString(),
+          submittedAt: new Date().toISOString(),
+          quality: determineQuality(wordCount),
+          score: calculateScore(wordCount, studentAnswer),
+          source: currentQuestion.source || 'web'
+        };
 
-          console.log('💾 Saving response:', response);
+        console.log('💾 Submitting response:', response);
 
-          // SAVE TO MULTIPLE KEYS FOR RELIABILITY
-          const storageKeys = [
-            'alm_student_responses',
-            'intuity_responses', 
-            'student_responses',
-            'intuity_student_data'
-          ];
+        // Submit to Supabase (or store offline)
+        await intuityData.submitResponse(response);
 
-          storageKeys.forEach(key => {
-            try {
-              const existingResponses = JSON.parse(localStorage.getItem(key) || '[]');
-              existingResponses.push(response);
-              localStorage.setItem(key, JSON.stringify(existingResponses));
-              console.log(`✅ Saved to ${key}:`, existingResponses.length, 'responses');
-            } catch (e) {
-              console.error(`❌ Error saving to ${key}:`, e);
-            }
-          });
+        console.log('✅ Response submitted successfully');
 
-          // Also save individual response with timestamp key
-          const individualKey = `response_${response.id}`;
-          localStorage.setItem(individualKey, JSON.stringify(response));
-          console.log(`✅ Individual response saved as ${individualKey}`);
-
-          // Update connection status
-          updateConnectionStatus(true, `Response submitted (${wordCount} words)`);
-
-          // Show success state
+        // Show success state
+        showSuccess();
+        isSubmitted = true;
+        
+      } catch (error) {
+        console.error('❌ Error submitting response:', error);
+        
+        if (!isOnline) {
+          alert('Response saved offline. It will be submitted when connection is restored.');
           showSuccess();
           isSubmitted = true;
-          
-        } catch (error) {
-          console.error('❌ Error submitting response:', error);
+        } else {
           alert('Error submitting response. Please try again.');
-          
-          // Reset button
           submitBtn.innerHTML = originalContent;
           submitBtn.disabled = false;
         }
-      }, 1500);
+      }
     }
 
-    // Submit demo response (different behavior)
+    // Submit demo response
     function submitDemoResponse() {
       if (isSubmitted) return;
       
@@ -1196,16 +1334,16 @@
       console.log('🎭 Demo submission completed');
     }
 
-    // Determine response quality (no restrictions)
+    // Determine response quality
     function determineQuality(wordCount) {
       if (wordCount >= 25) return 'excellent';
       if (wordCount >= 10) return 'good';
-      return 'needs-work'; // Any words are acceptable
+      return 'needs-work';
     }
 
-    // Calculate response score (adjusted for no restrictions)
+    // Calculate response score
     function calculateScore(wordCount, answer) {
-      let score = 30; // Base score for any response
+      let score = 30; // Base score
       
       // Word count score (40% of total)
       const wordScore = Math.min(40, (wordCount / 25) * 40);
@@ -1263,10 +1401,6 @@
         submitBtn.disabled = true;
         
         document.getElementById('studentName').focus();
-        
-        if (debugMode) {
-          updateDebugInfo([]);
-        }
       }
     }
 
@@ -1278,25 +1412,21 @@
     }
 
     // Initialize the application
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Student Interface (No Restrictions) initialized');
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Student Interface with Supabase initializing...');
       
       // Create background
       createConstellation();
       
-      // Set up debug toggle
-      document.getElementById('debugToggle').addEventListener('click', toggleDebug);
-      
-      // Load question and set up interface
-      loadQuestion();
-      
-      // Debug: Show localStorage contents
-      console.log('📊 Current localStorage contents:');
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && (key.includes('question') || key.includes('response') || key.includes('alm') || key.includes('intuity'))) {
-          console.log(`  ${key}:`, localStorage.getItem(key));
-        }
+      // Initialize Supabase
+      if (initSupabase()) {
+        // Wait for connection test then load question
+        setTimeout(loadQuestion, 1000);
+      } else {
+        // Fallback to localStorage mode
+        updateConnectionStatus('error', 'Supabase not configured - Using offline mode');
+        initDataLayer();
+        loadQuestion();
       }
       
       // Set up keyboard shortcuts
@@ -1317,15 +1447,9 @@
         if (e.key === 'Escape' && !isSubmitted) {
           clearForm();
         }
-        
-        // F12 or Ctrl+Shift+D for debug toggle
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'D')) {
-          e.preventDefault();
-          toggleDebug();
-        }
       });
       
-      console.log('✅ Student interface ready - NO WORD RESTRICTIONS!');
+      console.log('✅ Student interface with Supabase ready!');
     });
   </script>
 </body>
