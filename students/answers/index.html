@@ -16,24 +16,19 @@
       --card-border: rgba(255, 255, 255, 0.12);
       --accent-gold: #f4a261;
       --accent-teal: #2dd4bf;
-      --accent-electric: #0066ff;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
       --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
       
-      /* Animation timings */
-      --transition-fast: 0.2s;
-      --transition-medium: 0.4s;
-      --transition-slow: 0.6s;
-      
       /* Effects */
       --blur: blur(20px);
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
       --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     * {
@@ -49,11 +44,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      touch-action: manipulation;
-      padding-bottom: 100px;
+      padding-bottom: 120px;
     }
     
     /* Enhanced Constellation Background */
@@ -65,7 +56,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.4;
+      opacity: 0.3;
     }
     
     .star {
@@ -84,16 +75,16 @@
     
     .star:nth-child(3n) {
       animation-delay: 1s;
-      background: var(--accent-electric);
-      opacity: 0.6;
+      background: var(--accent-gold);
+      opacity: 0.4;
     }
     
     @keyframes twinkle {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 0.9; transform: scale(1.2); }
+      0% { opacity: 0.1; transform: scale(0.8); }
+      100% { opacity: 0.6; transform: scale(1.1); }
     }
     
-    /* Simple Header */
+    /* Header */
     .simple-header {
       position: fixed;
       top: 0;
@@ -142,32 +133,56 @@
       letter-spacing: 2px;
     }
     
-    /* Main Container - Centered Single Card */
+    /* Main Container */
     .main-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 600px;
+      margin-top: 140px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 2rem;
       z-index: 10;
+      position: relative;
     }
     
-    /* The One Question Card */
-    .question-card {
+    /* Connection Status */
+    .connection-status {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    .connection-status.connected {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .connection-status.disconnected {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+    
+    /* Question Container */
+    .question-container {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border: 2px solid var(--card-border);
       border-radius: 24px;
-      padding: 3rem;
+      padding: 2.5rem;
       box-shadow: var(--shadow-active);
       position: relative;
       overflow: hidden;
-      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 2rem;
     }
     
-    .question-card::before {
+    .question-container::before {
       content: '';
       position: absolute;
       top: 0;
@@ -178,18 +193,112 @@
       border-radius: 24px 24px 0 0;
     }
     
-    /* Question Text */
-    .question-text {
+    .question-meta {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .question-display {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 600;
       color: var(--text-primary);
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
       line-height: 1.4;
     }
     
+    .question-instructions {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* Response Form */
+    .response-form {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-active);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .response-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-teal));
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .form-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    /* Name Input */
+    .name-group {
+      margin-bottom: 2rem;
+    }
+    
+    .input-label {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .name-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+    }
+    
+    .name-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .name-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      transform: translateY(-1px);
+    }
+    
+    .name-input.valid {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
     /* Answer Input */
+    .answer-group {
+      margin-bottom: 2rem;
+    }
+    
     .answer-input {
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
@@ -200,10 +309,10 @@
       font-size: 1.1rem;
       font-family: 'Inter', sans-serif;
       outline: none;
-      transition: all var(--transition-fast) ease;
+      transition: var(--transition);
       resize: vertical;
-      min-height: 150px;
-      margin-bottom: 2rem;
+      min-height: 180px;
+      line-height: 1.6;
     }
     
     .answer-input::placeholder {
@@ -218,229 +327,251 @@
       transform: translateY(-2px);
     }
     
-    /* Simple Status */
-    .simple-status {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 2rem;
-      padding: 1rem;
-      background: var(--card-bg);
+    .answer-input.valid {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    /* Word Counter - No Restrictions */
+    .word-counter-container {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .word-counter {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
       border: 1px solid var(--card-border);
     }
     
-    .status-item {
-      display: flex;
+    .word-counter.has-words {
+      color: var(--success);
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    /* Debug Info */
+    .debug-info {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      max-height: 100px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .debug-info.show {
+      display: block;
+    }
+    
+    /* Validation Messages */
+    .validation-message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: none;
       align-items: center;
       gap: 0.5rem;
-      color: var(--text-secondary);
-      font-size: 1rem;
-      font-weight: 500;
     }
     
-    .status-ready {
+    .validation-message.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
       color: var(--success);
+      display: flex;
     }
     
-    /* Submit Button */
-    .submit-button {
-      width: 100%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      border-radius: 16px;
-      padding: 1.25rem 2rem;
-      color: var(--bg-primary);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all var(--transition-fast) ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 8px 32px rgba(45, 212, 191, 0.3);
-      opacity: 0.5;
-      transform: scale(0.98);
-      pointer-events: none;
+    .validation-message.warning {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+      display: flex;
     }
     
-    .submit-button.ready {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: all;
-    }
-    
-    .submit-button.ready:hover {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 12px 48px rgba(45, 212, 191, 0.4);
-    }
-    
-    .submit-button.ready:active {
-      transform: translateY(-1px) scale(1);
+    .validation-message.error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--error);
+      color: var(--error);
+      display: flex;
     }
     
     /* Success State */
-    .success-message {
+    .success-container {
       display: none;
       text-align: center;
-      padding: 2rem;
-      background: rgba(16, 185, 129, 0.15);
+      padding: 3rem 2rem;
+      background: rgba(16, 185, 129, 0.1);
       border: 2px solid var(--success);
-      border-radius: 16px;
-      color: var(--success);
-      font-size: 1.1rem;
-      font-weight: 600;
+      border-radius: 24px;
       margin-top: 2rem;
-      animation: fadeIn 0.5s ease;
     }
     
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .success-icon {
+      font-size: 4rem;
+      color: var(--success);
+      margin-bottom: 1.5rem;
     }
     
-    /* No Questions State */
-    .no-question-state {
+    .success-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 1rem;
+    }
+    
+    .success-text {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    
+    /* No Question State */
+    .no-question {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 3rem 2rem;
+    }
+    
+    .no-question-icon {
+      font-size: 3rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
     }
     
     .no-question-title {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
     
     .no-question-text {
       color: var(--text-secondary);
-      font-size: 1rem;
+      font-size: 1.1rem;
       line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 2rem;
     }
     
-    /* Minimalist Footer */
+    .demo-mode {
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid var(--accent-teal);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .demo-text {
+      color: var(--accent-teal);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    /* Footer */
     .simple-footer {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(26, 35, 50, 0.9);
+      background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
-      padding: 1rem;
+      padding: 1.25rem;
       z-index: 1000;
     }
     
     .footer-content {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
     }
     
     .footer-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.75rem;
+      border-radius: 12px;
+      padding: 0.9rem 1.5rem;
       color: var(--text-primary);
-      font-size: 0.85rem;
-      font-weight: 500;
+      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: var(--transition);
       backdrop-filter: var(--blur);
       display: flex;
       align-items: center;
       gap: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      min-width: 80px;
+      min-width: 100px;
       justify-content: center;
     }
     
-    .footer-btn:hover {
+    .footer-btn:hover:not(:disabled) {
       background: rgba(255, 255, 255, 0.12);
       border-color: var(--accent-teal);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+    }
+    
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+      font-weight: 700;
+    }
+    
+    .footer-btn.primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-2px) scale(1.05);
+    }
+    
+    .footer-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
     
     .footer-btn i {
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
     
-    .name-input {
+    /* Debug Toggle Button */
+    .debug-toggle {
+      position: fixed;
+      bottom: 140px;
+      right: 20px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      color: var(--text-primary);
-      font-size: 0.85rem;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: all var(--transition-fast);
-      backdrop-filter: var(--blur);
-      width: 120px;
-      text-align: center;
-    }
-    
-    .name-input::placeholder {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      z-index: 999;
+      transition: var(--transition);
     }
     
-    .name-input:focus {
+    .debug-toggle:hover {
       background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.15);
-    }
-    
-    /* Mobile Optimizations */
-    @media (max-width: 768px) {
-      .main-container {
-        width: 95%;
-        top: 45%;
-      }
-      
-      .question-card {
-        padding: 2rem;
-      }
-      
-      .brand-name {
-        font-size: 2rem;
-      }
-      
-      .question-text {
-        font-size: 1.25rem;
-        margin-bottom: 2rem;
-      }
-      
-      .answer-input {
-        min-height: 120px;
-        padding: 1.25rem;
-        font-size: 1rem;
-      }
-      
-      .simple-status {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .footer-content {
-        gap: 1rem;
-      }
-      
-      .footer-btn {
-        min-width: 70px;
-        padding: 0.6rem;
-      }
-      
-      .name-input {
-        width: 100px;
-      }
+      color: var(--text-primary);
+      transform: scale(1.1);
     }
     
     /* Loading Animation */
@@ -453,13 +584,68 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .main-container {
+        margin-top: 120px;
+        padding: 1rem;
+      }
+      
+      .question-container,
+      .response-form {
+        padding: 2rem;
+      }
+      
+      .brand-name {
+        font-size: 2rem;
+      }
+      
+      .question-display {
+        font-size: 1.3rem;
+        margin-bottom: 1.25rem;
+      }
+      
+      .answer-input {
+        min-height: 150px;
+        padding: 1.25rem;
+        font-size: 1rem;
+      }
+      
+      .footer-content {
+        gap: 1rem;
+      }
+      
+      .footer-btn {
+        min-width: 80px;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+      }
+      
+      .debug-toggle {
+        bottom: 120px;
+        right: 10px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .question-container,
+      .response-form {
+        padding: 1.5rem;
+      }
+      
+      .footer-content {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Enhanced Constellation Background -->
+  <!-- Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
-  <!-- Simple Header -->
+  <!-- Header -->
   <header class="simple-header">
     <div class="brand-name">INTUITY</div>
     <div class="simple-subtitle">Student Response</div>
@@ -467,81 +653,140 @@
   
   <!-- Main Container -->
   <div class="main-container">
-    <div class="question-card" id="questionCard">
-      <!-- Default: No Question State -->
-      <div class="no-question-state" id="noQuestionState">
-        <div class="no-question-title">Waiting for Question</div>
-        <div class="no-question-text">
-          Your teacher will share a question with you soon.<br>
-          This page will update automatically when ready.
-        </div>
+    
+    <!-- Connection Status -->
+    <div class="connection-status" id="connectionStatus">
+      <i class="fas fa-wifi"></i> Checking connection to teacher's question...
+    </div>
+    
+    <!-- Question Display -->
+    <div class="question-container" id="questionContainer">
+      <div class="question-meta">Question from your teacher</div>
+      <div class="question-display" id="questionDisplay">
+        Loading question...
+      </div>
+      <div class="question-instructions">
+        Please read carefully and provide your response. No word limits - express yourself freely!
+      </div>
+    </div>
+    
+    <!-- Response Form -->
+    <div class="response-form" id="responseForm">
+      <div class="form-title">Your Response</div>
+      
+      <!-- Name Input -->
+      <div class="name-group">
+        <label class="input-label" for="studentName">Your Name</label>
+        <input 
+          type="text" 
+          class="name-input" 
+          id="studentName"
+          placeholder="Enter your full name..."
+          maxlength="50"
+        />
       </div>
       
-      <!-- Question State (Initially Hidden) -->
-      <div id="questionState" style="display: none;">
-        <div class="question-text" id="questionText">
-          Your question will appear here...
-        </div>
-        
+      <!-- Answer Input -->
+      <div class="answer-group">
+        <label class="input-label" for="studentAnswer">Your Answer</label>
         <textarea 
           class="answer-input" 
-          id="answerInput"
-          placeholder="Share your thoughts here... Write as much as you'd like!"
+          id="studentAnswer"
+          placeholder="Type your response here... Every word counts, including single letters like 'I' and 'a'!"
           rows="6"
         ></textarea>
         
-        <div class="simple-status">
-          <div class="status-item" id="wordStatus">
-            <i class="fas fa-pencil-alt"></i>
-            <span id="wordCount">0 words</span>
-          </div>
-          <div class="status-item" id="readyStatus">
-            <i class="fas fa-check-circle"></i>
-            <span>Start typing...</span>
-          </div>
+        <!-- Word Counter - No Restrictions -->
+        <div class="word-counter-container">
+          <div class="word-counter" id="wordCounter">0 words</div>
         </div>
         
-        <button class="submit-button" id="submitButton">
-          <i class="fas fa-paper-plane"></i>
-          Submit Response
-        </button>
-        
-        <div class="success-message" id="successMessage">
-          <i class="fas fa-check-circle"></i>
-          Response submitted successfully! Thank you for sharing your thoughts.
+        <!-- Debug Info -->
+        <div class="debug-info" id="debugInfo">
+          Words detected: []
+        </div>
+      </div>
+      
+      <!-- Validation Messages -->
+      <div class="validation-message success" id="validationSuccess">
+        <i class="fas fa-check-circle"></i>
+        Perfect! Your response is ready to submit.
+      </div>
+      
+      <div class="validation-message warning" id="validationWarning">
+        <i class="fas fa-info-circle"></i>
+        Please enter your name to submit your response.
+      </div>
+      
+      <div class="validation-message error" id="validationError">
+        <i class="fas fa-times-circle"></i>
+        Please enter your name and write something.
+      </div>
+    </div>
+    
+    <!-- Success State -->
+    <div class="success-container" id="successContainer">
+      <div class="success-icon">✨</div>
+      <div class="success-title">Response Submitted!</div>
+      <div class="success-text">
+        Thank you! Your response has been sent to your teacher and will be included in the class discussion.
+      </div>
+    </div>
+    
+    <!-- No Question State -->
+    <div class="no-question" id="noQuestionState" style="display: none;">
+      <div class="no-question-icon">📝</div>
+      <div class="no-question-title">No Active Question</div>
+      <div class="no-question-text">
+        Your teacher hasn't published a question yet, or the link may be expired.<br>
+        Please check with your teacher for the correct link or QR code.
+      </div>
+      
+      <div class="demo-mode">
+        <div class="demo-text">
+          <i class="fas fa-info-circle"></i>
+          Demo Mode: Try typing below to see how the interface works - no restrictions!
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Minimalist Footer -->
+  <!-- Debug Toggle -->
+  <button class="debug-toggle" id="debugToggle" title="Toggle debug info">
+    <i class="fas fa-bug"></i>
+  </button>
+
+  <!-- Footer -->
   <div class="simple-footer">
     <div class="footer-content">
+      <button class="footer-btn" id="clearBtn">
+        <i class="fas fa-eraser"></i>
+        <span>Clear</span>
+      </button>
+      
       <button class="footer-btn" id="editBtn">
         <i class="fas fa-edit"></i>
         <span>Edit</span>
       </button>
       
-      <input 
-        type="text" 
-        class="name-input" 
-        id="studentName"
-        placeholder="Your name"
-        maxlength="20"
-      >
-      
-      <button class="footer-btn" id="sendBtn">
+      <button class="footer-btn primary" id="submitBtn" disabled>
         <i class="fas fa-paper-plane"></i>
-        <span>Send</span>
+        <span>Submit</span>
       </button>
     </div>
   </div>
 
   <script>
-    // Enhanced constellation
+    // Global variables
+    let currentQuestion = null;
+    let isSubmitted = false;
+    let wordCount = 0;
+    let debugMode = false;
+
+    // Create constellation background
     function createConstellation() {
       const constellation = document.getElementById('constellation');
-      const starCount = 60;
+      const starCount = 40;
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -554,245 +799,532 @@
       }
     }
 
-    // 🚀 FIXED: Load question from QR code URL FIRST, then localStorage
+    // Update connection status
+    function updateConnectionStatus(isConnected, message = '') {
+      const statusElement = document.getElementById('connectionStatus');
+      
+      if (isConnected) {
+        statusElement.className = 'connection-status connected';
+        statusElement.innerHTML = `<i class="fas fa-check-circle"></i> Connected - ${message || 'Question loaded successfully'}`;
+      } else {
+        statusElement.className = 'connection-status disconnected';
+        statusElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message || 'No connection to teacher question'}`;
+      }
+    }
+
+    // Load question from URL parameters or localStorage
     function loadQuestion() {
+      console.log('🔍 Loading question...');
+      
       try {
-        console.log('🔍 Looking for question...');
-        
-        // FIRST: Check URL parameters (from QR code)
+        // Check URL parameters first (from QR code)
         const urlParams = new URLSearchParams(window.location.search);
-        const questionFromURL = urlParams.get('t'); // 't' for text
-        const questionIdFromURL = urlParams.get('q'); // 'q' for question id
+        const questionId = urlParams.get('q');
+        const questionText = urlParams.get('t');
         
-        console.log('📋 URL params:', { q: questionIdFromURL, t: questionFromURL });
-        
-        if (questionFromURL) {
-          // Got question from QR code URL!
-          const questionFromQR = {
-            id: questionIdFromURL || Date.now(),
-            text: decodeURIComponent(questionFromURL),
-            timestamp: new Date().toISOString(),
-            source: 'qr_code'
+        if (questionId && questionText) {
+          // Question from URL parameters
+          currentQuestion = {
+            id: parseInt(questionId),
+            text: decodeURIComponent(questionText),
+            source: 'url',
+            isReal: true
           };
-          
-          console.log('✅ Question loaded from QR code:', questionFromQR.text);
-          showQuestion(questionFromQR);
-          return;
+          console.log('✅ Loaded question from URL:', currentQuestion);
+          updateConnectionStatus(true, 'Question from QR code');
+          return displayQuestion();
         }
         
-        // FALLBACK: Check localStorage (original code)
-        const questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        // Try to load from localStorage (multiple possible keys)
+        const storageKeys = ['current_question', 'alm_questions', 'intuity_questions'];
         
-        if (questions.length > 0) {
-          const latestQuestion = questions[questions.length - 1];
-          console.log('✅ Question loaded from localStorage:', latestQuestion.text);
-          showQuestion(latestQuestion);
-        } else {
-          console.log('⚠️ No question found in URL or localStorage');
-          showNoQuestion();
+        for (const key of storageKeys) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              
+              if (key === 'current_question' && parsed.text) {
+                currentQuestion = {
+                  ...parsed,
+                  source: 'localStorage',
+                  isReal: true
+                };
+                console.log('✅ Loaded current question from localStorage:', currentQuestion);
+                updateConnectionStatus(true, 'Current question active');
+                return displayQuestion();
+              } else if (Array.isArray(parsed) && parsed.length > 0) {
+                // Get the most recent question
+                const latestQuestion = parsed[parsed.length - 1];
+                if (latestQuestion && latestQuestion.text) {
+                  currentQuestion = {
+                    ...latestQuestion,
+                    source: 'localStorage',
+                    isReal: true
+                  };
+                  console.log('✅ Loaded latest question from array:', currentQuestion);
+                  updateConnectionStatus(true, 'Latest question loaded');
+                  return displayQuestion();
+                }
+              }
+            } catch (e) {
+              console.log(`❌ Error parsing ${key}:`, e);
+            }
+          }
         }
+        
+        // No question found
+        console.log('❌ No question found');
+        updateConnectionStatus(false, 'No active question found');
+        showNoQuestion();
+        
       } catch (error) {
         console.error('❌ Error loading question:', error);
+        updateConnectionStatus(false, 'Error loading question');
         showNoQuestion();
       }
     }
 
-    function showQuestion(question) {
-      document.getElementById('noQuestionState').style.display = 'none';
-      document.getElementById('questionState').style.display = 'block';
-      document.getElementById('questionText').textContent = question.text;
+    // Display the question
+    function displayQuestion() {
+      const questionDisplay = document.getElementById('questionDisplay');
+      const questionContainer = document.getElementById('questionContainer');
+      const responseForm = document.getElementById('responseForm');
+      const noQuestionState = document.getElementById('noQuestionState');
       
-      // Store current question for submission
-      window.currentQuestion = question;
-      console.log('📝 Question displayed to student:', question.text);
-    }
-
-    function showNoQuestion() {
-      document.getElementById('noQuestionState').style.display = 'block';
-      document.getElementById('questionState').style.display = 'none';
-      console.log('❌ No question available to display');
-    }
-
-    // Handle answer input
-    function handleAnswerInput() {
-      const answerText = document.getElementById('answerInput').value;
-      const wordCount = answerText.trim() ? answerText.trim().split(/\s+/).length : 0;
-      const submitButton = document.getElementById('submitButton');
-      const wordStatus = document.getElementById('wordCount');
-      const readyStatus = document.getElementById('readyStatus');
-      
-      // Update word count
-      wordStatus.textContent = `${wordCount} words`;
-      
-      // Update ready status
-      if (wordCount >= 10) {
-        readyStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Ready to submit!</span>';
-        readyStatus.classList.add('status-ready');
-        submitButton.classList.add('ready');
-      } else if (wordCount > 0) {
-        readyStatus.innerHTML = '<i class="fas fa-edit"></i><span>Keep writing...</span>';
-        readyStatus.classList.remove('status-ready');
-        submitButton.classList.remove('ready');
+      if (currentQuestion && currentQuestion.text) {
+        questionDisplay.textContent = currentQuestion.text;
+        questionContainer.style.display = 'block';
+        responseForm.style.display = 'block';
+        noQuestionState.style.display = 'none';
+        
+        // Enable the interface
+        enableInterface();
+        
+        console.log('✅ Question displayed successfully');
       } else {
-        readyStatus.innerHTML = '<i class="fas fa-pencil-alt"></i><span>Start typing...</span>';
-        readyStatus.classList.remove('status-ready');
-        submitButton.classList.remove('ready');
-      }
-      
-      // Auto-save
-      if (window.currentQuestion && answerText) {
-        localStorage.setItem('draft_answer_' + window.currentQuestion.id, answerText);
+        showNoQuestion();
       }
     }
 
-    // Submit response
-    function submitResponse() {
-      const answerText = document.getElementById('answerInput').value;
-      const submitButton = document.getElementById('submitButton');
+    // Show no question state
+    function showNoQuestion() {
+      const questionContainer = document.getElementById('questionContainer');
+      const responseForm = document.getElementById('responseForm');
+      const noQuestionState = document.getElementById('noQuestionState');
       
-      if (!window.currentQuestion || !answerText.trim()) {
+      questionContainer.style.display = 'none';
+      responseForm.style.display = 'none';
+      noQuestionState.style.display = 'block';
+      
+      // Enable demo mode for the interface
+      enableDemoMode();
+      
+      console.log('📝 No question available - showing demo mode');
+    }
+
+    // Enable interface functionality
+    function enableInterface() {
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      // Remove any disabled attributes
+      nameInput.disabled = false;
+      answerInput.disabled = false;
+      
+      // Set up event listeners
+      nameInput.addEventListener('input', validateInput);
+      answerInput.addEventListener('input', handleAnswerInput);
+      
+      // Footer button listeners
+      document.getElementById('clearBtn').addEventListener('click', clearForm);
+      document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
+      submitBtn.addEventListener('click', submitResponse);
+      
+      console.log('✅ Interface enabled for real question');
+    }
+
+    // Enable demo mode (no question available)
+    function enableDemoMode() {
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      
+      // Enable inputs but change placeholders
+      nameInput.disabled = false;
+      nameInput.placeholder = "Demo: Enter any name...";
+      answerInput.disabled = false;
+      answerInput.placeholder = "Demo: Type here to see unrestricted word counting...";
+      
+      // Set up demo event listeners
+      nameInput.addEventListener('input', validateInput);
+      answerInput.addEventListener('input', handleAnswerInput);
+      
+      // Footer button listeners (submit will show different message)
+      document.getElementById('clearBtn').addEventListener('click', clearForm);
+      document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
+      document.getElementById('submitBtn').addEventListener('click', submitDemoResponse);
+      
+      console.log('🎭 Demo mode enabled');
+    }
+
+    // Handle answer input - NO WORD RESTRICTIONS
+    function handleAnswerInput() {
+      const answerInput = document.getElementById('studentAnswer');
+      const text = answerInput.value.trim();
+      
+      // Count ALL words regardless of length - including "I", "a", "1", etc.
+      // Split on any whitespace and filter out empty strings
+      const words = text ? text.split(/\s+/).filter(word => word.length > 0) : [];
+      wordCount = words.length;
+      
+      // Debug logging
+      if (debugMode) {
+        console.log('🔍 Words detected:', words);
+        console.log('📊 Total count:', wordCount);
+        updateDebugInfo(words);
+      }
+      
+      updateWordCounter();
+      validateInput();
+      
+      // Auto-resize textarea
+      answerInput.style.height = 'auto';
+      answerInput.style.height = Math.max(180, answerInput.scrollHeight) + 'px';
+    }
+
+    // Update word counter display - NO RESTRICTIONS
+    function updateWordCounter() {
+      const wordCounter = document.getElementById('wordCounter');
+      
+      if (wordCount === 0) {
+        wordCounter.textContent = 'No words yet';
+        wordCounter.classList.remove('has-words');
+      } else if (wordCount === 1) {
+        wordCounter.textContent = '1 word';
+        wordCounter.classList.add('has-words');
+      } else {
+        wordCounter.textContent = `${wordCount} words`;
+        wordCounter.classList.add('has-words');
+      }
+    }
+
+    // Update debug info
+    function updateDebugInfo(words) {
+      const debugInfo = document.getElementById('debugInfo');
+      debugInfo.textContent = `Words detected: [${words.map(w => `"${w}"`).join(', ')}]`;
+    }
+
+    // Toggle debug mode
+    function toggleDebug() {
+      debugMode = !debugMode;
+      const debugInfo = document.getElementById('debugInfo');
+      const debugToggle = document.getElementById('debugToggle');
+      
+      debugInfo.classList.toggle('show', debugMode);
+      debugToggle.style.backgroundColor = debugMode ? 'var(--accent-teal)' : 'var(--card-bg)';
+      debugToggle.style.color = debugMode ? 'var(--bg-primary)' : 'var(--text-muted)';
+      
+      if (debugMode) {
+        // Force update debug info
+        const answerInput = document.getElementById('studentAnswer');
+        const text = answerInput.value.trim();
+        const words = text ? text.split(/\s+/).filter(word => word.length > 0) : [];
+        updateDebugInfo(words);
+      }
+    }
+
+    // Validate all inputs - NO WORD MINIMUM
+    function validateInput() {
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      const name = nameInput.value.trim();
+      const hasValidName = name.length >= 1; // Just require any name
+      const hasAnyContent = wordCount > 0; // Just require any words
+      
+      // Update input styling
+      nameInput.classList.toggle('valid', hasValidName);
+      answerInput.classList.toggle('valid', hasAnyContent);
+      
+      // Update validation messages
+      hideAllValidationMessages();
+      
+      if (hasValidName && hasAnyContent) {
+        showValidationMessage('success');
+        submitBtn.disabled = false;
+      } else if (hasValidName && !hasAnyContent) {
+        showValidationMessage('warning');
+        submitBtn.disabled = true;
+      } else if (!hasValidName && hasAnyContent) {
+        showValidationMessage('warning');
+        submitBtn.disabled = true;
+      } else {
+        // Both empty - don't show error until they start typing
+        if (name.length > 0 || wordCount > 0) {
+          showValidationMessage('error');
+        }
+        submitBtn.disabled = true;
+      }
+    }
+
+    // Show validation message
+    function showValidationMessage(type) {
+      const message = document.getElementById(`validation${type.charAt(0).toUpperCase() + type.slice(1)}`);
+      message.style.display = 'flex';
+    }
+
+    // Hide all validation messages
+    function hideAllValidationMessages() {
+      ['success', 'warning', 'error'].forEach(type => {
+        const message = document.getElementById(`validation${type.charAt(0).toUpperCase() + type.slice(1)}`);
+        message.style.display = 'none';
+      });
+    }
+
+    // Submit real response
+    function submitResponse() {
+      if (isSubmitted) return;
+      
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      const studentName = nameInput.value.trim();
+      const studentAnswer = answerInput.value.trim();
+      
+      // Validate before submit
+      if (!studentName || studentName.length === 0) {
+        alert('Please enter your name.');
+        nameInput.focus();
         return;
       }
       
+      if (wordCount === 0) {
+        alert('Please write something in your response.');
+        answerInput.focus();
+        return;
+      }
+
       // Show loading state
-      submitButton.innerHTML = '<i class="fas fa-spinner loading"></i> Submitting...';
-      submitButton.disabled = true;
-      
+      const originalContent = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Submitting...</span>';
+      submitBtn.disabled = true;
+
+      // Simulate network delay
       setTimeout(() => {
         try {
-          // Save response using ALM system format
-          const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-          const wordCount = answerText.trim().split(/\s+/).length;
-          
+          // Create response object with GUARANTEED SAVE
           const response = {
-            id: Date.now() + Math.random(),
-            questionId: window.currentQuestion.id,
-            answer: answerText,
+            id: Date.now(),
+            questionId: currentQuestion.id || Date.now(),
+            questionText: currentQuestion.text || '',
+            studentName: studentName,
+            answer: studentAnswer,
             wordCount: wordCount,
-            studentName: document.getElementById('studentName').value || 'Anonymous',
             timestamp: new Date().toLocaleString(),
-            quality: assessQuality(wordCount),
-            score: calculateScore(wordCount)
+            submittedAt: new Date().toISOString(),
+            quality: determineQuality(wordCount),
+            score: calculateScore(wordCount, studentAnswer),
+            source: currentQuestion.source || 'unknown'
           };
-          
-          responses.push(response);
-          localStorage.setItem('alm_student_responses', JSON.stringify(responses));
-          
-          console.log('💾 Response saved:', response);
-          
-          // Clear draft
-          localStorage.removeItem('draft_answer_' + window.currentQuestion.id);
-          
-          // Show success
-          document.getElementById('successMessage').style.display = 'block';
-          submitButton.style.display = 'none';
-          
-          // Reset after delay
-          setTimeout(() => {
-            document.getElementById('answerInput').value = '';
-            document.getElementById('successMessage').style.display = 'none';
-            submitButton.style.display = 'block';
-            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Response';
-            submitButton.disabled = false;
-            submitButton.classList.remove('ready');
-            handleAnswerInput(); // Reset status
-          }, 3000);
+
+          console.log('💾 Saving response:', response);
+
+          // SAVE TO MULTIPLE KEYS FOR RELIABILITY
+          const storageKeys = [
+            'alm_student_responses',
+            'intuity_responses', 
+            'student_responses',
+            'intuity_student_data'
+          ];
+
+          storageKeys.forEach(key => {
+            try {
+              const existingResponses = JSON.parse(localStorage.getItem(key) || '[]');
+              existingResponses.push(response);
+              localStorage.setItem(key, JSON.stringify(existingResponses));
+              console.log(`✅ Saved to ${key}:`, existingResponses.length, 'responses');
+            } catch (e) {
+              console.error(`❌ Error saving to ${key}:`, e);
+            }
+          });
+
+          // Also save individual response with timestamp key
+          const individualKey = `response_${response.id}`;
+          localStorage.setItem(individualKey, JSON.stringify(response));
+          console.log(`✅ Individual response saved as ${individualKey}`);
+
+          // Update connection status
+          updateConnectionStatus(true, `Response submitted (${wordCount} words)`);
+
+          // Show success state
+          showSuccess();
+          isSubmitted = true;
           
         } catch (error) {
-          console.error('Error submitting response:', error);
-          submitButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error - Try Again';
-          submitButton.disabled = false;
+          console.error('❌ Error submitting response:', error);
+          alert('Error submitting response. Please try again.');
+          
+          // Reset button
+          submitBtn.innerHTML = originalContent;
+          submitBtn.disabled = false;
         }
       }, 1500);
     }
 
-    // Helper functions
-    function assessQuality(wordCount) {
-      if (wordCount >= 50) return 'excellent';
-      if (wordCount >= 25) return 'good';
-      return 'needs-work';
-    }
-
-    function calculateScore(wordCount) {
-      return Math.min(100, Math.max(0, Math.round((wordCount / 50) * 100)));
-    }
-
-    // Footer functionality
-    function editResponse() {
-      const answerInput = document.getElementById('answerInput');
-      if (answerInput && answerInput.style.display !== 'none') {
-        answerInput.focus();
-        answerInput.setSelectionRange(answerInput.value.length, answerInput.value.length);
-      }
-    }
-
-    function quickSend() {
-      const submitButton = document.getElementById('submitButton');
-      if (submitButton && submitButton.classList.contains('ready')) {
-        submitResponse();
-      }
-    }
-
-    // Save student name
-    function saveStudentName() {
+    // Submit demo response (different behavior)
+    function submitDemoResponse() {
+      if (isSubmitted) return;
+      
       const nameInput = document.getElementById('studentName');
-      localStorage.setItem('student_name', nameInput.value);
-    }
-
-    // Load student name
-    function loadStudentName() {
-      const savedName = localStorage.getItem('student_name');
-      if (savedName) {
-        document.getElementById('studentName').value = savedName;
+      const answerInput = document.getElementById('studentAnswer');
+      
+      const studentName = nameInput.value.trim();
+      const studentAnswer = answerInput.value.trim();
+      
+      if (!studentName || wordCount === 0) {
+        alert('Please complete all fields to see the demo submission.');
+        return;
       }
+
+      // Show demo success
+      alert(`Demo Mode: Your response would be submitted!\n\nName: ${studentName}\nWords: ${wordCount}\nResponse: ${studentAnswer.substring(0, 100)}${studentAnswer.length > 100 ? '...' : ''}\n\nTo submit real responses, your teacher needs to create an active question.`);
+      
+      console.log('🎭 Demo submission completed');
     }
 
-    // Load draft if exists
-    function loadDraft() {
-      if (window.currentQuestion) {
-        const draft = localStorage.getItem('draft_answer_' + window.currentQuestion.id);
-        if (draft) {
-          document.getElementById('answerInput').value = draft;
-          handleAnswerInput();
+    // Determine response quality (no restrictions)
+    function determineQuality(wordCount) {
+      if (wordCount >= 25) return 'excellent';
+      if (wordCount >= 10) return 'good';
+      return 'needs-work'; // Any words are acceptable
+    }
+
+    // Calculate response score (adjusted for no restrictions)
+    function calculateScore(wordCount, answer) {
+      let score = 30; // Base score for any response
+      
+      // Word count score (40% of total)
+      const wordScore = Math.min(40, (wordCount / 25) * 40);
+      score += wordScore;
+      
+      // Content quality score (30% of total)
+      const sentences = answer.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+      const contentScore = Math.min(30, sentences * 10);
+      score += contentScore;
+      
+      return Math.min(100, Math.round(score));
+    }
+
+    // Show success state
+    function showSuccess() {
+      const questionContainer = document.getElementById('questionContainer');
+      const responseForm = document.getElementById('responseForm');
+      const successContainer = document.getElementById('successContainer');
+      const noQuestionState = document.getElementById('noQuestionState');
+      
+      questionContainer.style.display = 'none';
+      responseForm.style.display = 'none';
+      noQuestionState.style.display = 'none';
+      successContainer.style.display = 'block';
+      
+      // Update footer buttons
+      const submitBtn = document.getElementById('submitBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const editBtn = document.getElementById('editBtn');
+      
+      submitBtn.style.display = 'none';
+      clearBtn.textContent = 'Done';
+      editBtn.style.display = 'none';
+      
+      clearBtn.onclick = () => window.location.reload();
+
+      console.log('🎉 Success state displayed');
+    }
+
+    // Clear form
+    function clearForm() {
+      if (isSubmitted) {
+        window.location.reload();
+        return;
+      }
+      
+      if (confirm('Clear your response? This cannot be undone.')) {
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentAnswer').value = '';
+        wordCount = 0;
+        updateWordCounter();
+        hideAllValidationMessages();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        
+        document.getElementById('studentName').focus();
+        
+        if (debugMode) {
+          updateDebugInfo([]);
         }
       }
     }
 
-    // Event listeners
+    // Focus on answer textarea
+    function focusOnAnswer() {
+      const answerInput = document.getElementById('studentAnswer');
+      answerInput.focus();
+      answerInput.setSelectionRange(answerInput.value.length, answerInput.value.length);
+    }
+
+    // Initialize the application
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🎓 INTUITY Student Interface - QR CODE READY! ✅');
+      console.log('🚀 INTUITY Student Interface (No Restrictions) initialized');
       
+      // Create background
       createConstellation();
-      loadQuestion(); // This now checks QR code URL first!
-      loadStudentName();
       
-      // Set up input handler
-      document.getElementById('answerInput').addEventListener('input', handleAnswerInput);
+      // Set up debug toggle
+      document.getElementById('debugToggle').addEventListener('click', toggleDebug);
       
-      // Set up submit handler
-      document.getElementById('submitButton').addEventListener('click', submitResponse);
+      // Load question and set up interface
+      loadQuestion();
       
-      // Set up name input handler
-      document.getElementById('studentName').addEventListener('input', saveStudentName);
-      
-      // Set up footer button handlers
-      document.getElementById('editBtn').addEventListener('click', editResponse);
-      document.getElementById('sendBtn').addEventListener('click', quickSend);
-      
-      // Load any existing draft
-      setTimeout(loadDraft, 100);
-      
-      // Auto-refresh for new questions every 10 seconds (only if no question from QR)
-      const urlParams = new URLSearchParams(window.location.search);
-      if (!urlParams.get('t')) {
-        setInterval(() => {
-          if (document.getElementById('noQuestionState').style.display !== 'none') {
-            loadQuestion();
-          }
-        }, 10000);
+      // Debug: Show localStorage contents
+      console.log('📊 Current localStorage contents:');
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('question') || key.includes('response') || key.includes('alm') || key.includes('intuity'))) {
+          console.log(`  ${key}:`, localStorage.getItem(key));
+        }
       }
       
-      console.log('✅ QR code scanning enabled - Students can now see questions from QR codes!');
+      // Set up keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Enter to submit
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          const submitBtn = document.getElementById('submitBtn');
+          if (!submitBtn.disabled) {
+            if (currentQuestion && currentQuestion.isReal) {
+              submitResponse();
+            } else {
+              submitDemoResponse();
+            }
+          }
+        }
+        
+        // Escape to clear (with confirmation)
+        if (e.key === 'Escape' && !isSubmitted) {
+          clearForm();
+        }
+        
+        // F12 or Ctrl+Shift+D for debug toggle
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'D')) {
+          e.preventDefault();
+          toggleDebug();
+        }
+      });
+      
+      console.log('✅ Student interface ready - NO WORD RESTRICTIONS!');
     });
   </script>
 </body>
