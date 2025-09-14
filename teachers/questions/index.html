@@ -9,7 +9,7 @@
   
   <style>
     :root {
-      /* INTUITY Brand Colors - PRESERVED EXACTLY */
+      /* INTUITY Brand Colors */
       --bg-primary: #1a2332;
       --bg-secondary: #243447;
       --card-bg: rgba(255, 255, 255, 0.08);
@@ -56,7 +56,7 @@
       padding-bottom: 100px;
     }
     
-    /* Enhanced Constellation Background - PRESERVED EXACTLY */
+    /* Enhanced Constellation Background */
     .constellation-bg {
       position: fixed;
       top: 0;
@@ -93,7 +93,7 @@
       100% { opacity: 0.9; transform: scale(1.2); }
     }
     
-    /* Simple Header - PRESERVED EXACTLY */
+    /* Simple Header */
     .simple-header {
       position: fixed;
       top: 0;
@@ -150,7 +150,7 @@
       letter-spacing: 2px;
     }
     
-    /* Main Container - PRESERVED */
+    /* Main Container - Centered Single Card */
     .main-container {
       position: fixed;
       top: 50%;
@@ -161,7 +161,7 @@
       z-index: 10;
     }
     
-    /* The One Question Creator Card - PRESERVED with enhancements */
+    /* The One Question Creator Card */
     .question-card {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
@@ -186,7 +186,7 @@
       border-radius: 24px 24px 0 0;
     }
     
-    /* Question Label - PRESERVED */
+    /* Question Label */
     .question-label {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.2rem;
@@ -198,12 +198,7 @@
       letter-spacing: 1px;
     }
     
-    /* SWISS ENHANCEMENT: Smart Input with features */
-    .question-input-container {
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
-    
+    /* Question Input */
     .question-input {
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
@@ -231,106 +226,7 @@
       transform: translateY(-2px);
     }
     
-    .question-input.valid {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-    }
-    
-    /* SWISS ENHANCEMENT: Character counter and validation */
-    .input-feedback {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 0.75rem;
-      font-size: 0.85rem;
-    }
-    
-    .char-counter {
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    
-    .char-counter.warning {
-      color: var(--accent-gold);
-    }
-    
-    .char-counter.good {
-      color: var(--success);
-    }
-    
-    .validation-tips {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-style: italic;
-    }
-    
-    .validation-tips.show {
-      color: var(--accent-teal);
-    }
-    
-    /* SWISS ENHANCEMENT: Live preview */
-    .question-preview {
-      background: rgba(45, 212, 191, 0.1);
-      border: 1px solid var(--accent-teal);
-      border-radius: 12px;
-      padding: 1.25rem;
-      margin-top: 1.5rem;
-      display: none;
-    }
-    
-    .question-preview.show {
-      display: block;
-      animation: slideUp 0.3s ease;
-    }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .preview-label {
-      color: var(--accent-teal);
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
-    }
-    
-    .preview-text {
-      color: var(--text-primary);
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    /* SWISS ENHANCEMENT: Auto-save indicator */
-    .auto-save-indicator {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 0.5rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      opacity: 0;
-      transition: opacity var(--transition-fast);
-    }
-    
-    .auto-save-indicator.saving {
-      opacity: 1;
-      color: var(--accent-gold);
-    }
-    
-    .auto-save-indicator.saved {
-      opacity: 1;
-      color: var(--success);
-    }
-    
-    /* Footer - PRESERVED with enhancements */
+    /* Minimalist Footer */
     .simple-footer {
       position: fixed;
       bottom: 0;
@@ -373,7 +269,6 @@
       min-width: 80px;
       justify-content: center;
       position: relative;
-      text-decoration: none;
     }
     
     .footer-btn:hover {
@@ -389,7 +284,7 @@
       font-weight: 600;
     }
 
-    .footer-btn.primary:hover:not(:disabled) {
+    .footer-btn.primary:hover {
       background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
       transform: translateY(-2px) scale(1.05);
     }
@@ -404,26 +299,268 @@
       font-size: 0.9rem;
     }
 
-    /* SWISS ENHANCEMENT: Quick Actions */
-    .footer-btn.has-notification::after {
-      content: '';
+    /* Photo Capture Button - Subtle styling */
+    .photo-btn {
+      position: relative;
+    }
+
+    .photo-btn::after {
+      content: attr(data-tooltip);
       position: absolute;
-      top: -3px;
-      right: -3px;
-      width: 8px;
-      height: 8px;
-      background: var(--accent-gold);
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-fast);
+      z-index: 1001;
+    }
+
+    .photo-btn:hover::after {
+      opacity: 1;
+    }
+
+    /* Photo count indicator */
+    .photo-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--accent-teal);
+      color: var(--bg-primary);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.2rem 0.4rem;
+      border-radius: 50px;
+      min-width: 16px;
+      text-align: center;
+      display: none;
+    }
+
+    .photo-count.show {
+      display: block;
+    }
+
+    /* Full-Screen Photo Capture Modal */
+    .photo-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .photo-modal.active {
+      display: flex;
+    }
+
+    /* Modal Header */
+    .modal-header {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-bottom: 2px solid var(--accent-teal);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-close {
+      background: none;
+      border: 2px solid var(--accent-teal);
+      color: var(--accent-teal);
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all var(--transition-fast);
     }
-    
+
+    .modal-close:hover {
+      background: var(--accent-teal);
+      color: white;
+      transform: rotate(90deg) scale(1.1);
+    }
+
+    /* Camera Container */
+    .camera-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+      background: #000;
+    }
+
+    .camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .camera-circle {
+      width: 200px;
+      height: 200px;
+      border: 3px solid var(--accent-teal);
+      border-radius: 50%;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      animation: pulse 2s ease-in-out infinite alternate;
+    }
+
     @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
+      0% { border-color: var(--accent-teal); }
+      100% { border-color: var(--accent-gold); }
     }
-    
-    /* Success notification - PRESERVED */
+
+    /* Camera Controls */
+    .camera-controls {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-top: 2px solid var(--accent-teal);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .current-student {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      backdrop-filter: var(--blur);
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .student-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+
+    .student-input:focus {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+    }
+
+    .capture-btn {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      color: var(--bg-primary);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: all var(--transition-fast);
+      box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+    }
+
+    .capture-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
+    }
+
+    .capture-btn:active {
+      transform: scale(1.05);
+    }
+
+    .capture-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Student Gallery */
+    .student-gallery {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem;
+      backdrop-filter: var(--blur);
+      max-width: 400px;
+      max-height: 120px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .gallery-scroll {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .student-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-teal);
+      box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .student-photo:hover {
+      transform: scale(1.1);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 15px rgba(244, 162, 97, 0.5);
+    }
+
+    .gallery-empty {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    /* Success notification */
     .success-notification {
       position: fixed;
       top: 50%;
@@ -442,6 +579,33 @@
       backdrop-filter: var(--blur);
       animation: fadeIn 0.3s ease;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    /* Share notification */
+    .share-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(45, 212, 191, 0.15);
+      border: 2px solid var(--accent-teal);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--accent-teal);
+      font-weight: 600;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: var(--blur);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
     
     /* Loading Animation */
     .loading {
@@ -454,7 +618,7 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Modal - PRESERVED */
+    /* QR Modal */
     .modal {
       position: fixed;
       top: 0;
@@ -479,6 +643,11 @@
       margin: 1rem;
     }
 
+    .modal h3 {
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+
     .qr-display {
       width: 200px;
       height: 200px;
@@ -489,6 +658,22 @@
       align-items: center;
       justify-content: center;
       color: #666;
+    }
+
+    .modal p {
+      color: var(--text-secondary);
+      margin-top: 1rem;
+    }
+
+    .modal button {
+      margin-top: 1.5rem;
+      background: var(--accent-teal);
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      color: var(--bg-primary);
+      font-weight: 600;
+      cursor: pointer;
     }
     
     /* Mobile Optimizations */
@@ -520,14 +705,29 @@
         min-width: 70px;
         padding: 0.6rem;
       }
+
+      .camera-controls {
+        padding: 1rem;
+        gap: 1rem;
+      }
+
+      .current-student {
+        max-width: none;
+      }
+
+      .capture-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Enhanced Constellation Background - PRESERVED EXACTLY -->
+  <!-- Enhanced Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
-  <!-- Simple Header - PRESERVED EXACTLY -->
+  <!-- Simple Header -->
   <header class="simple-header">
     <div class="brand-name">INTUITY</div>
     <div class="author-name">by Majid Nashtai</div>
@@ -538,42 +738,19 @@
   <div class="main-container">
     <div class="question-card" id="questionCard">
       
-      <!-- Auto-save Indicator -->
-      <div class="auto-save-indicator" id="autoSaveIndicator">
-        <i class="fas fa-save"></i>
-        <span id="saveStatus">Draft saved</span>
-      </div>
-      
       <div class="question-label">Create Your Question</div>
       
-      <div class="question-input-container">
-        <textarea 
-          class="question-input" 
-          id="questionInput"
-          placeholder="What would you like to ask your students? Be specific and thought-provoking..."
-          rows="4"
-        ></textarea>
-        
-        <div class="input-feedback">
-          <div class="validation-tips" id="validationTips">
-            💡 Tip: Great questions are clear, specific, and encourage deep thinking
-          </div>
-          <div class="char-counter" id="charCounter">0 characters</div>
-        </div>
-      </div>
-      
-      <!-- SWISS ENHANCEMENT: Live Preview -->
-      <div class="question-preview" id="questionPreview">
-        <div class="preview-label">
-          <i class="fas fa-eye"></i> Student Preview
-        </div>
-        <div class="preview-text" id="previewText"></div>
-      </div>
+      <textarea 
+        class="question-input" 
+        id="questionInput"
+        placeholder="What would you like to ask your students? Be specific and thought-provoking..."
+        rows="4"
+      ></textarea>
       
     </div>
   </div>
 
-  <!-- Footer with Swiss enhancements -->
+  <!-- Minimalist Footer with Photo Button -->
   <div class="simple-footer">
     <div class="footer-content">
       <button class="footer-btn" id="clearBtn">
@@ -581,9 +758,9 @@
         <span>Clear</span>
       </button>
       
-      <button class="footer-btn" id="loadDraftBtn">
-        <i class="fas fa-folder-open"></i>
-        <span>Drafts</span>
+      <button class="footer-btn" id="editBtn">
+        <i class="fas fa-edit"></i>
+        <span>Edit</span>
       </button>
 
       <button class="footer-btn primary" id="publishBtn" disabled>
@@ -595,29 +772,80 @@
         <i class="fas fa-share-alt"></i>
         <span>Share</span>
       </button>
+
+      <!-- NEW: Photo Capture Button -->
+      <button class="footer-btn photo-btn" id="photoBtn" data-tooltip="Capture Student Photos">
+        <i class="fas fa-camera"></i>
+        <span>Photos</span>
+        <div class="photo-count" id="photoCount">0</div>
+      </button>
       
       <button class="footer-btn" id="qrBtn">
         <i class="fas fa-qrcode"></i>
         <span>QR Code</span>
       </button>
       
-      <a href="../../visualisation/" class="footer-btn">
+      <button class="footer-btn" id="analyticsBtn">
         <i class="fas fa-chart-bar"></i>
         <span>Analytics</span>
-      </a>
+      </button>
     </div>
   </div>
 
-  <!-- Success Notification - PRESERVED -->
+  <!-- Full-Screen Photo Capture Modal -->
+  <div class="photo-modal" id="photoModal">
+    <div class="modal-header">
+      <div class="modal-title">📸 INTUITY Photo Capture</div>
+      <button class="modal-close" id="closePhotoModal">&times;</button>
+    </div>
+
+    <div class="camera-container">
+      <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
+      <canvas id="photoCanvas" style="display: none;"></canvas>
+      
+      <div class="camera-overlay">
+        <div class="camera-circle"></div>
+      </div>
+    </div>
+
+    <div class="camera-controls">
+      <div class="current-student">
+        <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Student Name:</label>
+        <input 
+          type="text" 
+          class="student-input" 
+          id="currentStudentName" 
+          placeholder="Enter student's name..."
+          maxlength="50"
+        />
+      </div>
+
+      <button class="capture-btn" id="captureBtn" disabled>
+        <i class="fas fa-camera"></i>
+      </button>
+
+      <div class="student-gallery">
+        <div class="gallery-scroll" id="galleryScroll">
+          <div class="gallery-empty">No photos captured yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Notification -->
   <div class="success-notification" id="successNotification">
     <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-    <div id="successMessage">Question published successfully!</div>
-    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">
-      Students can now access and respond to your question.
-    </div>
+    Question published successfully!<br>
+    Students can now access and respond to your question.
   </div>
 
-  <!-- QR Modal - PRESERVED -->
+  <!-- Share Notification -->
+  <div class="share-notification" id="shareNotification">
+    <i class="fas fa-check" style="margin-right: 0.5rem;"></i>
+    Link copied to clipboard!
+  </div>
+
+  <!-- QR Modal -->
   <div id="qrModal" class="modal">
     <div class="modal-content">
       <h3>Student Access QR Code</h3>
@@ -629,185 +857,19 @@
     </div>
   </div>
 
-  <!-- Include the Swiss Watch Data Engine -->
   <script>
-    // 🚀 FIXED SWISS WATCH DATA ENGINE
-    class INTUITYSwissWatch {
-      constructor() {
-        this.questions = [];
-        this.responses = [];
-        this.currentQuestion = null;
-        this.subscribers = [];
-        this.initialize();
-      }
-
-      initialize() {
-        this.loadQuestions();
-        this.loadCurrentQuestion();
-      }
-
-      loadQuestions() {
-        try {
-          const stored = localStorage.getItem('alm_questions');
-          this.questions = stored ? JSON.parse(stored) : [];
-        } catch (error) {
-          this.questions = [];
-        }
-      }
-
-      loadCurrentQuestion() {
-        try {
-          const stored = localStorage.getItem('current_question');
-          this.currentQuestion = stored ? JSON.parse(stored) : null;
-        } catch (error) {
-          this.currentQuestion = null;
-        }
-      }
-
-      addQuestion(questionData) {
-        const question = {
-          id: Date.now(),
-          text: questionData.text,
-          timestamp: new Date().toISOString(),
-          createdBy: 'teacher',
-          published: true,
-          ...questionData
-        };
-        
-        this.questions.push(question);
-        this.saveQuestions();
-        return question;
-      }
-
-      publishQuestion(question) {
-        this.currentQuestion = question;
-        localStorage.setItem('current_question', JSON.stringify(question));
-        this.notifySubscribers('questionPublished', question);
-      }
-
-      saveQuestions() {
-        try {
-          const data = JSON.stringify(this.questions);
-          localStorage.setItem('alm_questions', data);
-          localStorage.setItem('intuity_questions', data);
-        } catch (error) {
-          console.error('Error saving questions:', error);
-        }
-      }
-
-      // 🔧 FIXED: Use global currentQuestion if Swiss Watch currentQuestion is missing
-      generateStudentURL(questionId = null) {
-        const baseURL = window.location.origin + window.location.pathname.replace(/\/teachers\/questions\/.*/, '/');
-        const studentPath = 'students/answers/';
-        
-        // Use either the Swiss Watch currentQuestion OR the global currentQuestion
-        const question = this.currentQuestion || window.currentQuestion;
-        
-        console.log('🔍 URL Generation Debug:');
-        console.log('questionId:', questionId);
-        console.log('this.currentQuestion:', this.currentQuestion);
-        console.log('window.currentQuestion:', window.currentQuestion);
-        console.log('Using question:', question);
-        
-        if (questionId && question && question.text) {
-          const url = `${baseURL}${studentPath}?q=${encodeURIComponent(questionId)}&t=${encodeURIComponent(question.text)}`;
-          console.log('✅ Generated URL with parameters:', url);
-          return url;
-        }
-        
-        console.log('⚠️ Generated URL without parameters:', `${baseURL}${studentPath}`);
-        return `${baseURL}${studentPath}`;
-      }
-
-      subscribe(callback) {
-        this.subscribers.push(callback);
-      }
-
-      notifySubscribers(event, data) {
-        this.subscribers.forEach(callback => {
-          try { callback(event, data); } catch (error) {}
-        });
-      }
-    }
-
-    // Initialize Swiss Watch Engine
-    const intuityData = new INTUITYSwissWatch();
     let currentQuestion = null;
-    let autoSaveTimeout = null;
+    let studentPhotos = []; // Array to store captured photos
+    let cameraStream = null;
 
-    // SWISS ENHANCEMENT: Enhanced Input Handling
-    function handleQuestionInput() {
-      const input = document.getElementById('questionInput');
-      const publishBtn = document.getElementById('publishBtn');
-      const charCounter = document.getElementById('charCounter');
-      const validationTips = document.getElementById('validationTips');
-      const preview = document.getElementById('questionPreview');
-      const previewText = document.getElementById('previewText');
-      
-      const text = input.value.trim();
-      const length = text.length;
-      
-      // Update character counter
-      charCounter.textContent = `${length} characters`;
-      
-      if (length === 0) {
-        charCounter.className = 'char-counter';
-        validationTips.textContent = '💡 Tip: Great questions are clear, specific, and encourage deep thinking';
-        validationTips.className = 'validation-tips';
-        preview.classList.remove('show');
-        publishBtn.disabled = true;
-        input.classList.remove('valid');
-      } else if (length < 10) {
-        charCounter.className = 'char-counter warning';
-        validationTips.textContent = '⚠️ Question seems too short. Add more detail for clarity.';
-        validationTips.className = 'validation-tips show';
-        preview.classList.remove('show');
-        publishBtn.disabled = true;
-        input.classList.remove('valid');
-      } else if (length >= 10) {
-        charCounter.className = 'char-counter good';
-        validationTips.textContent = '✅ Perfect! Your question looks engaging and clear.';
-        validationTips.className = 'validation-tips show';
-        
-        // Show preview
-        previewText.textContent = text;
-        preview.classList.add('show');
-        
-        publishBtn.disabled = false;
-        input.classList.add('valid');
-      }
-      
-      // Auto-save with indicator
-      showAutoSaveIndicator('saving');
-      clearTimeout(autoSaveTimeout);
-      autoSaveTimeout = setTimeout(() => {
-        if (text.length > 0) {
-          localStorage.setItem('question_draft', text);
-          showAutoSaveIndicator('saved');
-          setTimeout(() => hideAutoSaveIndicator(), 2000);
-        }
-      }, 1000);
-    }
+    // Configuration object for easy path management
+    const CONFIG = {
+      studentPath: '../../students/answers/',
+      analyticsPath: '../../visualisation/',
+      baseURL: window.location.origin + window.location.pathname.replace('/teachers/questions/index.html', '/')
+    };
 
-    // SWISS ENHANCEMENT: Auto-save indicators
-    function showAutoSaveIndicator(status) {
-      const indicator = document.getElementById('autoSaveIndicator');
-      const statusText = document.getElementById('saveStatus');
-      
-      if (status === 'saving') {
-        statusText.innerHTML = '<i class="fas fa-spinner loading"></i> Saving...';
-        indicator.className = 'auto-save-indicator saving';
-      } else if (status === 'saved') {
-        statusText.innerHTML = '<i class="fas fa-check"></i> Draft saved';
-        indicator.className = 'auto-save-indicator saved';
-      }
-    }
-
-    function hideAutoSaveIndicator() {
-      document.getElementById('autoSaveIndicator').className = 'auto-save-indicator';
-    }
-
-    // Enhanced constellation - PRESERVED EXACTLY
+    // Enhanced constellation
     function createConstellation() {
       const constellation = document.getElementById('constellation');
       const starCount = 60;
@@ -823,16 +885,205 @@
       }
     }
 
-    // Load draft
+    // Question input handler
+    function handleQuestionInput() {
+      const input = document.getElementById('questionInput');
+      const publishBtn = document.getElementById('publishBtn');
+
+      const text = input.value.trim();
+
+      if (text.length >= 10) {
+        publishBtn.disabled = false;
+      } else {
+        publishBtn.disabled = true;
+      }
+
+      if (text) {
+        localStorage.setItem('question_draft', text);
+      }
+    }
+
+    // Load any existing draft
     function loadDraft() {
       const draft = localStorage.getItem('question_draft');
       if (draft) {
         document.getElementById('questionInput').value = draft;
         handleQuestionInput();
       }
+
+      // Load existing photos
+      const savedPhotos = localStorage.getItem('student_photos');
+      if (savedPhotos) {
+        try {
+          studentPhotos = JSON.parse(savedPhotos);
+          updatePhotoCount();
+          updateGallery();
+        } catch (e) {
+          console.error('Error loading photos:', e);
+        }
+      }
     }
 
-    // 🔧 FIXED: Enhanced publish with better synchronization
+    // Photo capture functionality
+    async function startCamera() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
+        
+        const video = document.getElementById('cameraVideo');
+        video.srcObject = cameraStream;
+        
+        // Enable capture button when video is ready
+        video.addEventListener('loadedmetadata', () => {
+          document.getElementById('captureBtn').disabled = false;
+        });
+        
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Could not access camera. Please check permissions.');
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+    }
+
+    function openPhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.add('active');
+      startCamera();
+    }
+
+    function closePhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.remove('active');
+      stopCamera();
+      document.getElementById('currentStudentName').value = '';
+      document.getElementById('captureBtn').disabled = true;
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('photoCanvas');
+      const studentName = document.getElementById('currentStudentName').value.trim();
+      
+      if (!studentName) {
+        alert('Please enter the student\'s name before capturing.');
+        document.getElementById('currentStudentName').focus();
+        return;
+      }
+      
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Draw video frame to canvas
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      
+      // Convert to base64
+      const photoDataURL = canvas.toDataURL('image/jpeg', 0.8);
+      
+      // Create photo object
+      const photoData = {
+        id: Date.now(),
+        name: studentName,
+        photo: photoDataURL,
+        timestamp: new Date().toLocaleString()
+      };
+      
+      // Add to photos array
+      studentPhotos.push(photoData);
+      
+      // Save to localStorage
+      localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+      
+      // Update UI
+      updatePhotoCount();
+      updateGallery();
+      
+      // Clear input for next student
+      document.getElementById('currentStudentName').value = '';
+      document.getElementById('currentStudentName').focus();
+      
+      // Success feedback
+      showPhotoSuccess(studentName);
+      
+      console.log(`Photo captured for ${studentName}`);
+    }
+
+    function updatePhotoCount() {
+      const countElement = document.getElementById('photoCount');
+      const count = studentPhotos.length;
+      
+      countElement.textContent = count;
+      countElement.classList.toggle('show', count > 0);
+    }
+
+    function updateGallery() {
+      const galleryScroll = document.getElementById('galleryScroll');
+      
+      if (studentPhotos.length === 0) {
+        galleryScroll.innerHTML = '<div class="gallery-empty">No photos captured yet</div>';
+        return;
+      }
+      
+      galleryScroll.innerHTML = studentPhotos.map(photo => `
+        <img 
+          src="${photo.photo}" 
+          alt="${photo.name}"
+          class="student-photo"
+          title="${photo.name} - ${photo.timestamp}"
+          onclick="removePhoto(${photo.id})"
+        />
+      `).join('');
+    }
+
+    function removePhoto(photoId) {
+      if (confirm('Remove this photo?')) {
+        studentPhotos = studentPhotos.filter(p => p.id !== photoId);
+        localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+        updatePhotoCount();
+        updateGallery();
+      }
+    }
+
+    function showPhotoSuccess(studentName) {
+      // Create temporary success message
+      const successDiv = document.createElement('div');
+      successDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(16, 185, 129, 0.15);
+        border: 2px solid var(--success);
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        color: var(--success);
+        font-weight: 600;
+        z-index: 2001;
+        backdrop-filter: blur(20px);
+        animation: fadeInOut 3s ease-in-out;
+      `;
+      successDiv.innerHTML = `<i class="fas fa-camera"></i> Photo captured for ${studentName}!`;
+      
+      document.body.appendChild(successDiv);
+      
+      setTimeout(() => {
+        document.body.removeChild(successDiv);
+      }, 3000);
+    }
+
+    // Publish question function
     function publishQuestion() {
       const questionText = document.getElementById('questionInput').value.trim();
       
@@ -847,33 +1098,44 @@
       publishBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Publishing...</span>';
       publishBtn.disabled = true;
 
+      const question = {
+        id: Date.now(),
+        text: questionText,
+        timestamp: new Date().toISOString(),
+        createdBy: 'teacher',
+        type: 'open-ended',
+        published: true,
+        publishedAt: new Date().toISOString(),
+        hasPhotos: studentPhotos.length > 0,
+        photoCount: studentPhotos.length
+      };
+
       setTimeout(() => {
         try {
-          // Create and add question through Swiss Watch engine
-          const question = intuityData.addQuestion({ text: questionText });
+          const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          existingQuestions.push(question);
           
-          // 🔧 FIXED: Ensure both variables are synchronized
-          intuityData.publishQuestion(question);
-          currentQuestion = question; // Global variable
-          window.currentQuestion = question; // Explicitly set window.currentQuestion
-          
-          console.log('✅ Question published:', question);
-          console.log('✅ Global currentQuestion:', currentQuestion);
-          console.log('✅ Swiss Watch currentQuestion:', intuityData.currentQuestion);
+          localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
+          localStorage.setItem('current_question', JSON.stringify(question));
+          localStorage.setItem('intuity_questions', JSON.stringify(existingQuestions));
 
-          // Clear draft
+          // Link photos to the question
+          if (studentPhotos.length > 0) {
+            const questionPhotos = {
+              questionId: question.id,
+              photos: studentPhotos
+            };
+            localStorage.setItem(`photos_${question.id}`, JSON.stringify(questionPhotos));
+          }
+
           localStorage.removeItem('question_draft');
+          currentQuestion = question;
 
-          showSuccessNotification('Question published successfully!');
-
-          // Add notification indicator to share and QR buttons
-          document.getElementById('shareLinkBtn').classList.add('has-notification');
-          document.getElementById('qrBtn').classList.add('has-notification');
+          console.log('Question published with photos:', question);
+          showSuccessNotification();
 
           setTimeout(() => {
             document.getElementById('questionInput').value = '';
-            hideAutoSaveIndicator();
-            document.getElementById('questionPreview').classList.remove('show');
             handleQuestionInput();
           }, 2000);
 
@@ -887,19 +1149,51 @@
       }, 1500);
     }
 
-    // SWISS ENHANCED: Smart sharing with current question
+    function showSuccessNotification() {
+      const notification = document.getElementById('successNotification');
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    function showShareNotification() {
+      const notification = document.getElementById('shareNotification');
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 2000);
+    }
+
+    // Footer functions
+    function clearQuestion() {
+      if (confirm('Clear the current question? Any unsaved changes will be lost.')) {
+        document.getElementById('questionInput').value = '';
+        localStorage.removeItem('question_draft');
+        handleQuestionInput();
+        document.getElementById('questionInput').focus();
+      }
+    }
+
+    function editQuestion() {
+      const questionInput = document.getElementById('questionInput');
+      questionInput.focus();
+      questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
+    }
+
     function shareStudentLink() {
       if (!currentQuestion) {
         alert('Please publish a question first before sharing.');
         return;
       }
 
-      const studentURL = intuityData.generateStudentURL(currentQuestion.id);
+      const studentURL = CONFIG.baseURL + CONFIG.studentPath;
       
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(studentURL).then(() => {
-          showSuccessNotification('Student link copied to clipboard!');
-          document.getElementById('shareLinkBtn').classList.remove('has-notification');
+          showShareNotification();
         }).catch(() => {
           fallbackCopyToClipboard(studentURL);
         });
@@ -913,46 +1207,39 @@
       textArea.value = text;
       textArea.style.position = 'fixed';
       textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
       
       try {
         document.execCommand('copy');
-        showSuccessNotification('Student link copied to clipboard!');
-        document.getElementById('shareLinkBtn').classList.remove('has-notification');
+        showShareNotification();
       } catch (err) {
+        console.error('Fallback: Could not copy text: ', err);
         alert(`Please copy this link manually: ${text}`);
       }
       
       document.body.removeChild(textArea);
     }
 
-    // 🔧 FIXED: Enhanced QR generation with debugging
     function generateQR() {
       if (!currentQuestion) {
         alert('Please publish a question first before generating QR code.');
         return;
       }
 
-      console.log('🔍 QR Generation Debug:');
-      console.log('currentQuestion:', currentQuestion);
-      console.log('currentQuestion.id:', currentQuestion.id);
-      console.log('currentQuestion.text:', currentQuestion.text);
-
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
       
       modal.style.display = 'flex';
       
-      const studentURL = intuityData.generateStudentURL(currentQuestion.id);
-      console.log('🎯 Final QR URL:', studentURL);
-      
+      const baseStudentURL = CONFIG.baseURL + CONFIG.studentPath;
+      const studentURL = `${baseStudentURL}?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
       
       setTimeout(() => {
         display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
-        document.getElementById('qrBtn').classList.remove('has-notification');
       }, 500);
     }
 
@@ -960,90 +1247,68 @@
       document.getElementById('qrModal').style.display = 'none';
     }
 
-    function showSuccessNotification(message) {
-      const notification = document.getElementById('successNotification');
-      const messageEl = document.getElementById('successMessage');
-      messageEl.textContent = message;
-      notification.style.display = 'block';
-      
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, 3000);
-    }
-
-    function clearQuestion() {
-      if (confirm('Clear the current question? Any unsaved changes will be lost.')) {
-        document.getElementById('questionInput').value = '';
-        localStorage.removeItem('question_draft');
-        hideAutoSaveIndicator();
-        document.getElementById('questionPreview').classList.remove('show');
-        handleQuestionInput();
-        document.getElementById('questionInput').focus();
-      }
-    }
-
-    function loadDrafts() {
-      const drafts = [];
-      // Could expand this to show multiple saved drafts
-      const currentDraft = localStorage.getItem('question_draft');
-      if (currentDraft) {
-        if (confirm('Load your saved draft?')) {
-          document.getElementById('questionInput').value = currentDraft;
-          handleQuestionInput();
-        }
-      } else {
-        alert('No drafts available.');
-      }
+    function openAnalytics() {
+      window.location.href = CONFIG.analyticsPath;
     }
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🎯 INTUITY Swiss Watch Teacher Interface - FIXED VERSION LOADED! ✅');
-      
       createConstellation();
       loadDraft();
       
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
       questionInput.addEventListener('focus', () => {
-        document.getElementById('validationTips').classList.add('show');
+        console.log('Question input focused');
       });
       
-      // Footer handlers
+      // Setup footer handlers
       document.getElementById('clearBtn').addEventListener('click', clearQuestion);
-      document.getElementById('loadDraftBtn').addEventListener('click', loadDrafts);
+      document.getElementById('editBtn').addEventListener('click', editQuestion);
       document.getElementById('publishBtn').addEventListener('click', publishQuestion);
-      document.getElementById('shareLinkBtn').addEventListener('click', shareStudentLink);
-      document.getElementById('qrBtn').addEventListener('click', generateQR);
       
-      // Modal handlers
-      document.getElementById('qrModal').addEventListener('click', (e) => {
-        if (e.target.id === 'qrModal') closeQRModal();
+      const shareLinkBtn = document.getElementById('shareLinkBtn');
+      if (shareLinkBtn) {
+        shareLinkBtn.addEventListener('click', shareStudentLink);
+      }
+
+      // NEW: Photo capture event listeners
+      document.getElementById('photoBtn').addEventListener('click', openPhotoModal);
+      document.getElementById('closePhotoModal').addEventListener('click', closePhotoModal);
+      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+      
+      // Student name input validation
+      document.getElementById('currentStudentName').addEventListener('input', (e) => {
+        const captureBtn = document.getElementById('captureBtn');
+        captureBtn.disabled = !e.target.value.trim() || !cameraStream;
       });
       
-      // Keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-          e.preventDefault();
-          if (!document.getElementById('publishBtn').disabled) {
-            publishQuestion();
-          }
-        }
-        
-        if (e.key === 'Escape') {
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
+      
+      // Close modal on outside click
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
           closeQRModal();
+        }
+      });
+
+      // Close photo modal on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('photoModal').classList.contains('active')) {
+          closePhotoModal();
         }
       });
 
       // Auto-save every 30 seconds
       setInterval(() => {
         const questionText = document.getElementById('questionInput').value.trim();
-        if (questionText && questionText.length > 10) {
+        if (questionText) {
           localStorage.setItem('question_draft', questionText);
         }
       }, 30000);
 
-      console.log('✅ QR Code bug FIXED - Students will now see questions from QR codes! 🎯');
+      console.log('Teacher Question Creator with Photo Capture initialized!');
     });
   </script>
 </body>
