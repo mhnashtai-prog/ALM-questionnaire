@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher Quiz Creator</title>
+  <title>INTUITY - Teacher Question Creator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
@@ -23,13 +23,6 @@
       --success: #10b981;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      
-      /* Enhanced dimensions */
-      --card-width: 340px;
-      --card-height: 252px;
-      --card-spacing: 36px;
-      --card-min-scale: 0.6;
-      --card-max-scale: 1.5;
       
       /* Animation timings */
       --transition-fast: 0.2s;
@@ -59,7 +52,8 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
-      touch-action: pan-y;
+      touch-action: manipulation;
+      padding-bottom: 100px;
     }
     
     /* Enhanced Constellation Background */
@@ -99,8 +93,8 @@
       100% { opacity: 0.9; transform: scale(1.2); }
     }
     
-    /* Wizard Header */
-    .wizard-header {
+    /* Simple Header */
+    .simple-header {
       position: fixed;
       top: 0;
       left: 0;
@@ -110,28 +104,20 @@
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--card-border);
-      padding: 1rem;
+      padding: 1.5rem;
       text-align: center;
     }
     
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: 700;
       background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.5rem;
       position: relative;
-    }
-    
-    .quiz-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.3rem;
     }
     
     .brand-name::after {
@@ -148,180 +134,40 @@
       50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
     }
     
-    .author-credit {
+    .simple-subtitle {
       color: var(--text-secondary);
-      font-size: 0.8rem;
-      font-weight: 400;
-      margin-bottom: 0;
-    }
-    
-    /* Question Counter - Updated for cards */
-    .question-counter {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      width: 100%;
-    }
-    
-    .counter-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .counter-input {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 4px 8px;
-      color: var(--text-primary);
       font-size: 0.9rem;
-      font-weight: 600;
-      width: 45px;
-      text-align: center;
-      outline: none;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
     
-    .counter-input:focus {
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
-    }
-    
-    .counter-btn {
-      background: var(--accent-teal);
-      border: none;
-      border-radius: 4px;
-      color: var(--bg-primary);
-      width: 26px;
-      height: 26px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-    
-    .counter-btn:hover {
-      transform: scale(1.1);
-      background: var(--accent-gold);
-    }
-    
-    /* Touch Scroll Indicator */
-    .scroll-indicator {
+    /* Main Container - Centered Single Card */
+    .main-container {
       position: fixed;
-      right: 20px;
       top: 50%;
-      transform: translateY(-50%);
-      z-index: 999;
-      opacity: 0.6;
-      transition: opacity var(--transition-fast);
-    }
-    
-    .scroll-indicator.visible {
-      opacity: 1;
-    }
-    
-    .scroll-dots {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .scroll-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      transition: all var(--transition-fast);
-    }
-    
-    .scroll-dot.active {
-      background: var(--accent-teal);
-      transform: scale(1.3);
-    }
-    
-    /* Vertical Carousel Container */
-    .carousel-container {
-      position: fixed;
-      top: 170px;
       left: 50%;
-      transform: translateX(-50%);
-      width: var(--card-width);
-      height: calc(100vh - 250px);
-      overflow: hidden;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 700px;
       z-index: 10;
-      touch-action: pan-y;
     }
     
-    .carousel-track {
-      position: relative;
-      height: 100%;
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform;
-    }
-    
-    .carousel-track.dragging {
-      transition: none;
-    }
-    
-    /* Enhanced Interactive Cards */
-    .interactive-card {
-      position: absolute;
-      width: var(--card-width);
-      height: var(--card-height);
+    /* The One Question Creator Card */
+    .question-card {
       background: var(--card-bg);
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border: 2px solid var(--card-border);
-      border-radius: 20px;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: var(--shadow-active);
+      position: relative;
       overflow: hidden;
-      transform-origin: center;
-      scale: 1;
-      touch-action: manipulation;
-      will-change: transform, box-shadow;
+      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .interactive-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--accent-teal);
-    }
-    
-    .interactive-card.focused {
-      border-color: var(--accent-gold);
-      box-shadow: var(--shadow-active);
-      scale: var(--card-max-scale);
-      z-index: 100;
-    }
-    
-    .interactive-card.completed {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: var(--success);
-    }
-    
-    /* Enhanced Touch Feedback */
-    .interactive-card.touch-active {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: var(--shadow-active);
-      border-color: var(--accent-gold);
-      background: rgba(255, 255, 255, 0.12);
-    }
-    
-    .interactive-card.touch-feedback {
-      animation: touchPulse 0.3s ease-out;
-    }
-    
-    @keyframes touchPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-    
-    .interactive-card::before {
+    .question-card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -329,200 +175,273 @@
       right: 0;
       height: 4px;
       background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform var(--transition-medium) ease;
+      border-radius: 24px 24px 0 0;
     }
     
-    .interactive-card:hover::before,
-    .interactive-card.focused::before {
-      transform: scaleX(1);
+    /* Question Label */
+    .question-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     
-    /* Card Content Layout */
-    .card-line {
+    /* Question Input */
+    .question-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all var(--transition-fast) ease;
+      resize: vertical;
+      min-height: 120px;
+      margin-bottom: 2rem;
+    }
+    
+    .question-input::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    
+    .question-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    /* Simple Settings */
+    .simple-settings {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      justify-content: center;
+      gap: 3rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
     }
     
-    .card-line:last-child {
-      margin-bottom: 0;
-    }
-    
-    .teacher-label {
+    .setting-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       color: var(--text-secondary);
-      font-size: 0.8rem;
+      font-size: 1rem;
       font-weight: 500;
-      min-width: 120px;
     }
     
-    .question-counter-display {
+    .setting-label {
+      color: var(--accent-gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+    }
+    
+    .word-input {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all var(--transition-fast);
+      width: 80px;
+      text-align: center;
+    }
+    
+    .word-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.15);
+    }
+    
+    /* Create Button */
+    .create-button {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border: none;
+      border-radius: 16px;
+      padding: 1.25rem 2rem;
+      color: var(--bg-primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast) ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 8px 32px rgba(45, 212, 191, 0.3);
+      opacity: 0.5;
+      transform: scale(0.98);
+      pointer-events: none;
+    }
+    
+    .create-button.ready {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+    
+    .create-button.ready:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 48px rgba(45, 212, 191, 0.4);
+    }
+    
+    .create-button.ready:active {
+      transform: translateY(-1px) scale(1);
+    }
+    
+    /* Success State */
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid var(--success);
+      border-radius: 16px;
+      color: var(--success);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Question Counter */
+    .question-counter {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
       background: var(--accent-teal);
       color: var(--bg-primary);
-      width: 28px;
-      height: 28px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 16px rgba(45, 212, 191, 0.3);
     }
     
-    .question-input {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-family: inherit;
-      outline: none;
-      transition: all var(--transition-fast) ease;
-      resize: none;
-      min-height: 80px;
-    }
-    
-    .question-input::placeholder {
-      color: var(--text-muted);
-    }
-    
-    .question-input:focus {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.2);
-    }
-    
-    .save-btn {
-      background: var(--success);
-      border: none;
-      border-radius: 6px;
-      color: white;
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .save-btn:hover {
-      transform: scale(1.05);
-      background: var(--accent-gold);
-    }
-    
-    .questions-dropdown {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: var(--text-primary);
-      font-size: 0.85rem;
-      font-family: inherit;
-      outline: none;
-      transition: all var(--transition-fast) ease;
-      cursor: pointer;
-    }
-    
-    .questions-dropdown:focus {
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
-    }
-    
-    /* Bottom Navigation */
-    .wizard-nav {
+    /* Minimalist Footer */
+    .simple-footer {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(26, 35, 50, 0.95);
+      background: rgba(26, 35, 50, 0.9);
       backdrop-filter: var(--blur);
       -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
       padding: 1rem;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
       z-index: 1000;
     }
     
-    .nav-icon-btn {
+    .footer-content {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .footer-btn {
       background: var(--card-bg);
-      backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.75rem;
       color: var(--text-primary);
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      font-size: 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: all var(--transition-fast) ease;
+      transition: all var(--transition-fast);
+      backdrop-filter: var(--blur);
       display: flex;
       align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 80px;
       justify-content: center;
-      touch-action: manipulation;
     }
     
-    .nav-icon-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+    .footer-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
       border-color: var(--accent-teal);
-      transform: translateY(-3px) scale(1.05);
+      transform: translateY(-1px);
     }
     
-    .nav-icon-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      color: var(--bg-primary);
-    }
-    
-    .nav-icon-btn.primary:hover {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      transform: translateY(-3px) scale(1.1);
-    }
-    
-    .nav-icon-btn.danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      border: none;
-      color: white;
-    }
-    
-    .nav-icon-btn.danger:hover {
-      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    .footer-btn i {
+      font-size: 0.9rem;
     }
     
     /* Mobile Optimizations */
-    @media (max-width: 400px) {
-      :root {
-        --card-width: 95vw;
+    @media (max-width: 768px) {
+      .main-container {
+        width: 95%;
+        top: 45%;
       }
       
-      .carousel-container {
-        width: 95vw;
+      .question-card {
+        padding: 2rem;
       }
       
       .brand-name {
-        font-size: 1.5rem;
+        font-size: 2rem;
       }
       
-      .scroll-indicator {
-        right: 10px;
+      .question-input {
+        min-height: 100px;
+        padding: 1.25rem;
+        font-size: 1rem;
+      }
+      
+      .simple-settings {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .footer-content {
+        gap: 1rem;
+      }
+      
+      .footer-btn {
+        min-width: 70px;
+        padding: 0.6rem;
       }
     }
     
-    /* Accessibility */
-    @media (prefers-reduced-motion: reduce) {
-      .carousel-track {
-        transition: none;
-      }
-      
-      .interactive-card {
-        transition: none;
-      }
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -530,55 +449,99 @@
   <!-- Enhanced Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
-  <!-- Scroll Indicator -->
-  <div class="scroll-indicator" id="scrollIndicator">
-    <div class="scroll-dots" id="scrollDots"></div>
-  </div>
-  
-  <!-- Wizard Header -->
-  <header class="wizard-header">
+  <!-- Simple Header -->
+  <header class="simple-header">
     <div class="brand-name">INTUITY</div>
-    <div class="quiz-title">QUIZ</div>
-    <div class="author-credit">by Majid Nashtai</div>
+    <div class="simple-subtitle">Teacher Question Creator</div>
   </header>
   
-  <!-- Vertical Carousel Container -->
-  <div class="carousel-container" id="carouselContainer">
-    <div class="carousel-track" id="carouselTrack">
-      <!-- Cards will be populated here -->
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="question-card" id="questionCard">
+      <div class="question-counter" id="questionCounter">1</div>
+      
+      <div class="question-label">Create Your Question</div>
+      
+      <textarea 
+        class="question-input" 
+        id="questionInput"
+        placeholder="What would you like to ask your students?"
+        rows="4"
+      ></textarea>
+      
+      <div class="simple-settings">
+        <div class="setting-item">
+          <span class="setting-label">Minimum Words</span>
+          <input 
+            type="number" 
+            class="word-input" 
+            id="minWordsInput"
+            placeholder="25"
+            min="10"
+            max="100"
+            value="25"
+          >
+        </div>
+        <div class="setting-item">
+          <i class="fas fa-users"></i>
+          <span id="questionCount">0 questions created</span>
+        </div>
+      </div>
+      
+      <button class="create-button" id="createButton">
+        <i class="fas fa-plus"></i>
+        Create Question
+      </button>
+      
+      <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i>
+        Question created successfully! Students can now access it.
+      </div>
     </div>
   </div>
-  
-  <!-- Bottom Navigation -->
-  <nav class="wizard-nav">
-    <button class="nav-icon-btn" id="qrBtn" title="Generate QR Code">
-      <i class="fas fa-qrcode"></i>
-    </button>
-    <button class="nav-icon-btn primary" id="submitBtn" title="Submit Quiz">
-      <i class="fas fa-paper-plane"></i>
-    </button>
-    <button class="nav-icon-btn danger" id="newBtn" title="New Quiz">
-      <i class="fas fa-plus"></i>
-    </button>
-  </nav>
+
+  <!-- Minimalist Footer -->
+  <div class="simple-footer">
+    <div class="footer-content">
+      <button class="footer-btn" id="clearBtn">
+        <i class="fas fa-eraser"></i>
+        <span>Clear</span>
+      </button>
+      
+      <button class="footer-btn" id="qrBtn">
+        <i class="fas fa-qrcode"></i>
+        <span>QR Code</span>
+      </button>
+      
+      <button class="footer-btn" id="shareBtn">
+        <i class="fas fa-share"></i>
+        <span>Share</span>
+      </button>
+      
+      <button class="footer-btn" id="analyticsBtn">
+        <i class="fas fa-chart-bar"></i>
+        <span>Analytics</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- QR Modal -->
+  <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1.5rem; padding: 2rem; backdrop-filter: var(--blur); text-align: center; max-width: 400px; margin: 1rem;">
+      <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Student Access QR Code</h3>
+      <div id="qrDisplay" style="width: 200px; height: 200px; margin: 1rem auto; background: white; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+        <div style="color: #666;">Generating...</div>
+      </div>
+      <p style="color: var(--text-secondary); margin-top: 1rem;">Students scan this to access your question</p>
+      <button onclick="closeQRModal()" style="margin-top: 1.5rem; background: var(--accent-teal); border: none; border-radius: 8px; padding: 0.75rem 1.5rem; color: var(--bg-primary); font-weight: 600; cursor: pointer;">Close</button>
+    </div>
+  </div>
 
   <script>
-    let questionData = [];
-    let savedQuestions = [];
-    let focusedCard = null;
-    let currentScrollPosition = 0;
-    let cardHeight = 252;
-    let cardSpacing = 36;
-    let cardStep = cardHeight + cardSpacing;
-
-    // Touch/scroll control variables
-    let track = null;
-    let container = null;
-
     // Enhanced constellation
     function createConstellation() {
       const constellation = document.getElementById('constellation');
-      const starCount = 80;
+      const starCount = 60;
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -586,555 +549,150 @@
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
         star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (2 + Math.random() * 4) + 's';
+        star.style.animationDuration = (3 + Math.random() * 4) + 's';
         constellation.appendChild(star);
       }
     }
 
-    // Create scroll indicator dots
-    function createScrollIndicator() {
-      const scrollDots = document.getElementById('scrollDots');
-      scrollDots.innerHTML = '';
-      
-      questionData.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.className = 'scroll-dot';
-        if (index === 0) dot.classList.add('active');
-        scrollDots.appendChild(dot);
-      });
-    }
-
-    // Update scroll indicator
-    function updateScrollIndicator() {
-      const dots = document.querySelectorAll('.scroll-dot');
-      const currentIndex = Math.round(Math.abs(currentScrollPosition) / cardStep);
-      
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentIndex);
-      });
-    }
-
-    // Generate question data array
-    function generateQuestionData(count) {
-      questionData = [];
-      for (let i = 1; i <= count; i++) {
-        questionData.push({
-          id: i,
-          teacher: '',
-          question: '',
-          saved: false
-        });
+    // Update question count
+    function updateQuestionCount() {
+      try {
+        const questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+        document.getElementById('questionCount').textContent = `${questions.length} questions created`;
+        document.getElementById('questionCounter').textContent = questions.length + 1;
+      } catch (error) {
+        document.getElementById('questionCount').textContent = '0 questions created';
+        document.getElementById('questionCounter').textContent = '1';
       }
     }
 
-    // Create vertical carousel cards
-    function createCarouselCards() {
-      track = document.getElementById('carouselTrack');
-      container = document.getElementById('carouselContainer');
-      track.innerHTML = '';
+    // Handle question input
+    function handleQuestionInput() {
+      const questionText = document.getElementById('questionInput').value;
+      const createButton = document.getElementById('createButton');
       
-      // Create cards with proper spacing
-      questionData.forEach((question, index) => {
-        const card = document.createElement('div');
-        card.className = `interactive-card ${question.saved ? 'completed' : ''}`;
-        card.id = `card-${question.id}`;
-        
-        // Position cards vertically with spacing
-        const yPosition = index * cardStep;
-        card.style.top = yPosition + 'px';
-        card.style.left = '0px';
-        
-        card.innerHTML = `
-          <div class="card-line">
-            <div class="question-counter">
-              <span class="teacher-label">Number of questions</span>
-              <div class="counter-controls">
-                <input type="number" class="counter-input question-count-input" value="5" min="1" max="50">
-              </div>
-              <div class="question-counter-display">${question.id}</div>
-            </div>
-          </div>
-          
-          <div class="card-line">
-            <textarea 
-              class="question-input" 
-              placeholder="Enter your question here..."
-              rows="3"
-            >${question.question}</textarea>
-            <button class="save-btn">SAVE</button>
-          </div>
-          
-          <div class="card-line">
-            <select class="questions-dropdown">
-              <option value="">Select saved question...</option>
-            </select>
-          </div>
-        `;
-        
-        setupCardInteractions(card, question);
-        track.appendChild(card);
-      });
-      
-      updateDropdowns();
-      setupTouchControls();
-      setupCounterControls();
+      if (questionText.trim().length > 5) {
+        createButton.classList.add('ready');
+      } else {
+        createButton.classList.remove('ready');
+      }
     }
 
-    // Update all dropdowns with saved questions
-    function updateDropdowns() {
-      const dropdowns = document.querySelectorAll('.questions-dropdown');
-      dropdowns.forEach(dropdown => {
-        // Keep current selection
-        const currentValue = dropdown.value;
-        dropdown.innerHTML = '<option value="">Select saved question...</option>';
-        
-        savedQuestions.forEach((q, index) => {
-          const option = document.createElement('option');
-          option.value = index;
-          option.textContent = q.length > 50 ? q.substring(0, 50) + '...' : q;
-          dropdown.appendChild(option);
-        });
-        
-        // Restore selection if still valid
-        if (currentValue && savedQuestions[currentValue]) {
-          dropdown.value = currentValue;
-        }
-      });
-    }
-
-    // Enhanced touch controls
-    function setupTouchControls() {
-      let startY = 0;
-      let startScrollPosition = 0;
-      let isScrolling = false;
-      let velocityTracker = [];
-      let lastTouchTime = 0;
-      let touchStartTime = 0;
+    // Create question
+    function createQuestion() {
+      const questionText = document.getElementById('questionInput').value;
+      const createButton = document.getElementById('createButton');
       
-      const touchSensitivity = 1.2;
-      const momentumMultiplier = 400;
-      const frictionRate = 0.94;
-      const snapThreshold = 20;
-      
-      // Touch events
-      container.addEventListener('touchstart', (e) => {
-        if (e.target.closest('.question-input') || 
-            e.target.closest('.questions-dropdown') ||
-            e.target.closest('.save-btn') ||
-            e.target.closest('.counter-input')) {
-          return;
-        }
-        
-        startY = e.touches[0].clientY;
-        startScrollPosition = currentScrollPosition;
-        isScrolling = true;
-        velocityTracker = [];
-        touchStartTime = Date.now();
-        lastTouchTime = touchStartTime;
-        
-        const touchedCard = e.target.closest('.interactive-card');
-        if (touchedCard && !touchedCard.classList.contains('focused')) {
-          touchedCard.classList.add('touch-active');
-        }
-        
-        track.classList.add('dragging');
-        e.preventDefault();
-      }, { passive: false });
-      
-      container.addEventListener('touchmove', (e) => {
-        if (!isScrolling) return;
-        
-        if (e.target.closest('.question-input') || 
-            e.target.closest('.questions-dropdown') ||
-            e.target.closest('.counter-input')) {
-          return;
-        }
-        
-        const currentY = e.touches[0].clientY;
-        const deltaY = (currentY - startY) * touchSensitivity;
-        const newPosition = startScrollPosition + deltaY;
-        const currentTime = Date.now();
-        
-        velocityTracker.push({ 
-          pos: deltaY, 
-          time: currentTime 
-        });
-        
-        if (velocityTracker.length > 8) {
-          velocityTracker.shift();
-        }
-        
-        setScrollPosition(newPosition);
-        lastTouchTime = currentTime;
-        e.preventDefault();
-      }, { passive: false });
-      
-      container.addEventListener('touchend', (e) => {
-        if (!isScrolling) return;
-        
-        isScrolling = false;
-        track.classList.remove('dragging');
-        
-        document.querySelectorAll('.touch-active').forEach(card => {
-          card.classList.remove('touch-active');
-        });
-        
-        const touchDuration = Date.now() - touchStartTime;
-        const touchDistance = Math.abs(currentScrollPosition - startScrollPosition);
-        
-        let velocity = 0;
-        if (velocityTracker.length >= 3) {
-          const recentData = velocityTracker.slice(-5);
-          let weightedVelocity = 0;
-          let totalWeight = 0;
-          
-          for (let i = 1; i < recentData.length; i++) {
-            const timeDelta = recentData[i].time - recentData[i-1].time;
-            const posDelta = recentData[i].pos - recentData[i-1].pos;
-            
-            if (timeDelta > 0) {
-              const weight = Math.max(1, 6 - i);
-              weightedVelocity += (posDelta / timeDelta) * weight;
-              totalWeight += weight;
-            }
-          }
-          
-          if (totalWeight > 0) {
-            velocity = weightedVelocity / totalWeight;
-          }
-        }
-        
-        if (touchDuration < 200 && touchDistance < 10) {
-          const touchedCard = e.target.closest('.interactive-card');
-          if (touchedCard) {
-            touchedCard.classList.add('touch-feedback');
-            setTimeout(() => {
-              touchedCard.classList.remove('touch-feedback');
-            }, 300);
-          }
-        }
-        
-        if (Math.abs(velocity) > 0.2) {
-          applyEnhancedMomentum(velocity);
-        } else if (Math.abs(currentScrollPosition - startScrollPosition) > snapThreshold) {
-          snapToNearestCard();
-        } else {
-          snapToNearestCard();
-        }
-        
-        e.preventDefault();
-      }, { passive: false });
-      
-      // Mouse events
-      let isMouseDown = false;
-      
-      container.addEventListener('mousedown', (e) => {
-        if (e.target.closest('.question-input') || 
-            e.target.closest('.questions-dropdown') ||
-            e.target.closest('.save-btn') ||
-            e.target.closest('.counter-input')) {
-          return;
-        }
-        
-        startY = e.clientY;
-        startScrollPosition = currentScrollPosition;
-        isScrolling = true;
-        isMouseDown = true;
-        velocityTracker = [];
-        
-        const touchedCard = e.target.closest('.interactive-card');
-        if (touchedCard) {
-          touchedCard.classList.add('touch-active');
-        }
-        
-        track.classList.add('dragging');
-        e.preventDefault();
-      });
-      
-      document.addEventListener('mousemove', (e) => {
-        if (!isScrolling || !isMouseDown) return;
-        
-        const deltaY = (e.clientY - startY) * 0.8;
-        const newPosition = startScrollPosition + deltaY;
-        
-        velocityTracker.push({
-          pos: deltaY,
-          time: Date.now()
-        });
-        
-        if (velocityTracker.length > 5) {
-          velocityTracker.shift();
-        }
-        
-        setScrollPosition(newPosition);
-        e.preventDefault();
-      });
-      
-      document.addEventListener('mouseup', (e) => {
-        if (!isScrolling) return;
-        
-        isScrolling = false;
-        isMouseDown = false;
-        track.classList.remove('dragging');
-        
-        document.querySelectorAll('.touch-active').forEach(card => {
-          card.classList.remove('touch-active');
-        });
-        
-        let velocity = 0;
-        if (velocityTracker.length >= 2) {
-          const recent = velocityTracker.slice(-3);
-          const totalTime = recent[recent.length - 1].time - recent[0].time;
-          const totalDistance = recent[recent.length - 1].pos - recent[0].pos;
-          
-          if (totalTime > 0) {
-            velocity = totalDistance / totalTime;
-          }
-        }
-        
-        if (Math.abs(velocity) > 0.3) {
-          applyEnhancedMomentum(velocity);
-        } else {
-          snapToNearestCard();
-        }
-      });
-      
-      // Wheel scrolling
-      container.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        
-        const deltaY = e.deltaY * -1.2;
-        const newPosition = currentScrollPosition + deltaY;
-        setScrollPosition(newPosition);
-        
-        clearTimeout(container.wheelTimeout);
-        container.wheelTimeout = setTimeout(() => {
-          snapToNearestCard();
-        }, 100);
-      }, { passive: false });
-    }
-
-    // Set scroll position with bounds checking
-    function setScrollPosition(position) {
-      const maxScroll = -(questionData.length - 1) * cardStep;
-      const minScroll = 0;
-      
-      currentScrollPosition = Math.max(maxScroll, Math.min(minScroll, position));
-      track.style.transform = `translateY(${currentScrollPosition}px)`;
-      updateScrollIndicator();
-    }
-
-    // Enhanced momentum scrolling
-    function applyEnhancedMomentum(initialVelocity) {
-      const friction = 0.94;
-      const minVelocity = 0.3;
-      const maxVelocity = 8;
-      
-      let velocity = Math.max(-maxVelocity, Math.min(maxVelocity, initialVelocity * 400));
-      
-      const animate = () => {
-        velocity *= friction;
-        
-        if (Math.abs(velocity) < minVelocity) {
-          snapToNearestCard();
-          return;
-        }
-        
-        const newPosition = currentScrollPosition + velocity;
-        setScrollPosition(newPosition);
-        
-        requestAnimationFrame(animate);
-      };
-      
-      requestAnimationFrame(animate);
-    }
-
-    // Snap to nearest card
-    function snapToNearestCard() {
-      const targetIndex = Math.round(Math.abs(currentScrollPosition) / cardStep);
-      const targetPosition = -targetIndex * cardStep;
-      
-      const startPosition = currentScrollPosition;
-      const distance = targetPosition - startPosition;
-      const duration = 300;
-      let startTime = null;
-      
-      const animate = (currentTime) => {
-        if (!startTime) startTime = currentTime;
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
-        
-        const newPosition = startPosition + distance * easedProgress;
-        setScrollPosition(newPosition);
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-      
-      requestAnimationFrame(animate);
-    }
-
-    // Setup card interactions
-    function setupCardInteractions(card, question) {
-      const questionInput = card.querySelector('.question-input');
-      const saveBtn = card.querySelector('.save-btn');
-      const dropdown = card.querySelector('.questions-dropdown');
-      
-      // Question input
-      questionInput.addEventListener('input', (e) => {
-        question.question = e.target.value;
-      });
-      
-      // Save button
-      saveBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (question.question.trim()) {
-          if (!savedQuestions.includes(question.question)) {
-            savedQuestions.push(question.question);
-            updateDropdowns();
-          }
-          question.saved = true;
-          card.classList.add('completed');
-          
-          // Visual feedback
-          saveBtn.style.background = 'var(--success)';
-          setTimeout(() => {
-            saveBtn.style.background = '';
-          }, 500);
-        }
-      });
-      
-      // Dropdown selection
-      dropdown.addEventListener('change', (e) => {
-        if (e.target.value !== '') {
-          questionInput.value = savedQuestions[e.target.value];
-          question.question = savedQuestions[e.target.value];
-        }
-      });
-      
-      // Card focus
-      card.addEventListener('click', (e) => {
-        if (e.target.classList.contains('question-input') || 
-            e.target.classList.contains('save-btn') ||
-            e.target.classList.contains('questions-dropdown') ||
-            e.target.classList.contains('counter-input')) return;
-        
-        if (focusedCard && focusedCard !== card) {
-          focusedCard.classList.remove('focused');
-        }
-        
-        if (focusedCard === card) {
-          card.classList.remove('focused');
-          focusedCard = null;
-        } else {
-          card.classList.add('focused');
-          focusedCard = card;
-        }
-      });
-    }
-
-    // Question counter controls - now in each card
-    function setupCounterControls() {
-      // Get the current question count from the first card's input
-      const getCurrentCount = () => {
-        const firstInput = document.querySelector('.question-count-input');
-        return firstInput ? parseInt(firstInput.value) || 5 : 5;
-      };
-      
-      // Update all counter inputs to show the same value
-      const updateAllCounterInputs = (newCount) => {
-        const allInputs = document.querySelectorAll('.question-count-input');
-        allInputs.forEach(input => {
-          input.value = newCount;
-        });
-      };
-      
-      // Update question count
-      function updateQuestionCount(newCount) {
-        newCount = Math.max(1, Math.min(50, newCount));
-        updateAllCounterInputs(newCount);
-        generateQuestionData(newCount);
-        createCarouselCards();
-        createScrollIndicator();
-        currentScrollPosition = 0;
-        setScrollPosition(0);
+      if (!questionText.trim() || questionText.trim().length <= 5) {
+        return;
       }
       
-      // Set up event listeners for counter input only
-      
-      document.addEventListener('change', (e) => {
-        if (e.target.classList.contains('question-count-input')) {
-          e.preventDefault();
-          e.stopPropagation();
-          const newCount = parseInt(e.target.value) || 5;
-          updateQuestionCount(newCount);
-        }
-      });
-    }
-
-    // Navigation event listeners
-    function setupNavigation() {
-      document.getElementById('qrBtn').addEventListener('click', () => {
-        // QR Code generation logic would go here
-        alert('QR Code generation feature');
-      });
-      
-      document.getElementById('submitBtn').addEventListener('click', () => {
-        const completedQuestions = questionData.filter(q => q.saved).length;
-        if (completedQuestions === 0) {
-          alert('Save at least one question before submitting');
-        } else {
-          alert(`Submitting ${completedQuestions} questions`);
-        }
-      });
-      
-      document.getElementById('newBtn').addEventListener('click', () => {
-        if (confirm('Start a new quiz? All unsaved changes will be lost.')) {
-          savedQuestions = [];
-          const newCount = 5;
-          generateQuestionData(newCount);
-          createCarouselCards();
-          createScrollIndicator();
-          currentScrollPosition = 0;
-          setScrollPosition(0);
-        }
-      });
-    }
-
-    // Click outside to unfocus
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.interactive-card') && focusedCard) {
-        focusedCard.classList.remove('focused');
-        focusedCard = null;
-      }
-    });
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
-      generateQuestionData(5);
-      createScrollIndicator();
-      createCarouselCards();
-      setupNavigation();
-      
-      // Show scroll indicator initially
-      const scrollIndicator = document.getElementById('scrollIndicator');
-      scrollIndicator.classList.add('visible');
+      // Show loading state
+      createButton.innerHTML = '<i class="fas fa-spinner loading"></i> Creating...';
+      createButton.disabled = true;
       
       setTimeout(() => {
-        scrollIndicator.classList.remove('visible');
-      }, 3000);
-    });
+        try {
+          // Save question using ALM system format
+          const questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          
+          const question = {
+            id: Date.now(),
+            text: questionText,
+            minWords: 12, // Default minimum words
+            created: new Date().toISOString()
+          };
+          
+          questions.push(question);
+          localStorage.setItem('alm_questions', JSON.stringify(questions));
+          
+          // Update counter
+          updateQuestionCount();
+          
+          // Reset form
+          document.getElementById('questionInput').value = '';
+          createButton.innerHTML = '<i class="fas fa-plus"></i> Create Question';
+          createButton.disabled = false;
+          createButton.classList.remove('ready');
+          
+        } catch (error) {
+          console.error('Error creating question:', error);
+          createButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error - Try Again';
+          createButton.disabled = false;
+        }
+      }, 1500);
+    }
 
-    // Prevent page scroll when interacting with carousel
-    document.body.addEventListener('touchmove', (e) => {
-      if (e.target.closest('.carousel-container')) {
-        e.preventDefault();
+    // Footer functions
+    function clearQuestion() {
+      document.getElementById('questionInput').value = '';
+      document.getElementById('createButton').classList.remove('ready');
+      document.getElementById('questionInput').focus();
+    }
+
+    function generateQR() {
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
+      
+      modal.style.display = 'flex';
+      
+      // Generate QR code URL for student interface
+      const studentURL = window.location.origin + window.location.pathname.replace('teachers/questions/', 'students/answers/');
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(studentURL)}`;
+      
+      setTimeout(() => {
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
+      }, 500);
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').style.display = 'none';
+    }
+
+    function shareQuestion() {
+      const studentURL = window.location.origin + window.location.pathname.replace('teachers/questions/', 'students/answers/');
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'INTUITY Question',
+          text: 'Answer this question',
+          url: studentURL
+        });
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(studentURL).then(() => {
+          alert('Link copied to clipboard!');
+        });
       }
-    }, { passive: false });
+    }
+
+    function openAnalytics() {
+      window.location.href = '../../visualisation/';
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      createConstellation();
+      checkExistingQuestion();
+      
+      // Set up input handler
+      document.getElementById('questionInput').addEventListener('input', handleQuestionInput);
+      
+      // Set up create handler
+      document.getElementById('createButton').addEventListener('click', createQuestion);
+      
+      // Set up footer handlers
+      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
+      document.getElementById('clearBtn').addEventListener('click', clearQuestion);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('shareBtn').addEventListener('click', shareQuestion);
+      
+      // Close modal on outside click
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQRModal();
+        }
+      });
+    });
   </script>
 </body>
 </html>
