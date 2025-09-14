@@ -995,38 +995,34 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
       document.body.removeChild(textArea);
     }
 
-    function generateQR() {
-      if (!currentQuestion) {
-        alert('Please publish a question first before generating QR code.');
-        return;
-      }
+    function generateQR() {function generateQR() {
+  if (!currentQuestion) {
+    alert('Please publish a question first before generating QR code.');
+    return;
+  }
 
-      const modal = document.getElementById('qrModal');
-      const display = document.getElementById('qrDisplay');
-      
-      modal.style.display = 'flex';
-      
-      const baseURL = window.location.origin;
-     // Fixed URLs for GitHub Pages
-const baseStudentURL = 'https://mhnashtai-prog.github.io/ALM-questionnaire/students/answers/';
-const studentURL = `${baseStudentURL}?q=${encodeURIComponent(currentQuestion.id)}&t=${encodeURIComponent(currentQuestion.text)}`;
-      
-      setTimeout(() => {
-        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
-      }, 500);
-    }
-
-    function closeQRModal() {
-      document.getElementById('qrModal').style.display = 'none';
-    }
-
-    function openAnalytics() {
-      window.location.href = '../../visualisation/';
-    }
-
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Teacher Interface with Supabase initializing...');
+  const modal = document.getElementById('qrModal');
+  const display = document.getElementById('qrDisplay');
+  
+  modal.style.display = 'flex';
+  
+  // Simple fixed URL for students
+  const studentURL = 'https://mhnashtai-prog.github.io/ALM-questionnaire/students/answers/';
+  
+  // Use QR Server API (more reliable)
+  const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(studentURL)}`;
+  
+  // Immediate load (no timeout)
+  display.innerHTML = `
+    <img src="${qrCodeURL}" 
+         alt="QR Code for Students" 
+         style="width: 100%; height: 100%; object-fit: contain;"
+         onload="console.log('QR code loaded')"
+         onerror="this.innerHTML='QR Code failed to load'">
+  `;
+  
+  console.log('QR URL:', studentURL);
+}
       
       createConstellation();
       
