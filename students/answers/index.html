@@ -554,20 +554,45 @@
       }
     }
 
-    // Load question from teacher system
+    // 🚀 FIXED: Load question from QR code URL FIRST, then localStorage
     function loadQuestion() {
       try {
+        console.log('🔍 Looking for question...');
+        
+        // FIRST: Check URL parameters (from QR code)
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionFromURL = urlParams.get('t'); // 't' for text
+        const questionIdFromURL = urlParams.get('q'); // 'q' for question id
+        
+        console.log('📋 URL params:', { q: questionIdFromURL, t: questionFromURL });
+        
+        if (questionFromURL) {
+          // Got question from QR code URL!
+          const questionFromQR = {
+            id: questionIdFromURL || Date.now(),
+            text: decodeURIComponent(questionFromURL),
+            timestamp: new Date().toISOString(),
+            source: 'qr_code'
+          };
+          
+          console.log('✅ Question loaded from QR code:', questionFromQR.text);
+          showQuestion(questionFromQR);
+          return;
+        }
+        
+        // FALLBACK: Check localStorage (original code)
         const questions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
         
         if (questions.length > 0) {
-          // Get the most recent question
           const latestQuestion = questions[questions.length - 1];
+          console.log('✅ Question loaded from localStorage:', latestQuestion.text);
           showQuestion(latestQuestion);
         } else {
+          console.log('⚠️ No question found in URL or localStorage');
           showNoQuestion();
         }
       } catch (error) {
-        console.error('Error loading question:', error);
+        console.error('❌ Error loading question:', error);
         showNoQuestion();
       }
     }
@@ -579,11 +604,13 @@
       
       // Store current question for submission
       window.currentQuestion = question;
+      console.log('📝 Question displayed to student:', question.text);
     }
 
     function showNoQuestion() {
       document.getElementById('noQuestionState').style.display = 'block';
       document.getElementById('questionState').style.display = 'none';
+      console.log('❌ No question available to display');
     }
 
     // Handle answer input
@@ -650,6 +677,8 @@
           
           responses.push(response);
           localStorage.setItem('alm_student_responses', JSON.stringify(responses));
+          
+          console.log('💾 Response saved:', response);
           
           // Clear draft
           localStorage.removeItem('draft_answer_' + window.currentQuestion.id);
@@ -731,8 +760,10 @@
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('🎓 INTUITY Student Interface - QR CODE READY! ✅');
+      
       createConstellation();
-      loadQuestion();
+      loadQuestion(); // This now checks QR code URL first!
       loadStudentName();
       
       // Set up input handler
@@ -751,12 +782,17 @@
       // Load any existing draft
       setTimeout(loadDraft, 100);
       
-      // Auto-refresh for new questions every 10 seconds
-      setInterval(() => {
-        if (document.getElementById('noQuestionState').style.display !== 'none') {
-          loadQuestion();
-        }
-      }, 10000);
+      // Auto-refresh for new questions every 10 seconds (only if no question from QR)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (!urlParams.get('t')) {
+        setInterval(() => {
+          if (document.getElementById('noQuestionState').style.display !== 'none') {
+            loadQuestion();
+          }
+        }, 10000);
+      }
+      
+      console.log('✅ QR code scanning enabled - Students can now see questions from QR codes!');
     });
   </script>
 </body>
