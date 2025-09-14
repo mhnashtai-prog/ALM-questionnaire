@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics</title>
+  <title>INTUITY - Analytics Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -80,7 +80,7 @@
       padding: 2rem;
     }
 
-    /* Compact Status Box */
+    /* Status Box */
     .status-box {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
@@ -288,56 +288,6 @@
       margin-bottom: 1rem;
     }
 
-    .no-data {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-    }
-
-    .no-data-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Debug Panel */
-    .debug-panel {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-top: 2rem;
-      font-family: monospace;
-      font-size: 0.85rem;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
-    }
-
-    .debug-panel.show {
-      display: block;
-    }
-
-    .debug-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      color: var(--accent-teal);
-      font-weight: 600;
-    }
-
-    .debug-content {
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .debug-item {
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 0.5rem;
-    }
-
     /* Footer */
     .footer {
       position: fixed;
@@ -376,7 +326,6 @@
       align-items: center;
       gap: 0.5rem;
       text-decoration: none;
-      position: relative;
     }
 
     .footer-btn:hover {
@@ -395,16 +344,6 @@
       background: linear-gradient(135deg, var(--intuity-gold), var(--accent-teal));
     }
 
-    .footer-btn.debug {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.5);
-    }
-
-    .footer-btn.debug:hover {
-      background: rgba(59, 130, 246, 0.3);
-      border-color: rgb(59, 130, 246);
-    }
-
     .footer-btn i {
       font-size: 1rem;
     }
@@ -418,10 +357,6 @@
       .status-box {
         padding: 0.75rem 1rem;
         margin-bottom: 1rem;
-      }
-
-      .status-title {
-        font-size: 0.9rem;
       }
 
       .question-box,
@@ -460,7 +395,7 @@
 
   <div class="container">
     
-    <!-- Compact Status Overview -->
+    <!-- Status Overview -->
     <div class="status-box">
       <div class="status-title">
         <i class="fas fa-users"></i>
@@ -500,19 +435,6 @@
       </div>
     </div>
 
-    <!-- Debug Panel -->
-    <div class="debug-panel" id="debugPanel">
-      <div class="debug-header">
-        <span>Debug Information</span>
-        <button onclick="document.getElementById('debugPanel').classList.remove('show')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="debug-content" id="debugContent">
-        <!-- Debug info will be populated here -->
-      </div>
-    </div>
-
   </div>
 
   <!-- Footer Navigation -->
@@ -528,11 +450,6 @@
         <span>Refresh Data</span>
       </button>
       
-      <button class="footer-btn debug" onclick="toggleDebug()">
-        <i class="fas fa-bug"></i>
-        <span>Debug</span>
-      </button>
-      
       <a href="../" class="footer-btn">
         <i class="fas fa-home"></i>
         <span>Home</span>
@@ -545,22 +462,27 @@
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
-    let debugMode = false;
 
     // Load data from localStorage
     function loadData() {
       console.log('🔄 Loading data from localStorage...');
       
       // Load questions from multiple possible keys
-      const questionKeys = ['alm_questions', 'intuity_questions'];
+      const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
       for (const key of questionKeys) {
         try {
           const storedQuestions = localStorage.getItem(key);
           if (storedQuestions) {
             const parsed = JSON.parse(storedQuestions);
-            if (Array.isArray(parsed) && parsed.length > 0) {
+            
+            if (Array.isArray(parsed)) {
               allQuestions = parsed;
               console.log(`✅ Loaded ${allQuestions.length} questions from ${key}`);
+              break;
+            } else if (typeof parsed === 'object' && parsed.text) {
+              // Handle single question object
+              allQuestions = [parsed];
+              console.log(`✅ Loaded single question from ${key}`);
               break;
             }
           }
@@ -570,7 +492,13 @@
       }
 
       // Load responses from multiple possible keys
-      const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses', 'intuity_student_data'];
+      const responseKeys = [
+        'alm_student_responses', 
+        'intuity_responses', 
+        'student_responses', 
+        'intuity_student_data'
+      ];
+      
       for (const key of responseKeys) {
         try {
           const storedResponses = localStorage.getItem(key);
@@ -585,6 +513,23 @@
         } catch (error) {
           console.error(`❌ Error loading responses from ${key}:`, error);
         }
+      }
+
+      // Also check for individual response keys
+      if (allResponses.length === 0) {
+        console.log('🔍 Checking for individual response keys...');
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('response_')) {
+            try {
+              const response = JSON.parse(localStorage.getItem(key));
+              allResponses.push(response);
+            } catch (error) {
+              console.error(`❌ Error parsing response from ${key}:`, error);
+            }
+          }
+        }
+        console.log(`✅ Found ${allResponses.length} individual responses`);
       }
 
       updateUI();
@@ -681,10 +626,6 @@
       });
 
       console.log(`📊 Found ${questionResponses.length} responses for current question`);
-      
-      if (debugMode) {
-        updateDebugInfo(questionResponses);
-      }
 
       responsesBox.style.display = 'block';
       responseCount.textContent = questionResponses.length;
@@ -719,44 +660,6 @@
           </div>
         </div>
       `).join('');
-    }
-
-    // Update debug information
-    function updateDebugInfo(questionResponses) {
-      const debugContent = document.getElementById('debugContent');
-      
-      let debugHTML = `
-        <div class="debug-item"><strong>Selected Question:</strong> ${JSON.stringify(currentSelectedQuestion, null, 2)}</div>
-        <div class="debug-item"><strong>Total Responses Found:</strong> ${questionResponses.length}</div>
-        <div class="debug-item"><strong>All Questions:</strong> ${allQuestions.length}</div>
-        <div class="debug-item"><strong>All Responses:</strong> ${allResponses.length}</div>
-        <div class="debug-item"><strong>Matching Responses:</strong></div>
-      `;
-      
-      questionResponses.forEach((response, index) => {
-        debugHTML += `
-          <div class="debug-item">
-            <strong>Response ${index + 1}:</strong><br>
-            Student: ${response.studentName || 'Unknown'}<br>
-            Question ID in response: ${response.questionId || 'None'}<br>
-            Question Text in response: ${response.questionText || 'None'}<br>
-            Matching Method: ${getMatchingMethod(response)}
-          </div>
-        `;
-      });
-      
-      debugContent.innerHTML = debugHTML;
-    }
-
-    // Determine how a response matches the current question
-    function getMatchingMethod(response) {
-      if (response.questionId === currentSelectedQuestion.id) return "Exact ID match";
-      if (response.questionId === currentSelectedQuestion.text) return "Question text as ID match";
-      if (response.questionText === currentSelectedQuestion.text) return "Question text match";
-      if (response.questionId == currentSelectedQuestion.id) return "Loose ID match";
-      if (response.questionId === currentSelectedQuestion.id.toString()) return "String ID match";
-      if (typeof currentSelectedQuestion.id === 'undefined' && response.questionId === 0) return "Legacy fallback match";
-      return "Unknown match method";
     }
 
     // Handle question selection change
@@ -806,50 +709,28 @@
         console.log('✅ Data refreshed');
         
         // Show notification
-        showNotification('Data refreshed successfully!', 'success');
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: rgba(45, 212, 191, 0.1);
+          border: 1px solid var(--accent-teal);
+          color: var(--accent-teal);
+          padding: 1rem 1.5rem;
+          border-radius: 8px;
+          backdrop-filter: blur(20px);
+          z-index: 1000;
+          transition: all 0.3s ease;
+        `;
+        notification.innerHTML = '<i class="fas fa-check"></i> Data refreshed successfully!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.remove(), 300);
+        }, 2000);
       }, 1000);
-    }
-
-    // Toggle debug panel
-    function toggleDebug() {
-      debugMode = !debugMode;
-      const debugPanel = document.getElementById('debugPanel');
-      
-      if (debugMode) {
-        debugPanel.classList.add('show');
-        updateResponsesDisplay(); // Refresh to show debug info
-        showNotification('Debug mode enabled', 'info');
-      } else {
-        debugPanel.classList.remove('show');
-        showNotification('Debug mode disabled', 'info');
-      }
-    }
-
-    // Show notification
-    function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      const bgColor = type === 'success' ? 'var(--success)' : 
-                     type === 'error' ? 'var(--accent-red)' : 'var(--accent-teal)';
-      
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${bgColor};
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        z-index: 1000;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      `;
-      notification.innerHTML = message;
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
     }
 
     // Initialize when page loads
