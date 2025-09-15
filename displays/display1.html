@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Mind Map Display</title>
+  <title>INTUITY - Mind Map Display (Fixed)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -455,6 +455,41 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Empty State for No Responses */
+    .empty-state {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--text-muted);
+      z-index: 15;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px dashed var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+    
+    .empty-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .empty-text {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
     
     /* Mobile Responsive */
     @media (max-width: 768px) {
@@ -507,7 +542,7 @@
   <header class="header">
     <div>
       <div class="brand-name">INTUITY</div>
-      <div class="display-title">Mind Map Display</div>
+      <div class="display-title">Mind Map Display (Fixed)</div>
     </div>
     
     <div class="mind-map-stats">
@@ -543,6 +578,13 @@
         <div class="question-text" id="questionText">
           Loading question...
         </div>
+      </div>
+      
+      <!-- Empty State (shows when no responses) -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">💭</div>
+        <div class="empty-title">No Student Responses Yet</div>
+        <div class="empty-text">Student responses will appear as connected nodes around the central question when they submit through the student interface.</div>
       </div>
       
       <!-- Response nodes will be dynamically created here -->
@@ -621,57 +663,83 @@
       }
     }
 
-    // Load data from localStorage
+    // Enhanced data loading with Analytics integration
     function loadData() {
       try {
-        // Load question
-        const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
+        console.log('🔍 Loading data for Mind Map Display...');
         
-        for (const key of questionKeys) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (key === 'current_question' && parsed.text) {
-                currentQuestion = parsed;
-                break;
-              } else if (Array.isArray(parsed) && parsed.length > 0) {
-                const latestQuestion = parsed[parsed.length - 1];
-                if (latestQuestion && latestQuestion.text) {
-                  currentQuestion = latestQuestion;
+        // First try to load data specifically set by Analytics
+        const displayQuestion = localStorage.getItem('display_question');
+        const displayResponses = localStorage.getItem('display_responses');
+        
+        if (displayQuestion && displayResponses) {
+          try {
+            currentQuestion = JSON.parse(displayQuestion);
+            responses = JSON.parse(displayResponses);
+            console.log('✅ Loaded data from Analytics:', currentQuestion, responses.length, 'responses');
+          } catch (e) {
+            console.log('Error parsing display data:', e);
+          }
+        }
+        
+        // Fallback to standard keys if no display data
+        if (!currentQuestion) {
+          const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
+          
+          for (const key of questionKeys) {
+            const stored = localStorage.getItem(key);
+            if (stored) {
+              try {
+                const parsed = JSON.parse(stored);
+                if (key === 'current_question' && (parsed.text || parsed.question_text)) {
+                  currentQuestion = parsed;
+                  break;
+                } else if (Array.isArray(parsed) && parsed.length > 0) {
+                  const latestQuestion = parsed[parsed.length - 1];
+                  if (latestQuestion && (latestQuestion.text || latestQuestion.question_text)) {
+                    currentQuestion = latestQuestion;
+                    break;
+                  }
+                }
+              } catch (e) {
+                console.log(`Error parsing ${key}:`, e);
+              }
+            }
+          }
+        }
+        
+        // Load responses if not already loaded
+        if (responses.length === 0) {
+          const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+          
+          for (const key of responseKeys) {
+            const stored = localStorage.getItem(key);
+            if (stored) {
+              try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  responses = parsed;
+                  console.log(`Loaded ${responses.length} responses from ${key}`);
                   break;
                 }
+              } catch (e) {
+                console.log(`Error parsing ${key}:`, e);
               }
-            } catch (e) {
-              console.log(`Error parsing ${key}:`, e);
             }
           }
         }
         
+        // Display question
         if (currentQuestion) {
-          document.getElementById('questionText').textContent = currentQuestion.text;
+          const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
+          document.getElementById('questionText').textContent = questionText;
+          console.log('✅ Question loaded:', questionText);
         } else {
           document.getElementById('questionText').textContent = 'No active question found';
+          console.log('❌ No question found');
         }
         
-        // Load responses
-        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
-        
-        for (const key of responseKeys) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                responses = parsed;
-                console.log(`Loaded ${responses.length} responses`);
-                break;
-              }
-            } catch (e) {
-              console.log(`Error parsing ${key}:`, e);
-            }
-          }
-        }
+        console.log(`📊 Final data: ${responses.length} responses for question`);
         
         updateStats();
         createResponseNodes();
@@ -680,6 +748,17 @@
       } catch (error) {
         console.error('Error loading data:', error);
         responses = [];
+        showEmptyState();
+      }
+    }
+
+    // Show empty state when no responses
+    function showEmptyState() {
+      const emptyState = document.getElementById('emptyState');
+      if (responses.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
       }
     }
 
@@ -714,7 +793,13 @@
       const existingNodes = canvas.querySelectorAll('.response-node');
       existingNodes.forEach(node => node.remove());
       
-      if (responses.length === 0) return;
+      if (responses.length === 0) {
+        showEmptyState();
+        return;
+      }
+      
+      // Hide empty state
+      document.getElementById('emptyState').style.display = 'none';
       
       responses.forEach((response, index) => {
         const node = createResponseNode(response, index, containerRect);
@@ -742,12 +827,12 @@
       node.style.top = Math.max(100, Math.min(y, containerRect.height - 200)) + 'px';
       
       // Student info
-      const studentName = response.studentName || `Student ${index + 1}`;
+      const studentName = response.studentName || response.student_name || `Student ${index + 1}`;
       const initials = studentName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
       const quality = response.quality || 'needs-work';
-      const wordCount = response.wordCount || 0;
+      const wordCount = response.wordCount || response.word_count || 0;
       const score = response.score || 0;
-      const timestamp = response.timestamp || 'Just now';
+      const timestamp = response.timestamp || new Date(response.submitted_at || Date.now()).toLocaleString();
       
       node.innerHTML = `
         <div class="node-header">
