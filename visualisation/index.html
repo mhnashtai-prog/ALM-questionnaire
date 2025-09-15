@@ -481,7 +481,7 @@
   </footer>
 
   <script>
-    // Supabase Configuration - YOUR WORKING CREDENTIALS
+    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
@@ -811,7 +811,7 @@
 
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics - Clean + Functional Version Loading...');
+      console.log('🚀 INTUITY Analytics Loading...');
       
       // Initialize Supabase
       initSupabase();
@@ -823,7 +823,7 @@
       const deleteBtn = document.getElementById('deleteBtn');
       deleteBtn.addEventListener('click', deleteQuestion);
       
-      // 🔧 FIXED PRESENTATION MODE SELECTION - PASSES QUESTION DATA TO DISPLAYS
+      // Presentation mode selection with improved data passing
       document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           if (!currentSelectedQuestion) {
@@ -848,89 +848,11 @@
           setTimeout(() => {
             this.style.transform = 'translateY(-2px)';
             
-            // 🚀 BUILD URL WITH QUESTION DATA PARAMETERS
-            const questionId = currentSelectedQuestion.id;
-            const questionText = encodeURIComponent(currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'Question');
-            const responseCount = getResponsesForQuestion(currentSelectedQuestion).length;
-            
-            // Construct URL parameters
-            const urlParams = new URLSearchParams({
-              'q': questionId,                    // Question ID
-              't': questionText,                  // Question text
-              'rc': responseCount,                // Response count
-              'source': 'analytics'               // Source identifier
-            });
-            
-            // Navigate to appropriate display file with parameters
-            let displayUrl = '';
-            switch (mode) {
-              case 'mind-map':
-                displayUrl = `../displays/display1.html?${urlParams.toString()}`;
-                break;
-              case 'stacked':
-                displayUrl = `../displays/display2.html?${urlParams.toString()}`;
-                break;
-              case 'floating':
-                displayUrl = `../displays/display3.html?${urlParams.toString()}`;
-                break;
-              case 'cosmos':
-                displayUrl = `../displays/display4.html?${urlParams.toString()}`;
-                break;
-              default:
-                displayUrl = `../displays/display2.html?${urlParams.toString()}`;
-            }
-            
-            console.log(`🔗 Opening display with URL: ${displayUrl}`);
-            
-            // 💾 Also store current question in localStorage as backup
+            // Store current question and responses in localStorage for displays to access
             localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
             localStorage.setItem('display_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
-            
-            // Open in new tab/window for better user experience
-            window.open(displayUrl, '_blank');
-            
-          }, 100);
-        });
-      });
-      
-      console.log('✅ INTUITY Analytics - Clean + Functional Ready!');
-    });
-  </script>
-</body>
-</html>
-      initSupabase();
-      
-      // Set up event listeners
-      const questionSelector = document.getElementById('questionSelector');
-      questionSelector.addEventListener('change', handleQuestionChange);
-      
-      const deleteBtn = document.getElementById('deleteBtn');
-      deleteBtn.addEventListener('click', deleteQuestion);
-      
-      // Presentation mode selection
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          if (!currentSelectedQuestion) {
-            alert('Please select a question first.');
-            return;
-          }
-          
-          // Remove active from all buttons
-          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-          
-          // Add active to clicked button
-          this.classList.add('active');
-          
-          const mode = this.dataset.mode;
-          const modeName = this.querySelector('.mode-name').textContent;
-          
-          console.log(`🎨 Launching ${mode} presentation mode`);
-          showNotification(`Launching ${modeName} mode...`, 'info');
-          
-          // Visual feedback
-          this.style.transform = 'scale(0.95)';
-          setTimeout(() => {
-            this.style.transform = 'translateY(-2px)';
+            localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
+            localStorage.setItem('alm_student_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
             
             // Navigate to appropriate display file
             let displayUrl = '';
@@ -945,11 +867,13 @@
                 displayUrl = '../displays/display3.html';
                 break;
               case 'cosmos':
-                displayUrl = '../displays/display1.html'; // Alternative view using display1
+                displayUrl = '../displays/display4.html';
                 break;
               default:
                 displayUrl = '../displays/display2.html';
             }
+            
+            console.log(`🔗 Opening display: ${displayUrl}`);
             
             // Open in new tab/window for better user experience
             window.open(displayUrl, '_blank');
@@ -958,6 +882,11 @@
         });
       });
       
+      console.log('✅ INTUITY Analytics Ready!');
+    });
+  </script>
+</body>
+</html>
       console.log('✅ INTUITY Analytics - Clean + Functional Ready!');
     });
   </script>
