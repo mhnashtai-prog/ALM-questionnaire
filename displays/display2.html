@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Stacked Display</title>
+  <title>INTUITY - Stacked Display with Photos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -314,6 +314,7 @@
       gap: 1rem;
     }
     
+    /* Enhanced Student Avatar with Photo Support */
     .student-avatar {
       width: 60px;
       height: 60px;
@@ -326,6 +327,27 @@
       font-weight: 700;
       font-size: 1.2rem;
       box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .student-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    
+    .student-avatar:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .student-avatar.has-photo {
+      background: none;
+      border: 3px solid var(--accent-teal);
     }
     
     .student-details {
@@ -410,6 +432,90 @@
       font-weight: 600;
       color: var(--accent-teal);
       font-size: 1rem;
+    }
+
+    /* Photo Features - Steve Jobs Style Integration */
+    
+    /* Photo Modal (Jobs Style - Minimal) */
+    .photo-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .photo-modal.show {
+      display: flex;
+    }
+    
+    .photo-modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+    
+    .photo-modal img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+      box-shadow: var(--shadow-active);
+    }
+    
+    .photo-modal-controls {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .photo-modal-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 0.5rem;
+      color: white;
+      cursor: pointer;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+      font-size: 1rem;
+    }
+    
+    .photo-modal-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Photo Overlay for Cards */
+    .photo-overlay {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background: rgba(45, 212, 191, 0.1);
+      border: 2px solid var(--accent-teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-teal);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      opacity: 0.7;
+    }
+    
+    .photo-overlay:hover {
+      opacity: 1;
+      transform: scale(1.1);
+      background: rgba(45, 212, 191, 0.2);
     }
     
     /* Touch/Swipe Indicators */
@@ -599,7 +705,7 @@
   <header class="header">
     <div class="brand-section">
       <div class="brand-name">INTUITY</div>
-      <div class="display-title">Stacked Display</div>
+      <div class="display-title">Stacked Display with Photos</div>
     </div>
     
     <div class="header-controls">
@@ -666,6 +772,17 @@
     </button>
   </div>
 
+  <!-- Photo Modal (Steve Jobs Style) -->
+  <div class="photo-modal" id="photoModal">
+    <div class="photo-modal-content">
+      <div class="photo-modal-controls">
+        <button class="photo-modal-btn" id="downloadPhotoBtn" title="Download">💾</button>
+        <button class="photo-modal-btn" id="closeModalBtn" title="Close">✕</button>
+      </div>
+      <img id="photoModalImg" />
+    </div>
+  </div>
+
   <script>
     // Global variables
     let responses = [];
@@ -675,6 +792,7 @@
     let autoplayInterval = null;
     let touchStartX = 0;
     let touchStartY = 0;
+    let currentPhotoUrl = null;
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
@@ -682,6 +800,7 @@
       loadData();
       setupEventListeners();
       setupTouchControls();
+      setupPhotoHandlers();
     });
 
     // Create constellation background
@@ -775,7 +894,7 @@
       counter.textContent = `${responses.length} Response${responses.length !== 1 ? 's' : ''}`;
     }
 
-    // Create response cards
+    // Create response cards with photo support
     function createResponseCards() {
       const stack = document.getElementById('cardsStack');
       
@@ -803,7 +922,7 @@
       updateCardPositions();
     }
 
-    // Create individual response card
+    // Create individual response card with photo support
     function createResponseCard(response, index) {
       const card = document.createElement('div');
       card.className = `response-card ${response.quality || 'needs-work'}`;
@@ -815,11 +934,33 @@
       const wordCount = response.wordCount || 0;
       const score = response.score || 0;
       const timestamp = response.timestamp || 'Just now';
+      const photoUrl = response.photo_url || null;
+      
+      // Create avatar content - photo or initials
+      let avatarContent = '';
+      let avatarClass = 'student-avatar';
+      
+      if (photoUrl) {
+        avatarContent = `<img src="${photoUrl}" alt="${studentName}" onerror="this.style.display='none'; this.parentNode.innerHTML='${initials}'; this.parentNode.classList.remove('has-photo');">`;
+        avatarClass += ' has-photo';
+      } else {
+        avatarContent = initials;
+      }
+      
+      // Photo overlay indicator
+      const photoOverlay = photoUrl ? `
+        <div class="photo-overlay" onclick="showPhotoModal('${photoUrl}', '${studentName}')" title="View Photo">
+          📷
+        </div>
+      ` : '';
       
       card.innerHTML = `
+        ${photoOverlay}
         <div class="card-header">
           <div class="student-info">
-            <div class="student-avatar">${initials}</div>
+            <div class="${avatarClass}" ${photoUrl ? `onclick="showPhotoModal('${photoUrl}', '${studentName}')"` : ''}>
+              ${avatarContent}
+            </div>
             <div class="student-details">
               <div class="student-name">${studentName}</div>
               <div class="student-meta">
@@ -835,6 +976,7 @@
                   <i class="fas fa-star"></i>
                   <span>${score}%</span>
                 </div>
+                ${photoUrl ? '<div class="meta-item"><i class="fas fa-camera"></i><span>Photo</span></div>' : ''}
               </div>
             </div>
           </div>
@@ -857,7 +999,12 @@
       `;
       
       // Add click event
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        // Don't trigger card navigation if clicking on photo elements
+        if (e.target.closest('.photo-overlay') || e.target.closest('.student-avatar.has-photo')) {
+          return;
+        }
+        
         if (index !== currentIndex) {
           currentIndex = index;
           updateCardPositions();
@@ -867,6 +1014,69 @@
       });
       
       return card;
+    }
+
+    // Show photo modal
+    function showPhotoModal(photoUrl, studentName) {
+      if (!photoUrl) return;
+      
+      currentPhotoUrl = photoUrl;
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('photoModalImg');
+      
+      modalImg.src = photoUrl;
+      modalImg.alt = `${studentName}'s Photo`;
+      modal.classList.add('show');
+      
+      console.log(`📸 Showing photo for ${studentName}`);
+    }
+
+    // Close photo modal
+    function closePhotoModal() {
+      const modal = document.getElementById('photoModal');
+      modal.classList.remove('show');
+      currentPhotoUrl = null;
+    }
+
+    // Download photo
+    function downloadPhoto() {
+      if (!currentPhotoUrl) return;
+      
+      try {
+        const link = document.createElement('a');
+        link.href = currentPhotoUrl;
+        link.download = `student-photo-${Date.now()}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        console.log('📥 Photo download initiated');
+      } catch (error) {
+        console.error('Error downloading photo:', error);
+        // Fallback: open in new tab
+        window.open(currentPhotoUrl, '_blank');
+      }
+    }
+
+    // Setup photo event handlers
+    function setupPhotoHandlers() {
+      // Close modal events
+      document.getElementById('closeModalBtn').addEventListener('click', closePhotoModal);
+      document.getElementById('downloadPhotoBtn').addEventListener('click', downloadPhoto);
+      
+      // Click outside modal to close
+      document.getElementById('photoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'photoModal') {
+          closePhotoModal();
+        }
+      });
+      
+      // Escape key to close modal
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closePhotoModal();
+        }
+      });
     }
 
     // Update card positions based on current index
@@ -1039,6 +1249,11 @@
       
       // Keyboard controls
       document.addEventListener('keydown', (e) => {
+        // Don't handle keyboard if modal is open
+        if (document.getElementById('photoModal').classList.contains('show')) {
+          return;
+        }
+        
         switch (e.key) {
           case 'ArrowLeft':
             e.preventDefault();
@@ -1079,6 +1294,11 @@
         console.log(`${responses.length - oldCount} new responses detected`);
       }
     }, 20000);
+
+    // Global functions for photo modal (accessible from HTML onclick)
+    window.showPhotoModal = showPhotoModal;
+    window.closePhotoModal = closePhotoModal;
+    window.downloadPhoto = downloadPhoto;
   </script>
 </body>
 </html>
