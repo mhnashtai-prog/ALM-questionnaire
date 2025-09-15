@@ -840,13 +840,36 @@
           const mode = this.dataset.mode;
           const modeName = this.querySelector('.mode-name').textContent;
           
-          console.log(`🎨 Switched to ${mode} presentation mode`);
-          showNotification(`Switched to ${modeName} mode`, 'info');
+          console.log(`🎨 Launching ${mode} presentation mode`);
+          showNotification(`Launching ${modeName} mode...`, 'info');
           
           // Visual feedback
           this.style.transform = 'scale(0.95)';
           setTimeout(() => {
             this.style.transform = 'translateY(-2px)';
+            
+            // Navigate to appropriate display file
+            let displayUrl = '';
+            switch (mode) {
+              case 'mind-map':
+                displayUrl = '../displays/display1.html';
+                break;
+              case 'stacked':
+                displayUrl = '../displays/display2.html';
+                break;
+              case 'floating':
+                displayUrl = '../displays/display3.html';
+                break;
+              case 'cosmos':
+                displayUrl = '../displays/display1.html'; // Alternative view using display1
+                break;
+              default:
+                displayUrl = '../displays/display2.html';
+            }
+            
+            // Open in new tab/window for better user experience
+            window.open(displayUrl, '_blank');
+            
           }, 100);
         });
       });
