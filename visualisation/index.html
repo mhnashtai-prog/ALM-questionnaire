@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTUITY - Analytics Dashboard (Supabase)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Supabase CDN -->
@@ -17,17 +17,15 @@
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
       --accent-teal: #2dd4bf;
+      --accent-gold: #ffd54f;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
-      --intuity-gold: #ffd54f;
-      --intuity-teal: #26a69a;
       --blur: blur(20px);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --accent-red: #ef4444;
-      --success: #10b981;
-      --warning: #f59e0b;
       --error: #ef4444;
+      --success: #10b981;
+      --apple-radius: 12px;
     }
 
     * {
@@ -41,445 +39,220 @@
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
-      padding-bottom: 100px;
-    }
-
-    /* Connection Status Bar */
-    .connection-status {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1001;
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0.5rem;
-      text-align: center;
-      font-size: 0.8rem;
-      transition: all 0.3s ease;
-    }
-    
-    .connection-status.connected {
-      background: rgba(16, 185, 129, 0.1);
-      border-bottom-color: var(--success);
-      color: var(--success);
-    }
-    
-    .connection-status.offline {
-      background: rgba(245, 158, 11, 0.1);
-      border-bottom-color: var(--warning);
-      color: var(--warning);
-    }
-    
-    .connection-status.error {
-      background: rgba(239, 68, 68, 0.1);
-      border-bottom-color: var(--error);
-      color: var(--error);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Header */
     .header {
-      position: sticky;
-      top: 35px;
-      z-index: 100;
-      background: rgba(26, 35, 50, 0.9);
-      backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: 2rem;
       text-align: center;
+      padding: 2rem;
     }
 
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: 0.25rem;
     }
 
-    .brand-subtitle {
-      font-size: 1rem;
+    .page-title {
+      font-size: 1.2rem;
       color: var(--text-secondary);
       font-weight: 500;
-      margin-top: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      margin-bottom: 0.25rem;
+    }
+
+    .author {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
     }
 
     /* Main Container */
     .container {
-      max-width: 1000px;
+      flex: 1;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2rem;
     }
 
-    /* Real-time Stats Overview */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: var(--shadow);
+    /* Central Question Box - HERO ELEMENT */
+    .question-central {
+      background: var(--card-bg);
       backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 20px;
+      padding: 3rem;
       text-align: center;
-      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
     }
 
-    .stat-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-teal);
-    }
-
-    .stat-icon {
-      font-size: 2rem;
-      color: var(--accent-teal);
-      margin-bottom: 1rem;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
+    .question-label {
+      font-size: 1.1rem;
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-    }
-
-    .stat-change {
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 12px;
-    }
-
-    .stat-change.positive {
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--success);
-    }
-
-    .stat-change.neutral {
-      background: rgba(107, 114, 128, 0.2);
-      color: var(--text-muted);
-    }
-
-    /* Question Selector Box */
-    .question-box {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-      text-align: center;
-    }
-
-    .question-title {
-      color: var(--text-primary);
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      font-weight: 500;
     }
 
     .question-dropdown {
       width: 100%;
-      max-width: 600px;
-      background: var(--card-bg);
+      background: rgba(255, 255, 255, 0.1);
       border: 2px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: 1rem 1.5rem;
+      border-radius: var(--apple-radius);
+      padding: 1.25rem 1.5rem;
       color: var(--text-primary);
       font-family: 'Inter', sans-serif;
-      font-size: 1rem;
+      font-size: 1.1rem;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: var(--blur);
+      outline: none;
     }
 
     .question-dropdown:focus {
-      outline: none;
       border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
     }
 
     .question-dropdown option {
       background: var(--bg-secondary);
       color: var(--text-primary);
-      padding: 0.75rem;
+      padding: 1rem;
     }
 
-    /* Current Question Display */
-    .current-question-box {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-      text-align: center;
-    }
-
-    .current-question-title {
-      color: var(--text-primary);
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .current-question-text {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .question-meta-info {
+    /* Response Count & Controls */
+    .controls-bar {
       display: flex;
       justify-content: center;
-      gap: 2rem;
+      align-items: center;
+      gap: 1.5rem;
       margin-top: 1.5rem;
-      flex-wrap: wrap;
     }
 
-    .meta-item {
+    .response-pill {
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid var(--accent-teal);
+      border-radius: 20px;
+      padding: 0.75rem 1.5rem;
+      color: var(--accent-teal);
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      color: var(--text-muted);
-      font-size: 0.9rem;
     }
 
-    /* Live Responses Section */
-    .live-responses {
+    .delete-btn {
+      width: 40px;
+      height: 40px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+      border-radius: 10px;
+      color: var(--error);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      transform: scale(1.05);
+    }
+
+    .delete-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Presentation Mode Box */
+    .presentation-modes {
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--apple-radius);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .modes-title {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .mode-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .mode-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-    }
-
-    .live-responses-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .live-responses-title {
-      color: var(--text-primary);
-      font-size: 1.2rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .live-indicator {
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-
-    .auto-refresh-toggle {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      padding: 1.5rem 1rem;
       color: var(--text-secondary);
-      font-size: 0.8rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .auto-refresh-toggle.active {
-      background: rgba(45, 212, 191, 0.2);
-      border-color: var(--accent-teal);
-      color: var(--accent-teal);
-    }
-
-    /* Response Cards */
-    .response-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      backdrop-filter: var(--blur);
-      transition: all 0.3s ease;
-      animation: slideInUp 0.3s ease;
-    }
-
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .response-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-teal);
-      box-shadow: 0 8px 25px rgba(45, 212, 191, 0.2);
-    }
-
-    .response-card.new {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-      animation: newResponse 0.5s ease;
-    }
-
-    @keyframes newResponse {
-      0% { background: rgba(16, 185, 129, 0.3); }
-      100% { background: rgba(16, 185, 129, 0.1); }
-    }
-
-    .response-header {
+      transition: all 0.2s ease;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
 
-    .student-name {
-      font-weight: 600;
+    .mode-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-teal);
       color: var(--text-primary);
-      font-size: 1.1rem;
+      transform: translateY(-2px);
     }
 
-    .quality-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border-color: transparent;
+      color: var(--bg-primary);
+    }
+
+    .mode-icon {
+      font-size: 1.5rem;
+    }
+
+    .mode-name {
+      font-size: 0.85rem;
       font-weight: 600;
       text-transform: uppercase;
-    }
-
-    .quality-badge.excellent {
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--success);
-      border: 1px solid var(--success);
-    }
-
-    .quality-badge.good {
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--warning);
-      border: 1px solid var(--warning);
-    }
-
-    .quality-badge.needs-work {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--accent-red);
-      border: 1px solid var(--accent-red);
-    }
-
-    .response-text {
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-
-    .response-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .response-time {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .response-time.recent {
-      color: var(--success);
-      font-weight: 600;
-    }
-
-    .no-responses {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-    }
-
-    .no-responses-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Loading States */
-    .loading-skeleton {
-      background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      border-radius: 8px;
-      height: 1rem;
-      margin: 0.5rem 0;
-    }
-
-    @keyframes loading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      letter-spacing: 0.5px;
     }
 
     /* Footer */
     .footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(26, 35, 50, 0.95);
+      background: rgba(26, 35, 50, 0.8);
       backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
-      padding: 1rem;
-      z-index: 100;
+      padding: 1.5rem;
     }
 
-    .footer-container {
-      max-width: 1000px;
+    .footer-buttons {
+      max-width: 800px;
       margin: 0 auto;
       display: flex;
       justify-content: center;
@@ -490,45 +263,48 @@
     .footer-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 0.75rem;
-      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
       color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       text-decoration: none;
+      font-weight: 500;
     }
 
     .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
       border-color: var(--accent-teal);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
-    .footer-btn.refresh {
-      background: linear-gradient(135deg, var(--accent-teal), var(--intuity-gold));
-      border: none;
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      border-color: transparent;
       color: var(--bg-primary);
     }
 
-    .footer-btn.refresh:hover {
-      background: linear-gradient(135deg, var(--intuity-gold), var(--accent-teal));
+    .footer-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
     }
 
-    .footer-btn i {
-      font-size: 1rem;
+    /* Loading State */
+    .loading {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     /* Notification */
     .notification {
       position: fixed;
-      top: 60px;
+      top: 20px;
       right: 20px;
       padding: 1rem 1.5rem;
       border-radius: 8px;
@@ -557,188 +333,157 @@
       color: rgb(59, 130, 246);
     }
 
+    .notification.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
-        padding: 1rem;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-      }
-
-      .question-box,
-      .current-question-box,
-      .live-responses {
-        padding: 1.25rem;
-        margin-bottom: 1.25rem;
-      }
-
-      .footer-container {
-        flex-wrap: wrap;
-        gap: 1rem;
+        padding: 0 1rem;
+        gap: 1.5rem;
       }
 
       .brand-name {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
 
-      .current-question-title {
+      .question-central {
+        padding: 2rem;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .mode-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+
+      .mode-btn {
+        padding: 1rem 0.75rem;
+      }
+
+      .footer-buttons {
+        gap: 1rem;
+      }
+
+      .footer-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .mode-buttons {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+
+      .mode-btn {
+        padding: 1rem 0.5rem;
+      }
+
+      .mode-icon {
         font-size: 1.25rem;
       }
 
-      .current-question-text {
-        font-size: 1rem;
-      }
-
-      .response-header,
-      .response-meta {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .question-meta-info {
-        flex-direction: column;
-        gap: 1rem;
+      .mode-name {
+        font-size: 0.75rem;
       }
     }
   </style>
 </head>
 
 <body>
-  <!-- Connection Status -->
-  <div class="connection-status" id="connectionStatus">
-    <i class="fas fa-wifi"></i> Connecting to database...
-  </div>
-
   <!-- Header -->
   <header class="header">
     <div class="brand-name">INTUITY</div>
-    <div class="brand-subtitle">Real-time Analytics Dashboard (Supabase)</div>
+    <div class="page-title">Analytics</div>
+    <div class="author">by Majid Nashtai</div>
   </header>
 
+  <!-- Main Container -->
   <div class="container">
     
-    <!-- Real-time Stats Overview -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-users"></i></div>
-        <div class="stat-value" id="totalResponses">0</div>
-        <div class="stat-label">Total Responses</div>
-        <div class="stat-change neutral" id="responsesChange">No change</div>
-      </div>
+    <!-- Central Question Box - HERO -->
+    <div class="question-central">
+      <div class="question-label">Select Question</div>
       
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-question-circle"></i></div>
-        <div class="stat-value" id="totalQuestions">0</div>
-        <div class="stat-label">Active Questions</div>
-        <div class="stat-change neutral" id="questionsChange">No change</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-        <div class="stat-value" id="avgQuality">0.0</div>
-        <div class="stat-label">Avg Quality Score</div>
-        <div class="stat-change neutral" id="qualityChange">No change</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-        <div class="stat-value" id="recentResponses">0</div>
-        <div class="stat-label">Last 24 Hours</div>
-        <div class="stat-change neutral" id="recentChange">No change</div>
-      </div>
-    </div>
-    
-    <!-- Question Selector -->
-    <div class="question-box">
-      <div class="question-title">
-        <i class="fas fa-question-circle"></i>
-        Select Question to Analyze
-      </div>
       <select class="question-dropdown" id="questionSelector">
         <option value="">Loading questions from database...</option>
       </select>
-    </div>
-
-    <!-- Current Question Display -->
-    <div class="current-question-box" id="currentQuestionBox" style="display: none;">
-      <div class="current-question-title" id="currentQuestionTitle">
-        Select a question to view details
-      </div>
-      <div class="current-question-text" id="currentQuestionText">
-        This question will be displayed to students in your chosen presentation mode
-      </div>
-      <div class="question-meta-info">
-        <div class="meta-item">
-          <i class="fas fa-calendar"></i>
-          <span id="questionDate">Date not available</span>
-        </div>
-        <div class="meta-item">
-          <i class="fas fa-eye"></i>
-          <span id="questionStatus">Status unknown</span>
-        </div>
-        <div class="meta-item">
+      
+      <!-- Response Count & Delete Controls -->
+      <div class="controls-bar">
+        <div class="response-pill">
           <i class="fas fa-users"></i>
-          <span id="questionResponses">0 responses</span>
+          <span id="responseCount">0 Responses</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Live Student Responses -->
-    <div class="live-responses" id="liveResponses" style="display: none;">
-      <div class="live-responses-header">
-        <div class="live-responses-title">
-          <i class="fas fa-comments"></i>
-          <div class="live-indicator"></div>
-          Live Student Responses (<span id="responseCount">0</span>)
-        </div>
-        <button class="auto-refresh-toggle" id="autoRefreshToggle">
-          <i class="fas fa-sync"></i> Auto-refresh
+        
+        <button class="delete-btn" id="deleteBtn" title="Delete Selected Question" disabled>
+          <i class="fas fa-trash"></i>
         </button>
       </div>
-      <div id="responsesList">
-        <!-- Responses will be populated here -->
+    </div>
+
+    <!-- Presentation Modes -->
+    <div class="presentation-modes">
+      <div class="modes-title">Presentation Mode</div>
+      
+      <div class="mode-buttons">
+        <button class="mode-btn" data-mode="mind-map">
+          <div class="mode-icon">🗺️</div>
+          <div class="mode-name">Mind Map</div>
+        </button>
+        
+        <button class="mode-btn active" data-mode="stacked">
+          <div class="mode-icon">📚</div>
+          <div class="mode-name">Stacked</div>
+        </button>
+        
+        <button class="mode-btn" data-mode="floating">
+          <div class="mode-icon">☁️</div>
+          <div class="mode-name">Floating</div>
+        </button>
+        
+        <button class="mode-btn" data-mode="cosmos">
+          <div class="mode-icon">🌌</div>
+          <div class="mode-name">Cosmos</div>
+        </button>
       </div>
     </div>
 
   </div>
 
-  <!-- Footer Navigation -->
+  <!-- Footer -->
   <footer class="footer">
-    <div class="footer-container">
-      <a href="../teachers/questions/" class="footer-btn">
+    <div class="footer-buttons">
+      <a href="../teachers/questions/" class="footer-btn primary">
         <i class="fas fa-plus"></i>
-        <span>Create Question</span>
+        <span>Create Questions</span>
       </a>
       
-      <button class="footer-btn refresh" onclick="refreshData()" id="refreshBtn">
-        <i class="fas fa-sync"></i>
-        <span>Refresh Now</span>
-      </button>
-      
-      <button class="footer-btn" onclick="toggleRealTime()" id="realTimeBtn">
-        <i class="fas fa-satellite"></i>
-        <span>Real-time</span>
-      </button>
-      
-      <a href="../displays/" class="footer-btn">
-        <i class="fas fa-tv"></i>
-        <span>Display Mode</span>
+      <a href="../games/" class="footer-btn">
+        <i class="fas fa-gamepad"></i>
+        <span>Word Games</span>
       </a>
       
       <a href="../" class="footer-btn">
         <i class="fas fa-home"></i>
-        <span>Home</span>
+        <span>Return</span>
       </a>
     </div>
   </footer>
 
   <script>
-    // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
+    // Supabase Configuration - YOUR WORKING CREDENTIALS
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
     // Global data variables
     let supabase;
@@ -746,18 +491,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     let allResponses = [];
     let currentSelectedQuestion = null;
     let isConnected = false;
-    let isAutoRefresh = false;
-    let autoRefreshInterval = null;
-    let lastResponseCount = 0;
-    let realTimeSubscription = null;
 
     // Initialize Supabase
     function initSupabase() {
       try {
-        if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
-          throw new Error('Please configure your Supabase credentials');
-        }
-
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
         
@@ -765,7 +502,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         return true;
       } catch (error) {
         console.error('❌ Error initializing Supabase:', error);
-        updateConnectionStatus('error', 'Configuration Error - Check credentials');
+        loadLocalStorageData();
         return false;
       }
     }
@@ -778,41 +515,24 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         if (error) throw error;
         
         isConnected = true;
-        updateConnectionStatus('connected', 'Connected to Supabase Database');
-        console.log('✅ Supabase connection test successful');
+        console.log('✅ Supabase connection successful');
         
         // Start loading data
         await loadInitialData();
         
       } catch (error) {
-        console.error('❌ Supabase connection test failed:', error);
+        console.error('❌ Supabase connection failed:', error);
         isConnected = false;
-        updateConnectionStatus('error', 'Database Connection Failed');
         
         // Fallback to localStorage
         loadLocalStorageData();
       }
     }
 
-    // Update connection status UI
-    function updateConnectionStatus(status, message) {
-      const statusElement = document.getElementById('connectionStatus');
-      
-      statusElement.className = `connection-status ${status}`;
-      
-      const icons = {
-        connected: 'fas fa-check-circle',
-        offline: 'fas fa-wifi',
-        error: 'fas fa-exclamation-triangle'
-      };
-      
-      statusElement.innerHTML = `<i class="${icons[status]}"></i> ${message}`;
-    }
-
     // Load initial data from Supabase
     async function loadInitialData() {
       try {
-        showNotification('Loading data from database...', 'info');
+        console.log('📊 Loading data from Supabase...');
         
         // Load questions
         const { data: questions, error: questionsError } = await supabase
@@ -828,7 +548,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         // Load responses
         const { data: responses, error: responsesError } = await supabase
           .from('student_responses')
-          .select('*, questions!inner(text)')
+          .select('*')
           .order('submitted_at', { ascending: false });
 
         if (responsesError) throw responsesError;
@@ -837,92 +557,22 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         console.log(`✅ Loaded ${allResponses.length} responses from Supabase`);
 
         // Update UI
-        updateAllUI();
+        updateUI();
         
-        showNotification('Data loaded successfully!', 'success');
-        
-        // Setup real-time subscriptions
-        setupRealTimeSubscriptions();
+        showNotification('Connected to database successfully!', 'success');
         
       } catch (error) {
-        console.error('❌ Error loading initial data:', error);
-        showNotification('Error loading data from database', 'error');
+        console.error('❌ Error loading data from Supabase:', error);
+        showNotification('Error loading from database, using local data', 'error');
         
         // Fallback to localStorage
         loadLocalStorageData();
       }
     }
 
-    // Setup real-time subscriptions
-    function setupRealTimeSubscriptions() {
-      if (!isConnected) return;
-
-      try {
-        // Subscribe to new responses
-        realTimeSubscription = supabase
-          .channel('responses')
-          .on('postgres_changes', { 
-            event: 'INSERT', 
-            schema: 'public', 
-            table: 'student_responses' 
-          }, (payload) => {
-            console.log('📡 New response received:', payload.new);
-            handleNewResponse(payload.new);
-          })
-          .on('postgres_changes', { 
-            event: 'INSERT', 
-            schema: 'public', 
-            table: 'questions' 
-          }, (payload) => {
-            console.log('📡 New question received:', payload.new);
-            handleNewQuestion(payload.new);
-          })
-          .subscribe();
-
-        console.log('✅ Real-time subscriptions setup');
-        
-      } catch (error) {
-        console.error('❌ Error setting up real-time subscriptions:', error);
-      }
-    }
-
-    // Handle new real-time response
-    function handleNewResponse(newResponse) {
-      // Add to responses array
-      allResponses.unshift(newResponse);
-      
-      // Update UI
-      updateStatsDisplay();
-      updateResponsesDisplay();
-      
-      // Show notification
-      showNotification(`New response from ${newResponse.student_name}!`, 'success');
-      
-      // Highlight new response
-      setTimeout(() => {
-        const responseElement = document.querySelector(`[data-response-id="${newResponse.id}"]`);
-        if (responseElement) {
-          responseElement.classList.add('new');
-          setTimeout(() => responseElement.classList.remove('new'), 2000);
-        }
-      }, 100);
-    }
-
-    // Handle new real-time question
-    function handleNewQuestion(newQuestion) {
-      // Add to questions array
-      allQuestions.unshift(newQuestion);
-      
-      // Update dropdown
-      populateQuestionDropdown();
-      
-      // Show notification
-      showNotification('New question published!', 'success');
-    }
-
     // Fallback to localStorage data
     function loadLocalStorageData() {
-      console.log('📱 Loading data from localStorage fallback...');
+      console.log('📱 Loading data from localStorage...');
       
       try {
         // Load questions from multiple possible keys
@@ -958,72 +608,25 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
         console.log(`📱 Loaded ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
         
-        updateAllUI();
-        showNotification('Loaded data from local storage', 'info');
+        updateUI();
+        
+        if (allQuestions.length === 0) {
+          showNotification('No questions found - create one first', 'info');
+        } else {
+          showNotification('Using offline data', 'info');
+        }
         
       } catch (error) {
         console.error('❌ Error loading localStorage data:', error);
-        updateAllUI();
+        updateUI();
       }
     }
 
-    // Update all UI elements
-    function updateAllUI() {
-      updateStatsDisplay();
+    // Update UI
+    function updateUI() {
       populateQuestionDropdown();
-      updateQuestionDisplay();
-      updateResponsesDisplay();
-    }
-
-    // Update statistics display
-    function updateStatsDisplay() {
-      const totalResponses = allResponses.length;
-      const totalQuestions = allQuestions.filter(q => q.is_published !== false).length;
-      
-      // Calculate average quality score
-      let avgQuality = 0;
-      if (totalResponses > 0) {
-        const qualitySum = allResponses.reduce((sum, r) => {
-          const score = r.score || (r.quality === 'excellent' ? 5 : r.quality === 'good' ? 3 : 1);
-          return sum + score;
-        }, 0);
-        avgQuality = (qualitySum / totalResponses / 5 * 5).toFixed(1);
-      }
-      
-      // Calculate recent responses (last 24 hours)
-      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      const recentResponses = allResponses.filter(r => {
-        const responseDate = new Date(r.submitted_at || r.timestamp || 0);
-        return responseDate > twentyFourHoursAgo;
-      }).length;
-
-      // Update UI
-      document.getElementById('totalResponses').textContent = totalResponses;
-      document.getElementById('totalQuestions').textContent = totalQuestions;
-      document.getElementById('avgQuality').textContent = avgQuality;
-      document.getElementById('recentResponses').textContent = recentResponses;
-
-      // Update change indicators
-      const responsesChange = totalResponses - lastResponseCount;
-      updateChangeIndicator('responsesChange', responsesChange, 'responses');
-      
-      lastResponseCount = totalResponses;
-    }
-
-    // Update change indicator
-    function updateChangeIndicator(elementId, change, unit) {
-      const element = document.getElementById(elementId);
-      
-      if (change > 0) {
-        element.textContent = `+${change} new ${unit}`;
-        element.className = 'stat-change positive';
-      } else if (change < 0) {
-        element.textContent = `${change} ${unit}`;
-        element.className = 'stat-change negative';
-      } else {
-        element.textContent = 'No change';
-        element.className = 'stat-change neutral';
-      }
+      updateResponseCount();
+      updateDeleteButton();
     }
 
     // Populate question dropdown
@@ -1042,8 +645,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         option.value = question.id || index;
         
         const questionText = question.text || question.question_text || 'Untitled Question';
-        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 60)}${questionText.length > 60 ? '...' : ''}`;
-        option.setAttribute('data-full-text', questionText);
+        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''}`;
         selector.appendChild(option);
       });
 
@@ -1051,52 +653,16 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       if (!currentSelectedQuestion && allQuestions.length > 0) {
         currentSelectedQuestion = allQuestions[0];
         selector.value = currentSelectedQuestion.id || 0;
-        updateQuestionDisplay();
-        updateResponsesDisplay();
+        updateResponseCount();
+        updateDeleteButton();
+        updateQuestionBoxAppearance();
       }
-    }
-
-    // Update question display
-    function updateQuestionDisplay() {
-      const questionBox = document.getElementById('currentQuestionBox');
-      const titleElement = document.getElementById('currentQuestionTitle');
-      const textElement = document.getElementById('currentQuestionText');
-      const dateElement = document.getElementById('questionDate');
-      const statusElement = document.getElementById('questionStatus');
-      const responsesElement = document.getElementById('questionResponses');
-
-      if (!currentSelectedQuestion) {
-        questionBox.style.display = 'none';
-        return;
-      }
-
-      questionBox.style.display = 'block';
-      
-      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'No question text';
-      titleElement.textContent = 'Current Question';
-      textElement.textContent = questionText;
-      
-      // Format date
-      const createdAt = currentSelectedQuestion.created_at || currentSelectedQuestion.timestamp;
-      if (createdAt) {
-        const date = new Date(createdAt);
-        dateElement.textContent = date.toLocaleDateString();
-      } else {
-        dateElement.textContent = 'Date not available';
-      }
-      
-      // Status
-      const isPublished = currentSelectedQuestion.is_published !== false;
-      statusElement.textContent = isPublished ? 'Published' : 'Draft';
-      statusElement.style.color = isPublished ? 'var(--success)' : 'var(--warning)';
-      
-      // Response count for this question
-      const questionResponses = getResponsesForQuestion(currentSelectedQuestion);
-      responsesElement.textContent = `${questionResponses.length} responses`;
     }
 
     // Get responses for a specific question
     function getResponsesForQuestion(question) {
+      if (!question) return [];
+      
       return allResponses.filter(response => {
         return (
           response.question_id === question.id ||
@@ -1108,205 +674,117 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       });
     }
 
-    // Update responses display
-    function updateResponsesDisplay() {
-      const responsesBox = document.getElementById('liveResponses');
-      const responsesList = document.getElementById('responsesList');
-      const responseCount = document.getElementById('responseCount');
-
+    // Update response count
+    function updateResponseCount() {
+      const responseCountElement = document.getElementById('responseCount');
+      
       if (!currentSelectedQuestion) {
-        responsesBox.style.display = 'none';
+        responseCountElement.textContent = '0 Responses';
         return;
       }
 
-      const questionResponses = getResponsesForQuestion(currentSelectedQuestion);
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
+      responseCountElement.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+    }
 
-      responsesBox.style.display = 'block';
-      responseCount.textContent = questionResponses.length;
+    // Update delete button state
+    function updateDeleteButton() {
+      const deleteBtn = document.getElementById('deleteBtn');
+      deleteBtn.disabled = !currentSelectedQuestion;
+    }
 
-      if (questionResponses.length === 0) {
-        responsesList.innerHTML = `
-          <div class="no-responses">
-            <div class="no-responses-icon">📝</div>
-            <div>No student responses yet for this question</div>
-            <div style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">
-              Share the question with students to start collecting responses
-            </div>
-          </div>
-        `;
-        return;
+    // Update question box appearance when selected
+    function updateQuestionBoxAppearance() {
+      const questionBox = document.querySelector('.question-central');
+      if (currentSelectedQuestion) {
+        questionBox.style.borderColor = 'var(--accent-teal)';
+        questionBox.style.background = 'rgba(45, 212, 191, 0.08)';
+      } else {
+        questionBox.style.borderColor = 'var(--card-border)';
+        questionBox.style.background = 'var(--card-bg)';
       }
-
-      // Sort responses by submission time (newest first)
-      const sortedResponses = questionResponses.sort((a, b) => {
-        const timeA = new Date(a.submitted_at || a.timestamp || 0);
-        const timeB = new Date(b.submitted_at || b.timestamp || 0);
-        return timeB - timeA;
-      });
-
-      // Display responses
-      responsesList.innerHTML = sortedResponses.map(response => {
-        const studentName = response.student_name || response.studentName || 'Anonymous Student';
-        const answer = response.answer || 'No response text';
-        const quality = response.quality || 'needs-work';
-        const score = response.score || 0;
-        const wordCount = response.word_count || response.wordCount || 0;
-        const submittedAt = response.submitted_at || response.timestamp || 'Unknown time';
-        
-        // Format time
-        let timeDisplay = submittedAt;
-        try {
-          const date = new Date(submittedAt);
-          const now = new Date();
-          const diffMs = now - date;
-          const diffMins = Math.floor(diffMs / 60000);
-          
-          if (diffMins < 1) {
-            timeDisplay = 'Just now';
-          } else if (diffMins < 60) {
-            timeDisplay = `${diffMins}m ago`;
-          } else if (diffMins < 1440) {
-            timeDisplay = `${Math.floor(diffMins / 60)}h ago`;
-          } else {
-            timeDisplay = date.toLocaleDateString();
-          }
-        } catch (e) {
-          timeDisplay = submittedAt;
-        }
-        
-        const isRecent = submittedAt !== 'Unknown time' && 
-          (new Date() - new Date(submittedAt)) < 300000; // 5 minutes
-
-        return `
-          <div class="response-card" data-response-id="${response.id}">
-            <div class="response-header">
-              <div class="student-name">${studentName}</div>
-              <div class="quality-badge ${quality}">
-                ${quality.replace('-', ' ')}
-              </div>
-            </div>
-            <div class="response-text">${answer}</div>
-            <div class="response-meta">
-              <div class="response-time ${isRecent ? 'recent' : ''}">
-                <i class="fas fa-clock"></i>
-                <span>${timeDisplay}</span>
-              </div>
-              <span><i class="fas fa-pen"></i> ${wordCount} words</span>
-              <span><i class="fas fa-star"></i> ${score}% score</span>
-            </div>
-          </div>
-        `;
-      }).join('');
     }
 
     // Handle question selection change
     function handleQuestionChange() {
       const selector = document.getElementById('questionSelector');
       const selectedValue = selector.value;
-      const selectedIndex = selector.selectedIndex;
-      const selectedOption = selector.options[selectedIndex];
       
       if (!selectedValue) {
         currentSelectedQuestion = null;
-        updateQuestionDisplay();
-        updateResponsesDisplay();
-        return;
-      }
-
-      // Find the selected question
-      currentSelectedQuestion = allQuestions.find(q => 
-        q.id == selectedValue || 
-        allQuestions.indexOf(q) == selectedValue
-      );
-
-      // If not found by ID, try to find by index
-      if (!currentSelectedQuestion && selectedOption && selectedOption.getAttribute('data-full-text')) {
-        currentSelectedQuestion = {
-          id: selectedValue,
-          text: selectedOption.getAttribute('data-full-text')
-        };
+      } else {
+        // Find the selected question
+        currentSelectedQuestion = allQuestions.find(q => 
+          q.id == selectedValue || 
+          allQuestions.indexOf(q) == selectedValue
+        );
       }
 
       console.log('📋 Selected question:', currentSelectedQuestion);
       
-      updateQuestionDisplay();
-      updateResponsesDisplay();
+      updateResponseCount();
+      updateDeleteButton();
+      updateQuestionBoxAppearance();
     }
 
-    // Toggle auto-refresh
-    function toggleAutoRefresh() {
-      const toggle = document.getElementById('autoRefreshToggle');
-      
-      isAutoRefresh = !isAutoRefresh;
-      
-      if (isAutoRefresh) {
-        toggle.classList.add('active');
-        toggle.innerHTML = '<i class="fas fa-pause"></i> Auto-refresh ON';
-        
-        // Start auto-refresh interval
-        autoRefreshInterval = setInterval(async () => {
-          if (isConnected) {
-            await refreshData();
-          }
-        }, 10000); // Refresh every 10 seconds
-        
-        showNotification('Auto-refresh enabled', 'info');
-      } else {
-        toggle.classList.remove('active');
-        toggle.innerHTML = '<i class="fas fa-sync"></i> Auto-refresh OFF';
-        
-        // Clear interval
-        if (autoRefreshInterval) {
-          clearInterval(autoRefreshInterval);
-          autoRefreshInterval = null;
-        }
-        
-        showNotification('Auto-refresh disabled', 'info');
+    // Delete question
+    async function deleteQuestion() {
+      if (!currentSelectedQuestion) {
+        alert('Please select a question to delete.');
+        return;
       }
-    }
+      
+      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
+      if (!confirm(`Delete "${questionText}" and all its responses?`)) {
+        return;
+      }
 
-    // Refresh data manually
-    async function refreshData() {
-      const refreshBtn = document.getElementById('refreshBtn');
-      const originalContent = refreshBtn.innerHTML;
-      
-      refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
-      
+      const deleteBtn = document.getElementById('deleteBtn');
+      const originalContent = deleteBtn.innerHTML;
+      deleteBtn.innerHTML = '<i class="fas fa-spinner loading"></i>';
+      deleteBtn.disabled = true;
+
       try {
         if (isConnected) {
-          await loadInitialData();
-        } else {
-          loadLocalStorageData();
+          // Delete from Supabase
+          const { error } = await supabase
+            .from('questions')
+            .delete()
+            .eq('id', currentSelectedQuestion.id);
+
+          if (error) throw error;
+          
+          console.log('✅ Question deleted from Supabase');
         }
+
+        // Remove from local arrays
+        allQuestions = allQuestions.filter(q => q.id !== currentSelectedQuestion.id);
+        allResponses = allResponses.filter(r => r.question_id !== currentSelectedQuestion.id);
+
+        // Update localStorage
+        localStorage.setItem('alm_questions', JSON.stringify(allQuestions));
+        localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
+
+        // Reset selection
+        const selector = document.getElementById('questionSelector');
+        selector.value = '';
+        currentSelectedQuestion = null;
+
+        // Update UI
+        updateUI();
+        updateQuestionBoxAppearance();
+
+        showNotification('Question deleted successfully!', 'success');
         
-        showNotification('Data refreshed successfully!', 'success');
       } catch (error) {
-        console.error('❌ Error refreshing data:', error);
-        showNotification('Error refreshing data', 'error');
+        console.error('❌ Error deleting question:', error);
+        showNotification('Error deleting question', 'error');
       } finally {
         setTimeout(() => {
-          refreshBtn.innerHTML = originalContent;
+          deleteBtn.innerHTML = originalContent;
+          updateDeleteButton();
         }, 1000);
-      }
-    }
-
-    // Toggle real-time mode
-    function toggleRealTime() {
-      const realTimeBtn = document.getElementById('realTimeBtn');
-      
-      if (realTimeSubscription) {
-        // Disable real-time
-        supabase.removeChannel(realTimeSubscription);
-        realTimeSubscription = null;
-        realTimeBtn.innerHTML = '<i class="fas fa-satellite"></i><span>Real-time OFF</span>';
-        realTimeBtn.style.background = 'var(--card-bg)';
-        showNotification('Real-time updates disabled', 'info');
-      } else {
-        // Enable real-time
-        setupRealTimeSubscriptions();
-        realTimeBtn.innerHTML = '<i class="fas fa-satellite"></i><span>Real-time ON</span>';
-        realTimeBtn.style.background = 'rgba(45, 212, 191, 0.2)';
-        showNotification('Real-time updates enabled', 'success');
       }
     }
 
@@ -1333,36 +811,48 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics Dashboard with Supabase initializing...');
+      console.log('🚀 INTUITY Analytics - Clean + Functional Version Loading...');
       
       // Initialize Supabase
-      if (initSupabase()) {
-        console.log('✅ Supabase initialization successful');
-      } else {
-        console.log('❌ Supabase initialization failed, using localStorage fallback');
-        loadLocalStorageData();
-      }
+      initSupabase();
       
       // Set up event listeners
       const questionSelector = document.getElementById('questionSelector');
       questionSelector.addEventListener('change', handleQuestionChange);
       
-      const autoRefreshToggle = document.getElementById('autoRefreshToggle');
-      autoRefreshToggle.addEventListener('click', toggleAutoRefresh);
+      const deleteBtn = document.getElementById('deleteBtn');
+      deleteBtn.addEventListener('click', deleteQuestion);
       
-      console.log('✅ Analytics dashboard with Supabase fully initialized!');
-    });
-
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      if (realTimeSubscription) {
-        supabase.removeChannel(realTimeSubscription);
-      }
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-      }
+      // Presentation mode selection
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!currentSelectedQuestion) {
+            alert('Please select a question first.');
+            return;
+          }
+          
+          // Remove active from all buttons
+          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+          
+          // Add active to clicked button
+          this.classList.add('active');
+          
+          const mode = this.dataset.mode;
+          const modeName = this.querySelector('.mode-name').textContent;
+          
+          console.log(`🎨 Switched to ${mode} presentation mode`);
+          showNotification(`Switched to ${modeName} mode`, 'info');
+          
+          // Visual feedback
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'translateY(-2px)';
+          }, 100);
+        });
+      });
+      
+      console.log('✅ INTUITY Analytics - Clean + Functional Ready!');
     });
   </script>
-
 </body>
 </html>
