@@ -313,38 +313,36 @@
       background: rgba(16, 185, 129, 0.1);
     }
     
-     /* Steve Jobs Ultra-Minimal Photo Trigger - Updated with 30% size increase and modern orange */
-.photo-trigger {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 31px;        /* Increased from 24px by 30% */
-  height: 31px;       /* Increased from 24px by 30% */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0.4;       /* Slightly increased opacity to show orange color better */
-  transition: all 0.2s ease;
-  font-size: 1.17rem; /* Increased from 0.9rem by 30% */
-  border-radius: 50%;
-  z-index: 10;
-  color: #ff6b35;     /* Modern vibrant orange color */
-}
-
-.photo-trigger:hover {
-  opacity: 0.8;       /* Increased hover opacity */
-  background: rgba(255, 107, 53, 0.1);  /* Orange background on hover */
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 0 10px rgba(255, 107, 53, 0.3); /* Orange glow effect */
-}
-
-.photo-trigger.has-photo {
-  opacity: 0.9;       /* Higher opacity when photo is present */
-  color: #ff6b35;     /* Maintain orange color */
-  background: rgba(255, 107, 53, 0.15); /* Subtle orange background */
-}
+    /* Steve Jobs Ultra-Minimal Photo Trigger */
+    .photo-trigger {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.25;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      border-radius: 50%;
+      z-index: 10;
+    }
+    
+    .photo-trigger:hover {
+      opacity: 0.7;
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .photo-trigger.has-photo {
+      opacity: 0.8;
+      color: var(--accent-teal);
+    }
+    
     /* Hidden Photo Preview */
     .photo-preview-mini {
       position: absolute;
@@ -1403,163 +1401,6 @@
       console.log('🗑️ Photo removed (Jobs style - back to minimal)');
     }
 
-    // Hide photo modal (Steve Jobs style)
-    function hidePhotoModal() {
-      const photoModal = document.getElementById('photoModal');
-      if (photoModal) {
-        photoModal.classList.remove('show');
-      }
-    }
-
-    // Teacher Interface Navigation Functions (for future teacher dashboard)
-    function goToPrevious() {
-      console.log('📱 Previous response (Teacher interface function)');
-      // This will be implemented in teacher interface
-    }
-
-    function goToNext() {
-      console.log('📱 Next response (Teacher interface function)');
-      // This will be implemented in teacher interface
-    }
-
-    function toggleAutoplay() {
-      console.log('⏯️ Toggle autoplay (Teacher interface function)');
-      // This will be implemented in teacher interface
-    }
-
-    function stopAutoplay() {
-      console.log('⏹️ Stop autoplay (Teacher interface function)');
-      // This will be implemented in teacher interface
-    }
-
-    function refreshData() {
-      console.log('🔄 Refresh data (Teacher interface function)');
-      // For student interface, just reload the question
-      if (typeof loadQuestion === 'function') {
-        loadQuestion();
-      }
-    }
-
-    function shuffleResponses() {
-      console.log('🔀 Shuffle responses (Teacher interface function)');
-      // This will be implemented in teacher interface
-    }
-
-    // Setup event listeners (Updated Steve Jobs Style)
-    function setupEventListeners() {
-      // Core navigation and controls (for teacher interface)
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const autoplayBtn = document.getElementById('autoplayBtn');
-      const refreshBtn = document.getElementById('refreshBtn');
-      const shuffleBtn = document.getElementById('shuffleBtn');
-      
-      if (prevBtn) prevBtn.addEventListener('click', goToPrevious);
-      if (nextBtn) nextBtn.addEventListener('click', goToNext);
-      if (autoplayBtn) autoplayBtn.addEventListener('click', toggleAutoplay);
-      if (refreshBtn) refreshBtn.addEventListener('click', refreshData);
-      if (shuffleBtn) shuffleBtn.addEventListener('click', shuffleResponses);
-      
-      // Photo modal event listeners (Steve Jobs style)
-      const closePhotoModal = document.getElementById('closePhotoModal') || document.getElementById('closeModalBtn');
-      const photoModal = document.getElementById('photoModal');
-      
-      if (closePhotoModal) {
-        closePhotoModal.addEventListener('click', hidePhotoModal);
-      }
-      
-      if (photoModal) {
-        photoModal.addEventListener('click', (e) => {
-          if (e.target.id === 'photoModal') {
-            hidePhotoModal();
-          }
-        });
-      }
-      
-      // Student interface photo events
-      const photoTrigger = document.getElementById('photoTrigger');
-      const captureBtn = document.getElementById('captureBtn');
-      const cancelCameraBtn = document.getElementById('cancelCameraBtn');
-      const retakeBtn = document.getElementById('retakeBtn');
-      const removePhotoBtn = document.getElementById('removePhotoBtn');
-      
-      if (photoTrigger) photoTrigger.addEventListener('click', handlePhotoTrigger);
-      if (captureBtn) captureBtn.addEventListener('click', capturePhoto);
-      if (cancelCameraBtn) cancelCameraBtn.addEventListener('click', stopCamera);
-      if (retakeBtn) {
-        retakeBtn.addEventListener('click', () => {
-          hidePhotoModal();
-          startCamera();
-        });
-      }
-      if (removePhotoBtn) removePhotoBtn.addEventListener('click', removePhoto);
-      
-      // Keyboard controls (Enhanced)
-      document.addEventListener('keydown', (e) => {
-        switch (e.key) {
-          case 'ArrowLeft':
-            if (typeof goToPrevious === 'function') {
-              e.preventDefault();
-              goToPrevious();
-            }
-            break;
-          case 'ArrowRight':
-            if (typeof goToNext === 'function') {
-              e.preventDefault();
-              goToNext();
-            }
-            break;
-          case ' ':
-            if (typeof toggleAutoplay === 'function') {
-              e.preventDefault();
-              toggleAutoplay();
-            }
-            break;
-          case 'Escape':
-            if (photoModal && photoModal.classList.contains('show')) {
-              hidePhotoModal();
-            } else if (!isSubmitted) {
-              clearForm();
-            }
-            break;
-          case 'Enter':
-            // Ctrl/Cmd + Enter to submit
-            if (e.ctrlKey || e.metaKey) {
-              const submitBtn = document.getElementById('submitBtn');
-              if (submitBtn && !submitBtn.disabled) {
-                e.preventDefault();
-                if (currentQuestion && currentQuestion.isReal) {
-                  submitResponse();
-                } else {
-                  submitDemoResponse();
-                }
-              }
-            }
-            break;
-          case 'r':
-          case 'R':
-            if ((e.ctrlKey || e.metaKey) && typeof refreshData === 'function') {
-              e.preventDefault();
-              refreshData();
-            }
-            break;
-          case 's':
-          case 'S':
-            if (typeof shuffleResponses === 'function') {
-              shuffleResponses();
-            }
-            break;
-        }
-      });
-      
-      // Cleanup autoplay on page unload
-      window.addEventListener('beforeunload', () => {
-        if (typeof stopAutoplay === 'function') {
-          stopAutoplay();
-        }
-      });
-    }
-
     // Load question from URL parameters or Supabase
     async function loadQuestion() {
       console.log('🔍 Loading question...');
@@ -1968,7 +1809,7 @@
 
     // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Student Interface with Enhanced Steve Jobs Photo Feature initializing...');
+      console.log('🚀 INTUITY Student Interface with Steve Jobs Photo Feature initializing...');
       
       // Create background
       createConstellation();
@@ -1984,10 +1825,47 @@
         loadQuestion();
       }
       
-      // Setup all event listeners (Enhanced)
-      setupEventListeners();
+      // Set up keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Enter to submit
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          const submitBtn = document.getElementById('submitBtn');
+          if (!submitBtn.disabled) {
+            if (currentQuestion && currentQuestion.isReal) {
+              submitResponse();
+            } else {
+              submitDemoResponse();
+            }
+          }
+        }
+        
+        // Escape to clear (with confirmation)
+        if (e.key === 'Escape' && !isSubmitted) {
+          clearForm();
+        }
+      });
       
-      console.log('✅ Student interface with enhanced Steve Jobs photo feature ready!');
+      // Photo Event Listeners (Steve Jobs Style - Minimal Setup)
+      document.getElementById('photoTrigger').addEventListener('click', handlePhotoTrigger);
+      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+      document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
+      document.getElementById('retakeBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+        startCamera();
+      });
+      document.getElementById('removePhotoBtn').addEventListener('click', removePhoto);
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+      });
+      
+      // Click outside modal to close (Jobs style)
+      document.getElementById('photoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'photoModal') {
+          document.getElementById('photoModal').classList.remove('show');
+        }
+      });
+      
+      console.log('✅ Student interface with Steve Jobs photo feature ready!');
     });
   </script>
 </body>
