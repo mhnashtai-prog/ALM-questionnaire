@@ -313,36 +313,38 @@
       background: rgba(16, 185, 129, 0.1);
     }
     
-    /* Steve Jobs Ultra-Minimal Photo Trigger */
-    .photo-trigger {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0.25;
-      transition: all 0.2s ease;
-      font-size: 0.9rem;
-      border-radius: 50%;
-      z-index: 10;
-    }
-    
-    .photo-trigger:hover {
-      opacity: 0.7;
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-50%) scale(1.1);
-    }
-    
-    .photo-trigger.has-photo {
-      opacity: 0.8;
-      color: var(--accent-teal);
-    }
-    
+     /* Steve Jobs Ultra-Minimal Photo Trigger - Updated with 30% size increase and modern orange */
+.photo-trigger {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 31px;        /* Increased from 24px by 30% */
+  height: 31px;       /* Increased from 24px by 30% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.4;       /* Slightly increased opacity to show orange color better */
+  transition: all 0.2s ease;
+  font-size: 1.17rem; /* Increased from 0.9rem by 30% */
+  border-radius: 50%;
+  z-index: 10;
+  color: #ff6b35;     /* Modern vibrant orange color */
+}
+
+.photo-trigger:hover {
+  opacity: 0.8;       /* Increased hover opacity */
+  background: rgba(255, 107, 53, 0.1);  /* Orange background on hover */
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.3); /* Orange glow effect */
+}
+
+.photo-trigger.has-photo {
+  opacity: 0.9;       /* Higher opacity when photo is present */
+  color: #ff6b35;     /* Maintain orange color */
+  background: rgba(255, 107, 53, 0.15); /* Subtle orange background */
+}
     /* Hidden Photo Preview */
     .photo-preview-mini {
       position: absolute;
