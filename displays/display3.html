@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Electoral Banner Cosmos</title>
+  <title>INTUITY - Mind Map Display (Fixed)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -48,11 +48,16 @@
       overflow: hidden;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      cursor: grab;
       user-select: none;
     }
     
-    /* Cosmic Background */
-    .cosmic-background {
+    body.grabbing {
+      cursor: grabbing;
+    }
+    
+    /* Constellation Background */
+    .constellation-bg {
       position: fixed;
       top: 0;
       left: 0;
@@ -60,34 +65,32 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.6;
+      opacity: 0.4;
     }
     
-    .star-field {
+    .star {
       position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-    
-    .cosmic-star {
-      position: absolute;
-      background: white;
+      width: 2px;
+      height: 2px;
+      background: var(--accent-gold);
       border-radius: 50%;
       animation: twinkle 4s infinite alternate;
     }
     
-    .cosmic-star.small { width: 1px; height: 1px; opacity: 0.6; }
-    .cosmic-star.medium { width: 2px; height: 2px; opacity: 0.8; }
-    .cosmic-star.large { 
-      width: 3px; 
-      height: 3px; 
-      opacity: 1; 
-      box-shadow: 0 0 10px currentColor; 
+    .star:nth-child(even) {
+      animation-delay: 2s;
+      background: var(--accent-teal);
+    }
+    
+    .star:nth-child(3n) {
+      animation-delay: 1s;
+      background: var(--accent-electric);
+      opacity: 0.6;
     }
     
     @keyframes twinkle {
-      0% { opacity: 0.3; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.5); }
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 0.9; transform: scale(1.2); }
     }
     
     /* Header */
@@ -97,7 +100,7 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      background: rgba(26, 35, 50, 0.9);
+      background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--card-border);
       padding: 1rem 2rem;
@@ -124,174 +127,196 @@
       letter-spacing: 1px;
     }
     
-    .cosmic-stats {
+    .mind-map-stats {
       display: flex;
       gap: 1.5rem;
       font-size: 0.9rem;
+      color: var(--text-secondary);
     }
     
-    .stat-cosmic {
-      background: rgba(45, 212, 191, 0.1);
-      border: 1px solid var(--accent-teal);
-      border-radius: 20px;
-      padding: 0.5rem 1rem;
+    .stat-item {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      color: var(--accent-teal);
-      animation: statGlow 3s ease-in-out infinite alternate;
-    }
-    
-    @keyframes statGlow {
-      0% { box-shadow: 0 0 10px rgba(45, 212, 191, 0.3); }
-      100% { box-shadow: 0 0 20px rgba(45, 212, 191, 0.6); }
     }
     
     .stat-value {
-      font-weight: 700;
-      color: var(--accent-gold);
+      color: var(--accent-teal);
+      font-weight: 600;
     }
     
-    /* Floating Space */
-    .floating-space {
+    /* Mind Map Container */
+    .mindmap-container {
       position: fixed;
       top: 80px;
       left: 0;
       right: 0;
-      bottom: 140px;
+      bottom: 100px;
       overflow: hidden;
-      z-index: 10;
+      cursor: grab;
     }
     
-    /* Electoral Banner Cards */
-    .electoral-banner {
-      position: absolute;
-      width: 280px;
-      height: 160px;
-      perspective: 1000px;
-      cursor: pointer;
-      z-index: 20;
-    }
-    
-    .banner-card {
+    .mindmap-canvas {
       position: relative;
       width: 100%;
       height: 100%;
-      transform-style: preserve-3d;
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center;
+      transition: transform 0.3s ease;
     }
     
-    .banner-card.flipped {
-      transform: rotateY(180deg);
-    }
-    
-    .banner-face {
+    /* SVG Connections */
+    .connections-svg {
       position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      backface-visibility: hidden;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      pointer-events: none;
+      z-index: 5;
     }
     
-    /* Front Face - Electoral Banner */
-    .banner-front {
-      background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.12));
+    .connection-line {
+      stroke: var(--accent-teal);
+      stroke-width: 2;
+      fill: none;
+      opacity: 0.6;
+      filter: drop-shadow(0 0 5px var(--accent-teal));
+      animation: connectionPulse 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes connectionPulse {
+      0% { opacity: 0.4; stroke-width: 2; }
+      100% { opacity: 0.8; stroke-width: 3; }
+    }
+    
+    /* Central Question Node */
+    .question-node {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 3px solid var(--accent-teal);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-active);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 20;
+      cursor: pointer;
+    }
+    
+    .question-node::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .question-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    
+    /* Response Nodes */
+    .response-node {
+      position: absolute;
+      min-width: 200px;
+      max-width: 280px;
+      background: var(--card-bg);
       backdrop-filter: var(--blur);
       border: 2px solid var(--card-border);
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      gap: 1rem;
-    }
-    
-    .banner-front.excellent {
-      border-color: var(--success);
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
-    }
-    
-    .banner-front.good {
-      border-color: var(--warning);
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
-    }
-    
-    .banner-front.needs-work {
-      border-color: var(--error);
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
-    }
-    
-    .student-photo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--bg-primary);
-      box-shadow: var(--shadow);
-      flex-shrink: 0;
-    }
-    
-    .banner-info {
-      flex: 1;
-      text-align: center;
-    }
-    
-    .student-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
-    
-    .campaign-slogan {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-style: italic;
-      margin-bottom: 0.5rem;
-    }
-    
-    .vote-stats {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-    }
-    
-    .vote-item {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-    
-    /* Back Face - Response Content */
-    .banner-back {
-      background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
-      border: 2px solid var(--accent-gold);
-      transform: rotateY(180deg);
+      border-radius: 16px;
       padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
+      cursor: grab;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      z-index: 10;
+      touch-action: none;
     }
     
-    .response-header {
+    .response-node:active {
+      cursor: grabbing;
+    }
+    
+    .response-node.dragging {
+      z-index: 100;
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: var(--shadow-active);
+      border-color: var(--accent-gold);
+    }
+    
+    .response-node.excellent {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    .response-node.good {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+    
+    .response-node.needs-work {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    
+    .response-node:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-teal);
+    }
+    
+    .response-node.focused {
+      border-color: var(--accent-gold);
+      box-shadow: var(--shadow-active);
+      z-index: 50;
+      transform: scale(1.1);
+    }
+    
+    /* Node Header */
+    .node-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
     }
     
-    .response-title {
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .student-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg-primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    
+    .student-name {
       font-size: 1rem;
       font-weight: 600;
-      color: var(--accent-gold);
+      color: var(--text-primary);
     }
     
     .quality-badge {
@@ -318,474 +343,430 @@
       color: var(--error);
     }
     
-    .response-content {
-      flex: 1;
-      font-size: 0.9rem;
-      line-height: 1.4;
+    /* Node Content */
+    .node-content {
       color: var(--text-secondary);
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
     }
     
-    .response-meta {
+    .node-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 0.8rem;
       color: var(--text-muted);
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    /* Floating Animation */
-    .electoral-banner {
-      animation: float 20s linear infinite;
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
     
-    .electoral-banner:nth-child(2n) {
-      animation-duration: 25s;
-      animation-direction: reverse;
-    }
-    
-    .electoral-banner:nth-child(3n) {
-      animation-duration: 30s;
-    }
-    
-    @keyframes float {
-      0% { 
-        transform: translateX(-300px) translateY(0px) rotate(0deg); 
-        opacity: 0;
-      }
-      10% { 
-        opacity: 1; 
-      }
-      90% { 
-        opacity: 1; 
-      }
-      100% { 
-        transform: translateX(calc(100vw + 300px)) translateY(-50px) rotate(5deg); 
-        opacity: 0;
-      }
-    }
-    
-    /* Hover Effects */
-    .electoral-banner:hover .banner-card {
-      transform: scale(1.05) translateZ(20px);
-    }
-    
-    .electoral-banner:hover .banner-front {
-      border-color: var(--accent-gold);
-      box-shadow: var(--shadow-active);
-    }
-    
-    /* Question Control Panel */
-    .question-control {
+    /* Footer Controls */
+    .footer-controls {
       position: fixed;
       bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 800px;
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--accent-teal);
-      border-radius: 20px 20px 0 0;
-      padding: 2rem;
-      z-index: 1000;
-      box-shadow: var(--shadow-active);
-    }
-    
-    .question-control::before {
-      content: '';
-      position: absolute;
-      top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
-      border-radius: 20px 20px 0 0;
-    }
-    
-    .control-header {
+      background: rgba(26, 35, 50, 0.95);
+      backdrop-filter: var(--blur);
+      border-top: 1px solid var(--card-border);
+      padding: 1rem 2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .control-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .campaign-controls {
-      display: flex;
-      gap: 1rem;
+      justify-content: center;
+      gap: 1.5rem;
+      z-index: 1000;
     }
     
     .control-btn {
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
       color: var(--text-primary);
       cursor: pointer;
       transition: var(--transition);
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
     
     .control-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
       border-color: var(--accent-teal);
+      transform: translateY(-1px);
     }
     
-    .control-btn.active {
+    .control-btn.primary {
       background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border-color: transparent;
+      border: none;
       color: var(--bg-primary);
     }
     
-    .question-display {
-      font-size: 1.2rem;
-      color: var(--text-primary);
-      line-height: 1.5;
-      text-align: center;
-      margin-bottom: 1rem;
+    .control-btn.primary:hover {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
     }
     
-    .question-meta {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-    }
-    
-    .meta-item {
+    /* Loading State */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 35, 50, 0.9);
+      backdrop-filter: var(--blur);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-    
-    /* Loading/Empty States */
-    .campaign-loading {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+      justify-content: center;
       z-index: 2000;
+      opacity: 1;
+      transition: opacity 0.5s ease;
     }
     
-    .loading-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      color: var(--accent-gold);
-      margin-bottom: 1rem;
-      animation: pulse 2s ease-in-out infinite alternate;
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
     
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      100% { opacity: 1; }
+    .loading-content {
+      text-align: center;
+      color: var(--text-primary);
     }
     
-    .campaign-spinner {
+    .loading-spinner {
       width: 60px;
       height: 60px;
       border: 3px solid rgba(45, 212, 191, 0.2);
       border-top: 3px solid var(--accent-teal);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 0 auto;
+      margin: 0 auto 1rem;
     }
     
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Empty State for No Responses */
+    .empty-state {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--text-muted);
+      z-index: 15;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px dashed var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+    
+    .empty-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .empty-text {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
     
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .header {
         padding: 0.75rem 1rem;
-        flex-direction: column;
-        gap: 0.5rem;
       }
       
       .brand-name {
         font-size: 1.5rem;
       }
       
-      .cosmic-stats {
+      .mind-map-stats {
         gap: 1rem;
         font-size: 0.8rem;
       }
       
-      .floating-space {
-        top: 100px;
-        bottom: 160px;
-      }
-      
-      .electoral-banner {
-        width: 240px;
-        height: 140px;
-      }
-      
-      .student-photo {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-      }
-      
-      .student-name {
-        font-size: 1rem;
-      }
-      
-      .question-control {
-        width: 95%;
+      .question-node {
+        width: 280px;
+        height: 180px;
         padding: 1.5rem;
       }
       
-      .question-display {
+      .question-text {
         font-size: 1rem;
       }
       
-      .question-meta {
-        gap: 1rem;
-        font-size: 0.8rem;
+      .response-node {
+        min-width: 180px;
+        max-width: 250px;
+        padding: 1.25rem;
       }
       
-      .campaign-controls {
-        gap: 0.5rem;
-        flex-wrap: wrap;
+      .footer-controls {
+        padding: 0.75rem 1rem;
+        gap: 1rem;
       }
       
       .control-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.7rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Cosmic Background -->
-  <div class="cosmic-background">
-    <div class="star-field" id="starField"></div>
-  </div>
+  <!-- Constellation Background -->
+  <div class="constellation-bg" id="constellation"></div>
   
   <!-- Header -->
   <header class="header">
     <div>
       <div class="brand-name">INTUITY</div>
-      <div class="display-title">Electoral Banner Cosmos</div>
+      <div class="display-title">Mind Map Display (Fixed)</div>
     </div>
     
-    <div class="cosmic-stats">
-      <div class="stat-cosmic">
-        <i class="fas fa-vote-yea"></i>
-        <span class="stat-value" id="candidateCount">0</span>
-        <span>Candidates</span>
+    <div class="mind-map-stats">
+      <div class="stat-item">
+        <i class="fas fa-project-diagram"></i>
+        <span class="stat-value" id="nodeCount">0</span>
+        <span>Nodes</span>
       </div>
-      <div class="stat-cosmic">
-        <i class="fas fa-medal"></i>
-        <span class="stat-value" id="campaignQuality">0.0</span>
-        <span>Avg Campaign</span>
+      <div class="stat-item">
+        <i class="fas fa-link"></i>
+        <span class="stat-value" id="connectionCount">0</span>
+        <span>Connections</span>
       </div>
-      <div class="stat-cosmic">
-        <i class="fas fa-users"></i>
-        <span class="stat-value" id="voterTurnout">0</span>
-        <span>% Turnout</span>
+      <div class="stat-item">
+        <i class="fas fa-star"></i>
+        <span class="stat-value" id="avgQuality">0.0</span>
+        <span>Avg Quality</span>
       </div>
     </div>
   </header>
   
-  <!-- Floating Space for Electoral Banners -->
-  <div class="floating-space" id="floatingSpace">
-    <!-- Electoral banners will be dynamically created here -->
-  </div>
-  
-  <!-- Question Control Panel -->
-  <div class="question-control">
-    <div class="control-header">
-      <div class="control-title">
-        <i class="fas fa-landmark"></i>
-        Campaign Question
+  <!-- Mind Map Container -->
+  <div class="mindmap-container" id="mindmapContainer">
+    <div class="mindmap-canvas" id="mindmapCanvas">
+      
+      <!-- SVG for Connections -->
+      <svg class="connections-svg" id="connectionsSvg">
+        <!-- Connection lines will be drawn here -->
+      </svg>
+      
+      <!-- Central Question Node -->
+      <div class="question-node" id="questionNode">
+        <div class="question-text" id="questionText">
+          Loading question...
+        </div>
       </div>
       
-      <div class="campaign-controls">
-        <button class="control-btn" id="pauseBtn">
-          <i class="fas fa-pause"></i>
-          <span>Pause</span>
-        </button>
-        
-        <button class="control-btn active" id="playBtn">
-          <i class="fas fa-play"></i>
-          <span>Play</span>
-        </button>
-        
-        <button class="control-btn" id="shuffleBtn">
-          <i class="fas fa-random"></i>
-          <span>Shuffle</span>
-        </button>
-        
-        <button class="control-btn" id="refreshBtn">
-          <i class="fas fa-sync"></i>
-          <span>Refresh</span>
-        </button>
+      <!-- Empty State (shows when no responses) -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">💭</div>
+        <div class="empty-title">No Student Responses Yet</div>
+        <div class="empty-text">Student responses will appear as connected nodes around the central question when they submit through the student interface.</div>
       </div>
-    </div>
-    
-    <div class="question-display" id="questionDisplay">
-      Loading campaign question...
-    </div>
-    
-    <div class="question-meta">
-      <div class="meta-item">
-        <i class="fas fa-calendar"></i>
-        <span>Election Day: Today</span>
-      </div>
-      <div class="meta-item">
-        <i class="fas fa-clock"></i>
-        <span id="campaignTime">Campaign Active</span>
-      </div>
-      <div class="meta-item">
-        <i class="fas fa-chart-line"></i>
-        <span id="participationRate">100% Participation</span>
-      </div>
+      
+      <!-- Response nodes will be dynamically created here -->
+      
     </div>
   </div>
   
-  <!-- Campaign Loading -->
-  <div class="campaign-loading" id="campaignLoading">
-    <div class="loading-text">Launching Campaign...</div>
-    <div class="campaign-spinner"></div>
+  <!-- Footer Controls -->
+  <div class="footer-controls">
+    <button class="control-btn" id="resetBtn">
+      <i class="fas fa-home"></i>
+      <span>Reset View</span>
+    </button>
+    
+    <button class="control-btn" id="reorganizeBtn">
+      <i class="fas fa-magic"></i>
+      <span>Auto Organize</span>
+    </button>
+    
+    <button class="control-btn primary" id="refreshBtn">
+      <i class="fas fa-sync"></i>
+      <span>Refresh Data</span>
+    </button>
+    
+    <button class="control-btn" id="focusBtn">
+      <i class="fas fa-search-plus"></i>
+      <span>Focus Mode</span>
+    </button>
+  </div>
+  
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div>Loading Mind Map...</div>
+    </div>
   </div>
 
   <script>
     // Global variables
     let responses = [];
     let currentQuestion = null;
-    let isPlaying = true;
-    let bannerQueue = [];
-    let nextBannerTime = 0;
-    let bannerInterval = 3000; // 3 seconds between banners
+    let isDragging = false;
+    let draggedNode = null;
+    let dragOffset = { x: 0, y: 0 };
+    let isCanvasDragging = false;
+    let canvasOffset = { x: 0, y: 0 };
+    let canvasScale = 1;
+    let focusedNode = null;
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      createStarField();
+      createConstellation();
       loadData();
       setupEventListeners();
-      startCampaign();
       
       // Hide loading after initialization
       setTimeout(() => {
-        document.getElementById('campaignLoading').style.display = 'none';
-      }, 2000);
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      }, 1500);
     });
 
-    // Create cosmic star field
-    function createStarField() {
-      const starField = document.getElementById('starField');
-      const starCount = 80;
-      const starTypes = ['small', 'medium', 'large'];
+    // Create constellation background
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      const starCount = 50;
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
-        star.className = `cosmic-star ${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
+        star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
         star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (3 + Math.random() * 3) + 's';
-        
-        // Random colors for some stars
-        if (Math.random() > 0.8) {
-          const colors = ['#ffd700', '#00d4ff', '#ff006e', '#00ff88'];
-          star.style.color = colors[Math.floor(Math.random() * colors.length)];
-        }
-        
-        starField.appendChild(star);
+        star.style.animationDuration = (3 + Math.random() * 4) + 's';
+        constellation.appendChild(star);
       }
     }
 
-    // Load data from localStorage
+    // Enhanced data loading with Analytics integration
     function loadData() {
       try {
-        // Load question
-        const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
+        console.log('🔍 Loading data for Mind Map Display...');
         
-        for (const key of questionKeys) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (key === 'current_question' && parsed.text) {
-                currentQuestion = parsed;
-                break;
-              } else if (Array.isArray(parsed) && parsed.length > 0) {
-                const latestQuestion = parsed[parsed.length - 1];
-                if (latestQuestion && latestQuestion.text) {
-                  currentQuestion = latestQuestion;
+        // First try to load data specifically set by Analytics
+        const displayQuestion = localStorage.getItem('display_question');
+        const displayResponses = localStorage.getItem('display_responses');
+        
+        if (displayQuestion && displayResponses) {
+          try {
+            currentQuestion = JSON.parse(displayQuestion);
+            responses = JSON.parse(displayResponses);
+            console.log('✅ Loaded data from Analytics:', currentQuestion, responses.length, 'responses');
+          } catch (e) {
+            console.log('Error parsing display data:', e);
+          }
+        }
+        
+        // Fallback to standard keys if no display data
+        if (!currentQuestion) {
+          const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
+          
+          for (const key of questionKeys) {
+            const stored = localStorage.getItem(key);
+            if (stored) {
+              try {
+                const parsed = JSON.parse(stored);
+                if (key === 'current_question' && (parsed.text || parsed.question_text)) {
+                  currentQuestion = parsed;
+                  break;
+                } else if (Array.isArray(parsed) && parsed.length > 0) {
+                  const latestQuestion = parsed[parsed.length - 1];
+                  if (latestQuestion && (latestQuestion.text || latestQuestion.question_text)) {
+                    currentQuestion = latestQuestion;
+                    break;
+                  }
+                }
+              } catch (e) {
+                console.log(`Error parsing ${key}:`, e);
+              }
+            }
+          }
+        }
+        
+        // Load responses if not already loaded
+        if (responses.length === 0) {
+          const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+          
+          for (const key of responseKeys) {
+            const stored = localStorage.getItem(key);
+            if (stored) {
+              try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  responses = parsed;
+                  console.log(`Loaded ${responses.length} responses from ${key}`);
                   break;
                 }
+              } catch (e) {
+                console.log(`Error parsing ${key}:`, e);
               }
-            } catch (e) {
-              console.log(`Error parsing ${key}:`, e);
             }
           }
         }
         
+        // Display question
         if (currentQuestion) {
-          document.getElementById('questionDisplay').textContent = currentQuestion.text;
+          const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
+          document.getElementById('questionText').textContent = questionText;
+          console.log('✅ Question loaded:', questionText);
         } else {
-          document.getElementById('questionDisplay').textContent = 'No active campaign question found - Democracy awaits!';
+          document.getElementById('questionText').textContent = 'No active question found';
+          console.log('❌ No question found');
         }
         
-        // Load responses
-        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+        console.log(`📊 Final data: ${responses.length} responses for question`);
         
-        for (const key of responseKeys) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                responses = parsed;
-                console.log(`Loaded ${responses.length} campaign responses`);
-                break;
-              }
-            } catch (e) {
-              console.log(`Error parsing ${key}:`, e);
-            }
-          }
-        }
-        
-        updateCampaignStats();
-        prepareBannerQueue();
+        updateStats();
+        createResponseNodes();
+        drawConnections();
         
       } catch (error) {
-        console.error('Error loading campaign data:', error);
+        console.error('Error loading data:', error);
         responses = [];
+        showEmptyState();
       }
     }
 
-    // Update campaign statistics
-    function updateCampaignStats() {
-      const candidateCount = responses.length;
+    // Show empty state when no responses
+    function showEmptyState() {
+      const emptyState = document.getElementById('emptyState');
+      if (responses.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+      }
+    }
+
+    // Update statistics
+    function updateStats() {
+      const nodeCount = responses.length;
+      const connectionCount = responses.length; // Each response connects to question
       
-      // Calculate average campaign quality
       let qualitySum = 0;
       responses.forEach(r => {
         switch (r.quality) {
@@ -796,271 +777,352 @@
         }
       });
       
-      const avgQuality = candidateCount > 0 ? (qualitySum / (candidateCount * 5) * 5).toFixed(1) : '0.0';
+      const avgQuality = nodeCount > 0 ? (qualitySum / (nodeCount * 5) * 5).toFixed(1) : '0.0';
       
-      // Calculate voter turnout (assuming total students = 16)
-      const totalStudents = 16;
-      const voterTurnout = candidateCount > 0 ? Math.round((candidateCount / totalStudents) * 100) : 0;
-      
-      document.getElementById('candidateCount').textContent = candidateCount;
-      document.getElementById('campaignQuality').textContent = avgQuality;
-      document.getElementById('voterTurnout').textContent = voterTurnout;
-      
-      // Update participation rate
-      document.getElementById('participationRate').textContent = `${voterTurnout}% Participation`;
+      document.getElementById('nodeCount').textContent = nodeCount;
+      document.getElementById('connectionCount').textContent = connectionCount;
+      document.getElementById('avgQuality').textContent = avgQuality;
     }
 
-    // Prepare banner queue
-    function prepareBannerQueue() {
-      bannerQueue = [...responses];
-      shuffleArray(bannerQueue);
-    }
-
-    // Shuffle array utility
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    // Create response nodes
+    function createResponseNodes() {
+      const canvas = document.getElementById('mindmapCanvas');
+      const containerRect = canvas.getBoundingClientRect();
+      
+      // Clear existing nodes (except question)
+      const existingNodes = canvas.querySelectorAll('.response-node');
+      existingNodes.forEach(node => node.remove());
+      
+      if (responses.length === 0) {
+        showEmptyState();
+        return;
       }
+      
+      // Hide empty state
+      document.getElementById('emptyState').style.display = 'none';
+      
+      responses.forEach((response, index) => {
+        const node = createResponseNode(response, index, containerRect);
+        canvas.appendChild(node);
+      });
     }
 
-    // Create electoral banner
-    function createElectoralBanner(response, index) {
-      const banner = document.createElement('div');
-      banner.className = 'electoral-banner';
+    // Create individual response node
+    function createResponseNode(response, index, containerRect) {
+      const node = document.createElement('div');
+      node.className = `response-node ${response.quality || 'needs-work'}`;
+      node.dataset.responseId = response.id;
+      node.dataset.index = index;
       
-      const studentName = response.studentName || `Candidate ${index + 1}`;
+      // Position nodes in a circle around the question
+      const angle = (index / responses.length) * 2 * Math.PI;
+      const radius = 200 + (index % 3) * 80; // Varying distances
+      const centerX = containerRect.width / 2;
+      const centerY = containerRect.height / 2;
+      
+      const x = centerX + Math.cos(angle) * radius - 140; // 140 = half node width
+      const y = centerY + Math.sin(angle) * radius - 100; // 100 = half node height
+      
+      node.style.left = Math.max(50, Math.min(x, containerRect.width - 280)) + 'px';
+      node.style.top = Math.max(100, Math.min(y, containerRect.height - 200)) + 'px';
+      
+      // Student info
+      const studentName = response.studentName || response.student_name || `Student ${index + 1}`;
       const initials = studentName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
       const quality = response.quality || 'needs-work';
-      const wordCount = response.wordCount || 0;
+      const wordCount = response.wordCount || response.word_count || 0;
       const score = response.score || 0;
-      const timestamp = response.timestamp || 'Campaign Launch';
+      const timestamp = response.timestamp || new Date(response.submitted_at || Date.now()).toLocaleString();
       
-      // Generate campaign slogan based on quality
-      const slogans = {
-        excellent: ['Change We Can Believe In!', 'Excellence for All!', 'Leading the Future!'],
-        good: ['Progress Together!', 'Your Voice Matters!', 'Building Tomorrow!'],
-        'needs-work': ['Work in Progress!', 'Learning Together!', 'Growing Strong!']
-      };
-      
-      const slogan = slogans[quality][Math.floor(Math.random() * slogans[quality].length)];
-      
-      // Random vertical position
-      const randomY = Math.random() * (window.innerHeight - 300) + 100;
-      banner.style.top = randomY + 'px';
-      
-      // Random animation delay
-      banner.style.animationDelay = Math.random() * 2 + 's';
-      
-      banner.innerHTML = `
-        <div class="banner-card">
-          <!-- Front Face - Electoral Banner -->
-          <div class="banner-face banner-front ${quality}">
-            <div class="student-photo">${initials}</div>
-            <div class="banner-info">
-              <div class="student-name">${studentName}</div>
-              <div class="campaign-slogan">${slogan}</div>
-              <div class="vote-stats">
-                <div class="vote-item">
-                  <i class="fas fa-star"></i>
-                  <span>${score}%</span>
-                </div>
-                <div class="vote-item">
-                  <i class="fas fa-pen"></i>
-                  <span>${wordCount}w</span>
-                </div>
-              </div>
-            </div>
+      node.innerHTML = `
+        <div class="node-header">
+          <div class="student-info">
+            <div class="student-avatar">${initials}</div>
+            <div class="student-name">${studentName}</div>
           </div>
-          
-          <!-- Back Face - Response Content -->
-          <div class="banner-face banner-back">
-            <div class="response-header">
-              <div class="response-title">${studentName}'s Platform</div>
-              <div class="quality-badge ${quality}">
-                ${quality.replace('-', ' ')}
-              </div>
-            </div>
-            
-            <div class="response-content">
-              ${response.answer || 'Campaign platform coming soon...'}
-            </div>
-            
-            <div class="response-meta">
-              <div class="meta-item">
-                <i class="fas fa-clock"></i>
-                <span>${timestamp}</span>
-              </div>
-              <div class="meta-item">
-                <i class="fas fa-chart-line"></i>
-                <span>${score}% Approval</span>
-              </div>
-            </div>
+          <div class="quality-badge ${quality}">
+            ${quality.replace('-', ' ')}
+          </div>
+        </div>
+        
+        <div class="node-content">
+          ${response.answer || 'No response text available'}
+        </div>
+        
+        <div class="node-meta">
+          <div class="meta-item">
+            <i class="fas fa-clock"></i>
+            <span>${timestamp}</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-pen"></i>
+            <span>${wordCount}w</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-star"></i>
+            <span>${score}%</span>
           </div>
         </div>
       `;
       
-      // Add click to flip functionality
-      banner.addEventListener('click', () => {
-        const card = banner.querySelector('.banner-card');
-        card.classList.toggle('flipped');
-        
-        // Add some visual feedback
-        banner.style.animation = 'none';
-        setTimeout(() => {
-          banner.style.animation = '';
-        }, 100);
+      // Add drag functionality
+      setupNodeDrag(node);
+      
+      return node;
+    }
+
+    // Setup node dragging
+    function setupNodeDrag(node) {
+      node.addEventListener('mousedown', (e) => startDragNode(e, node));
+      node.addEventListener('touchstart', (e) => startDragNode(e.touches[0], node), { passive: false });
+      
+      // Click to focus
+      node.addEventListener('click', (e) => {
+        if (!isDragging) {
+          focusNode(node);
+        }
       });
-      
-      return banner;
     }
 
-    // Launch banner
-    function launchBanner() {
-      if (!isPlaying || bannerQueue.length === 0) return;
+    function startDragNode(e, node) {
+      if (e.target.closest('.quality-badge')) return;
       
-      // Get next response from queue
-      const response = bannerQueue.shift();
-      const index = responses.indexOf(response);
+      isDragging = true;
+      draggedNode = node;
+      node.classList.add('dragging');
       
-      // Create and launch banner
-      const banner = createElectoralBanner(response, index);
-      document.getElementById('floatingSpace').appendChild(banner);
+      const rect = node.getBoundingClientRect();
+      const containerRect = document.getElementById('mindmapCanvas').getBoundingClientRect();
       
-      // Remove banner after animation completes
-      setTimeout(() => {
-        if (banner.parentNode) {
-          banner.remove();
-        }
-      }, 25000); // Match animation duration
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
       
-      // Refill queue if empty
-      if (bannerQueue.length === 0) {
-        prepareBannerQueue();
+      document.body.classList.add('grabbing');
+      e.preventDefault();
+    }
+
+    // Global mouse/touch events
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('touchmove', (e) => handleDragMove(e.touches[0]), { passive: false });
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+
+    function handleDragMove(e) {
+      if (!isDragging || !draggedNode) return;
+      
+      const containerRect = document.getElementById('mindmapCanvas').getBoundingClientRect();
+      
+      let x = e.clientX - containerRect.left - dragOffset.x;
+      let y = e.clientY - containerRect.top - dragOffset.y;
+      
+      // Boundary constraints
+      x = Math.max(0, Math.min(x, containerRect.width - draggedNode.offsetWidth));
+      y = Math.max(0, Math.min(y, containerRect.height - draggedNode.offsetHeight));
+      
+      draggedNode.style.left = x + 'px';
+      draggedNode.style.top = y + 'px';
+      
+      // Redraw connections
+      drawConnections();
+    }
+
+    function endDrag() {
+      if (!isDragging) return;
+      
+      isDragging = false;
+      document.body.classList.remove('grabbing');
+      
+      if (draggedNode) {
+        draggedNode.classList.remove('dragging');
+        draggedNode = null;
       }
+      
+      drawConnections();
     }
 
-    // Start campaign
-    function startCampaign() {
-      if (responses.length === 0) return;
+    // Draw connections between question and responses
+    function drawConnections() {
+      const svg = document.getElementById('connectionsSvg');
+      svg.innerHTML = '';
       
-      const campaignLoop = () => {
-        if (isPlaying) {
-          launchBanner();
+      const questionNode = document.getElementById('questionNode');
+      const responseNodes = document.querySelectorAll('.response-node');
+      
+      if (!questionNode || responseNodes.length === 0) return;
+      
+      const questionRect = questionNode.getBoundingClientRect();
+      const containerRect = document.getElementById('mindmapCanvas').getBoundingClientRect();
+      
+      const questionCenterX = questionRect.left - containerRect.left + questionRect.width / 2;
+      const questionCenterY = questionRect.top - containerRect.top + questionRect.height / 2;
+      
+      responseNodes.forEach(node => {
+        const nodeRect = node.getBoundingClientRect();
+        const nodeCenterX = nodeRect.left - containerRect.left + nodeRect.width / 2;
+        const nodeCenterY = nodeRect.top - containerRect.top + nodeRect.height / 2;
+        
+        // Create curved connection line
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        
+        const controlX = (questionCenterX + nodeCenterX) / 2;
+        const controlY = (questionCenterY + nodeCenterY) / 2 - 50; // Curve upward
+        
+        const d = `M ${questionCenterX} ${questionCenterY} Q ${controlX} ${controlY} ${nodeCenterX} ${nodeCenterY}`;
+        
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'connection-line');
+        
+        // Add quality-based styling
+        const quality = node.classList.contains('excellent') ? 'excellent' : 
+                       node.classList.contains('good') ? 'good' : 'needs-work';
+        
+        switch (quality) {
+          case 'excellent':
+            path.setAttribute('stroke', '#10b981');
+            break;
+          case 'good':
+            path.setAttribute('stroke', '#f59e0b');
+            break;
+          case 'needs-work':
+            path.setAttribute('stroke', '#ef4444');
+            break;
         }
         
-        // Schedule next banner
-        setTimeout(campaignLoop, bannerInterval + Math.random() * 2000);
-      };
+        svg.appendChild(path);
+      });
+    }
+
+    // Focus on specific node
+    function focusNode(node) {
+      // Remove previous focus
+      if (focusedNode) {
+        focusedNode.classList.remove('focused');
+      }
       
-      campaignLoop();
+      // Add focus to new node
+      focusedNode = node;
+      node.classList.add('focused');
+      
+      // Scroll into view
+      node.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
     }
 
     // Control functions
-    function pauseCampaign() {
-      isPlaying = false;
-      document.getElementById('pauseBtn').classList.add('active');
-      document.getElementById('playBtn').classList.remove('active');
+    function resetView() {
+      const canvas = document.getElementById('mindmapCanvas');
+      canvas.style.transform = 'scale(1) translate(0, 0)';
+      canvasScale = 1;
+      canvasOffset = { x: 0, y: 0 };
       
-      // Pause all existing animations
-      const banners = document.querySelectorAll('.electoral-banner');
-      banners.forEach(banner => {
-        banner.style.animationPlayState = 'paused';
+      if (focusedNode) {
+        focusedNode.classList.remove('focused');
+        focusedNode = null;
+      }
+      
+      // Reorganize nodes
+      reorganizeNodes();
+    }
+
+    function reorganizeNodes() {
+      const nodes = document.querySelectorAll('.response-node');
+      const containerRect = document.getElementById('mindmapCanvas').getBoundingClientRect();
+      
+      nodes.forEach((node, index) => {
+        const angle = (index / nodes.length) * 2 * Math.PI;
+        const radius = 200 + (index % 3) * 80;
+        const centerX = containerRect.width / 2;
+        const centerY = containerRect.height / 2;
+        
+        const x = centerX + Math.cos(angle) * radius - 140;
+        const y = centerY + Math.sin(angle) * radius - 100;
+        
+        node.style.left = Math.max(50, Math.min(x, containerRect.width - 280)) + 'px';
+        node.style.top = Math.max(100, Math.min(y, containerRect.height - 200)) + 'px';
       });
+      
+      drawConnections();
     }
 
-    function resumeCampaign() {
-      isPlaying = true;
-      document.getElementById('playBtn').classList.add('active');
-      document.getElementById('pauseBtn').classList.remove('active');
-      
-      // Resume all existing animations
-      const banners = document.querySelectorAll('.electoral-banner');
-      banners.forEach(banner => {
-        banner.style.animationPlayState = 'running';
-      });
-    }
-
-    function shuffleCampaign() {
-      // Clear existing banners
-      const floatingSpace = document.getElementById('floatingSpace');
-      floatingSpace.innerHTML = '';
-      
-      // Shuffle responses and restart
-      shuffleArray(responses);
-      prepareBannerQueue();
-      
-      console.log('Campaign shuffled - new candidate order!');
-    }
-
-    function refreshCampaign() {
+    function refreshData() {
       const btn = document.getElementById('refreshBtn');
       const originalContent = btn.innerHTML;
       
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refresh</span>';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
       
       setTimeout(() => {
         loadData();
-        
-        // Clear and restart banners
-        const floatingSpace = document.getElementById('floatingSpace');
-        floatingSpace.innerHTML = '';
-        prepareBannerQueue();
-        
         btn.innerHTML = originalContent;
-        console.log('Campaign data refreshed!');
       }, 1000);
+    }
+
+    function toggleFocusMode() {
+      const btn = document.getElementById('focusBtn');
+      const nodes = document.querySelectorAll('.response-node');
+      
+      if (focusedNode) {
+        // Exit focus mode
+        nodes.forEach(node => {
+          node.style.opacity = '1';
+          node.style.filter = 'none';
+        });
+        focusedNode.classList.remove('focused');
+        focusedNode = null;
+        btn.innerHTML = '<i class="fas fa-search-plus"></i><span>Focus Mode</span>';
+      } else {
+        // Enter focus mode - dim all nodes
+        nodes.forEach(node => {
+          node.style.opacity = '0.3';
+          node.style.filter = 'blur(2px)';
+        });
+        btn.innerHTML = '<i class="fas fa-search-minus"></i><span>Exit Focus</span>';
+      }
     }
 
     // Setup event listeners
     function setupEventListeners() {
-      document.getElementById('pauseBtn').addEventListener('click', pauseCampaign);
-      document.getElementById('playBtn').addEventListener('click', resumeCampaign);
-      document.getElementById('shuffleBtn').addEventListener('click', shuffleCampaign);
-      document.getElementById('refreshBtn').addEventListener('click', refreshCampaign);
+      document.getElementById('resetBtn').addEventListener('click', resetView);
+      document.getElementById('reorganizeBtn').addEventListener('click', reorganizeNodes);
+      document.getElementById('refreshBtn').addEventListener('click', refreshData);
+      document.getElementById('focusBtn').addEventListener('click', toggleFocusMode);
       
-      // Keyboard controls
+      // Window resize handler
+      window.addEventListener('resize', () => {
+        setTimeout(drawConnections, 100);
+      });
+      
+      // Keyboard shortcuts
       document.addEventListener('keydown', (e) => {
         switch (e.key) {
-          case ' ':
-            e.preventDefault();
-            if (isPlaying) {
-              pauseCampaign();
-            } else {
-              resumeCampaign();
-            }
-            break;
-          case 's':
-          case 'S':
-            shuffleCampaign();
-            break;
           case 'r':
           case 'R':
             if (e.ctrlKey || e.metaKey) {
               e.preventDefault();
-              refreshCampaign();
+              refreshData();
             }
             break;
-        }
-      });
-      
-      // Click background to launch random banner
-      document.getElementById('floatingSpace').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget && isPlaying) {
-          launchBanner();
+          case 'Escape':
+            if (focusedNode) {
+              focusedNode.classList.remove('focused');
+              focusedNode = null;
+            }
+            break;
+          case ' ':
+            e.preventDefault();
+            reorganizeNodes();
+            break;
         }
       });
     }
 
-    // Auto-refresh campaign data every 30 seconds
+    // Auto-refresh every 15 seconds
     setInterval(() => {
       const oldCount = responses.length;
       loadData();
       
       if (responses.length > oldCount) {
-        console.log(`${responses.length - oldCount} new candidates joined the campaign!`);
+        console.log(`${responses.length - oldCount} new responses detected`);
       }
-    }, 30000);
+    }, 15000);
   </script>
 </body>
 </html>
