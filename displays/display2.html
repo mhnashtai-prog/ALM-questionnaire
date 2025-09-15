@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Stacked Display with Photos</title>
+  <title>INTUITY - Stacked Display (Supabase)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
@@ -88,10 +91,44 @@
       100% { opacity: 0.9; transform: scale(1.2); }
     }
     
+    /* Connection Status */
+    .connection-status {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      transition: all var(--transition);
+    }
+    
+    .connection-status.connected {
+      background: rgba(16, 185, 129, 0.1);
+      border-bottom-color: var(--success);
+      color: var(--success);
+    }
+    
+    .connection-status.connecting {
+      background: rgba(59, 130, 246, 0.1);
+      border-bottom-color: #3b82f6;
+      color: #3b82f6;
+    }
+    
+    .connection-status.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-bottom-color: var(--error);
+      color: var(--error);
+    }
+    
     /* Header */
     .header {
       position: fixed;
-      top: 0;
+      top: 35px;
       left: 0;
       right: 0;
       z-index: 1000;
@@ -169,7 +206,7 @@
     /* Question Display */
     .question-display {
       position: fixed;
-      top: 80px;
+      top: 115px;
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
@@ -215,9 +252,9 @@
     /* Stacked Cards Container */
     .stacked-container {
       position: relative;
-      margin-top: 240px;
+      margin-top: 275px;
       padding: 2rem;
-      min-height: calc(100vh - 340px);
+      min-height: calc(100vh - 375px);
     }
     
     .cards-stack {
@@ -639,6 +676,17 @@
       margin: 0 auto;
     }
     
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .header {
@@ -652,7 +700,7 @@
       }
       
       .question-display {
-        top: 120px;
+        top: 155px;
         width: 95%;
         padding: 1.5rem;
       }
@@ -662,7 +710,7 @@
       }
       
       .stacked-container {
-        margin-top: 280px;
+        margin-top: 315px;
         padding: 1rem;
       }
       
@@ -701,11 +749,16 @@
   <!-- Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">
+    <i class="fas fa-wifi"></i> Connecting to Supabase...
+  </div>
+  
   <!-- Header -->
   <header class="header">
     <div class="brand-section">
       <div class="brand-name">INTUITY</div>
-      <div class="display-title">Stacked Display with Photos</div>
+      <div class="display-title">Stacked Display (Supabase)</div>
     </div>
     
     <div class="header-controls">
@@ -724,7 +777,7 @@
   <div class="question-display">
     <div class="question-label">Current Question</div>
     <div class="question-text" id="questionText">
-      Loading question...
+      Loading question from Supabase...
     </div>
   </div>
   
@@ -784,7 +837,12 @@
   </div>
 
   <script>
+    // Supabase Configuration - YOUR WORKING CREDENTIALS
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+
     // Global variables
+    let supabase;
     let responses = [];
     let currentQuestion = null;
     let currentIndex = 0;
@@ -793,36 +851,132 @@
     let touchStartX = 0;
     let touchStartY = 0;
     let currentPhotoUrl = null;
+    let isConnected = false;
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       createConstellation();
-      loadData();
+      initSupabase();
       setupEventListeners();
       setupTouchControls();
       setupPhotoHandlers();
     });
 
-    // Create constellation background
-    function createConstellation() {
-      const constellation = document.getElementById('constellation');
-      const starCount = 40;
-      
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (3 + Math.random() * 4) + 's';
-        constellation.appendChild(star);
+    // Initialize Supabase
+    async function initSupabase() {
+      try {
+        updateConnectionStatus('connecting', 'Connecting to Supabase...');
+        
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        await testConnection();
+        
+      } catch (error) {
+        console.error('❌ Error initializing Supabase:', error);
+        updateConnectionStatus('error', 'Supabase connection failed - using offline mode');
+        fallbackToLocalStorage();
       }
     }
 
-    // Load data from localStorage
-    function loadData() {
+    // Test Supabase connection
+    async function testConnection() {
       try {
-        // Load question
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        
+        if (error) throw error;
+        
+        isConnected = true;
+        updateConnectionStatus('connected', 'Connected to Supabase - Real-time data');
+        console.log('✅ Supabase connection successful');
+        
+        // Load data from Supabase
+        await loadDataFromSupabase();
+        
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+        isConnected = false;
+        updateConnectionStatus('error', 'Database connection failed - using offline mode');
+        fallbackToLocalStorage();
+      }
+    }
+
+    // Update connection status UI
+    function updateConnectionStatus(status, message) {
+      const statusElement = document.getElementById('connectionStatus');
+      
+      statusElement.className = `connection-status ${status}`;
+      
+      const icons = {
+        connected: 'fas fa-check-circle',
+        connecting: 'fas fa-spinner fa-spin',
+        error: 'fas fa-exclamation-triangle'
+      };
+      
+      statusElement.innerHTML = `<i class="${icons[status]}"></i> ${message}`;
+    }
+
+    // Load data from Supabase
+    async function loadDataFromSupabase() {
+      try {
+        console.log('📊 Loading data from Supabase...');
+        
+        // Load current published question
+        const { data: questions, error: questionsError } = await supabase
+          .from('questions')
+          .select('*')
+          .eq('is_published', true)
+          .order('published_at', { ascending: false })
+          .limit(1);
+
+        if (questionsError) {
+          console.error('❌ Error loading questions:', questionsError);
+        } else if (questions && questions.length > 0) {
+          currentQuestion = questions[0];
+          console.log('✅ Loaded current question from Supabase:', currentQuestion);
+        }
+
+        // Load student responses
+        const { data: studentResponses, error: responsesError } = await supabase
+          .from('student_responses')
+          .select('*')
+          .order('submitted_at', { ascending: false });
+
+        if (responsesError) {
+          console.error('❌ Error loading responses:', responsesError);
+        } else {
+          // Convert Supabase format to display format
+          responses = (studentResponses || []).map(response => ({
+            id: response.id,
+            questionId: response.question_id,
+            studentName: response.student_name,
+            answer: response.answer,
+            wordCount: response.word_count,
+            quality: response.quality,
+            score: response.score,
+            timestamp: new Date(response.submitted_at).toLocaleString(),
+            submittedAt: response.submitted_at,
+            source: response.source || 'web',
+            photo_url: response.metadata?.photo_url || null
+          }));
+          
+          console.log(`✅ Loaded ${responses.length} responses from Supabase`);
+        }
+        
+        updateDisplay();
+        
+      } catch (error) {
+        console.error('❌ Error loading data from Supabase:', error);
+        fallbackToLocalStorage();
+      }
+    }
+
+    // Fallback to localStorage if Supabase fails
+    function fallbackToLocalStorage() {
+      console.log('📱 Falling back to localStorage...');
+      
+      try {
+        // Load question from localStorage
         const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
         
         for (const key of questionKeys) {
@@ -846,13 +1000,7 @@
           }
         }
         
-        if (currentQuestion) {
-          document.getElementById('questionText').textContent = currentQuestion.text;
-        } else {
-          document.getElementById('questionText').textContent = 'No active question found';
-        }
-        
-        // Load responses
+        // Load responses from localStorage
         const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
         
         for (const key of responseKeys) {
@@ -862,7 +1010,7 @@
               const parsed = JSON.parse(stored);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 responses = parsed;
-                console.log(`Loaded ${responses.length} responses`);
+                console.log(`📱 Loaded ${responses.length} responses from localStorage`);
                 break;
               }
             } catch (e) {
@@ -874,24 +1022,61 @@
         updateDisplay();
         
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('❌ Error loading localStorage data:', error);
         responses = [];
         updateDisplay();
       }
     }
 
+    // Create constellation background
+    function createConstellation() {
+      const constellation = document.getElementById('constellation');
+      const starCount = 40;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (3 + Math.random() * 4) + 's';
+        constellation.appendChild(star);
+      }
+    }
+
     // Update display
     function updateDisplay() {
+      updateQuestionDisplay();
       updateCounter();
       createResponseCards();
       updateNavigationDots();
       updateButtons();
     }
 
+    // Update question display
+    function updateQuestionDisplay() {
+      const questionElement = document.getElementById('questionText');
+      
+      if (currentQuestion) {
+        const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
+        questionElement.textContent = questionText;
+      } else {
+        questionElement.textContent = isConnected ? 
+          'No active question found in database' : 
+          'No question available - check connection';
+      }
+    }
+
     // Update response counter
     function updateCounter() {
       const counter = document.getElementById('responseCounter');
-      counter.textContent = `${responses.length} Response${responses.length !== 1 ? 's' : ''}`;
+      const count = responses.length;
+      counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+      
+      if (isConnected) {
+        counter.style.borderColor = 'var(--success)';
+        counter.style.color = 'var(--success)';
+      }
     }
 
     // Create response cards with photo support
@@ -904,8 +1089,10 @@
             <div class="empty-icon">📚</div>
             <div class="empty-title">No Student Responses Yet</div>
             <div class="empty-text">
-              Student responses will appear here in a beautifully stacked format.
-              Use the controls to navigate through responses one by one.
+              ${isConnected ? 
+                'Student responses will appear here when they submit through the student interface.' :
+                'Connect to Supabase to see real-time responses, or load data manually.'
+              }
             </div>
           </div>
         `;
@@ -928,12 +1115,12 @@
       card.className = `response-card ${response.quality || 'needs-work'}`;
       card.dataset.index = index;
       
-      const studentName = response.studentName || `Student ${index + 1}`;
+      const studentName = response.studentName || response.student_name || `Student ${index + 1}`;
       const initials = studentName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
       const quality = response.quality || 'needs-work';
-      const wordCount = response.wordCount || 0;
+      const wordCount = response.wordCount || response.word_count || 0;
       const score = response.score || 0;
-      const timestamp = response.timestamp || 'Just now';
+      const timestamp = response.timestamp || new Date(response.submittedAt || Date.now()).toLocaleString();
       const photoUrl = response.photo_url || null;
       
       // Create avatar content - photo or initials
@@ -977,6 +1164,7 @@
                   <span>${score}%</span>
                 </div>
                 ${photoUrl ? '<div class="meta-item"><i class="fas fa-camera"></i><span>Photo</span></div>' : ''}
+                ${isConnected ? '<div class="meta-item"><i class="fas fa-database"></i><span>Live</span></div>' : ''}
               </div>
             </div>
           </div>
@@ -1193,16 +1381,28 @@
       updateButtons();
     }
 
-    function refreshData() {
+    // Refresh data from Supabase
+    async function refreshData() {
       const btn = document.getElementById('refreshBtn');
       const originalContent = btn.innerHTML;
       
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
       
-      setTimeout(() => {
-        loadData();
-        btn.innerHTML = originalContent;
-      }, 1000);
+      try {
+        if (isConnected) {
+          await loadDataFromSupabase();
+          console.log('✅ Data refreshed from Supabase');
+        } else {
+          fallbackToLocalStorage();
+          console.log('📱 Data refreshed from localStorage');
+        }
+      } catch (error) {
+        console.error('❌ Error refreshing data:', error);
+      } finally {
+        setTimeout(() => {
+          btn.innerHTML = originalContent;
+        }, 1000);
+      }
     }
 
     // Touch/swipe controls
@@ -1285,13 +1485,15 @@
       window.addEventListener('beforeunload', stopAutoplay);
     }
 
-    // Auto-refresh every 20 seconds
-    setInterval(() => {
-      const oldCount = responses.length;
-      loadData();
-      
-      if (responses.length > oldCount) {
-        console.log(`${responses.length - oldCount} new responses detected`);
+    // Auto-refresh from Supabase every 20 seconds
+    setInterval(async () => {
+      if (isConnected) {
+        const oldCount = responses.length;
+        await loadDataFromSupabase();
+        
+        if (responses.length > oldCount) {
+          console.log(`📊 ${responses.length - oldCount} new responses detected from Supabase`);
+        }
       }
     }, 20000);
 
