@@ -583,7 +583,7 @@
     <p>Please update your Supabase credentials in the code:</p>
     <p>
       1. Replace <code>https://hpdebohqsvjlxeapzkrr.supabase.co</code> with your project URL<br>
-      2. Replace <code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw</code> with your anon key<br>
+      2. Replace <code>code> with your anon key<br>
       3. Set up the database tables using the provided SQL
     </p>
     <button onclick="closeConfigAlert()" style="background: var(--accent-teal); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-top: 1rem;">
@@ -691,8 +691,8 @@
 
   <script>
     // 🔧 SUPABASE CONFIGURATION - REPLACE WITH YOUR CREDENTIALS
-    const SUPABASE_URL = 'https://your-project-ref.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your-anon-key-here';
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
     // Global variables
     let supabase;
@@ -701,7 +701,7 @@
 
     // Check if credentials are configured
     function areCredentialsConfigured() {
-      return SUPABASE_URL !== 'https://your-project-ref.supabase.co' && 
+      return SUPABASE_URL !== 'https://hpdebohqsvjlxeapzkrr.supabase.co' && 
              SUPABASE_ANON_KEY !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your-anon-key-here';
     }
 
