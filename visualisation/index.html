@@ -823,6 +823,90 @@
       const deleteBtn = document.getElementById('deleteBtn');
       deleteBtn.addEventListener('click', deleteQuestion);
       
+      // 🔧 FIXED PRESENTATION MODE SELECTION - PASSES QUESTION DATA TO DISPLAYS
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!currentSelectedQuestion) {
+            alert('Please select a question first.');
+            return;
+          }
+          
+          // Remove active from all buttons
+          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+          
+          // Add active to clicked button
+          this.classList.add('active');
+          
+          const mode = this.dataset.mode;
+          const modeName = this.querySelector('.mode-name').textContent;
+          
+          console.log(`🎨 Launching ${mode} presentation mode for question:`, currentSelectedQuestion);
+          showNotification(`Launching ${modeName} mode...`, 'info');
+          
+          // Visual feedback
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'translateY(-2px)';
+            
+            // 🚀 BUILD URL WITH QUESTION DATA PARAMETERS
+            const questionId = currentSelectedQuestion.id;
+            const questionText = encodeURIComponent(currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'Question');
+            const responseCount = getResponsesForQuestion(currentSelectedQuestion).length;
+            
+            // Construct URL parameters
+            const urlParams = new URLSearchParams({
+              'q': questionId,                    // Question ID
+              't': questionText,                  // Question text
+              'rc': responseCount,                // Response count
+              'source': 'analytics'               // Source identifier
+            });
+            
+            // Navigate to appropriate display file with parameters
+            let displayUrl = '';
+            switch (mode) {
+              case 'mind-map':
+                displayUrl = `../displays/display1.html?${urlParams.toString()}`;
+                break;
+              case 'stacked':
+                displayUrl = `../displays/display2.html?${urlParams.toString()}`;
+                break;
+              case 'floating':
+                displayUrl = `../displays/display3.html?${urlParams.toString()}`;
+                break;
+              case 'cosmos':
+                displayUrl = `../displays/display4.html?${urlParams.toString()}`;
+                break;
+              default:
+                displayUrl = `../displays/display2.html?${urlParams.toString()}`;
+            }
+            
+            console.log(`🔗 Opening display with URL: ${displayUrl}`);
+            
+            // 💾 Also store current question in localStorage as backup
+            localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
+            localStorage.setItem('display_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
+            
+            // Open in new tab/window for better user experience
+            window.open(displayUrl, '_blank');
+            
+          }, 100);
+        });
+      });
+      
+      console.log('✅ INTUITY Analytics - Clean + Functional Ready!');
+    });
+  </script>
+</body>
+</html>
+      initSupabase();
+      
+      // Set up event listeners
+      const questionSelector = document.getElementById('questionSelector');
+      questionSelector.addEventListener('change', handleQuestionChange);
+      
+      const deleteBtn = document.getElementById('deleteBtn');
+      deleteBtn.addEventListener('click', deleteQuestion);
+      
       // Presentation mode selection
       document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.addEventListener('click', function() {
