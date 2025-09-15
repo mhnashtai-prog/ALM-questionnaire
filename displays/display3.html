@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Interactive Reading Wizard</title>
+  <title>INTUITY - Stacked Display</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
@@ -21,36 +21,23 @@
       --text-secondary: rgba(255, 255, 255, 0.7);
       --text-muted: rgba(255, 255, 255, 0.5);
       --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
       --intuity-gold: #ffd54f;
       --intuity-teal: #26a69a;
-      
-      /* Touch-optimized spacing */
-      --touch-target: 44px;
-      --card-min-size: 120px;
-      --card-max-size: 320px;
-      
-      /* Animation timings */
-      --transition-fast: 0.2s;
-      --transition-medium: 0.4s;
-      --transition-slow: 0.6s;
       
       /* Effects */
       --blur: blur(20px);
       --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
-      --shadow-drag: 0 20px 60px rgba(0, 0, 0, 0.6);
+      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
     }
     
     body {
@@ -58,15 +45,13 @@
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      touch-action: pan-x pan-y;
+      touch-action: pan-y;
     }
     
-    /* Enhanced Constellation Background */
+    /* Constellation Background */
     .constellation-bg {
       position: fixed;
       top: 0;
@@ -75,7 +60,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.4;
+      opacity: 0.3;
     }
     
     .star {
@@ -103,18 +88,8 @@
       100% { opacity: 0.9; transform: scale(1.2); }
     }
     
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotateZ(0deg); }
-      50% { transform: translateY(-10px) rotateZ(1deg); }
-    }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    
-    /* Wizard Header */
-    .wizard-header {
+    /* Header */
+    .header {
       position: fixed;
       top: 0;
       left: 0;
@@ -122,398 +97,597 @@
       z-index: 1000;
       background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--card-border);
-      padding: 1rem;
-      text-align: center;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .brand-section {
+      display: flex;
+      flex-direction: column;
     }
     
     .brand-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 700;
       background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.5rem;
-      position: relative;
     }
     
-    .brand-name::after {
-      content: '✨';
-      position: absolute;
-      top: -8px;
-      right: -20px;
-      font-size: 1.2rem;
-      animation: sparkle 3s ease-in-out infinite;
-    }
-    
-    @keyframes sparkle {
-      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
-    }
-    
-    .wizard-subtitle {
+    .display-title {
       color: var(--text-secondary);
       font-size: 0.9rem;
       font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     
-    /* Wizard Progress */
-    .wizard-progress {
-      margin-top: 1rem;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      overflow: hidden;
+    .header-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
     }
     
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--intuity-teal), var(--intuity-gold));
-      width: 0%;
-      transition: width var(--transition-medium) ease;
-      border-radius: 2px;
+    .response-counter {
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid var(--accent-teal);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      color: var(--accent-teal);
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
-    /* Main Wizard Container */
-    .wizard-container {
+    .navigation-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .nav-dot.active {
+      background: var(--accent-teal);
+      transform: scale(1.5);
+      box-shadow: 0 0 10px var(--accent-teal);
+    }
+    
+    /* Question Display */
+    .question-display {
       position: fixed;
-      top: 120px;
-      left: 0;
-      right: 0;
-      bottom: 80px;
-      overflow: hidden;
-      z-index: 10;
-    }
-    
-    /* Floating Cards Container */
-    .cards-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      padding: 1rem;
-    }
-    
-    /* Enhanced Floating Cards */
-    .floating-card {
-      position: absolute;
-      min-width: var(--card-min-size);
-      max-width: var(--card-max-size);
-      width: 200px;
-      height: 120px;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
       background: var(--card-bg);
       backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1rem;
-      cursor: grab;
-      transition: all var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow);
+      border: 2px solid var(--accent-teal);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-active);
+      text-align: center;
       z-index: 100;
-      animation: float 6s ease-in-out infinite;
-      touch-action: none;
-      overflow: hidden;
+      margin-bottom: 2rem;
     }
     
-    .floating-card:active {
-      cursor: grabbing;
-    }
-    
-    .floating-card.dragging {
-      transform: scale(1.1) rotate(5deg);
-      box-shadow: var(--shadow-drag);
-      z-index: 1000;
-      animation: none;
-      transition: none;
-    }
-    
-    .floating-card.completed {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: var(--success);
-      animation: pulse 2s ease-in-out infinite;
-    }
-    
-    .floating-card::before {
+    .question-display::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
+      height: 4px;
       background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform var(--transition-medium) ease;
+      border-radius: 20px 20px 0 0;
     }
     
-    .floating-card:hover::before,
-    .floating-card.active::before {
-      transform: scaleX(1);
+    .question-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
     }
     
-    /* Card Content */
-    .card-number {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: var(--accent-teal);
-      color: var(--bg-primary);
-      width: 24px;
-      height: 24px;
+    .question-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    
+    /* Stacked Cards Container */
+    .stacked-container {
+      position: relative;
+      margin-top: 240px;
+      padding: 2rem;
+      min-height: calc(100vh - 340px);
+    }
+    
+    .cards-stack {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+    
+    /* Individual Response Cards */
+    .response-card {
+      position: relative;
+      background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      border: 2px solid var(--card-border);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+      transform-style: preserve-3d;
+      opacity: 0.7;
+      transform: scale(0.95) translateY(20px);
+    }
+    
+    .response-card.current {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      z-index: 10;
+      box-shadow: var(--shadow-active);
+      border-color: var(--accent-teal);
+    }
+    
+    .response-card.next {
+      opacity: 0.5;
+      transform: scale(0.9) translateY(40px);
+      z-index: 5;
+    }
+    
+    .response-card.prev {
+      opacity: 0.3;
+      transform: scale(0.85) translateY(-20px) rotateX(5deg);
+      z-index: 3;
+    }
+    
+    .response-card.hidden {
+      opacity: 0;
+      transform: scale(0.8) translateY(60px);
+      pointer-events: none;
+    }
+    
+    .response-card.excellent {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    .response-card.excellent.current {
+      border-color: var(--success);
+      box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+    }
+    
+    .response-card.good {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+    
+    .response-card.good.current {
+      border-color: var(--warning);
+      box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);
+    }
+    
+    .response-card.needs-work {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    
+    .response-card.needs-work.current {
+      border-color: var(--error);
+      box-shadow: 0 20px 60px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Card Header */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .student-avatar {
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--bg-primary);
       font-weight: 700;
-      font-size: 0.75rem;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow);
     }
     
-    .card-title {
-      font-size: 0.9rem;
+    .student-details {
+      flex: 1;
+    }
+    
+    .student-name {
+      font-size: 1.3rem;
       font-weight: 600;
       color: var(--text-primary);
-      line-height: 1.3;
-      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
     
-    .card-progress {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      right: 8px;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 1px;
-      overflow: hidden;
+    .student-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
     }
     
-    .card-progress-fill {
-      height: 100%;
-      background: var(--success);
-      width: 0%;
-      transition: width var(--transition-medium) ease;
-      border-radius: 1px;
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
     
-    /* Resize Handle */
-    .resize-handle {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 16px;
-      height: 16px;
-      background: var(--accent-gold);
-      border-radius: 50% 0;
-      cursor: se-resize;
+    .quality-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      align-self: flex-start;
+    }
+    
+    .quality-badge.excellent {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+    
+    .quality-badge.good {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+    
+    .quality-badge.needs-work {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+    
+    /* Card Content */
+    .card-content {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      min-height: 100px;
+    }
+    
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    .response-time {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .response-score {
+      font-weight: 600;
+      color: var(--accent-teal);
+      font-size: 1rem;
+    }
+    
+    /* Touch/Swipe Indicators */
+    .swipe-indicator {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid var(--accent-teal);
+      border-radius: 25px;
+      padding: 0.75rem 1.5rem;
+      color: var(--accent-teal);
+      font-size: 0.9rem;
+      z-index: 100;
       opacity: 0;
-      transition: opacity var(--transition-fast) ease;
+      animation: fadeInOut 6s ease-in-out infinite;
     }
     
-    .floating-card:hover .resize-handle {
-      opacity: 0.7;
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0; }
+      20%, 80% { opacity: 1; }
     }
     
-    .resize-handle:hover {
-      opacity: 1;
+    .swipe-arrows {
+      display: flex;
+      gap: 0.5rem;
     }
     
-    /* Bottom Navigation */
-    .wizard-nav {
+    .swipe-arrow {
+      font-size: 1rem;
+      animation: bounce 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes bounce {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(5px); }
+    }
+    
+    /* Footer Controls */
+    .footer-controls {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       background: rgba(26, 35, 50, 0.95);
       backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
       border-top: 1px solid var(--card-border);
-      padding: 1rem;
+      padding: 1rem 2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
       z-index: 1000;
     }
     
-    .nav-btn {
+    .control-btn {
       background: var(--card-bg);
-      backdrop-filter: var(--blur);
       border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
       color: var(--text-primary);
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: all var(--transition-fast) ease;
-      text-decoration: none;
+      transition: var(--transition);
       display: flex;
       align-items: center;
-      gap: 8px;
-      min-height: var(--touch-target);
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      touch-action: manipulation;
     }
     
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
       border-color: var(--accent-teal);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     
-    .nav-btn:active {
-      transform: translateY(0);
-    }
-    
-    .nav-btn.primary {
+    .control-btn.primary {
       background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
       border: none;
       color: var(--bg-primary);
     }
     
-    .nav-btn.primary:hover {
+    .control-btn.primary:hover {
       background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      transform: translateY(-2px) scale(1.05);
     }
     
-    .wizard-info {
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Empty State */
+    .empty-state {
       text-align: center;
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-    }
-    
-    /* Gesture Indicators */
-    .gesture-hint {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      padding: 4rem 2rem;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      text-align: center;
-      pointer-events: none;
-      opacity: 0;
-      animation: fadeInOut 3s ease-in-out infinite;
     }
     
-    @keyframes fadeInOut {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 0.7; }
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.5;
     }
     
-    /* Mobile Optimizations */
+    .empty-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+    
+    .empty-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .floating-card {
-        width: 180px;
-        height: 100px;
-        padding: 0.75rem;
+      .header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 1rem;
       }
       
       .brand-name {
         font-size: 1.5rem;
       }
       
-      .nav-btn {
-        padding: 8px 16px;
+      .question-display {
+        top: 120px;
+        width: 95%;
+        padding: 1.5rem;
+      }
+      
+      .question-text {
+        font-size: 1.1rem;
+      }
+      
+      .stacked-container {
+        margin-top: 280px;
+        padding: 1rem;
+      }
+      
+      .response-card {
+        padding: 1.5rem;
+      }
+      
+      .student-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+      }
+      
+      .student-name {
+        font-size: 1.1rem;
+      }
+      
+      .card-content {
+        font-size: 1rem;
+      }
+      
+      .footer-controls {
+        padding: 0.75rem 1rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      
+      .control-btn {
+        padding: 0.6rem 1rem;
         font-size: 0.8rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .wizard-header {
-        padding: 0.75rem;
-      }
-      
-      .wizard-container {
-        top: 100px;
-        bottom: 70px;
-      }
-      
-      .floating-card {
-        width: 160px;
-        height: 90px;
-        padding: 0.5rem;
-      }
-      
-      .card-title {
-        font-size: 0.8rem;
-      }
-      
-      .nav-btn {
-        padding: 6px 12px;
-        font-size: 0.75rem;
-      }
-    }
-    
-    /* High DPI displays */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .star {
-        width: 1px;
-        height: 1px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Enhanced Constellation Background -->
+  <!-- Constellation Background -->
   <div class="constellation-bg" id="constellation"></div>
   
-  <!-- Wizard Header -->
-  <header class="wizard-header">
-    <div class="brand-name">INTUITY</div>
-    <div class="wizard-subtitle">Interactive Reading Wizard</div>
-    <div class="wizard-progress">
-      <div class="progress-bar" id="progressBar"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="brand-section">
+      <div class="brand-name">INTUITY</div>
+      <div class="display-title">Stacked Display</div>
+    </div>
+    
+    <div class="header-controls">
+      <div class="response-counter">
+        <i class="fas fa-layer-group"></i>
+        <span id="responseCounter">0 Responses</span>
+      </div>
+      
+      <div class="navigation-dots" id="navigationDots">
+        <!-- Dots will be generated dynamically -->
+      </div>
     </div>
   </header>
   
-  <!-- Main Wizard Container -->
-  <div class="wizard-container">
-    <div class="cards-container" id="cardsContainer">
-      <div class="gesture-hint" id="gestureHint">
-        <i class="fas fa-hand-paper"></i><br>
-        Drag, swipe & resize cards
-      </div>
+  <!-- Question Display -->
+  <div class="question-display">
+    <div class="question-label">Current Question</div>
+    <div class="question-text" id="questionText">
+      Loading question...
     </div>
   </div>
   
-  <!-- Bottom Navigation -->
-  <nav class="wizard-nav">
-    <a href="#" class="nav-btn" id="resetBtn">
-      <i class="fas fa-refresh"></i> Reset
-    </a>
-    <div class="wizard-info">
-      <div id="completedCount">0 / 10 Complete</div>
+  <!-- Stacked Cards Container -->
+  <div class="stacked-container">
+    <div class="cards-stack" id="cardsStack">
+      <!-- Response cards will be generated here -->
     </div>
-    <a href="#" class="nav-btn primary" id="nextBtn">
-      Next <i class="fas fa-arrow-right"></i>
-    </a>
-  </nav>
+  </div>
+  
+  <!-- Swipe Indicator -->
+  <div class="swipe-indicator">
+    <span>Swipe or click to navigate</span>
+    <div class="swipe-arrows">
+      <span class="swipe-arrow">←</span>
+      <span class="swipe-arrow">→</span>
+    </div>
+  </div>
+  
+  <!-- Footer Controls -->
+  <div class="footer-controls">
+    <button class="control-btn" id="prevBtn" disabled>
+      <i class="fas fa-chevron-left"></i>
+      <span>Previous</span>
+    </button>
+    
+    <button class="control-btn" id="autoplayBtn">
+      <i class="fas fa-play"></i>
+      <span>Auto Play</span>
+    </button>
+    
+    <button class="control-btn primary" id="refreshBtn">
+      <i class="fas fa-sync"></i>
+      <span>Refresh</span>
+    </button>
+    
+    <button class="control-btn" id="shuffleBtn">
+      <i class="fas fa-random"></i>
+      <span>Shuffle</span>
+    </button>
+    
+    <button class="control-btn" id="nextBtn" disabled>
+      <i class="fas fa-chevron-right"></i>
+      <span>Next</span>
+    </button>
+  </div>
 
   <script>
-    const testData = [
-      { id: 1, title: "The Digital Green Revolution", progress: 0 },
-      { id: 2, title: "The Digital Green Revolution", progress: 30 },
-      { id: 3, title: "The Memory Palace", progress: 0 },
-      { id: 4, title: "There's No Stopping Her!", progress: 75 },
-      { id: 5, title: "The Red Planet Challenge", progress: 100 },
-      { id: 6, title: "Saving Languages in the Digital Age", progress: 50 },
-      { id: 7, title: "See and Be Seen", progress: 0 },
-      { id: 8, title: "Specialist Music Schools", progress: 100 },
-      { id: 9, title: "A Stitch in Time", progress: 25 },
-      { id: 10, title: "The Future of Work: Beyond the Office", progress: 0 }
-    ];
+    // Global variables
+    let responses = [];
+    let currentQuestion = null;
+    let currentIndex = 0;
+    let isAutoplay = false;
+    let autoplayInterval = null;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
-    let draggedCard = null;
-    let dragOffset = { x: 0, y: 0 };
-    let resizingCard = null;
-    let lastTouchTime = 0;
-    let completedTests = 0;
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createConstellation();
+      loadData();
+      setupEventListeners();
+      setupTouchControls();
+    });
 
-    // Enhanced constellation
+    // Create constellation background
     function createConstellation() {
       const constellation = document.getElementById('constellation');
-      const starCount = 50;
+      const starCount = 40;
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -521,299 +695,390 @@
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
         star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (2 + Math.random() * 4) + 's';
+        star.style.animationDuration = (3 + Math.random() * 4) + 's';
         constellation.appendChild(star);
       }
     }
 
-    // Create floating cards
-    function createFloatingCards() {
-      const container = document.getElementById('cardsContainer');
-      const containerRect = container.getBoundingClientRect();
-      
-      testData.forEach((test, index) => {
-        const card = document.createElement('div');
-        card.className = `floating-card ${test.progress === 100 ? 'completed' : ''}`;
-        card.id = `card-${test.id}`;
-        card.style.animationDelay = (index * 0.2) + 's';
+    // Load data from localStorage
+    function loadData() {
+      try {
+        // Load question
+        const questionKeys = ['current_question', 'alm_questions', 'intuity_questions'];
         
-        // Random initial positions (avoiding edges)
-        const margin = 50;
-        const x = margin + Math.random() * (containerRect.width - 250 - margin);
-        const y = margin + Math.random() * (containerRect.height - 150 - margin);
-        
-        card.style.left = x + 'px';
-        card.style.top = y + 'px';
-        
-        card.innerHTML = `
-          <div class="card-number">${test.id}</div>
-          <div class="card-title">${test.title}</div>
-          <div class="card-progress">
-            <div class="card-progress-fill" style="width: ${test.progress}%"></div>
-          </div>
-          <div class="resize-handle"></div>
-        `;
-        
-        setupCardInteractions(card, test);
-        container.appendChild(card);
-        
-        if (test.progress === 100) completedTests++;
-      });
-      
-      updateProgress();
-      
-      // Hide gesture hint after cards are loaded
-      setTimeout(() => {
-        document.getElementById('gestureHint').style.display = 'none';
-      }, 4000);
-    }
-
-    // Setup card interactions
-    function setupCardInteractions(card, testData) {
-      const resizeHandle = card.querySelector('.resize-handle');
-      
-      // Mouse events
-      card.addEventListener('mousedown', (e) => startDrag(e, card));
-      resizeHandle.addEventListener('mousedown', (e) => startResize(e, card));
-      
-      // Touch events
-      card.addEventListener('touchstart', (e) => handleTouchStart(e, card), { passive: false });
-      card.addEventListener('touchmove', (e) => handleTouchMove(e), { passive: false });
-      card.addEventListener('touchend', (e) => handleTouchEnd(e), { passive: false });
-      
-      // Double tap to toggle completion
-      card.addEventListener('click', (e) => {
-        const currentTime = new Date().getTime();
-        const tapLength = currentTime - lastTouchTime;
-        
-        if (tapLength < 500 && tapLength > 0) {
-          toggleCompletion(card, testData);
+        for (const key of questionKeys) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (key === 'current_question' && parsed.text) {
+                currentQuestion = parsed;
+                break;
+              } else if (Array.isArray(parsed) && parsed.length > 0) {
+                const latestQuestion = parsed[parsed.length - 1];
+                if (latestQuestion && latestQuestion.text) {
+                  currentQuestion = latestQuestion;
+                  break;
+                }
+              }
+            } catch (e) {
+              console.log(`Error parsing ${key}:`, e);
+            }
+          }
         }
         
-        lastTouchTime = currentTime;
-      });
+        if (currentQuestion) {
+          document.getElementById('questionText').textContent = currentQuestion.text;
+        } else {
+          document.getElementById('questionText').textContent = 'No active question found';
+        }
+        
+        // Load responses
+        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
+        
+        for (const key of responseKeys) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                responses = parsed;
+                console.log(`Loaded ${responses.length} responses`);
+                break;
+              }
+            } catch (e) {
+              console.log(`Error parsing ${key}:`, e);
+            }
+          }
+        }
+        
+        updateDisplay();
+        
+      } catch (error) {
+        console.error('Error loading data:', error);
+        responses = [];
+        updateDisplay();
+      }
     }
 
-    // Drag functionality
-    function startDrag(e, card) {
-      if (e.target.classList.contains('resize-handle')) return;
-      
-      draggedCard = card;
-      card.classList.add('dragging');
-      
-      const rect = card.getBoundingClientRect();
-      dragOffset.x = e.clientX - rect.left;
-      dragOffset.y = e.clientY - rect.top;
-      
-      e.preventDefault();
+    // Update display
+    function updateDisplay() {
+      updateCounter();
+      createResponseCards();
+      updateNavigationDots();
+      updateButtons();
     }
 
-    function handleTouchStart(e, card) {
-      if (e.target.classList.contains('resize-handle')) {
-        startResize(e.touches[0], card);
+    // Update response counter
+    function updateCounter() {
+      const counter = document.getElementById('responseCounter');
+      counter.textContent = `${responses.length} Response${responses.length !== 1 ? 's' : ''}`;
+    }
+
+    // Create response cards
+    function createResponseCards() {
+      const stack = document.getElementById('cardsStack');
+      
+      if (responses.length === 0) {
+        stack.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <div class="empty-title">No Student Responses Yet</div>
+            <div class="empty-text">
+              Student responses will appear here in a beautifully stacked format.
+              Use the controls to navigate through responses one by one.
+            </div>
+          </div>
+        `;
         return;
       }
       
-      startDrag(e.touches[0], card);
-    }
-
-    function handleTouchMove(e) {
-      e.preventDefault();
+      stack.innerHTML = '';
       
-      if (draggedCard) {
-        const touch = e.touches[0];
-        const container = document.getElementById('cardsContainer');
-        const containerRect = container.getBoundingClientRect();
-        
-        let x = touch.clientX - containerRect.left - dragOffset.x;
-        let y = touch.clientY - containerRect.top - dragOffset.y;
-        
-        // Boundary constraints
-        x = Math.max(0, Math.min(x, containerRect.width - draggedCard.offsetWidth));
-        y = Math.max(0, Math.min(y, containerRect.height - draggedCard.offsetHeight));
-        
-        draggedCard.style.left = x + 'px';
-        draggedCard.style.top = y + 'px';
-      }
-      
-      if (resizingCard) {
-        const touch = e.touches[0];
-        const container = document.getElementById('cardsContainer');
-        const containerRect = container.getBoundingClientRect();
-        const cardRect = resizingCard.getBoundingClientRect();
-        
-        const newWidth = Math.max(120, Math.min(320, touch.clientX - cardRect.left));
-        const newHeight = Math.max(80, Math.min(200, touch.clientY - cardRect.top));
-        
-        resizingCard.style.width = newWidth + 'px';
-        resizingCard.style.height = newHeight + 'px';
-      }
-    }
-
-    function handleTouchEnd(e) {
-      if (draggedCard) {
-        draggedCard.classList.remove('dragging');
-        draggedCard = null;
-      }
-      
-      if (resizingCard) {
-        resizingCard = null;
-      }
-    }
-
-    // Mouse drag events
-    document.addEventListener('mousemove', (e) => {
-      if (draggedCard) {
-        const container = document.getElementById('cardsContainer');
-        const containerRect = container.getBoundingClientRect();
-        
-        let x = e.clientX - containerRect.left - dragOffset.x;
-        let y = e.clientY - containerRect.top - dragOffset.y;
-        
-        x = Math.max(0, Math.min(x, containerRect.width - draggedCard.offsetWidth));
-        y = Math.max(0, Math.min(y, containerRect.height - draggedCard.offsetHeight));
-        
-        draggedCard.style.left = x + 'px';
-        draggedCard.style.top = y + 'px';
-      }
-      
-      if (resizingCard) {
-        const cardRect = resizingCard.getBoundingClientRect();
-        const newWidth = Math.max(120, Math.min(320, e.clientX - cardRect.left));
-        const newHeight = Math.max(80, Math.min(200, e.clientY - cardRect.top));
-        
-        resizingCard.style.width = newWidth + 'px';
-        resizingCard.style.height = newHeight + 'px';
-      }
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (draggedCard) {
-        draggedCard.classList.remove('dragging');
-        draggedCard = null;
-      }
-      
-      if (resizingCard) {
-        resizingCard = null;
-      }
-    });
-
-    // Resize functionality
-    function startResize(e, card) {
-      resizingCard = card;
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    // Toggle completion
-    function toggleCompletion(card, testData) {
-      const isCompleted = card.classList.contains('completed');
-      
-      if (isCompleted) {
-        card.classList.remove('completed');
-        testData.progress = 0;
-        completedTests--;
-      } else {
-        card.classList.add('completed');
-        testData.progress = 100;
-        completedTests++;
-      }
-      
-      const progressFill = card.querySelector('.card-progress-fill');
-      progressFill.style.width = testData.progress + '%';
-      
-      updateProgress();
-    }
-
-    // Update overall progress
-    function updateProgress() {
-      const progressBar = document.getElementById('progressBar');
-      const completedCount = document.getElementById('completedCount');
-      
-      const percentage = (completedTests / testData.length) * 100;
-      progressBar.style.width = percentage + '%';
-      completedCount.textContent = `${completedTests} / ${testData.length} Complete`;
-    }
-
-    // Reset functionality
-    document.getElementById('resetBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      const cards = document.querySelectorAll('.floating-card');
-      cards.forEach((card, index) => {
-        // Reset positions
-        const margin = 50;
-        const container = document.getElementById('cardsContainer');
-        const containerRect = container.getBoundingClientRect();
-        
-        const x = margin + Math.random() * (containerRect.width - 250 - margin);
-        const y = margin + Math.random() * (containerRect.height - 150 - margin);
-        
-        card.style.left = x + 'px';
-        card.style.top = y + 'px';
-        card.style.width = '200px';
-        card.style.height = '120px';
-        
-        // Reset completion
-        card.classList.remove('completed');
-        const progressFill = card.querySelector('.card-progress-fill');
-        progressFill.style.width = '0%';
-        
-        testData[index].progress = 0;
+      responses.forEach((response, index) => {
+        const card = createResponseCard(response, index);
+        stack.appendChild(card);
       });
       
-      completedTests = 0;
-      updateProgress();
-    });
+      updateCardPositions();
+    }
 
-    // Next button functionality
-    document.getElementById('nextBtn').addEventListener('click', (e) => {
-      e.preventDefault();
+    // Create individual response card
+    function createResponseCard(response, index) {
+      const card = document.createElement('div');
+      card.className = `response-card ${response.quality || 'needs-work'}`;
+      card.dataset.index = index;
       
-      if (completedTests === testData.length) {
-        alert('🎉 Congratulations! All tests completed!');
-      } else {
-        alert(`Complete ${testData.length - completedTests} more tests to continue.`);
+      const studentName = response.studentName || `Student ${index + 1}`;
+      const initials = studentName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      const quality = response.quality || 'needs-work';
+      const wordCount = response.wordCount || 0;
+      const score = response.score || 0;
+      const timestamp = response.timestamp || 'Just now';
+      
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="student-info">
+            <div class="student-avatar">${initials}</div>
+            <div class="student-details">
+              <div class="student-name">${studentName}</div>
+              <div class="student-meta">
+                <div class="meta-item">
+                  <i class="fas fa-clock"></i>
+                  <span>${timestamp}</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-pen"></i>
+                  <span>${wordCount} words</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-star"></i>
+                  <span>${score}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quality-badge ${quality}">
+            ${quality.replace('-', ' ')}
+          </div>
+        </div>
+        
+        <div class="card-content">
+          ${response.answer || 'No response text available'}
+        </div>
+        
+        <div class="card-footer">
+          <div class="response-time">
+            <i class="fas fa-user"></i>
+            <span>${studentName}</span>
+          </div>
+          <div class="response-score">${score}%</div>
+        </div>
+      `;
+      
+      // Add click event
+      card.addEventListener('click', () => {
+        if (index !== currentIndex) {
+          currentIndex = index;
+          updateCardPositions();
+          updateButtons();
+          updateNavigationDots();
+        }
+      });
+      
+      return card;
+    }
+
+    // Update card positions based on current index
+    function updateCardPositions() {
+      const cards = document.querySelectorAll('.response-card');
+      
+      cards.forEach((card, index) => {
+        card.classList.remove('current', 'next', 'prev', 'hidden');
+        
+        if (index === currentIndex) {
+          card.classList.add('current');
+        } else if (index === currentIndex + 1) {
+          card.classList.add('next');
+        } else if (index === currentIndex - 1) {
+          card.classList.add('prev');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Update navigation dots
+    function updateNavigationDots() {
+      const dotsContainer = document.getElementById('navigationDots');
+      dotsContainer.innerHTML = '';
+      
+      responses.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = `nav-dot ${index === currentIndex ? 'active' : ''}`;
+        dot.addEventListener('click', () => {
+          currentIndex = index;
+          updateCardPositions();
+          updateButtons();
+          updateNavigationDots();
+        });
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    // Update button states
+    function updateButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === responses.length - 1;
+    }
+
+    // Navigation functions
+    function goToPrevious() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCardPositions();
+        updateButtons();
+        updateNavigationDots();
       }
-    });
+    }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
-      createFloatingCards();
+    function goToNext() {
+      if (currentIndex < responses.length - 1) {
+        currentIndex++;
+        updateCardPositions();
+        updateButtons();
+        updateNavigationDots();
+      }
+    }
+
+    function toggleAutoplay() {
+      const btn = document.getElementById('autoplayBtn');
       
-      // Add some initial animations
-      setTimeout(() => {
-        const cards = document.querySelectorAll('.floating-card');
-        cards.forEach((card, index) => {
-          setTimeout(() => {
-            card.style.transform = 'scale(1)';
-            card.style.opacity = '1';
-          }, index * 100);
-        });
-      }, 500);
-    });
+      isAutoplay = !isAutoplay;
+      
+      if (isAutoplay) {
+        btn.innerHTML = '<i class="fas fa-pause"></i><span>Pause</span>';
+        btn.style.borderColor = 'var(--warning)';
+        startAutoplay();
+      } else {
+        btn.innerHTML = '<i class="fas fa-play"></i><span>Auto Play</span>';
+        btn.style.borderColor = 'var(--card-border)';
+        stopAutoplay();
+      }
+    }
 
-    // Handle orientation changes
-    window.addEventListener('orientationchange', () => {
+    function startAutoplay() {
+      autoplayInterval = setInterval(() => {
+        if (currentIndex < responses.length - 1) {
+          goToNext();
+        } else {
+          currentIndex = 0;
+          updateCardPositions();
+          updateButtons();
+          updateNavigationDots();
+        }
+      }, 3000);
+    }
+
+    function stopAutoplay() {
+      if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
+      }
+    }
+
+    function shuffleResponses() {
+      // Fisher-Yates shuffle
+      for (let i = responses.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [responses[i], responses[j]] = [responses[j], responses[i]];
+      }
+      
+      currentIndex = 0;
+      createResponseCards();
+      updateNavigationDots();
+      updateButtons();
+    }
+
+    function refreshData() {
+      const btn = document.getElementById('refreshBtn');
+      const originalContent = btn.innerHTML;
+      
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Refreshing...</span>';
+      
       setTimeout(() => {
-        // Recalculate vertical positions if needed
-        const cards = document.querySelectorAll('.floating-card');
-        cards.forEach(card => {
-          const container = document.getElementById('cardsContainer');
-          const containerRect = container.getBoundingClientRect();
-          const cardRect = card.getBoundingClientRect();
-          
-          // Only ensure cards stay within vertical bounds (Y-axis only)
-          let y = parseInt(card.style.top);
-          
-          y = Math.max(0, Math.min(y, containerRect.height - cardRect.height));
-          
-          card.style.top = y + 'px';
-          // X position remains unchanged
-        });
-      }, 300);
-    });
+        loadData();
+        btn.innerHTML = originalContent;
+      }, 1000);
+    }
+
+    // Touch/swipe controls
+    function setupTouchControls() {
+      const container = document.getElementById('cardsStack');
+      
+      container.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      container.addEventListener('touchend', (e) => {
+        if (!touchStartX || !touchStartY) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+        
+        // Only handle horizontal swipes
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            // Swipe left - next
+            goToNext();
+          } else {
+            // Swipe right - previous
+            goToPrevious();
+          }
+        }
+        
+        touchStartX = 0;
+        touchStartY = 0;
+      }, { passive: true });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      document.getElementById('prevBtn').addEventListener('click', goToPrevious);
+      document.getElementById('nextBtn').addEventListener('click', goToNext);
+      document.getElementById('autoplayBtn').addEventListener('click', toggleAutoplay);
+      document.getElementById('refreshBtn').addEventListener('click', refreshData);
+      document.getElementById('shuffleBtn').addEventListener('click', shuffleResponses);
+      
+      // Keyboard controls
+      document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            goToPrevious();
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            goToNext();
+            break;
+          case ' ':
+            e.preventDefault();
+            toggleAutoplay();
+            break;
+          case 'r':
+          case 'R':
+            if (e.ctrlKey || e.metaKey) {
+              e.preventDefault();
+              refreshData();
+            }
+            break;
+          case 's':
+          case 'S':
+            shuffleResponses();
+            break;
+        }
+      });
+      
+      // Cleanup autoplay on page unload
+      window.addEventListener('beforeunload', stopAutoplay);
+    }
+
+    // Auto-refresh every 20 seconds
+    setInterval(() => {
+      const oldCount = responses.length;
+      loadData();
+      
+      if (responses.length > oldCount) {
+        console.log(`${responses.length - oldCount} new responses detected`);
+      }
+    }, 20000);
   </script>
 </body>
 </html>
