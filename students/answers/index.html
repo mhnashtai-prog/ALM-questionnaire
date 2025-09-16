@@ -1,376 +1,398 @@
-<!DOCTYPE html>
+.photo-trigger {
+        padding: 12px 20px;
+        font-size: 16px;
+      }<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response (Supabase)</title>
+  <title>INTUITY - Student Response</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    :root {
-      /* INTUITY Brand Colors */
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --accent-gold: #f4a261;
-      --accent-teal: #2dd4bf;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --success: #10b981;
-      --warning: #f59e0b;
-      --error: #ef4444;
-      --intuity-gold: #ffd54f;
-      --intuity-teal: #26a69a;
-      
-      /* Effects */
-      --blur: blur(20px);
-      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
-      overflow-x: hidden;
-      line-height: 1.5;
-      padding-bottom: 120px;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
     }
-    
-    /* Enhanced Constellation Background */
-    .constellation-bg {
-      position: fixed;
+
+    .background {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.3;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
     }
-    
-    .star {
+
+    .curved-overlay {
       position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--accent-gold);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
       border-radius: 50%;
-      animation: twinkle 4s infinite alternate;
+      backdrop-filter: blur(2px);
     }
-    
-    .star:nth-child(even) {
-      animation-delay: 2s;
-      background: var(--accent-teal);
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+      animation: float 8s ease-in-out infinite;
     }
-    
-    .star:nth-child(3n) {
-      animation-delay: 1s;
-      background: var(--accent-gold);
-      opacity: 0.4;
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+      animation: float 10s ease-in-out infinite reverse;
     }
-    
-    @keyframes twinkle {
-      0% { opacity: 0.1; transform: scale(0.8); }
-      100% { opacity: 0.6; transform: scale(1.1); }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+      animation: drift 6s ease-in-out infinite;
     }
-    
-    /* Connection Status Bar */
-    .connection-status {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1001;
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0.5rem;
-      text-align: center;
-      font-size: 0.8rem;
-      transition: all var(--transition);
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
+      opacity: 0.3;
+      animation: pulse 12s ease-in-out infinite;
     }
-    
-    .connection-status.connected {
-      background: rgba(16, 185, 129, 0.1);
-      border-bottom-color: var(--success);
-      color: var(--success);
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); opacity: var(--base-opacity, 0.5); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 1deg)); opacity: calc(var(--base-opacity, 0.5) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); opacity: calc(var(--base-opacity, 0.5) * 0.8); }
     }
-    
-    .connection-status.offline {
-      background: rgba(245, 158, 11, 0.1);
-      border-bottom-color: var(--warning);
-      color: var(--warning);
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity, 0.3); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity, 0.3) * 1.5); transform: scale(1.02); }
     }
-    
-    .connection-status.error {
-      background: rgba(239, 68, 68, 0.1);
-      border-bottom-color: var(--error);
-      color: var(--error);
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotation, 0deg)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotation, 0deg) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotation, 0deg) + 0.8deg)); }
     }
-    
-    /* Header */
-    .simple-header {
-      position: fixed;
-      top: 35px;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: 1.5rem;
-      text-align: center;
-    }
-    
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
+
+    .curve1 { --base-opacity: 0.9; --rotation: 30deg; }
+    .curve2 { --base-opacity: 0.7; --rotation: -20deg; }
+    .curve3 { --base-opacity: 0.5; --rotation: 60deg; }
+    .curve4 { --base-opacity: 0.3; --rotation: -45deg; }
+
+    .container {
       position: relative;
-    }
-    
-    .brand-name::after {
-      content: '✨';
-      position: absolute;
-      top: -8px;
-      right: -20px;
-      font-size: 1.2rem;
-      animation: sparkle 3s ease-in-out infinite;
-    }
-    
-    @keyframes sparkle {
-      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
-    }
-    
-    .simple-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    
-    /* Main Container */
-    .main-container {
-      margin-top: 140px;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 2rem;
       z-index: 10;
-      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
-    
-    /* Question Container */
-    .question-container {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 24px;
-      padding: 2.5rem;
-      box-shadow: var(--shadow-active);
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 2rem;
-    }
-    
-    .question-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
-      border-radius: 24px 24px 0 0;
-    }
-    
-    .question-meta {
+
+    .header {
       text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      margin-bottom: 40px;
     }
-    
-    .question-display {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-align: center;
-      margin-bottom: 1.5rem;
-      line-height: 1.4;
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
-    
-    .question-instructions {
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-bottom: 2rem;
-    }
-    
-    /* Response Form */
-    .response-form {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 24px;
-      padding: 2.5rem;
-      box-shadow: var(--shadow-active);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .response-form::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent-gold), var(--accent-teal));
-      border-radius: 24px 24px 0 0;
-    }
-    
-    .form-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    
-    /* Name Input with Steve Jobs Photo Feature */
-    .name-group {
-      margin-bottom: 2rem;
-    }
-    
-    .input-label {
-      display: block;
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      font-weight: 500;
-      margin-bottom: 0.75rem;
-      text-transform: uppercase;
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
       letter-spacing: 0.5px;
     }
-    
-    .name-input-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    
-    .name-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 2px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem 3rem 1rem 1.25rem;
-      color: var(--text-primary);
-      font-size: 1.1rem;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: var(--transition);
-    }
-    
-    .name-input::placeholder {
-      color: var(--text-muted);
-    }
-    
-    .name-input:focus {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
-      transform: translateY(-1px);
-    }
-    
-    .name-input.valid {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-    }
-    
-    /* Steve Jobs Ultra-Minimal Photo Trigger */
-    .photo-trigger {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
+
+    .main-content {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      opacity: 0.25;
-      transition: all 0.2s ease;
-      font-size: 0.9rem;
-      border-radius: 50%;
-      z-index: 10;
+      padding: 20px 0;
     }
-    
-    .photo-trigger:hover {
-      opacity: 0.7;
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-50%) scale(1.1);
-    }
-    
-    .photo-trigger.has-photo {
-      opacity: 0.8;
-      color: var(--accent-teal);
-    }
-    
-    /* Hidden Photo Preview */
-    .photo-preview-mini {
-      position: absolute;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid var(--accent-teal);
-      opacity: 0;
-      transition: all 0.2s ease;
-      pointer-events: none;
-    }
-    
-    .photo-preview-mini.visible {
-      opacity: 0.8;
-      pointer-events: auto;
-    }
-    
-    .photo-preview-mini img {
+
+    .response-container {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 500px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
-    
-    /* Photo Modal (Jobs Style - Minimal) */
+
+    .question-display {
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 25px;
+      text-align: center;
+      line-height: 1.4;
+      padding: 20px;
+      background: rgba(255, 140, 60, 0.1);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 140, 60, 0.2);
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      border-color: rgba(255, 140, 60, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .textarea-field {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .photo-container {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .photo-trigger {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.8), rgba(255, 100, 40, 0.8));
+      border: 2px solid rgba(255, 140, 60, 0.9);
+      border-radius: 15px;
+      padding: 15px 25px;
+      color: #000;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 140, 60, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .photo-trigger:hover {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 1), rgba(255, 100, 40, 1));
+      border-color: rgba(255, 140, 60, 1);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.5);
+    }
+
+    .photo-trigger.has-photo {
+      background: linear-gradient(45deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8));
+      border-color: rgba(16, 185, 129, 0.9);
+      color: #000;
+    }
+
+    .photo-trigger.has-photo:hover {
+      background: linear-gradient(45deg, rgba(16, 185, 129, 1), rgba(5, 150, 105, 1));
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+    }
+
+    .word-counter {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin: 15px 0;
+    }
+
+    .word-counter.has-words {
+      color: rgba(255, 140, 60, 0.8);
+    }
+
+    .validation-message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .validation-message.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: rgba(16, 185, 129, 0.9);
+      display: block;
+    }
+
+    .validation-message.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: rgba(239, 68, 68, 0.9);
+      display: block;
+    }
+
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      margin: 20px;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 20px;
+    }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 15px;
+    }
+
+    .success-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 16px;
+    }
+
+    .footer {
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .footer-button {
+      padding: 12px 20px;
+      border-radius: 15px;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      font-weight: 500;
+    }
+
+    .footer-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .footer-button.primary {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.8), rgba(255, 100, 40, 0.8));
+      color: #000;
+      font-weight: 600;
+    }
+
+    .footer-button.primary:hover {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 1), rgba(255, 100, 40, 1));
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    .footer-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Photo Modal */
     .photo-modal {
       position: fixed;
       top: 0;
@@ -384,47 +406,46 @@
       justify-content: center;
       backdrop-filter: blur(10px);
     }
-    
+
     .photo-modal.show {
       display: flex;
     }
-    
+
     .photo-modal-content {
       position: relative;
       max-width: 90%;
       max-height: 90%;
     }
-    
+
     .photo-modal img {
       max-width: 100%;
       max-height: 100%;
       border-radius: 12px;
-      box-shadow: var(--shadow-active);
     }
-    
+
     .photo-modal-controls {
       position: absolute;
       top: -50px;
       right: 0;
       display: flex;
-      gap: 0.5rem;
+      gap: 10px;
     }
-    
+
     .photo-modal-btn {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
-      padding: 0.5rem;
+      padding: 8px;
       color: white;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
-    
+
     .photo-modal-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 140, 60, 0.2);
     }
-    
+
     /* Camera Preview */
     .camera-preview {
       position: fixed;
@@ -439,453 +460,133 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .camera-preview.show {
       display: flex;
     }
-    
+
     .camera-preview video {
       max-width: 100%;
       max-height: 70vh;
       border-radius: 12px;
     }
-    
+
     .camera-controls {
-      margin-top: 2rem;
+      margin-top: 20px;
       display: flex;
-      gap: 1rem;
+      gap: 15px;
     }
-    
+
     .camera-btn {
-      background: var(--accent-teal);
+      background: rgba(255, 140, 60, 0.8);
       border: none;
-      border-radius: 50px;
-      padding: 1rem 2rem;
-      color: var(--bg-primary);
+      border-radius: 25px;
+      padding: 15px 25px;
+      color: #000;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
-    
+
     .camera-btn:hover {
-      background: var(--accent-gold);
+      background: rgba(255, 140, 60, 1);
       transform: scale(1.05);
     }
-    
+
     .camera-btn.secondary {
       background: rgba(255, 255, 255, 0.1);
       color: white;
     }
-    
-    /* Answer Input */
-    .answer-group {
-      margin-bottom: 2rem;
+
+    .camera-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
-    
-    .answer-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      color: var(--text-primary);
-      font-size: 1.1rem;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: var(--transition);
-      resize: vertical;
-      min-height: 180px;
-      line-height: 1.6;
-    }
-    
-    .answer-input::placeholder {
-      color: var(--text-muted);
-      font-style: italic;
-    }
-    
-    .answer-input:focus {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
-      transform: translateY(-2px);
-    }
-    
-    .answer-input.valid {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-    }
-    
-    /* Word Counter */
-    .word-counter-container {
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    
-    .word-counter {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-    }
-    
-    .word-counter.has-words {
-      color: var(--success);
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-    }
-    
-    /* Validation Messages */
-    .validation-message {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .validation-message.success {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--success);
-      color: var(--success);
-      display: flex;
-    }
-    
-    .validation-message.warning {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid var(--warning);
-      color: var(--warning);
-      display: flex;
-    }
-    
-    .validation-message.error {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid var(--error);
-      color: var(--error);
-      display: flex;
-    }
-    
-    /* Success State */
-    .success-container {
-      display: none;
-      text-align: center;
-      padding: 3rem 2rem;
-      background: rgba(16, 185, 129, 0.1);
-      border: 2px solid var(--success);
-      border-radius: 24px;
-      margin-top: 2rem;
-    }
-    
-    .success-icon {
-      font-size: 4rem;
-      color: var(--success);
-      margin-bottom: 1.5rem;
-    }
-    
-    .success-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--success);
-      margin-bottom: 1rem;
-    }
-    
-    .success-text {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
-    
-    /* No Question State */
-    .no-question {
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-    
-    .no-question-icon {
-      font-size: 3rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-    }
-    
-    .no-question-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-    }
-    
-    .no-question-text {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      line-height: 1.6;
-      max-width: 500px;
-      margin: 0 auto 2rem;
-    }
-    
-    .demo-mode {
-      background: rgba(45, 212, 191, 0.1);
-      border: 1px solid var(--accent-teal);
-      border-radius: 12px;
-      padding: 1rem;
-      margin-top: 1.5rem;
-    }
-    
-    .demo-text {
-      color: var(--accent-teal);
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-    
-    /* Footer */
-    .simple-footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border-top: 1px solid var(--card-border);
-      padding: 1.25rem;
-      z-index: 1000;
-    }
-    
-    .footer-content {
-      max-width: 700px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    
-    .footer-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 0.9rem 1.5rem;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      backdrop-filter: var(--blur);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      min-width: 100px;
-      justify-content: center;
-    }
-    
-    .footer-btn:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-    }
-    
-    .footer-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border: none;
-      color: var(--bg-primary);
-      font-weight: 700;
-    }
-    
-    .footer-btn.primary:hover:not(:disabled) {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      transform: translateY(-2px) scale(1.05);
-    }
-    
-    .footer-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    .footer-btn i {
-      font-size: 1rem;
-    }
-    
-    /* Loading Animation */
-    .loading {
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
+
     /* Mobile Optimizations */
     @media (max-width: 768px) {
-      .main-container {
-        margin-top: 120px;
-        padding: 1rem;
+      .container {
+        padding: 40px 15px 15px;
       }
       
-      .question-container,
-      .response-form {
-        padding: 2rem;
+      .header h1 {
+        font-size: 28px;
       }
       
-      .brand-name {
-        font-size: 2rem;
+      .response-container {
+        max-width: 100%;
+        padding: 25px;
       }
       
-      .question-display {
-        font-size: 1.3rem;
-        margin-bottom: 1.25rem;
+      .footer {
+        gap: 10px;
       }
       
-      .answer-input {
-        min-height: 150px;
-        padding: 1.25rem;
-        font-size: 1rem;
+      .footer-button {
+        padding: 10px 15px;
+        font-size: 13px;
       }
       
-      .footer-content {
-        gap: 1rem;
-      }
-      
-      .footer-btn {
-        min-width: 80px;
-        padding: 0.75rem 1rem;
-        font-size: 0.8rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .question-container,
-      .response-form {
-        padding: 1.5rem;
-      }
-      
-      .footer-content {
-        flex-wrap: wrap;
-        gap: 0.75rem;
+      .photo-trigger {
+        padding: 12px 20px;
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Constellation Background -->
-  <div class="constellation-bg" id="constellation"></div>
-  
-  <!-- Connection Status -->
-  <div class="connection-status" id="connectionStatus">
-    <i class="fas fa-wifi"></i> Connecting to database...
-  </div>
-  
-  <!-- Header -->
-  <header class="simple-header">
-    <div class="brand-name">INTUITY</div>
-    <div class="simple-subtitle">Student Response (Supabase)</div>
-  </header>
-  
-  <!-- Main Container -->
-  <div class="main-container">
-    
-    <!-- Question Display -->
-    <div class="question-container" id="questionContainer">
-      <div class="question-meta">Question from your teacher</div>
-      <div class="question-display" id="questionDisplay">
-        Loading question...
-      </div>
-      <div class="question-instructions">
-        Please read carefully and provide your response. Express yourself freely!
-      </div>
-    </div>
-    
-    <!-- Response Form -->
-    <div class="response-form" id="responseForm">
-      <div class="form-title">Your Response</div>
-      
-      <!-- Name Input with Steve Jobs Photo Feature -->
-      <div class="name-group">
-        <label class="input-label" for="studentName">Your Name</label>
-        <div class="name-input-container">
-          <input 
-            type="text" 
-            class="name-input" 
-            id="studentName"
-            placeholder="Enter your full name..."
-            maxlength="50"
-          />
-          <div class="photo-trigger" id="photoTrigger">📷</div>
-          <div class="photo-preview-mini" id="photoPreviewMini">
-            <img id="photoPreviewImg" />
-          </div>
-        </div>
-      </div>
-      
-      <!-- Answer Input -->
-      <div class="answer-group">
-        <label class="input-label" for="studentAnswer">Your Answer</label>
-        <textarea 
-          class="answer-input" 
-          id="studentAnswer"
-          placeholder="Type your response here... Every word counts!"
-          rows="6"
-        ></textarea>
-        
-        <!-- Word Counter -->
-        <div class="word-counter-container">
-          <div class="word-counter" id="wordCounter">0 words</div>
-        </div>
-      </div>
-      
-      <!-- Validation Messages -->
-      <div class="validation-message success" id="validationSuccess">
-        <i class="fas fa-check-circle"></i>
-        Perfect! Your response is ready to submit.
-      </div>
-      
-      <div class="validation-message warning" id="validationWarning">
-        <i class="fas fa-info-circle"></i>
-        Please enter your name to submit your response.
-      </div>
-      
-      <div class="validation-message error" id="validationError">
-        <i class="fas fa-times-circle"></i>
-        Please enter your name and write something.
-      </div>
-    </div>
-    
-    <!-- Success State -->
-    <div class="success-container" id="successContainer">
-      <div class="success-icon">✨</div>
-      <div class="success-title">Response Submitted!</div>
-      <div class="success-text">
-        Thank you! Your response has been saved to the database and sent to your teacher.
-      </div>
-    </div>
-    
-    <!-- No Question State -->
-    <div class="no-question" id="noQuestionState" style="display: none;">
-      <div class="no-question-icon">📝</div>
-      <div class="no-question-title">No Active Question</div>
-      <div class="no-question-text">
-        Your teacher hasn't published a question yet, or the link may be expired.<br>
-        Please check with your teacher for the correct link or QR code.
-      </div>
-      
-      <div class="demo-mode">
-        <div class="demo-text">
-          <i class="fas fa-info-circle"></i>
-          Demo Mode: Try typing below to see how the interface works!
-        </div>
-      </div>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
     </div>
   </div>
 
-  <!-- Photo Modal (Steve Jobs Style) -->
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Intuitive Learning<br>By Majid Nashtai</p>
+    </header>
+
+    <main class="main-content">
+      <div class="response-container" id="responseContainer">
+        <div class="question-display" id="questionDisplay">
+          Loading question...
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label" for="studentName">Your Name</label>
+          <input type="text" class="input-field" id="studentName" placeholder="Enter your name..." maxlength="50">
+          <div class="photo-container">
+            <div class="photo-trigger" id="photoTrigger">📸 Add Photo</div>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label" for="studentAnswer">Your Response</label>
+          <textarea class="input-field textarea-field" id="studentAnswer" placeholder="Share your thoughts..." rows="5"></textarea>
+          <div class="word-counter" id="wordCounter">0 words</div>
+        </div>
+        
+        <div class="validation-message" id="validationMessage"></div>
+      </div>
+      
+      <div class="success-container" id="successContainer">
+        <div class="success-icon">✨</div>
+        <div class="success-title">Response Submitted!</div>
+        <div class="success-text">Thank you! Your response has been saved successfully.</div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <button class="footer-button" id="clearBtn">Clear</button>
+      <button class="footer-button" id="editBtn">Edit</button>
+      <button class="footer-button primary" id="submitBtn" disabled>Submit</button>
+    </footer>
+  </div>
+
+  <!-- Photo Modal -->
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-content">
       <div class="photo-modal-controls">
@@ -906,193 +607,56 @@
     </div>
   </div>
 
-  <!-- Hidden file input for upload fallback -->
+  <!-- Hidden file input -->
   <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
-  <!-- Footer -->
-  <div class="simple-footer">
-    <div class="footer-content">
-      <button class="footer-btn" id="clearBtn">
-        <i class="fas fa-eraser"></i>
-        <span>Clear</span>
-      </button>
-      
-      <button class="footer-btn" id="editBtn">
-        <i class="fas fa-edit"></i>
-        <span>Edit</span>
-      </button>
-      
-      <button class="footer-btn primary" id="submitBtn" disabled>
-        <i class="fas fa-paper-plane"></i>
-        <span>Submit</span>
-      </button>
-    </div>
-  </div>
-
   <script>
-    // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
+    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
     // Global variables
     let supabase;
-    let intuityData;
     let currentQuestion = null;
-    let isSubmitted = false;
-    let wordCount = 0;
-    let isConnected = false;
-    let isOnline = navigator.onLine;
-    let currentPhoto = null; // Steve Jobs style - minimal state
+    let currentPhoto = null;
     let cameraStream = null;
+    let wordCount = 0;
+    let isSubmitted = false;
 
     // Initialize Supabase
     function initSupabase() {
       try {
-        if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
-          throw new Error('Please configure your Supabase credentials');
-        }
-
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
-        
-        testConnection();
         return true;
       } catch (error) {
         console.error('❌ Error initializing Supabase:', error);
-        updateConnectionStatus('error', 'Configuration Error - Using offline mode');
         return false;
       }
     }
 
-    // Test Supabase connection
-    async function testConnection() {
+    // Load question
+    async function loadQuestion() {
+      console.log('🔍 Loading question...');
+      
       try {
-        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        // Check URL parameters first
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionId = urlParams.get('q');
+        const questionText = urlParams.get('t');
         
-        if (error) throw error;
-        
-        isConnected = true;
-        updateConnectionStatus('connected', 'Connected to database');
-        console.log('✅ Supabase connection test successful');
-        
-        // Initialize data layer
-        initDataLayer();
-        
-      } catch (error) {
-        console.error('❌ Supabase connection test failed:', error);
-        isConnected = false;
-        updateConnectionStatus('error', 'Database connection failed - Using offline mode');
-        initDataLayer();
-      }
-    }
-
-    // Initialize data layer
-    function initDataLayer() {
-      intuityData = new INTUITYStudentDataLayer();
-      console.log('✅ INTUITY Student Data Layer initialized');
-    }
-
-    // Update connection status UI
-    function updateConnectionStatus(status, message) {
-      const statusElement = document.getElementById('connectionStatus');
-      
-      statusElement.className = `connection-status ${status}`;
-      
-      const icons = {
-        connected: 'fas fa-check-circle',
-        offline: 'fas fa-wifi',
-        error: 'fas fa-exclamation-triangle'
-      };
-      
-      statusElement.innerHTML = `<i class="${icons[status]}"></i> ${message}`;
-    }
-
-    // Monitor online/offline status
-    window.addEventListener('online', () => {
-      isOnline = true;
-      updateConnectionStatus('connected', 'Back online - Reconnecting...');
-      testConnection();
-    });
-
-    window.addEventListener('offline', () => {
-      isOnline = false;
-      updateConnectionStatus('offline', 'Offline - Responses will be saved locally');
-    });
-
-    // Create constellation background
-    function createConstellation() {
-      const constellation = document.getElementById('constellation');
-      const starCount = 40;
-      
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (3 + Math.random() * 4) + 's';
-        constellation.appendChild(star);
-      }
-    }
-
-    // Student Data Access Layer for Supabase
-    class INTUITYStudentDataLayer {
-      constructor() {
-        this.isOnline = navigator.onLine;
-        this.setupOfflineHandling();
-      }
-
-      setupOfflineHandling() {
-        window.addEventListener('online', () => {
-          this.isOnline = true;
-          console.log('🌐 Back online - syncing data...');
-          this.syncOfflineData();
-        });
-
-        window.addEventListener('offline', () => {
-          this.isOnline = false;
-          console.log('📱 Offline mode activated');
-        });
-      }
-
-      async fallbackToLocalStorage(operation, data, key) {
-        console.log(`📱 Using localStorage fallback for ${operation}`);
-        
-        switch (operation) {
-          case 'get':
-            const stored = localStorage.getItem(key);
-            return stored ? JSON.parse(stored) : null;
-          case 'set':
-            localStorage.setItem(key, JSON.stringify(data));
-            return data;
-          default:
-            return null;
+        if (questionText) {
+          currentQuestion = {
+            id: questionId || Date.now(),
+            text: decodeURIComponent(questionText),
+            source: 'url'
+          };
+          displayQuestion();
+          return;
         }
-      }
-
-      async syncOfflineData() {
-        const offlineResponses = localStorage.getItem('offline_responses');
         
-        try {
-          if (offlineResponses) {
-            const responses = JSON.parse(offlineResponses);
-            for (const response of responses) {
-              await this.submitResponse(response);
-            }
-            localStorage.removeItem('offline_responses');
-            console.log('✅ Offline responses synced');
-          }
-        } catch (error) {
-          console.error('❌ Error syncing offline data:', error);
-        }
-      }
-
-      async getCurrentQuestion() {
-        if (!this.isOnline || !isConnected) {
-          return this.fallbackToLocalStorage('get', null, 'current_question');
-        }
-
-        try {
+        // Try to get from Supabase
+        if (supabase) {
           const { data, error } = await supabase
             .from('questions')
             .select('*')
@@ -1100,192 +664,88 @@
             .order('published_at', { ascending: false })
             .limit(1);
 
-          if (error) throw error;
-
-          const currentQuestion = data[0] || null;
-          
-          if (currentQuestion) {
-            // Update localStorage for offline access
-            localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-            console.log('✅ Current question retrieved from Supabase:', currentQuestion);
+          if (!error && data && data[0]) {
+            currentQuestion = data[0];
+            displayQuestion();
+            return;
           }
-          
-          return currentQuestion;
-        } catch (error) {
-          console.error('❌ Error fetching current question:', error);
-          return this.fallbackToLocalStorage('get', null, 'current_question');
         }
+        
+        // Fallback
+        showNoQuestion();
+        
+      } catch (error) {
+        console.error('❌ Error loading question:', error);
+        showNoQuestion();
       }
+    }
 
-      async getQuestionById(questionId) {
-        if (!this.isOnline || !isConnected) {
-          // Try to find in localStorage
-          const storedQuestions = localStorage.getItem('alm_questions');
-          if (storedQuestions) {
-            const questions = JSON.parse(storedQuestions);
-            return questions.find(q => q.id === questionId) || null;
-          }
-          return null;
-        }
-
-        try {
-          const { data, error } = await supabase
-            .from('questions')
-            .select('*')
-            .eq('id', questionId)
-            .single();
-
-          if (error) throw error;
-
-          console.log('✅ Question retrieved by ID:', data);
-          return data;
-        } catch (error) {
-          console.error('❌ Error fetching question by ID:', error);
-          return null;
-        }
+    // Display question
+    function displayQuestion() {
+      const questionDisplay = document.getElementById('questionDisplay');
+      if (currentQuestion && currentQuestion.text) {
+        questionDisplay.textContent = currentQuestion.text;
+      } else {
+        showNoQuestion();
       }
+    }
 
-      async submitResponse(responseData) {
-        if (!this.isOnline || !isConnected) {
-          // Store offline
-          const offlineResponses = JSON.parse(localStorage.getItem('offline_responses') || '[]');
-          const responseWithId = {
-            ...responseData,
-            id: Date.now(),
-            offline_created: new Date().toISOString()
-          };
-          offlineResponses.push(responseWithId);
-          localStorage.setItem('offline_responses', JSON.stringify(offlineResponses));
-          
-          // Also store in legacy format
-          this.updateLocalStorageResponses(responseWithId);
-          
-          return responseWithId;
-        }
+    // Show no question state
+    function showNoQuestion() {
+      const questionDisplay = document.getElementById('questionDisplay');
+      questionDisplay.textContent = 'Demo Mode: What would you like to learn today?';
+      questionDisplay.style.background = 'rgba(59, 130, 246, 0.1)';
+      questionDisplay.style.borderColor = 'rgba(59, 130, 246, 0.2)';
+    }
 
-        try {
-          const { data, error } = await supabase
-            .from('student_responses')
-            .insert([{
-              question_id: responseData.questionId,
-              student_name: responseData.studentName,
-              answer: responseData.answer,
-              word_count: responseData.wordCount,
-              quality: responseData.quality,
-              score: responseData.score,
-              source: responseData.source || 'web',
-              metadata: {
-                timestamp: responseData.timestamp,
-                submittedAt: responseData.submittedAt,
-                questionText: responseData.questionText,
-                photo_url: responseData.photo_url || null // Steve Jobs style - seamless integration
-              }
-            }])
-            .select();
-
-          if (error) throw error;
-
-          console.log('✅ Response submitted to Supabase:', data[0]);
-          
-          // Also update localStorage for backward compatibility
-          this.updateLocalStorageResponses(data[0]);
-          
-          return data[0];
-        } catch (error) {
-          console.error('❌ Error submitting response:', error);
-          throw error;
-        }
-      }
-
-      async uploadPhoto(photoBlob) {
-        if (!this.isOnline || !isConnected) {
-          // Convert to base64 for offline storage
-          return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(photoBlob);
-          });
-        }
-
-        try {
-          const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substring(2)}.jpg`;
-          
-          const { data, error } = await supabase.storage
-            .from('student-responses')
-            .upload(fileName, photoBlob, {
-              contentType: 'image/jpeg',
-              upsert: false
-            });
-
-          if (error) throw error;
-
-          // Get public URL
-          const { data: urlData } = supabase.storage
-            .from('student-responses')
-            .getPublicUrl(fileName);
-
-          console.log('✅ Photo uploaded to Supabase Storage:', urlData.publicUrl);
-          return urlData.publicUrl;
-        } catch (error) {
-          console.error('❌ Error uploading photo:', error);
-          // Fallback to base64
-          return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(photoBlob);
-          });
-        }
-      }
-
-      updateLocalStorageResponses(response) {
-        try {
-          const existingResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-          const legacyResponse = {
-            id: response.id,
-            questionId: response.question_id || response.questionId,
-            studentName: response.student_name || response.studentName,
-            answer: response.answer,
-            wordCount: response.word_count || response.wordCount,
-            quality: response.quality,
-            score: response.score,
-            source: response.source,
-            timestamp: response.metadata?.timestamp || response.submitted_at || response.timestamp,
-            submittedAt: response.submitted_at || response.submittedAt,
-            questionText: response.metadata?.questionText || response.questionText || '',
-            photo_url: response.metadata?.photo_url || response.photo_url || null
-          };
-          
-          existingResponses.push(legacyResponse);
-          localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
-        } catch (error) {
-          console.error('Error updating localStorage responses:', error);
+    // Handle input changes
+    function handleInput() {
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      const validationMessage = document.getElementById('validationMessage');
+      
+      const name = nameInput.value.trim();
+      const answer = answerInput.value.trim();
+      
+      // Count words
+      const words = answer ? answer.split(/\s+/).filter(word => word.length > 0) : [];
+      wordCount = words.length;
+      updateWordCounter();
+      
+      // Validation
+      if (name && wordCount > 0) {
+        submitBtn.disabled = false;
+        validationMessage.textContent = 'Ready to submit!';
+        validationMessage.className = 'validation-message success';
+      } else {
+        submitBtn.disabled = true;
+        if (!name && wordCount === 0) {
+          validationMessage.style.display = 'none';
+        } else if (!name) {
+          validationMessage.textContent = 'Please enter your name';
+          validationMessage.className = 'validation-message error';
+        } else {
+          validationMessage.textContent = 'Please write your response';
+          validationMessage.className = 'validation-message error';
         }
       }
     }
 
-    // Photo Functions (Steve Jobs Ultra-Minimal Style)
-    
-    // Compress image for optimal upload
-    function compressImage(file, maxWidth = 800, quality = 0.8) {
-      return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        
-        img.onload = () => {
-          const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
-          canvas.width = img.width * ratio;
-          canvas.height = img.height * ratio;
-          
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          canvas.toBlob(resolve, 'image/jpeg', quality);
-        };
-        
-        img.src = URL.createObjectURL(file);
-      });
+    // Update word counter
+    function updateWordCounter() {
+      const wordCounter = document.getElementById('wordCounter');
+      
+      if (wordCount === 0) {
+        wordCounter.textContent = 'No words yet';
+        wordCounter.classList.remove('has-words');
+      } else {
+        wordCounter.textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
+        wordCounter.classList.add('has-words');
+      }
     }
 
-    // Handle photo trigger click (Jobs style - immediate action)
+    // Photo functions
     function handlePhotoTrigger() {
       if (currentPhoto) {
         showPhotoModal();
@@ -1294,29 +754,22 @@
       }
     }
 
-    // Start camera (Jobs style - no permission dialogs)
     async function startCamera() {
       try {
         cameraStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
-            facingMode: 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          } 
+          video: { facingMode: 'user' } 
         });
         
         const video = document.getElementById('cameraVideo');
         video.srcObject = cameraStream;
-        
         document.getElementById('cameraPreview').classList.add('show');
         
       } catch (error) {
-        console.log('Camera not available, falling back to file upload');
+        console.log('Camera not available, using file upload');
         triggerFileUpload();
       }
     }
 
-    // Capture photo from camera
     function capturePhoto() {
       const video = document.getElementById('cameraVideo');
       const canvas = document.createElement('canvas');
@@ -1332,7 +785,6 @@
       }, 'image/jpeg', 0.8);
     }
 
-    // Stop camera and close preview
     function stopCamera() {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -1341,40 +793,22 @@
       document.getElementById('cameraPreview').classList.remove('show');
     }
 
-    // Trigger file upload as fallback
     function triggerFileUpload() {
       const fileInput = document.getElementById('fileInput');
       fileInput.onchange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-          compressImage(file).then(setPhoto);
-        }
+        if (file) setPhoto(file);
       };
       fileInput.click();
     }
 
-    // Set photo (Jobs style - immediate UI update)
-    async function setPhoto(photoBlob) {
+    function setPhoto(photoBlob) {
       currentPhoto = photoBlob;
-      
-      // Create preview URL
-      const previewUrl = URL.createObjectURL(photoBlob);
-      
-      // Update UI (Jobs style - subtle changes)
       const trigger = document.getElementById('photoTrigger');
-      const preview = document.getElementById('photoPreviewMini');
-      const previewImg = document.getElementById('photoPreviewImg');
-      
+      trigger.textContent = '✨ Photo Added';
       trigger.classList.add('has-photo');
-      trigger.textContent = '✨';
-      
-      previewImg.src = previewUrl;
-      preview.classList.add('visible');
-      
-      console.log('📸 Photo set (Jobs style - seamless)');
     }
 
-    // Show photo modal for viewing/managing
     function showPhotoModal() {
       if (!currentPhoto) return;
       
@@ -1385,247 +819,15 @@
       modal.classList.add('show');
     }
 
-    // Remove photo (Jobs style - clean slate)
     function removePhoto() {
       currentPhoto = null;
-      
       const trigger = document.getElementById('photoTrigger');
-      const preview = document.getElementById('photoPreviewMini');
-      
+      trigger.textContent = '📸 Add Photo';
       trigger.classList.remove('has-photo');
-      trigger.textContent = '📷';
-      preview.classList.remove('visible');
-      
       document.getElementById('photoModal').classList.remove('show');
-      
-      console.log('🗑️ Photo removed (Jobs style - back to minimal)');
     }
 
-    // Load question from URL parameters or Supabase
-    async function loadQuestion() {
-      console.log('🔍 Loading question...');
-      
-      try {
-        // Check URL parameters first (from QR code)
-        const urlParams = new URLSearchParams(window.location.search);
-        const questionId = urlParams.get('q');
-        const questionText = urlParams.get('t');
-        
-        if (questionId && questionText) {
-          // Question from URL parameters
-          currentQuestion = {
-            id: questionId,
-            text: decodeURIComponent(questionText),
-            source: 'url',
-            isReal: true
-          };
-          console.log('✅ Loaded question from URL:', currentQuestion);
-          return displayQuestion();
-        }
-        
-        if (questionId && !questionText) {
-          // Try to get full question from Supabase
-          const question = await intuityData.getQuestionById(questionId);
-          if (question) {
-            currentQuestion = {
-              ...question,
-              source: 'supabase',
-              isReal: true
-            };
-            console.log('✅ Loaded question from Supabase by ID:', currentQuestion);
-            return displayQuestion();
-          }
-        }
-        
-        // Try to load current question from Supabase
-        const question = await intuityData.getCurrentQuestion();
-        if (question) {
-          currentQuestion = {
-            ...question,
-            source: 'supabase',
-            isReal: true
-          };
-          console.log('✅ Loaded current question from Supabase:', currentQuestion);
-          return displayQuestion();
-        }
-        
-        // No question found
-        console.log('❌ No question found');
-        showNoQuestion();
-        
-      } catch (error) {
-        console.error('❌ Error loading question:', error);
-        showNoQuestion();
-      }
-    }
-
-    // Display the question
-    function displayQuestion() {
-      const questionDisplay = document.getElementById('questionDisplay');
-      const questionContainer = document.getElementById('questionContainer');
-      const responseForm = document.getElementById('responseForm');
-      const noQuestionState = document.getElementById('noQuestionState');
-      
-      if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
-        const questionText = currentQuestion.text || currentQuestion.question_text;
-        questionDisplay.textContent = questionText;
-        questionContainer.style.display = 'block';
-        responseForm.style.display = 'block';
-        noQuestionState.style.display = 'none';
-        
-        // Enable the interface
-        enableInterface();
-        
-        console.log('✅ Question displayed successfully');
-      } else {
-        showNoQuestion();
-      }
-    }
-
-    // Show no question state
-    function showNoQuestion() {
-      const questionContainer = document.getElementById('questionContainer');
-      const responseForm = document.getElementById('responseForm');
-      const noQuestionState = document.getElementById('noQuestionState');
-      
-      questionContainer.style.display = 'none';
-      responseForm.style.display = 'none';
-      noQuestionState.style.display = 'block';
-      
-      // Enable demo mode for the interface
-      enableDemoMode();
-      
-      console.log('📝 No question available - showing demo mode');
-    }
-
-    // Enable interface functionality
-    function enableInterface() {
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      const submitBtn = document.getElementById('submitBtn');
-      
-      // Remove any disabled attributes
-      nameInput.disabled = false;
-      answerInput.disabled = false;
-      
-      // Set up event listeners
-      nameInput.addEventListener('input', validateInput);
-      answerInput.addEventListener('input', handleAnswerInput);
-      
-      // Footer button listeners
-      document.getElementById('clearBtn').addEventListener('click', clearForm);
-      document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
-      submitBtn.addEventListener('click', submitResponse);
-      
-      console.log('✅ Interface enabled for real question');
-    }
-
-    // Enable demo mode
-    function enableDemoMode() {
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      
-      // Enable inputs but change placeholders
-      nameInput.disabled = false;
-      nameInput.placeholder = "Demo: Enter any name...";
-      answerInput.disabled = false;
-      answerInput.placeholder = "Demo: Type here to see word counting...";
-      
-      // Set up demo event listeners
-      nameInput.addEventListener('input', validateInput);
-      answerInput.addEventListener('input', handleAnswerInput);
-      
-      // Footer button listeners
-      document.getElementById('clearBtn').addEventListener('click', clearForm);
-      document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
-      document.getElementById('submitBtn').addEventListener('click', submitDemoResponse);
-      
-      console.log('🎭 Demo mode enabled');
-    }
-
-    // Handle answer input
-    function handleAnswerInput() {
-      const answerInput = document.getElementById('studentAnswer');
-      const text = answerInput.value.trim();
-      
-      // Count words
-      const words = text ? text.split(/\s+/).filter(word => word.length > 0) : [];
-      wordCount = words.length;
-      
-      updateWordCounter();
-      validateInput();
-      
-      // Auto-resize textarea
-      answerInput.style.height = 'auto';
-      answerInput.style.height = Math.max(180, answerInput.scrollHeight) + 'px';
-    }
-
-    // Update word counter display
-    function updateWordCounter() {
-      const wordCounter = document.getElementById('wordCounter');
-      
-      if (wordCount === 0) {
-        wordCounter.textContent = 'No words yet';
-        wordCounter.classList.remove('has-words');
-      } else if (wordCount === 1) {
-        wordCounter.textContent = '1 word';
-        wordCounter.classList.add('has-words');
-      } else {
-        wordCounter.textContent = `${wordCount} words`;
-        wordCounter.classList.add('has-words');
-      }
-    }
-
-    // Validate all inputs
-    function validateInput() {
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      const submitBtn = document.getElementById('submitBtn');
-      
-      const name = nameInput.value.trim();
-      const hasValidName = name.length >= 1;
-      const hasAnyContent = wordCount > 0;
-      
-      // Update input styling
-      nameInput.classList.toggle('valid', hasValidName);
-      answerInput.classList.toggle('valid', hasAnyContent);
-      
-      // Update validation messages
-      hideAllValidationMessages();
-      
-      if (hasValidName && hasAnyContent) {
-        showValidationMessage('success');
-        submitBtn.disabled = false;
-      } else if (hasValidName && !hasAnyContent) {
-        showValidationMessage('warning');
-        submitBtn.disabled = true;
-      } else if (!hasValidName && hasAnyContent) {
-        showValidationMessage('warning');
-        submitBtn.disabled = true;
-      } else {
-        // Both empty - don't show error until they start typing
-        if (name.length > 0 || wordCount > 0) {
-          showValidationMessage('error');
-        }
-        submitBtn.disabled = true;
-      }
-    }
-
-    // Show validation message
-    function showValidationMessage(type) {
-      const message = document.getElementById(`validation${type.charAt(0).toUpperCase() + type.slice(1)}`);
-      message.style.display = 'flex';
-    }
-
-    // Hide all validation messages
-    function hideAllValidationMessages() {
-      ['success', 'warning', 'error'].forEach(type => {
-        const message = document.getElementById(`validation${type.charAt(0).toUpperCase() + type.slice(1)}`);
-        message.style.display = 'none';
-      });
-    }
-
-    // Submit real response
+    // Submit response
     async function submitResponse() {
       if (isSubmitted) return;
       
@@ -1636,142 +838,83 @@
       const studentName = nameInput.value.trim();
       const studentAnswer = answerInput.value.trim();
       
-      // Validate before submit
-      if (!studentName || studentName.length === 0) {
-        alert('Please enter your name.');
-        nameInput.focus();
-        return;
-      }
-      
-      if (wordCount === 0) {
-        alert('Please write something in your response.');
-        answerInput.focus();
+      if (!studentName || wordCount === 0) {
+        alert('Please complete all fields.');
         return;
       }
 
-      // Show loading state
-      const originalContent = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<i class="fas fa-spinner loading"></i><span>Submitting...</span>';
+      // Show loading
+      const originalContent = submitBtn.textContent;
+      submitBtn.innerHTML = '⏳ Submitting...';
       submitBtn.disabled = true;
 
       try {
         let photoUrl = null;
         
-        // Upload photo if exists (Jobs style - seamless integration)
-        if (currentPhoto) {
-          console.log('📸 Uploading photo...');
-          photoUrl = await intuityData.uploadPhoto(currentPhoto);
+        // Upload photo if exists
+        if (currentPhoto && supabase) {
+          const fileName = `student-photos/${Date.now()}.jpg`;
+          const { data, error } = await supabase.storage
+            .from('student-responses')
+            .upload(fileName, currentPhoto);
+
+          if (!error) {
+            const { data: urlData } = supabase.storage
+              .from('student-responses')
+              .getPublicUrl(fileName);
+            photoUrl = urlData.publicUrl;
+          }
         }
 
         // Create response object
         const response = {
-          questionId: currentQuestion.id,
-          questionText: currentQuestion.text || currentQuestion.question_text || '',
+          questionId: currentQuestion?.id || 'demo',
+          questionText: currentQuestion?.text || 'Demo Question',
           studentName: studentName,
           answer: studentAnswer,
           wordCount: wordCount,
-          timestamp: new Date().toLocaleString(),
-          submittedAt: new Date().toISOString(),
-          quality: determineQuality(wordCount),
-          score: calculateScore(wordCount, studentAnswer),
-          source: currentQuestion.source || 'web',
-          photo_url: photoUrl // Jobs style - just another data point
+          timestamp: new Date().toISOString(),
+          photoUrl: photoUrl
         };
 
-        console.log('💾 Submitting response:', response);
+        // Submit to Supabase if available
+        if (supabase && currentQuestion?.id !== 'demo') {
+          await supabase.from('student_responses').insert([{
+            question_id: response.questionId,
+            student_name: response.studentName,
+            answer: response.answer,
+            word_count: response.wordCount,
+            photo_url: response.photoUrl, // Store photo URL directly 
+            metadata: {
+              timestamp: response.timestamp,
+              photo_url: response.photoUrl // Also in metadata for backup
+            }
+          }]);
+        }
 
-        // Submit to Supabase (or store offline)
-        await intuityData.submitResponse(response);
-
-        console.log('✅ Response submitted successfully');
-
-        // Show success state
+        // Show success
         showSuccess();
         isSubmitted = true;
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
-        
-        if (!isOnline) {
-          alert('Response saved offline. It will be submitted when connection is restored.');
-          showSuccess();
-          isSubmitted = true;
-        } else {
-          alert('Error submitting response. Please try again.');
-          submitBtn.innerHTML = originalContent;
-          submitBtn.disabled = false;
-        }
+        alert('Response saved! It will be submitted when connection is restored.');
+        showSuccess();
+        isSubmitted = true;
       }
-    }
-
-    // Submit demo response
-    function submitDemoResponse() {
-      if (isSubmitted) return;
-      
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      
-      const studentName = nameInput.value.trim();
-      const studentAnswer = answerInput.value.trim();
-      
-      if (!studentName || wordCount === 0) {
-        alert('Please complete all fields to see the demo submission.');
-        return;
-      }
-
-      // Show demo success
-      alert(`Demo Mode: Your response would be submitted!\n\nName: ${studentName}\nWords: ${wordCount}\nResponse: ${studentAnswer.substring(0, 100)}${studentAnswer.length > 100 ? '...' : ''}\n\nTo submit real responses, your teacher needs to create an active question.`);
-      
-      console.log('🎭 Demo submission completed');
-    }
-
-    // Determine response quality
-    function determineQuality(wordCount) {
-      if (wordCount >= 25) return 'excellent';
-      if (wordCount >= 10) return 'good';
-      return 'needs-work';
-    }
-
-    // Calculate response score
-    function calculateScore(wordCount, answer) {
-      let score = 30; // Base score
-      
-      // Word count score (40% of total)
-      const wordScore = Math.min(40, (wordCount / 25) * 40);
-      score += wordScore;
-      
-      // Content quality score (30% of total)
-      const sentences = answer.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
-      const contentScore = Math.min(30, sentences * 10);
-      score += contentScore;
-      
-      return Math.min(100, Math.round(score));
     }
 
     // Show success state
     function showSuccess() {
-      const questionContainer = document.getElementById('questionContainer');
-      const responseForm = document.getElementById('responseForm');
-      const successContainer = document.getElementById('successContainer');
-      const noQuestionState = document.getElementById('noQuestionState');
+      document.getElementById('responseContainer').style.display = 'none';
+      document.getElementById('successContainer').style.display = 'block';
       
-      questionContainer.style.display = 'none';
-      responseForm.style.display = 'none';
-      noQuestionState.style.display = 'none';
-      successContainer.style.display = 'block';
-      
-      // Update footer buttons
-      const submitBtn = document.getElementById('submitBtn');
       const clearBtn = document.getElementById('clearBtn');
-      const editBtn = document.getElementById('editBtn');
-      
-      submitBtn.style.display = 'none';
       clearBtn.textContent = 'Done';
-      editBtn.style.display = 'none';
-      
       clearBtn.onclick = () => window.location.reload();
-
-      console.log('🎉 Success state displayed');
+      
+      document.getElementById('editBtn').style.display = 'none';
+      document.getElementById('submitBtn').style.display = 'none';
     }
 
     // Clear form
@@ -1781,71 +924,39 @@
         return;
       }
       
-      if (confirm('Clear your response? This cannot be undone.')) {
+      if (confirm('Clear your response?')) {
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
         wordCount = 0;
         updateWordCounter();
-        hideAllValidationMessages();
-        
-        // Clear photo (Jobs style)
-        if (currentPhoto) {
-          removePhoto();
-        }
-        
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        
-        document.getElementById('studentName').focus();
+        removePhoto();
+        handleInput();
       }
     }
 
-    // Focus on answer textarea
+    // Focus on answer
     function focusOnAnswer() {
-      const answerInput = document.getElementById('studentAnswer');
-      answerInput.focus();
-      answerInput.setSelectionRange(answerInput.value.length, answerInput.value.length);
+      document.getElementById('studentAnswer').focus();
     }
 
-    // Initialize the application
+    // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Student Interface with Steve Jobs Photo Feature initializing...');
-      
-      // Create background
-      createConstellation();
+      console.log('🚀 INTUITY Student Interface initializing...');
       
       // Initialize Supabase
-      if (initSupabase()) {
-        // Wait for connection test then load question
-        setTimeout(loadQuestion, 1000);
-      } else {
-        // Fallback to localStorage mode
-        updateConnectionStatus('error', 'Supabase not configured - Using offline mode');
-        initDataLayer();
-        loadQuestion();
-      }
+      initSupabase();
       
-      // Set up keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        // Ctrl/Cmd + Enter to submit
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-          const submitBtn = document.getElementById('submitBtn');
-          if (!submitBtn.disabled) {
-            if (currentQuestion && currentQuestion.isReal) {
-              submitResponse();
-            } else {
-              submitDemoResponse();
-            }
-          }
-        }
-        
-        // Escape to clear (with confirmation)
-        if (e.key === 'Escape' && !isSubmitted) {
-          clearForm();
-        }
-      });
+      // Load question
+      await loadQuestion();
       
-      // Photo Event Listeners (Steve Jobs Style - Minimal Setup)
+      // Set up event listeners
+      document.getElementById('studentName').addEventListener('input', handleInput);
+      document.getElementById('studentAnswer').addEventListener('input', handleInput);
+      document.getElementById('submitBtn').addEventListener('click', submitResponse);
+      document.getElementById('clearBtn').addEventListener('click', clearForm);
+      document.getElementById('editBtn').addEventListener('click', focusOnAnswer);
+      
+      // Photo event listeners
       document.getElementById('photoTrigger').addEventListener('click', handlePhotoTrigger);
       document.getElementById('captureBtn').addEventListener('click', capturePhoto);
       document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
@@ -1858,14 +969,23 @@
         document.getElementById('photoModal').classList.remove('show');
       });
       
-      // Click outside modal to close (Jobs style)
+      // Modal click outside to close
       document.getElementById('photoModal').addEventListener('click', (e) => {
         if (e.target.id === 'photoModal') {
           document.getElementById('photoModal').classList.remove('show');
         }
       });
       
-      console.log('✅ Student interface with Steve Jobs photo feature ready!');
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          const submitBtn = document.getElementById('submitBtn');
+          if (!submitBtn.disabled) submitResponse();
+        }
+        if (e.key === 'Escape' && !isSubmitted) clearForm();
+      });
+      
+      console.log('✅ Student interface ready!');
     });
   </script>
 </body>
