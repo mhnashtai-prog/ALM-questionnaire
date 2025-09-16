@@ -1,33 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTUITY Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INTUITY - Analytics</title>
+  
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  
   <style>
-    :root {
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --accent-teal: #2dd4bf;
-      --accent-gold: #ffd54f;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --error: #ef4444;
-      --success: #10b981;
-      --apple-radius: 12px;
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -35,135 +16,256 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
+      opacity: 0.3;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(15deg);
+      border: 1.5px solid rgba(255, 140, 60, 0.6);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
+      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
+      opacity: 0.8;
+    }
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(80deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
+      opacity: 0.2;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
 
-    /* Header */
     .header {
       text-align: center;
-      padding: 2rem;
+      margin-bottom: 40px;
     }
 
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 3rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.25rem;
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
-    .page-title {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-      margin-bottom: 0.25rem;
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
     }
 
-    .author {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* Main Container */
-    .container {
+    .main-content {
       flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 140px;
+    }
+
+    .analytics-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .analytics-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    /* Central Question Box - HERO ELEMENT */
-    .question-central {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 20px;
-      padding: 3rem;
-      text-align: center;
-      box-shadow: var(--shadow);
+    .analytics-box:hover {
+      transform: translateY(-2px);
     }
 
-    .question-label {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
+    /* Question Dropdown */
+    .question-selector-container {
+      padding: 20px 20px 10px;
     }
 
     .question-dropdown {
       width: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid var(--card-border);
-      border-radius: var(--apple-radius);
-      padding: 1.25rem 1.5rem;
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
       outline: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-family: inherit;
     }
 
     .question-dropdown:focus {
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      border-color: rgba(255, 140, 60, 0.6);
+      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
     }
 
     .question-dropdown option {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: 1rem;
+      background: #000;
+      color: #fff;
+      padding: 10px;
     }
 
-    /* Response Count & Controls */
-    .controls-bar {
+    /* Current Question Display */
+    .current-question {
+      flex: 1;
       display: flex;
+      align-items: center;
       justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
+      padding: 20px;
+      text-align: center;
     }
 
-    .response-pill {
-      background: rgba(45, 212, 191, 0.1);
-      border: 1px solid var(--accent-teal);
-      border-radius: 20px;
-      padding: 0.75rem 1.5rem;
-      color: var(--accent-teal);
-      font-weight: 600;
+    .question-text {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 500;
+      line-height: 1.4;
+      max-width: 90%;
+    }
+
+    .no-question {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      padding: 10px 20px 20px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
+    }
+
+    .response-count {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 600;
     }
 
     .delete-btn {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--error);
-      border-radius: 10px;
-      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: rgba(239, 68, 68, 0.8);
+      font-size: 16px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -171,724 +273,484 @@
 
     .delete-btn:hover {
       background: rgba(239, 68, 68, 0.2);
-      transform: scale(1.05);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: rgba(239, 68, 68, 1);
+      transform: scale(1.1);
     }
 
     .delete-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.3;
       cursor: not-allowed;
       transform: none;
     }
 
-    /* Presentation Mode Box */
-    .presentation-modes {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: var(--apple-radius);
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .modes-title {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-    }
-
-    .mode-buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-
-    .mode-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1.5rem 1rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .mode-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--accent-teal);
-      color: var(--text-primary);
-      transform: translateY(-2px);
-    }
-
-    .mode-btn.active {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border-color: transparent;
-      color: var(--bg-primary);
-    }
-
-    .mode-icon {
-      font-size: 1.5rem;
-    }
-
-    .mode-name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Footer */
     .footer {
-      background: rgba(26, 35, 50, 0.8);
-      backdrop-filter: var(--blur);
-      border-top: 1px solid var(--card-border);
-      padding: 1.5rem;
-    }
-
-    .footer-buttons {
-      max-width: 800px;
-      margin: 0 auto;
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
     }
 
-    .footer-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
       text-decoration: none;
-      font-weight: 500;
     }
 
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
     }
 
-    .footer-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border-color: transparent;
-      color: var(--bg-primary);
+    .nav-button:active {
+      transform: scale(0.95);
     }
 
-    .footer-btn.primary:hover {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+    .nav-button.active {
+      background: rgba(255, 140, 60, 0.3);
+      color: rgba(255, 140, 60, 1);
+      border: 1px solid rgba(255, 140, 60, 0.5);
     }
+
+    /* Animations - Same as original */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
+    }
+
+    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
     /* Loading State */
     .loading {
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 16px;
+      text-align: center;
     }
 
     /* Notification */
     .notification {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 1rem 1.5rem;
+      top: 30px;
+      right: 30px;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 140, 60, 0.5);
       border-radius: 8px;
-      backdrop-filter: var(--blur);
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 500;
       z-index: 1000;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      opacity: 0;
       transform: translateX(100%);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .notification.show {
+      opacity: 1;
       transform: translateX(0);
     }
 
-    .notification.success {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid var(--success);
-      color: var(--success);
-    }
-
-    .notification.info {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      color: rgb(59, 130, 246);
-    }
-
-    .notification.error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--error);
-      color: var(--error);
-    }
-
-    /* Mobile Responsive */
+    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .container {
-        padding: 0 1rem;
-        gap: 1.5rem;
+        padding: 40px 15px 15px;
       }
-
-      .brand-name {
-        font-size: 2.5rem;
+      
+      .header h1 {
+        font-size: 28px;
       }
-
-      .question-central {
-        padding: 2rem;
+      
+      .analytics-container {
+        height: 4cm;
       }
-
-      .controls-bar {
-        flex-direction: column;
-        gap: 1rem;
+      
+      .question-text {
+        font-size: 16px;
       }
-
-      .mode-buttons {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+      
+      .question-dropdown {
+        font-size: 14px;
+        padding: 10px 12px;
       }
-
-      .mode-btn {
-        padding: 1rem 0.75rem;
+      
+      .response-count {
+        font-size: 14px;
       }
-
-      .footer-buttons {
-        gap: 1rem;
-      }
-
-      .footer-btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .mode-buttons {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-      }
-
-      .mode-btn {
-        padding: 1rem 0.5rem;
-      }
-
-      .mode-icon {
-        font-size: 1.25rem;
-      }
-
-      .mode-name {
-        font-size: 0.75rem;
+      
+      .delete-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
       }
     }
   </style>
 </head>
-
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="brand-name">INTUITY</div>
-    <div class="page-title">Analytics</div>
-    <div class="author">by Majid Nashtai</div>
-  </header>
-
-  <!-- Main Container -->
-  <div class="container">
-    
-    <!-- Central Question Box - HERO -->
-    <div class="question-central">
-      <div class="question-label">Select Question</div>
-      
-      <select class="question-dropdown" id="questionSelector">
-        <option value="">Loading questions from database...</option>
-      </select>
-      
-      <!-- Response Count & Delete Controls -->
-      <div class="controls-bar">
-        <div class="response-pill">
-          <i class="fas fa-users"></i>
-          <span id="responseCount">0 Responses</span>
-        </div>
-        
-        <button class="delete-btn" id="deleteBtn" title="Delete Selected Question" disabled>
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
     </div>
-
-    <!-- Presentation Modes -->
-    <div class="presentation-modes">
-      <div class="modes-title">Presentation Mode</div>
-      
-      <div class="mode-buttons">
-        <button class="mode-btn" data-mode="mind-map">
-          <div class="mode-icon">🗺️</div>
-          <div class="mode-name">Mind Map</div>
-        </button>
-        
-        <button class="mode-btn active" data-mode="stacked">
-          <div class="mode-icon">📚</div>
-          <div class="mode-name">Stacked</div>
-        </button>
-        
-        <button class="mode-btn" data-mode="floating">
-          <div class="mode-icon">☁️</div>
-          <div class="mode-name">Floating</div>
-        </button>
-        
-        <button class="mode-btn" data-mode="cosmos">
-          <div class="mode-icon">🌌</div>
-          <div class="mode-name">Cosmos</div>
-        </button>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-buttons">
-      <a href="../teachers/questions/" class="footer-btn primary">
-        <i class="fas fa-plus"></i>
-        <span>Create Questions</span>
-      </a>
-      
-      <a href="../games/" class="footer-btn">
-        <i class="fas fa-gamepad"></i>
-        <span>Word Games</span>
-      </a>
-      
-      <a href="../" class="footer-btn">
-        <i class="fas fa-home"></i>
-        <span>Return</span>
-      </a>
-    </div>
-  </footer>
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Analytics<br>By Majid Nashtai</p>
+    </header>
+
+    <main class="main-content">
+      <div class="analytics-container">
+        <div class="analytics-box">
+          <!-- Question Selector -->
+          <div class="question-selector-container">
+            <select class="question-dropdown" id="questionDropdown">
+              <option value="">Loading questions...</option>
+            </select>
+          </div>
+          
+          <!-- Current Question Display -->
+          <div class="current-question">
+            <div class="question-text" id="questionText">
+              <div class="loading">Loading questions from database...</div>
+            </div>
+          </div>
+          
+          <!-- Controls -->
+          <div class="controls-bar">
+            <div class="response-count" id="responseCount">0 responses</div>
+            <button class="delete-btn" id="deleteBtn" disabled>🗑️</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <a href="../" class="nav-button" title="Home">🏠</a>
+      <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
+      <button class="nav-button active" id="viewResponsesBtn" title="View Responses">👥</button>
+    </footer>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
 
   <script>
     // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Global data variables
+    // Global State
     let supabase;
-    let allQuestions = [];
-    let allResponses = [];
-    let currentSelectedQuestion = null;
+    let questions = [];
+    let responses = [];
+    let currentQuestion = null;
     let isConnected = false;
 
-    // Initialize Supabase
-    function initSupabase() {
+    // Elements
+    const questionDropdown = document.getElementById('questionDropdown');
+    const questionText = document.getElementById('questionText');
+    const responseCount = document.getElementById('responseCount');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const viewResponsesBtn = document.getElementById('viewResponsesBtn');
+    const notification = document.getElementById('notification');
+
+    // Initialize
+    async function init() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase client initialized');
-        
-        testConnection();
-        return true;
+        await loadData();
       } catch (error) {
-        console.error('❌ Error initializing Supabase:', error);
-        loadLocalStorageData();
-        return false;
+        console.error('Failed to initialize:', error);
+        loadLocalData();
       }
     }
 
-    // Test Supabase connection
-    async function testConnection() {
+    // Load Data from Supabase
+    async function loadData() {
       try {
-        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        // Test connection
+        const { data: testData, error: testError } = await supabase
+          .from('questions')
+          .select('count')
+          .limit(1);
         
-        if (error) throw error;
-        
+        if (testError) throw testError;
         isConnected = true;
-        console.log('✅ Supabase connection successful');
-        
-        // Start loading data
-        await loadInitialData();
-        
-      } catch (error) {
-        console.error('❌ Supabase connection failed:', error);
-        isConnected = false;
-        
-        // Fallback to localStorage
-        loadLocalStorageData();
-      }
-    }
 
-    // Load initial data from Supabase
-    async function loadInitialData() {
-      try {
-        console.log('📊 Loading data from Supabase...');
-        
         // Load questions
-        const { data: questions, error: questionsError } = await supabase
+        const { data: questionsData, error: questionsError } = await supabase
           .from('questions')
           .select('*')
           .order('created_at', { ascending: false });
 
         if (questionsError) throw questionsError;
-
-        allQuestions = questions || [];
-        console.log(`✅ Loaded ${allQuestions.length} questions from Supabase`);
+        questions = questionsData || [];
 
         // Load responses
-        const { data: responses, error: responsesError } = await supabase
+        const { data: responsesData, error: responsesError } = await supabase
           .from('student_responses')
-          .select('*')
-          .order('submitted_at', { ascending: false });
+          .select('*');
 
         if (responsesError) throw responsesError;
+        responses = responsesData || [];
 
-        allResponses = responses || [];
-        console.log(`✅ Loaded ${allResponses.length} responses from Supabase`);
-
-        // Update UI
         updateUI();
-        
-        showNotification('Connected to database successfully!', 'success');
+        notify('Connected to database');
         
       } catch (error) {
-        console.error('❌ Error loading data from Supabase:', error);
-        showNotification('Error loading from database, using local data', 'error');
-        
-        // Fallback to localStorage
-        loadLocalStorageData();
+        console.error('Database error:', error);
+        loadLocalData();
       }
     }
 
-    // Fallback to localStorage data
-    function loadLocalStorageData() {
-      console.log('📱 Loading data from localStorage...');
-      
+    // Load from Local Storage
+    function loadLocalData() {
       try {
-        // Load questions from multiple possible keys
-        const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
-        for (const key of questionKeys) {
-          const storedQuestions = localStorage.getItem(key);
-          if (storedQuestions) {
-            const parsed = JSON.parse(storedQuestions);
-            
-            if (Array.isArray(parsed)) {
-              allQuestions = parsed;
-              break;
-            } else if (typeof parsed === 'object' && parsed.text) {
-              allQuestions = [parsed];
-              break;
-            }
-          }
+        const storedQuestion = localStorage.getItem('current_question');
+        if (storedQuestion) {
+          const parsed = JSON.parse(storedQuestion);
+          questions = Array.isArray(parsed) ? parsed : [parsed];
         }
 
-        // Load responses from multiple possible keys
-        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
-        allResponses = [];
-        
-        for (const key of responseKeys) {
-          const storedResponses = localStorage.getItem(key);
-          if (storedResponses) {
-            const parsed = JSON.parse(storedResponses);
-            if (Array.isArray(parsed)) {
-              allResponses = allResponses.concat(parsed);
-            }
-          }
+        const storedResponses = localStorage.getItem('alm_student_responses');
+        if (storedResponses) {
+          responses = JSON.parse(storedResponses) || [];
         }
 
-        console.log(`📱 Loaded ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
-        
         updateUI();
-        
-        if (allQuestions.length === 0) {
-          showNotification('No questions found - create one first', 'info');
-        } else {
-          showNotification('Using offline data', 'info');
-        }
+        notify('Using offline data');
         
       } catch (error) {
-        console.error('❌ Error loading localStorage data:', error);
-        updateUI();
+        console.error('Local storage error:', error);
+        showNoQuestions();
       }
     }
 
     // Update UI
     function updateUI() {
-      populateQuestionDropdown();
-      updateResponseCount();
-      updateDeleteButton();
-    }
-
-    // Populate question dropdown
-    function populateQuestionDropdown() {
-      const selector = document.getElementById('questionSelector');
-      
-      if (allQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions available - Create one first</option>';
+      if (questions.length === 0) {
+        showNoQuestions();
         return;
       }
 
-      selector.innerHTML = '';
+      populateDropdown();
+      if (currentQuestion) {
+        displayQuestion();
+      } else {
+        selectFirstQuestion();
+      }
+    }
 
-      allQuestions.forEach((question, index) => {
+    // Show No Questions State
+    function showNoQuestions() {
+      questionText.innerHTML = '<div class="no-question">No questions found<br><span style="font-size: 14px; opacity: 0.6;">Create one first</span></div>';
+      questionDropdown.innerHTML = '<option value="">No questions available</option>';
+      responseCount.textContent = '0 responses';
+      deleteBtn.disabled = true;
+    }
+
+    // Populate Dropdown
+    function populateDropdown() {
+      questionDropdown.innerHTML = '';
+      
+      questions.forEach((question, index) => {
         const option = document.createElement('option');
         option.value = question.id || index;
         
-        const questionText = question.text || question.question_text || 'Untitled Question';
-        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''}`;
-        selector.appendChild(option);
-      });
-
-      // Auto-select first question if none selected
-      if (!currentSelectedQuestion && allQuestions.length > 0) {
-        currentSelectedQuestion = allQuestions[0];
-        selector.value = currentSelectedQuestion.id || 0;
-        updateResponseCount();
-        updateDeleteButton();
-        updateQuestionBoxAppearance();
-      }
-    }
-
-    // Get responses for a specific question
-    function getResponsesForQuestion(question) {
-      if (!question) return [];
-      
-      return allResponses.filter(response => {
-        return (
-          response.question_id === question.id ||
-          response.questionId === question.id ||
-          response.questionText === (question.text || question.question_text) ||
-          response.question_id == question.id ||
-          (typeof question.id === 'undefined' && response.questionId === 0)
-        );
+        const questionStr = question.text || question.question_text || 'Untitled Question';
+        option.textContent = `Q${index + 1}: ${questionStr.substring(0, 50)}${questionStr.length > 50 ? '...' : ''}`;
+        questionDropdown.appendChild(option);
       });
     }
 
-    // Update response count
-    function updateResponseCount() {
-      const responseCountElement = document.getElementById('responseCount');
+    // Select First Question
+    function selectFirstQuestion() {
+      if (questions.length > 0) {
+        currentQuestion = questions[0];
+        questionDropdown.value = currentQuestion.id || 0;
+        displayQuestion();
+      }
+    }
+
+    // Display Selected Question
+    function displayQuestion() {
+      if (!currentQuestion) return;
+
+      const questionStr = currentQuestion.text || currentQuestion.question_text || 'Untitled Question';
+      questionText.textContent = questionStr;
+
+      const count = getResponseCount();
+      responseCount.textContent = `${count} response${count !== 1 ? 's' : ''}`;
       
-      if (!currentSelectedQuestion) {
-        responseCountElement.textContent = '0 Responses';
-        return;
-      }
+      deleteBtn.disabled = false;
 
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      const count = responses.length;
-      responseCountElement.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+      // Store for responses view
+      localStorage.setItem('display_question', JSON.stringify(currentQuestion));
+      localStorage.setItem('display_responses', JSON.stringify(getResponses()));
     }
 
-    // Update delete button state
-    function updateDeleteButton() {
-      const deleteBtn = document.getElementById('deleteBtn');
-      deleteBtn.disabled = !currentSelectedQuestion;
+    // Get Response Count
+    function getResponseCount() {
+      return getResponses().length;
     }
 
-    // Update question box appearance when selected
-    function updateQuestionBoxAppearance() {
-      const questionBox = document.querySelector('.question-central');
-      if (currentSelectedQuestion) {
-        questionBox.style.borderColor = 'var(--accent-teal)';
-        questionBox.style.background = 'rgba(45, 212, 191, 0.08)';
-      } else {
-        questionBox.style.borderColor = 'var(--card-border)';
-        questionBox.style.background = 'var(--card-bg)';
-      }
+    // Get Responses for Current Question
+    function getResponses() {
+      if (!currentQuestion) return [];
+      
+      return responses.filter(response => 
+        response.question_id === currentQuestion.id ||
+        response.questionId === currentQuestion.id ||
+        response.questionText === (currentQuestion.text || currentQuestion.question_text)
+      );
     }
 
-    // Handle question selection change
+    // Handle Question Selection
     function handleQuestionChange() {
-      const selector = document.getElementById('questionSelector');
-      const selectedValue = selector.value;
-      
+      const selectedValue = questionDropdown.value;
       if (!selectedValue) {
-        currentSelectedQuestion = null;
-      } else {
-        // Find the selected question
-        currentSelectedQuestion = allQuestions.find(q => 
-          q.id == selectedValue || 
-          allQuestions.indexOf(q) == selectedValue
-        );
+        currentQuestion = null;
+        questionText.innerHTML = '<div class="no-question">Select a question</div>';
+        responseCount.textContent = '0 responses';
+        deleteBtn.disabled = true;
+        return;
       }
 
-      console.log('📋 Selected question:', currentSelectedQuestion);
-      
-      updateResponseCount();
-      updateDeleteButton();
-      updateQuestionBoxAppearance();
+      currentQuestion = questions.find(q => 
+        (q.id && q.id == selectedValue) || 
+        questions.indexOf(q) == selectedValue
+      );
+
+      if (currentQuestion) {
+        displayQuestion();
+      }
     }
 
-    // Delete question
+    // Delete Question
     async function deleteQuestion() {
-      if (!currentSelectedQuestion) {
-        alert('Please select a question to delete.');
-        return;
-      }
+      if (!currentQuestion) return;
       
-      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
-      if (!confirm(`Delete "${questionText}" and all its responses?`)) {
-        return;
-      }
+      const questionStr = currentQuestion.text || currentQuestion.question_text || 'this question';
+      if (!confirm(`Delete "${questionStr}" and all its responses?`)) return;
 
-      const deleteBtn = document.getElementById('deleteBtn');
-      const originalContent = deleteBtn.innerHTML;
-      deleteBtn.innerHTML = '<i class="fas fa-spinner loading"></i>';
+      deleteBtn.innerHTML = '⏳';
       deleteBtn.disabled = true;
 
       try {
-        if (isConnected) {
-          // Delete from Supabase
+        if (isConnected && currentQuestion.id) {
           const { error } = await supabase
             .from('questions')
             .delete()
-            .eq('id', currentSelectedQuestion.id);
+            .eq('id', currentQuestion.id);
 
           if (error) throw error;
-          
-          console.log('✅ Question deleted from Supabase');
         }
 
         // Remove from local arrays
-        allQuestions = allQuestions.filter(q => q.id !== currentSelectedQuestion.id);
-        allResponses = allResponses.filter(r => r.question_id !== currentSelectedQuestion.id);
+        questions = questions.filter(q => q.id !== currentQuestion.id);
+        responses = responses.filter(r => 
+          r.question_id !== currentQuestion.id && 
+          r.questionId !== currentQuestion.id
+        );
 
         // Update localStorage
-        localStorage.setItem('alm_questions', JSON.stringify(allQuestions));
-        localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
+        if (questions.length > 0) {
+          localStorage.setItem('current_question', JSON.stringify(questions[0]));
+        } else {
+          localStorage.removeItem('current_question');
+        }
+        localStorage.setItem('alm_student_responses', JSON.stringify(responses));
 
-        // Reset selection
-        const selector = document.getElementById('questionSelector');
-        selector.value = '';
-        currentSelectedQuestion = null;
-
-        // Update UI
+        currentQuestion = null;
         updateUI();
-        updateQuestionBoxAppearance();
-
-        showNotification('Question deleted successfully!', 'success');
+        notify('Question deleted successfully');
         
       } catch (error) {
-        console.error('❌ Error deleting question:', error);
-        showNotification('Error deleting question', 'error');
+        console.error('Delete error:', error);
+        notify('Error deleting question');
       } finally {
-        setTimeout(() => {
-          deleteBtn.innerHTML = originalContent;
-          updateDeleteButton();
-        }, 1000);
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.disabled = !currentQuestion;
       }
     }
 
-    // Show notification
-    function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-        <span>${message}</span>
-      `;
+    // View Responses
+    function viewResponses() {
+      if (!currentQuestion) {
+        notify('Please select a question first');
+        return;
+      }
+
+      // Store current data for display
+      localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+      localStorage.setItem('alm_student_responses', JSON.stringify(getResponses()));
       
-      document.body.appendChild(notification);
+      // Launch presentation mode
+      notify('Launching responses view...');
       
-      // Show notification
-      setTimeout(() => notification.classList.add('show'), 100);
-      
-      // Hide and remove notification
       setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
+        window.open('../displays/', '_blank');
+      }, 500);
     }
 
-    // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics Loading...');
+    // Notification
+    function notify(message) {
+      notification.textContent = message;
+      notification.classList.add('show');
       
-      // Initialize Supabase
-      initSupabase();
-      
-      // Set up event listeners
-      const questionSelector = document.getElementById('questionSelector');
-      questionSelector.addEventListener('change', handleQuestionChange);
-      
-      const deleteBtn = document.getElementById('deleteBtn');
-      deleteBtn.addEventListener('click', deleteQuestion);
-      
-      // Presentation mode selection with improved data passing
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          if (!currentSelectedQuestion) {
-            alert('Please select a question first.');
-            return;
-          }
-          
-          // Remove active from all buttons
-          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-          
-          // Add active to clicked button
-          this.classList.add('active');
-          
-          const mode = this.dataset.mode;
-          const modeName = this.querySelector('.mode-name').textContent;
-          
-          console.log(`🎨 Launching ${mode} presentation mode for question:`, currentSelectedQuestion);
-          showNotification(`Launching ${modeName} mode...`, 'info');
-          
-          // Visual feedback
-          this.style.transform = 'scale(0.95)';
-          setTimeout(() => {
-            this.style.transform = 'translateY(-2px)';
-            
-            // Store current question and responses in localStorage for displays to access
-            localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
-            localStorage.setItem('display_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
-            localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
-            localStorage.setItem('alm_student_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
-            
-            // Navigate to appropriate display file
-            let displayUrl = '';
-            switch (mode) {
-              case 'mind-map':
-                displayUrl = '../displays/display1.html';
-                break;
-              case 'stacked':
-                displayUrl = '../displays/display2.html';
-                break;
-              case 'floating':
-                displayUrl = '../displays/display3.html';
-                break;
-              case 'cosmos':
-                displayUrl = '../displays/display4.html';
-                break;
-              default:
-                displayUrl = '../displays/display2.html';
-            }
-            
-            console.log(`🔗 Opening display: ${displayUrl}`);
-            
-            // Open in new tab/window for better user experience
-            window.open(displayUrl, '_blank');
-            
-          }, 100);
-        });
-      });
-      
-      console.log('✅ INTUITY Analytics Ready!');
-    });
-  </script>
-</body>
-</html>
-      console.log('✅ INTUITY Analytics - Clean + Functional Ready!');
-    });
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 2000);
+    }
+
+    // Event Listeners
+    questionDropdown.addEventListener('change', handleQuestionChange);
+    deleteBtn.addEventListener('click', deleteQuestion);
+    viewResponsesBtn.addEventListener('click', viewResponses);
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
