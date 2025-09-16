@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Student Responses</title>
+  <meta charset="UTF-8">
+  <title>INTUITY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
   <style>
     * {
       margin: 0;
@@ -58,6 +59,7 @@
       background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
       box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
       opacity: 0.9;
+      animation: float 8s ease-in-out infinite;
     }
 
     .curve2 {
@@ -70,6 +72,7 @@
       background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
       box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
       opacity: 0.7;
+      animation: float 10s ease-in-out infinite reverse;
     }
 
     .curve3 {
@@ -82,6 +85,7 @@
       background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
       box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
       opacity: 0.5;
+      animation: drift 6s ease-in-out infinite;
     }
 
     .curve4 {
@@ -94,6 +98,7 @@
       background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
       box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
       opacity: 0.3;
+      animation: pulse 12s ease-in-out infinite;
     }
 
     .curve5 {
@@ -106,6 +111,7 @@
       background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
       box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
       opacity: 0.8;
+      animation: float 9s ease-in-out infinite reverse;
     }
 
     .curve6 {
@@ -117,7 +123,33 @@
       border: 1px solid rgba(255, 160, 80, 0.2);
       background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
       opacity: 0.2;
+      animation: drift 15s ease-in-out infinite reverse;
     }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); opacity: var(--base-opacity, 0.5); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 1deg)); opacity: calc(var(--base-opacity, 0.5) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); opacity: calc(var(--base-opacity, 0.5) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity, 0.3); transform: scale(1) rotate(var(--rotation, 0deg)); }
+      50% { opacity: calc(var(--base-opacity, 0.3) * 1.5); transform: scale(1.02) rotate(var(--rotation, 0deg)); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotation, 0deg)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotation, 0deg) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotation, 0deg) + 0.8deg)); }
+    }
+
+    .curve1 { --base-opacity: 0.9; --rotation: 30deg; }
+    .curve2 { --base-opacity: 0.7; --rotation: -20deg; }
+    .curve3 { --base-opacity: 0.5; --rotation: 60deg; }
+    .curve4 { --base-opacity: 0.3; --rotation: -45deg; }
+    .curve5 { --base-opacity: 0.8; --rotation: 15deg; }
+    .curve6 { --base-opacity: 0.2; --rotation: 80deg; }
 
     .container {
       position: relative;
@@ -135,307 +167,213 @@
     }
 
     .header h1 {
-      font-size: 32px;
+      font-size: 48px;
       font-weight: 800;
       color: #fff;
-      margin-bottom: 8px;
-      letter-spacing: 2px;
-      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+      margin-bottom: 12px;
+      letter-spacing: 3px;
+      text-shadow: 0 0 30px rgba(255, 140, 60, 0.4);
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 30px rgba(255, 140, 60, 0.4); }
+      100% { text-shadow: 0 0 40px rgba(255, 140, 60, 0.6), 0 0 60px rgba(255, 100, 40, 0.3); }
     }
 
     .header p {
-      font-size: 14px;
+      font-size: 16px;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255, 140, 60, 0.8);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .main-content {
       flex: 1;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
-      padding-bottom: 80px;
+      padding: 20px 0;
     }
 
-    .response-container {
+    .navigation-container {
       width: 100%;
-      height: 7cm;
-      position: relative;
-      perspective: 1000px;
-      overflow: hidden;
-    }
-
-    .response-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .response-box {
-      width: 100%;
-      height: 100%;
-      background: #000000;
+      max-width: 500px;
+      background: rgba(0, 0, 0, 0.8);
       border-radius: 20px;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      position: absolute;
-      opacity: 0;
-      transform: translateX(100%);
-    }
-
-    .response-box.active {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .response-box.prev {
-      opacity: 0;
-      transform: translateX(-100%);
-    }
-
-    .response-box:hover {
-      transform: translateY(-2px);
-    }
-
-    .response-box.active:hover {
-      transform: translateX(0) translateY(-2px);
-    }
-
-    .content-area {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      padding: 40px 30px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       text-align: center;
     }
 
-    /* Student Info */
-    .student-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .student-photo {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: rgba(255, 140, 60, 0.2);
-      border: 3px solid rgba(255, 140, 60, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      color: rgba(255, 140, 60, 0.9);
-      font-weight: 600;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4),
-                  0 0 20px rgba(255, 140, 60, 0.3);
-    }
-
-    .student-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .student-name {
-      font-size: 22px;
-      color: rgba(255, 140, 60, 0.9);
-      font-weight: 600;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Response Text */
-    .response-text {
-      font-size: 22px;
+    .nav-title {
+      font-size: 20px;
       color: #fff;
-      font-weight: 400;
-      line-height: 1.5;
-      max-height: 50%;
-      overflow-y: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+      margin-bottom: 30px;
+      font-weight: 600;
     }
 
-    .response-text::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Loading/Empty States */
-    .loading-state {
-      font-size: 18px;
-      color: rgba(255, 140, 60, 0.8);
-      text-align: center;
-    }
-
-    .no-responses {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .no-responses-icon {
-      font-size: 48px;
-      margin-bottom: 15px;
-      opacity: 0.5;
-    }
-
-    .no-responses-text {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .no-responses-subtitle {
-      font-size: 14px;
-      opacity: 0.7;
-    }
-
-    /* Swipe Indicator - Compact under box */
-    .swipe-indicator {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+    .nav-buttons {
       display: flex;
-      gap: 8px;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
+    .nav-button {
+      padding: 18px 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      color: #fff;
+      font-size: 16px;
+      text-decoration: none;
       transition: all 0.3s ease;
-      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 500;
+      backdrop-filter: blur(5px);
     }
 
-    .dot.active {
-      background: rgba(255, 140, 60, 0.8);
-      box-shadow: 0 0 10px rgba(255, 140, 60, 0.4);
-      transform: scale(1.2);
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.15);
+      border-color: rgba(255, 140, 60, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 140, 60, 0.2);
     }
 
-    .dot:hover {
-      background: rgba(255, 140, 60, 0.6);
-      transform: scale(1.1);
+    .nav-button.primary {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.3), rgba(255, 100, 40, 0.3));
+      border-color: rgba(255, 140, 60, 0.5);
     }
 
-    /* Footer */
+    .nav-button.primary:hover {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.5), rgba(255, 100, 40, 0.5));
+      border-color: rgba(255, 140, 60, 0.8);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
     .footer {
-      margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
       padding: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
-      justify-content: space-around;
-      align-items: center;
+      justify-content: center;
+      gap: 15px;
     }
 
-    .nav-button {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
+    .footer-button {
+      padding: 12px 20px;
+      border-radius: 15px;
       border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
       color: rgba(255, 255, 255, 0.7);
-      font-size: 18px;
+      font-size: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
+      font-weight: 500;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .nav-button:hover {
+    .footer-button:hover {
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
-      transform: scale(1.1);
+      transform: translateY(-2px);
     }
 
-    .nav-button:active {
-      transform: scale(0.95);
+    .info-pills {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+      flex-wrap: wrap;
     }
 
-    /* Animations - Same as original */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
-      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
-      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
+    .info-pill {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 20px;
+      padding: 8px 16px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
-      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
-    }
-
-    @keyframes drift {
-      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
-      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
-      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
-      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
-    }
-
-    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
-    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
-    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
-    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
-    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
-    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
-
-    /* Mobile Responsiveness */
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
       }
       
       .header h1 {
-        font-size: 28px;
+        font-size: 36px;
+        letter-spacing: 2px;
       }
       
-      .main-content {
-        padding-bottom: 60px;
+      .header p {
+        font-size: 14px;
       }
       
-      .response-container {
-        height: 6cm;
+      .subtitle {
+        font-size: 12px;
       }
       
-      .response-text {
+      .navigation-container {
+        max-width: 100%;
+        padding: 30px 25px;
+      }
+      
+      .nav-title {
         font-size: 18px;
+        margin-bottom: 25px;
       }
       
-      .student-name {
-        font-size: 18px;
+      .nav-button {
+        padding: 15px 20px;
+        font-size: 15px;
       }
       
-      .student-photo {
-        width: 80px;
-        height: 80px;
-        font-size: 24px;
-        border-width: 2px;
+      .footer {
+        gap: 10px;
       }
       
-      .student-info {
-        margin-bottom: 20px;
-        gap: 12px;
+      .footer-button {
+        padding: 10px 15px;
+        font-size: 13px;
+      }
+      
+      .info-pills {
+        gap: 10px;
+        margin-top: 20px;
+      }
+      
+      .info-pill {
+        font-size: 11px;
+        padding: 6px 12px;
       }
     }
   </style>
@@ -455,313 +393,141 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Student Responses<br>By Majid Nashtai</p>
+      <p>Intuitive Learning</p>
+      <div class="subtitle">By Majid Nashtai</div>
     </header>
 
     <main class="main-content">
-      <div class="response-container">
-        <div class="response-wrapper" id="responseWrapper">
-          <!-- Loading State -->
-          <div class="response-box active" id="loadingBox">
-            <div class="content-area">
-              <div class="loading-state">Loading student responses...</div>
-            </div>
-          </div>
+      <div class="navigation-container">
+        <div class="nav-title">Choose Your Path</div>
+        
+        <div class="nav-buttons">
+          <a href="teachers/questions/" class="nav-button primary">
+            <span class="nav-icon">👨‍🏫</span>
+            <span>Teacher Portal</span>
+          </a>
           
-          <!-- No Responses State -->
-          <div class="response-box" id="noResponsesBox" style="display: none;">
-            <div class="content-area">
-              <div class="no-responses">
-                <div class="no-responses-icon">💭</div>
-                <div class="no-responses-text">No responses yet</div>
-                <div class="no-responses-subtitle">Students haven't submitted responses</div>
-              </div>
-            </div>
-          </div>
+          <a href="students/answers/" class="nav-button">
+            <span class="nav-icon">🎓</span>
+            <span>Student Portal</span>
+          </a>
           
-          <!-- Response boxes will be dynamically created here -->
+          <a href="visualisation/" class="nav-button">
+            <span class="nav-icon">📊</span>
+            <span>Analytics & Reports</span>
+          </a>
         </div>
         
-        <div class="swipe-indicator" id="swipeIndicator" style="display: none;">
-          <!-- Dots will be dynamically created here -->
+        <div class="info-pills">
+          <div class="info-pill">📝 Create Questions</div>
+          <div class="info-pill">💭 Collect Responses</div>
+          <div class="info-pill">📈 Visualize Data</div>
         </div>
       </div>
     </main>
 
     <footer class="footer">
-      <a href="../visualisation/" class="nav-button" title="Back to Analytics">←</a>
-      <a href="../" class="nav-button" title="Home">⌂</a>
-      <button class="nav-button" id="nextBtn" title="Next Response">→</button>
+      <a href="https://github.com/majidnashtai" class="footer-button" target="_blank">
+        <span>💻</span>
+        <span>GitHub</span>
+      </a>
+      
+      <a href="mailto:majid@nashtai.com" class="footer-button">
+        <span>📧</span>
+        <span>Contact</span>
+      </a>
+      
+      <a href="https://majidnashtai.com" class="footer-button" target="_blank">
+        <span>🌐</span>
+        <span>Portfolio</span>
+      </a>
     </footer>
   </div>
 
   <script>
-    // Global State
-    let responses = [];
-    let currentSlide = 0;
-    let totalResponses = 0;
-    let isAnimating = false;
-
-    // Elements
-    const responseWrapper = document.getElementById('responseWrapper');
-    const swipeIndicator = document.getElementById('swipeIndicator');
-    const loadingBox = document.getElementById('loadingBox');
-    const noResponsesBox = document.getElementById('noResponsesBox');
-    const nextBtn = document.getElementById('nextBtn');
-
-    // Load Data
-    function loadData() {
-      try {
-        // Load from localStorage
-        const storedResponses = localStorage.getItem('display_responses') || 
-                               localStorage.getItem('alm_student_responses') || 
-                               '[]';
-        
-        responses = JSON.parse(storedResponses);
-        totalResponses = responses.length;
-        
-        console.log('Loaded responses:', responses);
-        
-        if (totalResponses === 0) {
-          showNoResponses();
-          return;
+    // Add some interactive sparkle effects
+    function createSparkles() {
+      const container = document.querySelector('.navigation-container');
+      
+      setInterval(() => {
+        if (Math.random() > 0.85) { // 15% chance every interval
+          const sparkle = document.createElement('div');
+          sparkle.innerHTML = '✨';
+          sparkle.style.position = 'absolute';
+          sparkle.style.left = Math.random() * 100 + '%';
+          sparkle.style.top = Math.random() * 100 + '%';
+          sparkle.style.fontSize = '16px';
+          sparkle.style.pointerEvents = 'none';
+          sparkle.style.zIndex = '15';
+          sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
+          
+          const style = document.createElement('style');
+          style.textContent = `
+            @keyframes sparkleFloat {
+              0% { opacity: 0; transform: translateY(20px) scale(0.5); }
+              50% { opacity: 1; transform: translateY(-10px) scale(1); }
+              100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
+            }
+          `;
+          document.head.appendChild(style);
+          
+          container.appendChild(sparkle);
+          
+          setTimeout(() => {
+            sparkle.remove();
+            style.remove();
+          }, 2000);
         }
-
-        createResponseBoxes();
-        setupNavigation();
-        
-        setTimeout(() => {
-          hideLoading();
-          showResponse(0);
-        }, 1000);
-        
-      } catch (error) {
-        console.error('Error loading responses:', error);
-        showNoResponses();
-      }
+      }, 2000);
     }
 
-    // Show No Responses
-    function showNoResponses() {
-      loadingBox.classList.remove('active');
-      noResponsesBox.style.display = 'block';
-      noResponsesBox.classList.add('active');
-    }
-
-    // Hide Loading
-    function hideLoading() {
-      loadingBox.classList.remove('active');
-      loadingBox.style.display = 'none';
-    }
-
-    // Create Response Boxes
-    function createResponseBoxes() {
-      responses.forEach((response, index) => {
-        const responseBox = document.createElement('div');
-        responseBox.className = 'response-box';
-        responseBox.id = `response-${index}`;
+    // Add hover effects to navigation buttons
+    function enhanceNavButtons() {
+      const navButtons = document.querySelectorAll('.nav-button');
+      
+      navButtons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+          // Add subtle glow effect
+          button.style.boxShadow = '0 15px 35px rgba(255, 140, 60, 0.3), 0 0 20px rgba(255, 140, 60, 0.2)';
+        });
         
-        const contentArea = document.createElement('div');
-        contentArea.className = 'content-area';
+        button.addEventListener('mouseleave', () => {
+          // Remove glow effect
+          button.style.boxShadow = '';
+        });
         
-        // Student Info
-        const studentInfo = document.createElement('div');
-        studentInfo.className = 'student-info';
-        
-        const studentPhoto = document.createElement('div');
-        studentPhoto.className = 'student-photo';
-        
-        const studentName = response.student_name || response.studentName || 'Anonymous';
-        
-        // Handle photo with multiple possible sources
-        let photoUrl = null;
-        
-        if (response.photo_url) {
-          photoUrl = response.photo_url;
-        } else if (response.metadata && response.metadata.photo_url) {
-          photoUrl = response.metadata.photo_url;
-        } else if (response.photoUrl) {
-          photoUrl = response.photoUrl;
-        }
-        
-        if (photoUrl) {
-          const img = document.createElement('img');
-          img.src = photoUrl;
-          img.alt = studentName;
-          img.onerror = () => {
-            studentPhoto.innerHTML = getInitials(studentName);
-          };
-          studentPhoto.appendChild(img);
-        } else {
-          studentPhoto.innerHTML = getInitials(studentName);
-        }
-        
-        const nameElement = document.createElement('div');
-        nameElement.className = 'student-name';
-        nameElement.textContent = studentName;
-        
-        studentInfo.appendChild(studentPhoto);
-        studentInfo.appendChild(nameElement);
-        
-        // Response Text
-        const responseText = document.createElement('div');
-        responseText.className = 'response-text';
-        responseText.textContent = response.answer || response.response || 'No response provided';
-        
-        contentArea.appendChild(studentInfo);
-        contentArea.appendChild(responseText);
-        responseBox.appendChild(contentArea);
-        
-        responseWrapper.appendChild(responseBox);
+        button.addEventListener('click', (e) => {
+          // Add click animation
+          button.style.transform = 'translateY(1px) scale(0.98)';
+          setTimeout(() => {
+            button.style.transform = '';
+          }, 150);
+        });
       });
     }
 
-    // Get Initials
-    function getInitials(name) {
-      return name
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase())
-        .slice(0, 2)
-        .join('');
-    }
-
-    // Setup Navigation
-    function setupNavigation() {
-      // Create dots
-      swipeIndicator.style.display = 'flex';
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 INTUITY Landing Page Loading...');
       
-      for (let i = 0; i < totalResponses; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        if (i === 0) dot.classList.add('active');
-        
-        dot.addEventListener('click', () => showResponse(i));
-        swipeIndicator.appendChild(dot);
-      }
-    }
-
-    // Show Response
-    function showResponse(index) {
-      if (isAnimating || index === currentSlide || index < 0 || index >= totalResponses) return;
+      // Start sparkle effects
+      setTimeout(createSparkles, 2000);
       
-      isAnimating = true;
+      // Enhance navigation buttons
+      enhanceNavButtons();
       
-      // Update dots
-      const dots = document.querySelectorAll('.dot');
-      dots[currentSlide].classList.remove('active');
-      dots[index].classList.add('active');
-      
-      // Update response boxes
-      const currentBox = document.getElementById(`response-${currentSlide}`);
-      const nextBox = document.getElementById(`response-${index}`);
-      
-      if (currentBox) {
-        currentBox.classList.remove('active');
-        currentBox.classList.add('prev');
-      }
-      
-      if (nextBox) {
-        nextBox.classList.remove('prev');
-        nextBox.classList.add('active');
-      }
-      
-      currentSlide = index;
+      // Add welcome animation
+      const navContainer = document.querySelector('.navigation-container');
+      navContainer.style.opacity = '0';
+      navContainer.style.transform = 'translateY(30px)';
       
       setTimeout(() => {
-        isAnimating = false;
-        // Clean up prev classes
-        if (currentBox) {
-          currentBox.classList.remove('prev');
-        }
+        navContainer.style.transition = 'all 0.8s ease-out';
+        navContainer.style.opacity = '1';
+        navContainer.style.transform = 'translateY(0)';
       }, 500);
-    }
-
-    // Navigate
-    function navigate(direction) {
-      const newIndex = currentSlide + direction;
       
-      if (newIndex >= totalResponses) {
-        showResponse(0); // Loop to beginning
-      } else if (newIndex < 0) {
-        showResponse(totalResponses - 1); // Loop to end
-      } else {
-        showResponse(newIndex);
-      }
-    }
-
-    // Event Listeners
-    nextBtn.addEventListener('click', () => navigate(1));
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (totalResponses === 0 || isAnimating) return;
-      
-      switch(e.key) {
-        case 'ArrowRight':
-        case ' ':
-        case 'Enter':
-          e.preventDefault();
-          navigate(1);
-          break;
-        case 'ArrowLeft':
-          e.preventDefault();
-          navigate(-1);
-          break;
-        case 'Escape':
-          window.close();
-          break;
-      }
-    });
-
-    // Click navigation (like original)
-    document.addEventListener('click', (e) => {
-      if (totalResponses === 0 || isAnimating) return;
-      if (e.target.classList.contains('dot') || e.target.classList.contains('nav-button')) return;
-      
-      // Click on right side = next, left side = previous
-      if (e.clientX > window.innerWidth / 2) {
-        navigate(1);
-      } else {
-        navigate(-1);
-      }
-    });
-
-    // Touch support (like original)
-    let startY = 0;
-    let currentY = 0;
-    let isDragging = false;
-
-    responseWrapper.addEventListener('touchstart', (e) => {
-      startY = e.touches[0].clientY;
-      isDragging = true;
-    });
-
-    responseWrapper.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      currentY = e.touches[0].clientY;
-    });
-
-    responseWrapper.addEventListener('touchend', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      
-      const diffY = startY - currentY;
-      const threshold = 50;
-      
-      if (Math.abs(diffY) > threshold) {
-        if (diffY > 0) {
-          navigate(1);
-        } else {
-          navigate(-1);
-        }
-      }
-    });
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🎨 INTUITY Response Display Loading...');
-      loadData();
+      console.log('✅ INTUITY Landing Page Ready!');
     });
   </script>
 </body>
