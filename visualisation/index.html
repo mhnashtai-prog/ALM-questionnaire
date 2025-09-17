@@ -477,6 +477,26 @@
       transform: translateX(0);
     }
 
+    /* Debug info */
+    .debug-info {
+      position: fixed;
+      top: 60px;
+      right: 10px;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #0f0;
+      font-size: 10px;
+      font-family: monospace;
+      border-radius: 4px;
+      max-width: 200px;
+      display: none;
+      z-index: 1001;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
     /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .container {
@@ -526,6 +546,9 @@
 
   <!-- Connection Status -->
   <div class="connection-status" id="connectionStatus">Connecting...</div>
+
+  <!-- Debug info -->
+  <div class="debug-info" id="debugInfo"></div>
 
   <div class="container">
     <header class="header">
@@ -586,6 +609,7 @@
     let isConnected = false;
     let realtimeSubscription = null;
     let lastResponseCount = 0;
+    let debugMode = false;
 
     // Elements
     const questionDropdown = document.getElementById('questionDropdown');
@@ -596,35 +620,78 @@
     const displayBtn = document.getElementById('displayBtn');
     const notification = document.getElementById('notification');
     const connectionStatus = document.getElementById('connectionStatus');
+    const debugInfo = document.getElementById('debugInfo');
 
-    // Debug function for troubleshooting
+    // Debug function for troubleshooting - ENHANCED
     function debugLocalStorage() {
-      console.log('=== LocalStorage Debug ===');
-      console.log('alm_student_responses:', localStorage.getItem('alm_student_responses'));
-      console.log('display_responses:', localStorage.getItem('display_responses'));
-      console.log('current_question:', localStorage.getItem('current_question'));
-      console.log('display_question:', localStorage.getItem('display_question'));
-      console.log('questions array:', questions.length);
-      console.log('responses array:', responses.length);
-      console.log('current question:', currentQuestion);
+      console.log('=== INTUITY DEBUG INFO ===');
+      console.log('Questions array:', questions);
+      console.log('Responses array:', responses);
+      console.log('Current question:', currentQuestion);
+      console.log('Connection status:', isConnected);
+      console.log('=== LocalStorage ===');
+      
+      const almResponses = localStorage.getItem('alm_student_responses');
+      const displayResponses = localStorage.getItem('display_responses');
+      const currentQ = localStorage.getItem('current_question');
+      const displayQ = localStorage.getItem('display_question');
+      
+      console.log('alm_student_responses:', almResponses ? JSON.parse(almResponses) : null);
+      console.log('display_responses:', displayResponses ? JSON.parse(displayResponses) : null);
+      console.log('current_question:', currentQ ? JSON.parse(currentQ) : null);
+      console.log('display_question:', displayQ ? JSON.parse(displayQ) : null);
+      
+      // Show debug info on screen
+      if (debugMode) {
+        const info = {
+          questions: questions.length,
+          responses: responses.length,
+          localStorage: {
+            alm: almResponses ? JSON.parse(almResponses).length : 0,
+            display: displayResponses ? JSON.parse(displayResponses).length : 0
+          },
+          currentQ: currentQuestion?.text?.substring(0, 30) + '...' || 'none'
+        };
+        debugInfo.textContent = JSON.stringify(info, null, 2);
+        debugInfo.classList.add('show');
+      } else {
+        debugInfo.classList.remove('show');
+      }
+      
+      return {
+        questions,
+        responses,
+        currentQuestion,
+        localStorage: {
+          alm_student_responses: almResponses ? JSON.parse(almResponses) : null,
+          display_responses: displayResponses ? JSON.parse(displayResponses) : null,
+          current_question: currentQ ? JSON.parse(currentQ) : null,
+          display_question: displayQ ? JSON.parse(displayQ) : null
+        }
+      };
     }
 
     // Initialize
     async function init() {
+      console.log('🚀 INTUITY Analytics initializing...');
+      
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         await loadData();
         setupRealtimeSubscription();
       } catch (error) {
-        console.error('Failed to initialize:', error);
+        console.error('Failed to initialize database connection:', error);
+        isConnected = false;
+        updateConnectionStatus();
         loadLocalData();
       }
 
       // Setup automatic refresh
       setupAutoRefresh();
+      console.log('✅ Analytics initialized');
     }
 
-    // Load Data from Supabase and LocalStorage
+    // Load Data from Supabase and LocalStorage - FIXED
     async function loadData() {
       try {
         // Test connection
@@ -637,16 +704,21 @@
         isConnected = true;
         updateConnectionStatus();
 
-        // Load questions
+        // Load questions from database
         const { data: questionsData, error: questionsError } = await supabase
           .from('questions')
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (questionsError) throw questionsError;
-        questions = questionsData || [];
+        if (questionsError) {
+          console.warn('Error loading questions:', questionsError);
+          questions = [];
+        } else {
+          questions = questionsData || [];
+          console.log(`📚 Loaded ${questions.length} questions from database`);
+        }
 
-        // Load responses
+        // Load responses from database
         const { data: responsesData, error: responsesError } = await supabase
           .from('student_responses')
           .select('*')
@@ -657,102 +729,107 @@
           responses = [];
         } else {
           responses = responsesData || [];
+          console.log(`💬 Loaded ${responses.length} responses from database`);
         }
 
-        // ALWAYS load and merge localStorage data
-        loadLocalBackupData();
+        // ALWAYS load localStorage data and merge
+        loadLocalStorageData();
         updateUI();
         notify('Connected to database');
         
       } catch (error) {
         console.error('Database error:', error);
-        updateConnectionStatus(false);
+        isConnected = false;
+        updateConnectionStatus();
         loadLocalData();
       }
     }
 
-    // Load from Local Storage as backup - FIXED VERSION
-    function loadLocalBackupData() {
+    // Load from Local Storage ONLY - FIXED
+    function loadLocalData() {
+      console.log('📱 Loading data from localStorage only...');
+      updateConnectionStatus(false);
+      
+      loadLocalStorageData();
+      updateUI();
+      notify('Using offline data');
+    }
+
+    // Load localStorage data - COMPLETELY REWRITTEN
+    function loadLocalStorageData() {
       try {
-        const localResponses = localStorage.getItem('alm_student_responses');
-        if (localResponses) {
-          const parsedLocal = JSON.parse(localResponses) || [];
-          console.log('Found local responses:', parsedLocal.length);
-          
-          parsedLocal.forEach(localResponse => {
-            // More robust duplicate checking
-            const exists = responses.find(r => {
-              const matchName = (r.student_name || r.studentName) === (localResponse.studentName || localResponse.student_name);
-              const matchAnswer = r.answer === localResponse.answer;
-              const matchTime = Math.abs(new Date(r.created_at || r.timestamp) - new Date(localResponse.timestamp || localResponse.created_at)) < 60000;
-              return matchName && matchAnswer && matchTime;
+        // Load questions from localStorage
+        const storedQuestion = localStorage.getItem('current_question');
+        if (storedQuestion) {
+          try {
+            const parsed = JSON.parse(storedQuestion);
+            const localQuestions = Array.isArray(parsed) ? parsed : [parsed];
+            
+            // Merge with existing questions (avoid duplicates)
+            localQuestions.forEach(localQ => {
+              const exists = questions.find(q => 
+                q.id === localQ.id || 
+                (q.text || q.question_text) === (localQ.text || localQ.question_text)
+              );
+              if (!exists) {
+                questions.push(localQ);
+              }
             });
             
-            if (!exists) {
-              // Normalize the format
-              responses.push({
-                id: localResponse.id || ('local_' + Date.now() + Math.random()),
-                question_id: localResponse.questionId || localResponse.question_id,
-                student_name: localResponse.studentName || localResponse.student_name,
-                answer: localResponse.answer,
-                word_count: localResponse.wordCount || localResponse.word_count,
-                photo_url: localResponse.photoUrl || localResponse.photo_url,
-                created_at: localResponse.timestamp || localResponse.created_at,
-                metadata: localResponse
-              });
-            }
-          });
-        }
-
-        // Load questions from localStorage if needed
-        const localQuestion = localStorage.getItem('current_question');
-        if (localQuestion && questions.length === 0) {
-          try {
-            const parsed = JSON.parse(localQuestion);
-            questions = Array.isArray(parsed) ? parsed : [parsed];
-            console.log('Loaded questions from localStorage:', questions.length);
-          } catch (e) {
-            console.warn('Error parsing local question:', e);
+            console.log(`📚 Added ${localQuestions.length} questions from localStorage`);
+          } catch (parseError) {
+            console.warn('Error parsing stored question:', parseError);
           }
         }
 
-      } catch (error) {
-        console.warn('Error loading local backup data:', error);
-      }
-    }
-
-    // Load from Local Storage ONLY
-    function loadLocalData() {
-      try {
-        updateConnectionStatus(false);
-        
-        const storedQuestion = localStorage.getItem('current_question');
-        if (storedQuestion) {
-          const parsed = JSON.parse(storedQuestion);
-          questions = Array.isArray(parsed) ? parsed : [parsed];
-        }
-
+        // Load responses from localStorage - THE KEY FIX
         const storedResponses = localStorage.getItem('alm_student_responses');
         if (storedResponses) {
-          const localResponses = JSON.parse(storedResponses) || [];
-          responses = localResponses.map(lr => ({
-            id: lr.id || ('local_' + Date.now() + Math.random()),
-            question_id: lr.questionId || lr.question_id,
-            student_name: lr.studentName || lr.student_name,
-            answer: lr.answer,
-            word_count: lr.wordCount || lr.word_count,
-            photo_url: lr.photoUrl || lr.photo_url,
-            created_at: lr.timestamp || lr.created_at,
-            metadata: lr
-          }));
+          try {
+            const localResponses = JSON.parse(storedResponses) || [];
+            console.log(`💬 Found ${localResponses.length} responses in localStorage`);
+            
+            localResponses.forEach(localResponse => {
+              // Check for duplicates more carefully
+              const exists = responses.find(r => {
+                const nameMatch = (r.student_name || r.studentName) === (localResponse.studentName || localResponse.student_name);
+                const answerMatch = r.answer === localResponse.answer;
+                const timeMatch = Math.abs(
+                  new Date(r.created_at || r.timestamp) - 
+                  new Date(localResponse.timestamp || localResponse.created_at)
+                ) < 60000; // Within 1 minute
+                return nameMatch && answerMatch && timeMatch;
+              });
+              
+              if (!exists) {
+                // Normalize the response format
+                const normalizedResponse = {
+                  id: localResponse.id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                  question_id: localResponse.questionId || localResponse.question_id,
+                  student_name: localResponse.studentName || localResponse.student_name,
+                  answer: localResponse.answer,
+                  word_count: localResponse.wordCount || localResponse.word_count || (localResponse.answer ? localResponse.answer.split(/\s+/).length : 0),
+                  photo_url: localResponse.photoUrl || localResponse.photo_url,
+                  created_at: localResponse.timestamp || localResponse.created_at,
+                  // Keep original data in metadata for reference
+                  metadata: localResponse
+                };
+                
+                responses.push(normalizedResponse);
+                console.log(`✅ Added response from ${normalizedResponse.student_name}`);
+              }
+            });
+            
+            console.log(`💬 Total responses after localStorage merge: ${responses.length}`);
+          } catch (parseError) {
+            console.error('Error parsing stored responses:', parseError);
+          }
+        } else {
+          console.log('📭 No responses found in localStorage');
         }
 
-        updateUI();
-        notify('Using offline data');
-        
       } catch (error) {
-        console.error('Local storage error:', error);
-        showNoQuestions();
+        console.error('Error loading localStorage data:', error);
       }
     }
 
@@ -766,7 +843,7 @@
           .on('postgres_changes', 
             { event: 'INSERT', schema: 'public', table: 'student_responses' },
             (payload) => {
-              console.log('New response received:', payload.new);
+              console.log('📨 New response received via realtime:', payload.new);
               responses.unshift(payload.new);
               updateCurrentQuestionDisplay();
               
@@ -782,58 +859,55 @@
           .on('postgres_changes',
             { event: 'DELETE', schema: 'public', table: 'student_responses' },
             (payload) => {
-              console.log('Response deleted:', payload.old);
+              console.log('🗑️ Response deleted via realtime:', payload.old);
               responses = responses.filter(r => r.id !== payload.old.id);
               updateCurrentQuestionDisplay();
             }
           )
           .subscribe();
 
-        console.log('Real-time subscription established');
+        console.log('🔄 Real-time subscription established');
         
       } catch (error) {
         console.error('Error setting up real-time subscription:', error);
       }
     }
 
-    // Setup automatic refresh - FIXED VERSION
+    // Setup automatic refresh - SIMPLIFIED
     function setupAutoRefresh() {
-      // Refresh every 10 seconds
+      // Check localStorage every 5 seconds for new responses
+      setInterval(() => {
+        const previousResponseCount = responses.length;
+        loadLocalStorageData();
+        
+        if (responses.length > previousResponseCount) {
+          console.log(`🔄 Found ${responses.length - previousResponseCount} new responses`);
+          updateUI();
+        }
+      }, 5000);
+
+      // Refresh database data every 30 seconds if online
       setInterval(async () => {
         if (isConnected) {
-          // When online, refresh database data
           try {
             await loadData();
           } catch (error) {
             console.warn('Auto-refresh failed:', error);
-            // Fall back to local data if database fails
-            loadLocalBackupData();
-            updateUI();
           }
-        } else {
-          // When offline, always check localStorage for new data
-          loadLocalBackupData();
-          updateUI();
         }
-      }, 10000);
+      }, 30000);
 
-      // Also refresh when page gains focus
+      // Refresh when page gains focus
       window.addEventListener('focus', () => {
         setTimeout(() => {
           if (isConnected) {
             loadData();
           } else {
-            loadLocalBackupData();
+            loadLocalStorageData();
             updateUI();
           }
-        }, 1000);
+        }, 500);
       });
-
-      // Manual refresh every 30 seconds for localStorage even when online
-      setInterval(() => {
-        loadLocalBackupData();
-        updateUI();
-      }, 30000);
     }
 
     // Update connection status
@@ -850,78 +924,88 @@
 
     // Update UI
     function updateUI() {
+      console.log(`🔄 Updating UI: ${questions.length} questions, ${responses.length} responses`);
+      
       if (questions.length === 0) {
         showNoQuestions();
         return;
       }
 
       populateDropdown();
+      
+      // Set current question if none selected
+      if (!currentQuestion && questions.length > 0) {
+        // Try to find the most recent question
+        const latestQuestion = questions.find(q => q.is_published || q.id === 'demo') || questions[0];
+        currentQuestion = latestQuestion;
+        questionDropdown.value = currentQuestion.id || '0';
+      }
+      
       if (currentQuestion) {
         displayQuestion();
-      } else {
-        selectFirstQuestion();
       }
     }
 
     // Show No Questions State
     function showNoQuestions() {
-      questionText.innerHTML = '<div class="no-question">No questions found<br><span style="font-size: 14px; opacity: 0.6;">Create one first</span></div>';
+      questionText.innerHTML = '<div class="no-question">No questions found<br><span style="font-size: 14px; opacity: 0.6;">Create one first or check localStorage</span></div>';
       questionDropdown.innerHTML = '<option value="">No questions available</option>';
       responseCount.textContent = '0 responses';
       deleteBtn.disabled = true;
       displayBtn.disabled = true;
     }
 
-    // Populate Dropdown
+    // Populate Dropdown - ENHANCED
     function populateDropdown() {
       questionDropdown.innerHTML = '';
       
       questions.forEach((question, index) => {
         const option = document.createElement('option');
-        option.value = question.id || index;
+        option.value = question.id || index.toString();
         
         const questionStr = question.text || question.question_text || 'Untitled Question';
         const responseCountForQ = getResponseCountForQuestion(question);
-        option.textContent = `Q${index + 1}: ${questionStr.substring(0, 40)}${questionStr.length > 40 ? '...' : ''} (${responseCountForQ})`;
+        const prefix = question.id === 'demo' ? 'DEMO' : `Q${index + 1}`;
+        
+        option.textContent = `${prefix}: ${questionStr.substring(0, 35)}${questionStr.length > 35 ? '...' : ''} (${responseCountForQ})`;
         questionDropdown.appendChild(option);
       });
+      
+      console.log(`📋 Populated dropdown with ${questions.length} questions`);
     }
 
-    // Get response count for a specific question - IMPROVED VERSION
+    // Get response count for a specific question - FIXED
     function getResponseCountForQuestion(question) {
-      return responses.filter(response => {
-        // Exact ID matches (preferred)
-        if (response.question_id === question.id || 
-            response.questionId === question.id) {
+      if (!question) return 0;
+      
+      const matchingResponses = responses.filter(response => {
+        // Try exact ID match first
+        if (response.question_id === question.id || response.questionId === question.id) {
           return true;
         }
         
-        // Text matches (fallback)
+        // Try text match as fallback
         const questionText = question.text || question.question_text;
-        const responseQuestionText = response.questionText || response.question_text;
+        const responseQuestionText = response.metadata?.questionText || response.questionText;
         
-        if (questionText && responseQuestionText && 
-            questionText.trim() === responseQuestionText.trim()) {
-          return true;
+        if (questionText && responseQuestionText) {
+          return questionText.trim().toLowerCase() === responseQuestionText.trim().toLowerCase();
         }
         
-        // Demo mode special case
-        if (question.id === 'demo' && 
-            (response.question_id === 'demo' || response.questionId === 'demo')) {
+        // Demo question special case
+        if (question.id === 'demo' && (
+            response.question_id === 'demo' || 
+            response.questionId === 'demo' ||
+            (response.metadata?.questionText || '').includes('Demo')
+          )) {
           return true;
         }
         
         return false;
-      }).length;
-    }
-
-    // Select First Question
-    function selectFirstQuestion() {
-      if (questions.length > 0) {
-        currentQuestion = questions[0];
-        questionDropdown.value = currentQuestion.id || 0;
-        displayQuestion();
-      }
+      });
+      
+      console.log(`🔢 Question "${question.text || question.question_text}" has ${matchingResponses.length} responses`);
+      return matchingResponses.length;
     }
 
     // Display Selected Question
@@ -930,11 +1014,12 @@
 
       const questionStr = currentQuestion.text || currentQuestion.question_text || 'Untitled Question';
       questionText.textContent = questionStr;
+      console.log(`📝 Displaying question: ${questionStr.substring(0, 50)}...`);
 
       updateCurrentQuestionDisplay();
     }
 
-    // Update current question display - FIXED VERSION (no localStorage corruption)
+    // Update current question display - FIXED
     function updateCurrentQuestionDisplay() {
       if (!currentQuestion) return;
 
@@ -942,6 +1027,7 @@
       const countText = `${count} response${count !== 1 ? 's' : ''}`;
       responseCount.textContent = countText;
       
+      // Pulse animation for new responses
       if (count > lastResponseCount) {
         responseCount.classList.add('live-update');
         setTimeout(() => {
@@ -953,65 +1039,76 @@
       deleteBtn.disabled = false;
       displayBtn.disabled = count === 0;
 
-      // Store for display - ONLY store display-specific data
+      // Store for display interface - Clean format
       const questionForDisplay = {
-        ...currentQuestion,
-        questionText: currentQuestion.text || currentQuestion.question_text
+        id: currentQuestion.id,
+        text: currentQuestion.text || currentQuestion.question_text,
+        question_text: currentQuestion.text || currentQuestion.question_text,
+        questionText: currentQuestion.text || currentQuestion.question_text // For compatibility
       };
       
       const responsesForDisplay = getResponses().map(r => ({
-        ...r,
-        studentName: r.student_name || r.studentName,
-        questionText: questionForDisplay.questionText,
-        timestamp: r.created_at || r.timestamp
+        id: r.id,
+        student_name: r.student_name || r.studentName,
+        studentName: r.student_name || r.studentName, // For compatibility
+        answer: r.answer,
+        word_count: r.word_count,
+        photo_url: r.photo_url,
+        created_at: r.created_at,
+        question_id: currentQuestion.id,
+        questionText: questionForDisplay.questionText
       }));
       
-      // FIXED: Only store display data, don't overwrite original data
+      // Store display data
       localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
       localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
       
-      // DO NOT overwrite the original alm_student_responses
-      // localStorage.setItem('alm_student_responses', JSON.stringify(responsesForDisplay)); // REMOVED THIS LINE
+      console.log(`💾 Stored display data: ${responsesForDisplay.length} responses for question "${questionForDisplay.questionText}"`);
     }
 
-    // Get Response Count
+    // Get Response Count for current question
     function getResponseCount() {
       return getResponses().length;
     }
 
-    // Get Responses for Current Question - IMPROVED VERSION
+    // Get Responses for Current Question - FIXED
     function getResponses() {
       if (!currentQuestion) return [];
       
-      return responses.filter(response => {
-        // Exact ID matches (preferred)
-        if (response.question_id === currentQuestion.id || 
-            response.questionId === currentQuestion.id) {
+      const matchingResponses = responses.filter(response => {
+        // Try exact ID match first
+        if (response.question_id === currentQuestion.id || response.questionId === currentQuestion.id) {
           return true;
         }
         
-        // Text matches (fallback)
+        // Try text match as fallback
         const questionText = currentQuestion.text || currentQuestion.question_text;
-        const responseQuestionText = response.questionText || response.question_text;
+        const responseQuestionText = response.metadata?.questionText || response.questionText;
         
-        if (questionText && responseQuestionText && 
-            questionText.trim() === responseQuestionText.trim()) {
-          return true;
+        if (questionText && responseQuestionText) {
+          return questionText.trim().toLowerCase() === responseQuestionText.trim().toLowerCase();
         }
         
-        // Demo mode special case
-        if (currentQuestion.id === 'demo' && 
-            (response.question_id === 'demo' || response.questionId === 'demo')) {
+        // Demo question special case
+        if (currentQuestion.id === 'demo' && (
+            response.question_id === 'demo' || 
+            response.questionId === 'demo' ||
+            (response.metadata?.questionText || '').includes('Demo')
+          )) {
           return true;
         }
         
         return false;
       });
+      
+      return matchingResponses;
     }
 
     // Handle Question Selection
     function handleQuestionChange() {
       const selectedValue = questionDropdown.value;
+      console.log(`🎯 Question selected: ${selectedValue}`);
+      
       if (!selectedValue) {
         currentQuestion = null;
         questionText.innerHTML = '<div class="no-question">Select a question</div>';
@@ -1021,12 +1118,14 @@
         return;
       }
 
+      // Find question by ID or index
       currentQuestion = questions.find(q => 
         (q.id && q.id == selectedValue) || 
         questions.indexOf(q) == selectedValue
-      );
+      ) || questions[0];
 
       if (currentQuestion) {
+        console.log(`✅ Selected question: "${currentQuestion.text || currentQuestion.question_text}"`);
         displayQuestion();
       }
     }
@@ -1040,9 +1139,10 @@
         loadData().finally(() => {
           refreshBtn.innerHTML = '🔄';
           refreshBtn.disabled = false;
+          notify('Data refreshed from database');
         });
       } else {
-        loadLocalBackupData();
+        loadLocalStorageData();
         updateUI();
         notify('Local data refreshed');
         setTimeout(() => {
@@ -1063,6 +1163,7 @@
       deleteBtn.disabled = true;
 
       try {
+        // Delete from database if online
         if (isConnected && currentQuestion.id && currentQuestion.id !== 'demo') {
           const { error: responseError } = await supabase
             .from('student_responses')
@@ -1091,17 +1192,11 @@
           localStorage.removeItem('current_question');
         }
         
-        // Update stored responses
-        const localFormatResponses = responses.map(r => ({
-          questionId: r.question_id || r.questionId,
-          questionText: r.questionText,
-          studentName: r.student_name || r.studentName,
-          answer: r.answer,
-          wordCount: r.word_count || r.wordCount,
-          timestamp: r.created_at || r.timestamp,
-          photoUrl: r.photo_url || r.photoUrl
-        }));
-        localStorage.setItem('alm_student_responses', JSON.stringify(localFormatResponses));
+        // Clean up responses in localStorage
+        const localResponses = responses
+          .filter(r => r.metadata) // Only keep responses that came from localStorage
+          .map(r => r.metadata);
+        localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
 
         currentQuestion = null;
         updateUI();
@@ -1132,7 +1227,7 @@
       // Ensure latest data is stored
       updateCurrentQuestionDisplay();
       
-      // Launch display
+      console.log(`🚀 Launching display with ${responsesForQuestion.length} responses for question: "${currentQuestion.text || currentQuestion.question_text}"`);
       notify(`Launching display with ${responsesForQuestion.length} responses...`);
       
       setTimeout(() => {
@@ -1142,12 +1237,20 @@
 
     // Notification
     function notify(message) {
+      console.log(`📢 ${message}`);
       notification.textContent = message;
       notification.classList.add('show');
       
       setTimeout(() => {
         notification.classList.remove('show');
       }, 3000);
+    }
+
+    // Toggle debug mode
+    function toggleDebugMode() {
+      debugMode = !debugMode;
+      debugLocalStorage();
+      notify(`Debug mode ${debugMode ? 'enabled' : 'disabled'}`);
     }
 
     // Cleanup function
@@ -1157,11 +1260,16 @@
       }
     }
 
-    // Storage event listener - improved
+    // Storage event listener - Listen for new student responses
     window.addEventListener('storage', (e) => {
-      if (e.key === 'alm_student_responses' || e.key === 'current_question') {
-        console.log('Storage change detected:', e.key);
-        loadLocalBackupData();
+      if (e.key === 'alm_student_responses') {
+        console.log('🔄 Student responses updated in localStorage');
+        loadLocalStorageData();
+        updateUI();
+        notify('New responses detected!');
+      } else if (e.key === 'current_question') {
+        console.log('🔄 Current question updated in localStorage');
+        loadLocalStorageData();
         updateUI();
       }
     });
@@ -1172,10 +1280,14 @@
     refreshBtn.addEventListener('click', manualRefresh);
     displayBtn.addEventListener('click', launchDisplay);
 
-    // Debug keyboard shortcut
+    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-        debugLocalStorage();
+        toggleDebugMode();
+      }
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        manualRefresh();
       }
     });
 
@@ -1185,8 +1297,12 @@
     // Initialize on load
     document.addEventListener('DOMContentLoaded', init);
 
-    // Expose debug function globally for console access
+    // Expose debug functions globally
     window.debugIntuity = debugLocalStorage;
+    window.toggleIntuityDebug = toggleDebugMode;
+    
+    console.log('💡 Debug shortcuts: Ctrl+Shift+D (toggle debug), Ctrl+R (refresh)');
+    console.log('💡 Console commands: debugIntuity(), toggleIntuityDebug()');
   </script>
 </body>
 </html>
