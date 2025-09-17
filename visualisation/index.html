@@ -157,8 +157,10 @@
     .main-content {
       flex: 1;
       display: flex;
-      align-items: flex-end;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
+      gap: 20px;
       padding-bottom: 140px;
     }
 
@@ -328,7 +330,71 @@
       transform: none;
     }
 
-    /* SIMPLIFIED FOOTER - Only 3 buttons */
+    /* RESTORED PRESENTATION MODES */
+    .presentation-modes {
+      background: rgba(64, 64, 64, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      width: 100%;
+    }
+
+    .modes-title {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 15px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .mode-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .mode-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px 10px;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mode-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 140, 60, 0.3);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .mode-btn.active {
+      background: rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.5);
+      color: #fff;
+    }
+
+    .mode-icon {
+      font-size: 20px;
+    }
+
+    .mode-name {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* FOOTER */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -374,21 +440,20 @@
       transform: none;
     }
 
-    /* Primary display button - make it stand out */
-    .nav-button.display {
+    .nav-button.primary {
       background: rgba(255, 140, 60, 0.2);
       color: rgba(255, 140, 60, 1);
       border: 1px solid rgba(255, 140, 60, 0.3);
     }
 
-    .nav-button.display:hover {
+    .nav-button.primary:hover {
       background: rgba(255, 140, 60, 0.3);
       color: #fff;
       border-color: rgba(255, 140, 60, 0.5);
       transform: scale(1.1);
     }
 
-    .nav-button.display:disabled {
+    .nav-button.primary:disabled {
       opacity: 0.4;
       background: rgba(255, 255, 255, 0.08);
       color: rgba(255, 255, 255, 0.7);
@@ -509,6 +574,15 @@
         height: 32px;
         font-size: 14px;
       }
+
+      .mode-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      
+      .mode-btn {
+        padding: 12px 8px;
+      }
     }
   </style>
 </head>
@@ -560,13 +634,15 @@
           </div>
         </div>
       </div>
+
+
     </main>
 
-    <!-- SIMPLIFIED FOOTER: Home | Create Questions | Display Responses -->
+    <!-- Footer -->
     <footer class="footer">
       <a href="../" class="nav-button" title="Home">🏠</a>
       <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
-      <button class="nav-button display" id="displayBtn" title="Display Responses" disabled>📺</button>
+      <button class="nav-button primary" id="responsesBtn" title="View Responses" disabled>📊</button>
     </footer>
   </div>
 
@@ -591,7 +667,7 @@
     const responseCount = document.getElementById('responseCount');
     const deleteBtn = document.getElementById('deleteBtn');
     const refreshBtn = document.getElementById('refreshBtn');
-    const displayBtn = document.getElementById('displayBtn');
+    const responsesBtn = document.getElementById('responsesBtn');
     const notification = document.getElementById('notification');
     const connectionStatus = document.getElementById('connectionStatus');
 
@@ -776,6 +852,7 @@
       populateQuestionDropdown();
       updateResponseCount();
       updateDeleteButton();
+      updateResponsesButton();
     }
 
     // Populate question dropdown - ENHANCED
@@ -864,6 +941,17 @@
       deleteBtn.disabled = !currentSelectedQuestion;
     }
 
+    // Update responses button state
+    function updateResponsesButton() {
+      if (!currentSelectedQuestion) {
+        responsesBtn.disabled = true;
+        return;
+      }
+      
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      responsesBtn.disabled = responses.length === 0;
+    }
+
     // Update question display
     function updateQuestionDisplay() {
       if (!currentSelectedQuestion) {
@@ -873,10 +961,6 @@
       
       const questionStr = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'Untitled Question';
       questionText.textContent = questionStr;
-      
-      // Enable display button if there are responses
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      displayBtn.disabled = responses.length === 0;
     }
 
     // Handle question selection change
@@ -898,6 +982,7 @@
       
       updateResponseCount();
       updateDeleteButton();
+      updateResponsesButton();
       updateQuestionDisplay();
     }
 
@@ -949,7 +1034,8 @@
 
         // Update UI
         updateUI();
-        updateQuestionDisplay();
+        updateResponsesButton();
+      updateQuestionDisplay();
 
         showNotification('Question deleted successfully!', 'success');
         
@@ -964,8 +1050,8 @@
       }
     }
 
-    // Launch Display - ENHANCED DATA PREPARATION
-    function launchDisplay() {
+    // Launch Responses Page
+    function launchResponses() {
       if (!currentSelectedQuestion) {
         showNotification('Please select a question first', 'error');
         return;
@@ -977,7 +1063,7 @@
         return;
       }
       
-      // Prepare data for display with comprehensive format
+      // Prepare data for responses page
       const questionForDisplay = {
         id: currentSelectedQuestion.id,
         text: currentSelectedQuestion.text || currentSelectedQuestion.question_text,
@@ -988,7 +1074,7 @@
       const responsesForDisplay = responsesForQuestion.map(r => ({
         id: r.id,
         student_name: r.student_name,
-        studentName: r.student_name, // Compatibility
+        studentName: r.student_name,
         answer: r.answer,
         word_count: r.word_count,
         photo_url: r.photo_url,
@@ -997,16 +1083,16 @@
         questionText: questionForDisplay.questionText
       }));
       
-      // Store for all display interfaces
+      // Store data for responses page
       localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
       localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
       localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
       localStorage.setItem('alm_student_responses', JSON.stringify(responsesForDisplay));
       
-      console.log(`🚀 Launching display with ${responsesForQuestion.length} responses`);
-      showNotification(`Launching display with ${responsesForQuestion.length} responses...`, 'success');
+      console.log(`🚀 Launching responses page with ${responsesForQuestion.length} responses`);
+      showNotification(`Opening responses page with ${responsesForQuestion.length} responses...`, 'success');
       
-      // Launch display
+      // Navigate to displays page
       setTimeout(() => {
         window.open('../displays/', '_blank');
       }, 500);
@@ -1072,7 +1158,7 @@
       // Set up event listeners
       questionDropdown.addEventListener('change', handleQuestionChange);
       deleteBtn.addEventListener('click', deleteQuestion);
-      displayBtn.addEventListener('click', launchDisplay);
+      responsesBtn.addEventListener('click', launchResponses);
       
       // Manual refresh button
       refreshBtn.addEventListener('click', () => {
@@ -1105,12 +1191,7 @@
         }
       }, 2000);
       
-      console.log('✅ Enhanced Minimalist Analytics Ready!');
-    });
-  </script>
-</body>
-</html>
-      console.log('✅ INTUITY Analytics Ready!');
+      console.log('✅ Enhanced Analytics Ready!');
     });
   </script>
 </body>
