@@ -159,7 +159,6 @@
       padding-bottom: 140px;
     }
 
-    /* CAROUSEL CONTAINER - Exactly like your blueprint */
     .carousel-container {
       width: 100%;
       height: 5cm;
@@ -175,7 +174,6 @@
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* SINGLE BLACK BOX - Matches your carousel-box exactly */
     .carousel-box {
       width: 100%;
       height: 100%;
@@ -212,7 +210,6 @@
       transform: translateY(-2px);
     }
 
-    /* CONTENT AREA - Matches your design */
     .content-area {
       width: 100%;
       height: 100%;
@@ -224,7 +221,6 @@
       text-align: center;
     }
 
-    /* Response content styling */
     .student-name {
       font-size: 18px;
       color: rgba(255, 140, 60, 0.9);
@@ -261,7 +257,6 @@
       color: rgba(255, 140, 60, 0.8);
     }
 
-    /* QUESTION DISPLAY */
     .question-display {
       position: absolute;
       top: 10px;
@@ -279,7 +274,6 @@
       z-index: 10;
     }
 
-    /* DOT INDICATOR - Exactly like your blueprint */
     .swipe-indicator {
       position: absolute;
       bottom: 10px;
@@ -307,7 +301,6 @@
       background: rgba(255, 140, 60, 0.6);
     }
 
-    /* NAVIGATION ARROWS */
     .nav-arrow {
       position: absolute;
       top: 50%;
@@ -346,7 +339,6 @@
       cursor: not-allowed;
     }
 
-    /* EMPTY STATES */
     .no-responses {
       display: flex;
       flex-direction: column;
@@ -371,7 +363,6 @@
       font-size: 18px;
     }
 
-    /* STATUS INDICATOR */
     .status-indicator {
       position: absolute;
       top: 10px;
@@ -395,7 +386,6 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    /* FOOTER - Matches your design exactly */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -434,7 +424,6 @@
       transform: scale(0.95);
     }
 
-    /* ANIMATIONS - Same as your blueprint */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
@@ -460,7 +449,6 @@
     .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -506,7 +494,6 @@
     </div>
   </div>
 
-  <!-- Status Indicator -->
   <div class="status-indicator" id="statusIndicator">● Loading...</div>
 
   <div class="container">
@@ -517,21 +504,17 @@
 
     <main class="main-content">
       <div class="carousel-container" id="carouselContainer">
-        <!-- Question display -->
         <div class="question-display" id="questionDisplay">Loading question...</div>
         
-        <!-- Navigation arrows -->
         <button class="nav-arrow prev" id="prevBtn">←</button>
         <button class="nav-arrow next" id="nextBtn">→</button>
         
-        <!-- Single carousel box - responses will be dynamically inserted -->
         <div class="carousel-box active" id="carouselContent">
           <div class="content-area">
             <div class="loading">Loading responses...</div>
           </div>
         </div>
         
-        <!-- Dot indicator -->
         <div class="swipe-indicator" id="dotIndicator"></div>
       </div>
     </main>
@@ -568,81 +551,102 @@
       console.log('  display_question:', localStorage.getItem('display_question'));
       console.log('  display_responses:', localStorage.getItem('display_responses'));
       console.log('  alm_student_responses:', localStorage.getItem('alm_student_responses'));
+      console.log('  current_question:', localStorage.getItem('current_question'));
     }
 
-    // Load data from localStorage - IMPROVED VERSION
+    // FIXED Load data function - Using EXACT same keys as student interface saves to
     function loadData() {
       try {
         console.log('🔍 Loading display data...');
         
-        // Load current question - try multiple sources
         let questionLoaded = false;
-        
-        // 1. Try display_question first
-        const questionData = localStorage.getItem('display_question');
-        if (questionData) {
-          try {
-            currentQuestion = JSON.parse(questionData);
-            questionLoaded = true;
-            console.log('✅ Loaded question from display_question');
-          } catch (e) {
-            console.warn('Error parsing display_question:', e);
-          }
-        }
-        
-        // 2. Fallback to current_question
-        if (!questionLoaded) {
-          const fallbackQuestion = localStorage.getItem('current_question');
-          if (fallbackQuestion) {
-            try {
-              const parsed = JSON.parse(fallbackQuestion);
-              currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
-              questionLoaded = true;
-              console.log('✅ Loaded question from current_question fallback');
-            } catch (e) {
-              console.warn('Error parsing current_question:', e);
-            }
-          }
-        }
-
-        // Load responses - try multiple sources
         let responsesLoaded = false;
         
-        // 1. Try display_responses first
-        const responsesData = localStorage.getItem('display_responses');
+        // PRIORITY 1: Load from exact keys that the FIXED student interface uses
+        const questionData = localStorage.getItem('current_question');
+        if (questionData) {
+          try {
+            const parsed = JSON.parse(questionData);
+            currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
+            if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
+              questionLoaded = true;
+              console.log('✅ Loaded question from current_question:', currentQuestion.text || currentQuestion.question_text);
+            }
+          } catch (e) {
+            console.warn('Error parsing current_question:', e);
+          }
+        }
+        
+        // PRIORITY 2: Load responses from exact key that student interface uses
+        const responsesData = localStorage.getItem('alm_student_responses');
         if (responsesData) {
           try {
             const parsed = JSON.parse(responsesData);
             if (Array.isArray(parsed) && parsed.length > 0) {
-              responses = parsed;
+              responses = parsed.map(r => ({
+                id: r.id,
+                student_name: r.studentName || r.student_name || 'Anonymous',
+                answer: r.answer || 'No response',
+                word_count: r.wordCount || r.word_count || 0,
+                timestamp: r.timestamp || r.created_at || r.submitted_at,
+                photo_url: r.photoUrl || r.photo_url,
+                questionText: r.questionText
+              }));
+              
+              // Filter responses for current question if we have one
+              if (currentQuestion && currentQuestion.id) {
+                responses = responses.filter(r => {
+                  return r.questionId === currentQuestion.id || 
+                         r.question_id === currentQuestion.id ||
+                         (r.questionText && currentQuestion.text && 
+                          r.questionText.toLowerCase() === currentQuestion.text.toLowerCase()) ||
+                         (r.questionText && currentQuestion.question_text && 
+                          r.questionText.toLowerCase() === currentQuestion.question_text.toLowerCase());
+                });
+              }
+              
               responsesLoaded = true;
-              console.log('✅ Loaded responses from display_responses:', responses.length);
+              console.log('✅ Loaded and filtered responses from alm_student_responses:', responses.length);
             }
           } catch (e) {
-            console.warn('Error parsing display_responses:', e);
+            console.warn('Error parsing alm_student_responses:', e);
           }
         }
         
-        // 2. Fallback to alm_student_responses
+        // FALLBACK 1: Try display_question and display_responses
+        if (!questionLoaded) {
+          const fallbackQuestion = localStorage.getItem('display_question');
+          if (fallbackQuestion) {
+            try {
+              currentQuestion = JSON.parse(fallbackQuestion);
+              questionLoaded = true;
+              console.log('✅ Loaded question from display_question fallback');
+            } catch (e) {
+              console.warn('Error parsing display_question:', e);
+            }
+          }
+        }
+        
         if (!responsesLoaded) {
-          const fallbackResponses = localStorage.getItem('alm_student_responses');
+          const fallbackResponses = localStorage.getItem('display_responses');
           if (fallbackResponses) {
             try {
               const parsed = JSON.parse(fallbackResponses);
               if (Array.isArray(parsed)) {
-                // Normalize the format for display
                 responses = parsed.map(r => ({
-                  ...r,
-                  student_name: r.studentName || r.student_name,
-                  created_at: r.timestamp || r.created_at,
-                  word_count: r.wordCount || r.word_count,
-                  photo_url: r.photoUrl || r.photo_url
+                  id: r.id,
+                  student_name: r.student_name || r.studentName || 'Anonymous',
+                  answer: r.answer || 'No response',
+                  word_count: r.word_count || r.wordCount || 0,
+                  timestamp: r.created_at || r.timestamp,
+                  photo_url: r.photo_url || r.photoUrl,
+                  questionText: r.questionText
                 }));
                 responsesLoaded = true;
-                console.log('✅ Loaded responses from alm_student_responses fallback:', responses.length);
+                console.log('✅ Loaded responses from display_responses fallback:', responses.length);
               }
             } catch (e) {
-              console.warn('Error parsing alm_student_responses:', e);
+              console.warn('Error parsing display_responses:', e);
             }
           }
         }
@@ -650,8 +654,8 @@
         // Sort responses by timestamp (newest first)
         if (responses.length > 0) {
           responses.sort((a, b) => {
-            const timeA = new Date(a.timestamp || a.created_at || 0);
-            const timeB = new Date(b.timestamp || b.created_at || 0);
+            const timeA = new Date(a.timestamp || 0);
+            const timeB = new Date(b.timestamp || 0);
             return timeB - timeA;
           });
         }
@@ -659,10 +663,10 @@
         console.log('📊 Final loaded data:', { 
           question: questionLoaded, 
           responses: responses.length,
-          questionText: currentQuestion?.text || currentQuestion?.questionText || 'No question'
+          questionText: currentQuestion?.text || currentQuestion?.question_text || 'No question'
         });
 
-        return responsesLoaded;
+        return responsesLoaded && responses.length > 0;
         
       } catch (error) {
         console.error('❌ Error loading data:', error);
@@ -741,11 +745,11 @@
       }
 
       const response = responses[currentSlide];
-      const studentName = response.studentName || response.student_name || 'Anonymous';
+      const studentName = response.student_name || 'Anonymous';
       const answer = response.answer || 'No response text';
-      const wordCount = response.wordCount || response.word_count || 0;
-      const timestamp = formatTimestamp(response.timestamp || response.created_at);
-      const hasPhoto = !!(response.photoUrl || response.photo_url);
+      const wordCount = response.word_count || 0;
+      const timestamp = formatTimestamp(response.timestamp);
+      const hasPhoto = !!(response.photo_url);
 
       carouselContent.innerHTML = `
         <div class="content-area">
@@ -822,7 +826,7 @@
       }
     }
 
-    // Refresh data - IMPROVED VERSION
+    // FIXED Refresh data function
     function refreshData() {
       const refreshBtn = document.getElementById('refreshBtn');
       refreshBtn.style.transform = 'rotate(360deg)';
@@ -919,7 +923,7 @@
       startY = 0;
     }
 
-    // Auto-refresh with improved logic
+    // FIXED Auto-refresh with improved logic
     function startAutoRefresh() {
       refreshInterval = setInterval(() => {
         const oldCount = responses.length;
@@ -945,28 +949,29 @@
           updateNavigationButtons();
           updateStatus();
         }
-      }, 3000); // Check every 3 seconds
+      }, 2000); // Check every 2 seconds for faster updates
     }
 
-    // Initialize
+    // FIXED Initialize function
     function init() {
-      console.log('🚀 Initializing INTUITY Display...');
+      console.log('🚀 Initializing INTUITY Display (FIXED)...');
       
       // Load initial data
       const dataLoaded = loadData();
       
-      if (!dataLoaded) {
-        console.log('⚠️ No data found, using demo data');
-        // Demo data if needed
-        currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
-        responses = [
-          {
-            studentName: 'Demo Student',
-            answer: 'This is a demo response to show how the display works. Each response gets its own focused view.',
-            wordCount: 18,
-            timestamp: new Date().toISOString()
-          }
-        ];
+      if (!dataLoaded || responses.length === 0) {
+        console.log('⚠️ No valid data found, showing demo/empty state');
+        
+        // Try to load question at least
+        if (!currentQuestion) {
+          currentQuestion = { 
+            text: 'Demo Question: What would you like to learn today?',
+            questionText: 'Demo Question: What would you like to learn today?' 
+          };
+        }
+        
+        // Show empty state
+        responses = [];
       }
 
       // Set up display
@@ -992,11 +997,12 @@
       });
     }
 
-    // Listen for storage changes from other tabs
+    // FIXED Storage event listener - Listen for exact keys
     window.addEventListener('storage', (e) => {
-      if (e.key === 'display_responses' || 
-          e.key === 'display_question' || 
-          e.key === 'alm_student_responses') {
+      if (e.key === 'alm_student_responses' || 
+          e.key === 'current_question' || 
+          e.key === 'display_responses' ||
+          e.key === 'display_question') {
         console.log('📡 Storage change detected:', e.key);
         refreshData();
       }
