@@ -256,6 +256,21 @@
       font-weight: 600;
     }
 
+    .response-count.live-update {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        color: rgba(255, 140, 60, 0.9);
+        text-shadow: 0 0 5px rgba(255, 140, 60, 0.3);
+      }
+      50% { 
+        color: rgba(255, 140, 60, 1);
+        text-shadow: 0 0 15px rgba(255, 140, 60, 0.6);
+      }
+    }
+
     .delete-btn {
       width: 36px;
       height: 36px;
@@ -284,6 +299,7 @@
       transform: none;
     }
 
+    /* SIMPLIFIED FOOTER - Only 3 buttons */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -323,13 +339,35 @@
       transform: scale(0.95);
     }
 
-    .nav-button.active {
-      background: rgba(255, 140, 60, 0.3);
-      color: rgba(255, 140, 60, 1);
-      border: 1px solid rgba(255, 140, 60, 0.5);
+    .nav-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
     }
 
-    /* Animations - Same as original */
+    /* Primary display button - make it stand out */
+    .nav-button.display {
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+    }
+
+    .nav-button.display:hover {
+      background: rgba(255, 140, 60, 0.3);
+      color: #fff;
+      border-color: rgba(255, 140, 60, 0.5);
+      transform: scale(1.1);
+    }
+
+    .nav-button.display:disabled {
+      opacity: 0.4;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      border: none;
+      transform: none;
+    }
+
+    /* Animations */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
@@ -360,6 +398,30 @@
       color: rgba(255, 140, 60, 0.8);
       font-size: 16px;
       text-align: center;
+    }
+
+    /* Connection Status */
+    .connection-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
     /* Notification */
@@ -433,6 +495,9 @@
     </div>
   </div>
 
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">Connecting...</div>
+
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
@@ -465,10 +530,11 @@
       </div>
     </main>
 
+    <!-- SIMPLIFIED FOOTER: Home | Create Questions | Display Responses -->
     <footer class="footer">
       <a href="../" class="nav-button" title="Home">🏠</a>
       <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
-      <button class="nav-button active" id="viewResponsesBtn" title="View Responses">👥</button>
+      <button class="nav-button display" id="displayBtn" title="Display Responses" disabled>📺</button>
     </footer>
   </div>
 
@@ -486,20 +552,24 @@
     let responses = [];
     let currentQuestion = null;
     let isConnected = false;
+    let realtimeSubscription = null;
+    let lastResponseCount = 0;
 
     // Elements
     const questionDropdown = document.getElementById('questionDropdown');
     const questionText = document.getElementById('questionText');
     const responseCount = document.getElementById('responseCount');
     const deleteBtn = document.getElementById('deleteBtn');
-    const viewResponsesBtn = document.getElementById('viewResponsesBtn');
+    const displayBtn = document.getElementById('displayBtn');
     const notification = document.getElementById('notification');
+    const connectionStatus = document.getElementById('connectionStatus');
 
     // Initialize
     async function init() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         await loadData();
+        setupRealtimeSubscription();
       } catch (error) {
         console.error('Failed to initialize:', error);
         loadLocalData();
@@ -517,6 +587,7 @@
         
         if (testError) throw testError;
         isConnected = true;
+        updateConnectionStatus();
 
         // Load questions
         const { data: questionsData, error: questionsError } = await supabase
@@ -530,23 +601,77 @@
         // Load responses
         const { data: responsesData, error: responsesError } = await supabase
           .from('student_responses')
-          .select('*');
+          .select('*')
+          .order('created_at', { ascending: false });
 
-        if (responsesError) throw responsesError;
-        responses = responsesData || [];
+        if (responsesError) {
+          console.warn('Error loading responses:', responsesError);
+          responses = [];
+        } else {
+          responses = responsesData || [];
+        }
 
+        // Also load from localStorage as backup
+        loadLocalBackupData();
         updateUI();
         notify('Connected to database');
         
       } catch (error) {
         console.error('Database error:', error);
+        updateConnectionStatus(false);
         loadLocalData();
+      }
+    }
+
+    // Load from Local Storage as backup
+    function loadLocalBackupData() {
+      try {
+        const localResponses = localStorage.getItem('alm_student_responses');
+        if (localResponses) {
+          const parsedLocal = JSON.parse(localResponses) || [];
+          
+          parsedLocal.forEach(localResponse => {
+            const exists = responses.find(r => 
+              r.student_name === localResponse.studentName &&
+              r.answer === localResponse.answer &&
+              Math.abs(new Date(r.created_at) - new Date(localResponse.timestamp)) < 60000
+            );
+            
+            if (!exists) {
+              responses.push({
+                id: 'local_' + Date.now() + Math.random(),
+                question_id: localResponse.questionId,
+                student_name: localResponse.studentName,
+                answer: localResponse.answer,
+                word_count: localResponse.wordCount,
+                photo_url: localResponse.photoUrl,
+                created_at: localResponse.timestamp,
+                metadata: localResponse
+              });
+            }
+          });
+        }
+
+        const localQuestion = localStorage.getItem('current_question');
+        if (localQuestion && questions.length === 0) {
+          try {
+            const parsed = JSON.parse(localQuestion);
+            questions = Array.isArray(parsed) ? parsed : [parsed];
+          } catch (e) {
+            console.warn('Error parsing local question:', e);
+          }
+        }
+
+      } catch (error) {
+        console.warn('Error loading local backup data:', error);
       }
     }
 
     // Load from Local Storage
     function loadLocalData() {
       try {
+        updateConnectionStatus(false);
+        
         const storedQuestion = localStorage.getItem('current_question');
         if (storedQuestion) {
           const parsed = JSON.parse(storedQuestion);
@@ -555,7 +680,17 @@
 
         const storedResponses = localStorage.getItem('alm_student_responses');
         if (storedResponses) {
-          responses = JSON.parse(storedResponses) || [];
+          const localResponses = JSON.parse(storedResponses) || [];
+          responses = localResponses.map(lr => ({
+            id: 'local_' + Date.now() + Math.random(),
+            question_id: lr.questionId,
+            student_name: lr.studentName,
+            answer: lr.answer,
+            word_count: lr.wordCount,
+            photo_url: lr.photoUrl,
+            created_at: lr.timestamp,
+            metadata: lr
+          }));
         }
 
         updateUI();
@@ -564,6 +699,58 @@
       } catch (error) {
         console.error('Local storage error:', error);
         showNoQuestions();
+      }
+    }
+
+    // Setup real-time subscription
+    function setupRealtimeSubscription() {
+      if (!supabase || !isConnected) return;
+
+      try {
+        realtimeSubscription = supabase
+          .channel('student_responses_updates')
+          .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'student_responses' },
+            (payload) => {
+              console.log('New response received:', payload.new);
+              responses.unshift(payload.new);
+              updateCurrentQuestionDisplay();
+              
+              if (currentQuestion && payload.new.question_id === currentQuestion.id) {
+                notify(`New response from ${payload.new.student_name}!`);
+                responseCount.classList.add('live-update');
+                setTimeout(() => {
+                  responseCount.classList.remove('live-update');
+                }, 2000);
+              }
+            }
+          )
+          .on('postgres_changes',
+            { event: 'DELETE', schema: 'public', table: 'student_responses' },
+            (payload) => {
+              console.log('Response deleted:', payload.old);
+              responses = responses.filter(r => r.id !== payload.old.id);
+              updateCurrentQuestionDisplay();
+            }
+          )
+          .subscribe();
+
+        console.log('Real-time subscription established');
+        
+      } catch (error) {
+        console.error('Error setting up real-time subscription:', error);
+      }
+    }
+
+    // Update connection status
+    function updateConnectionStatus(connected = isConnected) {
+      const status = connectionStatus;
+      if (connected) {
+        status.textContent = '● Online';
+        status.className = 'connection-status online';
+      } else {
+        status.textContent = '● Offline';
+        status.className = 'connection-status offline';
       }
     }
 
@@ -588,6 +775,7 @@
       questionDropdown.innerHTML = '<option value="">No questions available</option>';
       responseCount.textContent = '0 responses';
       deleteBtn.disabled = true;
+      displayBtn.disabled = true;
     }
 
     // Populate Dropdown
@@ -599,9 +787,20 @@
         option.value = question.id || index;
         
         const questionStr = question.text || question.question_text || 'Untitled Question';
-        option.textContent = `Q${index + 1}: ${questionStr.substring(0, 50)}${questionStr.length > 50 ? '...' : ''}`;
+        const responseCountForQ = getResponseCountForQuestion(question);
+        option.textContent = `Q${index + 1}: ${questionStr.substring(0, 40)}${questionStr.length > 40 ? '...' : ''} (${responseCountForQ})`;
         questionDropdown.appendChild(option);
       });
+    }
+
+    // Get response count for a specific question
+    function getResponseCountForQuestion(question) {
+      return responses.filter(response => 
+        response.question_id === question.id ||
+        response.questionId === question.id ||
+        (question.text && response.questionText === question.text) ||
+        (question.question_text && response.questionText === question.question_text)
+      ).length;
     }
 
     // Select First Question
@@ -620,14 +819,44 @@
       const questionStr = currentQuestion.text || currentQuestion.question_text || 'Untitled Question';
       questionText.textContent = questionStr;
 
+      updateCurrentQuestionDisplay();
+    }
+
+    // Update current question display
+    function updateCurrentQuestionDisplay() {
+      if (!currentQuestion) return;
+
       const count = getResponseCount();
-      responseCount.textContent = `${count} response${count !== 1 ? 's' : ''}`;
+      const countText = `${count} response${count !== 1 ? 's' : ''}`;
+      responseCount.textContent = countText;
+      
+      if (count > lastResponseCount) {
+        responseCount.classList.add('live-update');
+        setTimeout(() => {
+          responseCount.classList.remove('live-update');
+        }, 2000);
+      }
+      lastResponseCount = count;
       
       deleteBtn.disabled = false;
+      displayBtn.disabled = count === 0; // Only enable display if there are responses
 
-      // Store for responses view
-      localStorage.setItem('display_question', JSON.stringify(currentQuestion));
-      localStorage.setItem('display_responses', JSON.stringify(getResponses()));
+      // Store for display
+      const questionForDisplay = {
+        ...currentQuestion,
+        questionText: currentQuestion.text || currentQuestion.question_text
+      };
+      
+      const responsesForDisplay = getResponses().map(r => ({
+        ...r,
+        studentName: r.student_name || r.studentName,
+        questionText: questionForDisplay.questionText,
+        timestamp: r.created_at || r.timestamp
+      }));
+      
+      localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
+      localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
+      localStorage.setItem('alm_student_responses', JSON.stringify(responsesForDisplay));
     }
 
     // Get Response Count
@@ -639,11 +868,15 @@
     function getResponses() {
       if (!currentQuestion) return [];
       
-      return responses.filter(response => 
-        response.question_id === currentQuestion.id ||
-        response.questionId === currentQuestion.id ||
-        response.questionText === (currentQuestion.text || currentQuestion.question_text)
-      );
+      return responses.filter(response => {
+        return (
+          response.question_id === currentQuestion.id ||
+          response.questionId === currentQuestion.id ||
+          (currentQuestion.text && response.questionText === currentQuestion.text) ||
+          (currentQuestion.question_text && response.questionText === currentQuestion.question_text) ||
+          (currentQuestion.id === 'demo' && (response.question_id === 'demo' || response.questionId === 'demo'))
+        );
+      });
     }
 
     // Handle Question Selection
@@ -654,6 +887,7 @@
         questionText.innerHTML = '<div class="no-question">Select a question</div>';
         responseCount.textContent = '0 responses';
         deleteBtn.disabled = true;
+        displayBtn.disabled = true;
         return;
       }
 
@@ -678,29 +912,42 @@
       deleteBtn.disabled = true;
 
       try {
-        if (isConnected && currentQuestion.id) {
-          const { error } = await supabase
+        if (isConnected && currentQuestion.id && currentQuestion.id !== 'demo') {
+          const { error: responseError } = await supabase
+            .from('student_responses')
+            .delete()
+            .eq('question_id', currentQuestion.id);
+
+          const { error: questionError } = await supabase
             .from('questions')
             .delete()
             .eq('id', currentQuestion.id);
 
-          if (error) throw error;
+          if (questionError) throw questionError;
         }
 
-        // Remove from local arrays
         questions = questions.filter(q => q.id !== currentQuestion.id);
         responses = responses.filter(r => 
           r.question_id !== currentQuestion.id && 
           r.questionId !== currentQuestion.id
         );
 
-        // Update localStorage
         if (questions.length > 0) {
           localStorage.setItem('current_question', JSON.stringify(questions[0]));
         } else {
           localStorage.removeItem('current_question');
         }
-        localStorage.setItem('alm_student_responses', JSON.stringify(responses));
+        
+        const localFormatResponses = responses.map(r => ({
+          questionId: r.question_id || r.questionId,
+          questionText: r.questionText,
+          studentName: r.student_name || r.studentName,
+          answer: r.answer,
+          wordCount: r.word_count || r.wordCount,
+          timestamp: r.created_at || r.timestamp,
+          photoUrl: r.photo_url || r.photoUrl
+        }));
+        localStorage.setItem('alm_student_responses', JSON.stringify(localFormatResponses));
 
         currentQuestion = null;
         updateUI();
@@ -715,22 +962,28 @@
       }
     }
 
-    // View Responses
-    function viewResponses() {
+    // SIMPLIFIED: Direct Display Launch
+    function launchDisplay() {
       if (!currentQuestion) {
         notify('Please select a question first');
         return;
       }
 
-      // Store current data for display
-      localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-      localStorage.setItem('alm_student_responses', JSON.stringify(getResponses()));
+      const responsesForQuestion = getResponses();
+      if (responsesForQuestion.length === 0) {
+        notify('No responses yet for this question');
+        return;
+      }
+
+      // Ensure latest data is stored
+      updateCurrentQuestionDisplay();
       
-      // Launch presentation mode
-      notify('Launching responses view...');
+      // Launch display directly
+      notify(`Launching display with ${responsesForQuestion.length} responses...`);
       
       setTimeout(() => {
-        window.open('../displays/', '_blank');
+        // Open the single response display
+        window.open('responses-display.html', '_blank');
       }, 500);
     }
 
@@ -741,13 +994,34 @@
       
       setTimeout(() => {
         notification.classList.remove('show');
-      }, 2000);
+      }, 3000);
+    }
+
+    // Cleanup function
+    function cleanup() {
+      if (realtimeSubscription) {
+        realtimeSubscription.unsubscribe();
+      }
     }
 
     // Event Listeners
     questionDropdown.addEventListener('change', handleQuestionChange);
     deleteBtn.addEventListener('click', deleteQuestion);
-    viewResponsesBtn.addEventListener('click', viewResponses);
+    displayBtn.addEventListener('click', launchDisplay); // SIMPLIFIED: Direct launch
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', cleanup);
+
+    // Refresh data periodically if offline
+    setInterval(async () => {
+      if (!isConnected) {
+        try {
+          await loadData();
+        } catch (error) {
+          // Still offline
+        }
+      }
+    }, 30000);
 
     // Initialize on load
     document.addEventListener('DOMContentLoaded', init);
