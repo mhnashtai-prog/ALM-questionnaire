@@ -1296,6 +1296,29 @@
         displayResponses.unshift(displayFormat);
         localStorage.setItem('display_responses', JSON.stringify(displayResponses));
 
+        // CRUCIAL: Update the analytics-compatible format
+        const analyticsResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        analyticsResponses.unshift({
+          id: response.id,
+          questionId: response.questionId,
+          question_id: response.questionId,
+          studentName: response.studentName,
+          student_name: response.studentName,
+          answer: response.answer,
+          wordCount: response.wordCount,
+          word_count: response.wordCount,
+          timestamp: response.timestamp,
+          created_at: response.timestamp,
+          submitted_at: response.timestamp,
+          questionText: questionText,
+          photoUrl: response.photoUrl,
+          photo_url: response.photoUrl,
+          quality: response.quality,
+          score: response.score,
+          source: response.source
+        });
+        localStorage.setItem('alm_student_responses', JSON.stringify(analyticsResponses));
+
         // Update current question data
         if (currentQuestion) {
           localStorage.setItem('current_question', JSON.stringify(currentQuestion));
@@ -1304,6 +1327,16 @@
             questionText: questionText
           }));
         }
+
+        // FORCE STORAGE EVENT for cross-tab communication
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'alm_student_responses',
+          newValue: JSON.stringify(analyticsResponses)
+        }));
+
+        console.log('💾 Response saved successfully:', response);
+        console.log('📊 Analytics format saved:', analyticsResponses.length, 'responses');
+        console.log('🎭 Display format saved:', displayResponses.length, 'responses');
 
         // Show success
         setTimeout(() => {
