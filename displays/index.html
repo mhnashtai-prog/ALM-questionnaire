@@ -1,369 +1,850 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>INTUITY - Display Hub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INTUITY - Live Responses</title>
   
   <style>
-    :root {
-      /* INTUITY Brand Colors */
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --accent-gold: #f4a261;
-      --accent-teal: #2dd4bf;
-      --accent-electric: #0066ff;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --intuity-gold: #ffd54f;
-      --intuity-teal: #26a69a;
-      
-      /* Animation timings */
-      --transition-fast: 0.2s;
-      --transition-medium: 0.4s;
-      
-      /* Effects */
-      --blur: blur(20px);
-      --shadow-active: 0 20px 60px rgba(0, 0, 0, 0.6);
-    }
-    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
-      overflow-x: hidden;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      touch-action: manipulation;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
     }
-    
-    /* Subtle Constellation Background */
-    .constellation-bg {
-      position: fixed;
+
+    .background {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 1;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
       opacity: 0.3;
     }
-    
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--accent-gold);
-      border-radius: 50%;
-      animation: twinkle 4s infinite alternate;
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(15deg);
+      border: 1.5px solid rgba(255, 140, 60, 0.6);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
+      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
+      opacity: 0.8;
     }
-    
-    .star:nth-child(even) {
-      animation-delay: 2s;
-      background: var(--accent-teal);
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(80deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
+      opacity: 0.2;
     }
-    
-    .star:nth-child(3n) {
-      animation-delay: 1s;
-      background: var(--accent-electric);
-      opacity: 0.4;
-    }
-    
-    @keyframes twinkle {
-      0% { opacity: 0.1; transform: scale(0.8); }
-      100% { opacity: 0.6; transform: scale(1.1); }
-    }
-    
-    /* Simple Header */
-    .simple-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(26, 35, 50, 0.95);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--card-border);
-      padding: 1.5rem;
-      text-align: center;
-    }
-    
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--intuity-gold) 0%, var(--intuity-teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.3rem;
+
+    .container {
       position: relative;
-    }
-    
-    .brand-name::after {
-      content: '✨';
-      position: absolute;
-      top: -8px;
-      right: -20px;
-      font-size: 1.2rem;
-      animation: sparkle 3s ease-in-out infinite;
-    }
-    
-    @keyframes sparkle {
-      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
-    }
-    
-    .author-name {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      font-weight: 400;
-      margin-bottom: 0.5rem;
-      font-style: italic;
-    }
-    
-    .simple-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    
-    /* Main Container - Centered Single Card */
-    .main-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 520px;
       z-index: 10;
-    }
-    
-    /* The Display Selection Card */
-    .display-card {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 24px;
-      padding: 3rem;
-      box-shadow: var(--shadow-active);
-      position: relative;
-      overflow: hidden;
-      transition: all var(--transition-medium) cubic-bezier(0.4, 0, 0.2, 1);
-      text-align: center;
-    }
-    
-    .display-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
-      border-radius: 24px 24px 0 0;
-    }
-    
-    /* Display Label */
-    .display-label {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      font-weight: 500;
-      margin-bottom: 2.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    /* Display Options */
-    .display-options {
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
-    
-    .display-option {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.25rem 2rem;
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 140px;
+    }
+
+    /* CAROUSEL CONTAINER - Exactly like your blueprint */
+    .carousel-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* SINGLE BLACK BOX - Matches your carousel-box exactly */
+    .carousel-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    .carousel-box.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .carousel-box.prev {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+
+    .carousel-box:hover {
+      transform: translateY(-2px);
+    }
+
+    .carousel-box.active:hover {
+      transform: translateY(-2px);
+    }
+
+    /* CONTENT AREA - Matches your design */
+    .content-area {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    /* Response content styling */
+    .student-name {
+      font-size: 18px;
+      color: rgba(255, 140, 60, 0.9);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .response-text {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+      margin-bottom: 15px;
+      max-width: 90%;
+    }
+
+    .response-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .word-count {
+      color: rgba(255, 140, 60, 0.8);
+    }
+
+    .timestamp {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .photo-indicator {
+      color: rgba(255, 140, 60, 0.8);
+    }
+
+    /* QUESTION DISPLAY */
+    .question-display {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: rgba(255, 140, 60, 0.9);
       font-weight: 500;
-      text-decoration: none;
-      transition: all var(--transition-fast) ease;
+      max-width: 80%;
+      text-align: center;
+      z-index: 10;
+    }
+
+    /* DOT INDICATOR - Exactly like your blueprint */
+    .swipe-indicator {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: rgba(255, 140, 60, 0.8);
+      box-shadow: 0 0 10px rgba(255, 140, 60, 0.4);
+    }
+
+    .dot:hover {
+      background: rgba(255, 140, 60, 0.6);
+    }
+
+    /* NAVIGATION ARROWS */
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.75rem;
-      backdrop-filter: var(--blur);
+      color: rgba(255, 255, 255, 0.7);
       cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      z-index: 10;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.4);
+      color: rgba(255, 140, 60, 0.9);
+    }
+
+    .nav-arrow.prev {
+      left: 10px;
+    }
+
+    .nav-arrow.next {
+      right: 10px;
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* EMPTY STATES */
+    .no-responses {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .no-responses-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 18px;
+    }
+
+    /* FOOTER - Matches your design exactly */
+    .footer {
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
       border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
     }
-    
-    .display-option:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(45, 212, 191, 0.2);
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
     }
-    
-    .display-option:active {
-      transform: translateY(0);
+
+    .nav-button:active {
+      transform: scale(0.95);
     }
-    
-    .display-option i {
-      font-size: 1.1rem;
-      opacity: 0.8;
+
+    /* ANIMATIONS - Same as your blueprint */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
     }
-    
-    /* Status indicator */
-    .option-status {
-      margin-left: auto;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      opacity: 0.6;
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
     }
-    
-    /* Mobile Optimizations */
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
+    }
+
+    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .main-container {
-        width: 95%;
-        top: 45%;
+      .container {
+        padding: 40px 15px 15px;
       }
       
-      .display-card {
-        padding: 2.5rem;
+      .header h1 {
+        font-size: 28px;
       }
       
-      .brand-name {
-        font-size: 2rem;
+      .carousel-container {
+        height: 4cm;
       }
       
-      .display-option {
-        padding: 1rem 1.5rem;
-        font-size: 0.95rem;
+      .content-area {
+        padding: 15px;
+      }
+      
+      .student-name {
+        font-size: 16px;
+      }
+      
+      .response-text {
+        font-size: 15px;
+      }
+      
+      .nav-arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Subtle Constellation Background -->
-  <div class="constellation-bg" id="constellation"></div>
-  
-  <!-- Simple Header -->
-  <header class="simple-header">
-    <div class="brand-name">INTUITY</div>
-    <div class="author-name">by Majid Nashtai</div>
-    <div class="simple-subtitle">Classroom Display Hub</div>
-  </header>
-  
-  <!-- Main Container -->
-  <div class="main-container">
-    <div class="display-card">
-      <div class="display-label">Choose Display Mode</div>
-      
-      <div class="display-options">
-        <button class="display-option" onclick="openDisplay('live')">
-          <i class="fas fa-stream"></i>
-          <span>Live Responses</span>
-          <span class="option-status">Real-time</span>
-        </button>
-        
-        <button class="display-option" onclick="openDisplay('summary')">
-          <i class="fas fa-chart-pie"></i>
-          <span>Response Summary</span>
-          <span class="option-status">Overview</span>
-        </button>
-        
-        <button class="display-option" onclick="openDisplay('discussion')">
-          <i class="fas fa-comments"></i>
-          <span>Discussion Board</span>
-          <span class="option-status">Interactive</span>
-        </button>
-        
-        <button class="display-option" onclick="openDisplay('analytics')">
-          <i class="fas fa-chart-line"></i>
-          <span>Full Analytics</span>
-          <span class="option-status">Detailed</span>
-        </button>
-      </div>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
     </div>
   </div>
 
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Live Responses<br>By Majid Nashtai</p>
+    </header>
+
+    <main class="main-content">
+      <div class="carousel-container" id="carouselContainer">
+        <!-- Question display -->
+        <div class="question-display" id="questionDisplay">Loading question...</div>
+        
+        <!-- Navigation arrows -->
+        <button class="nav-arrow prev" id="prevBtn">←</button>
+        <button class="nav-arrow next" id="nextBtn">→</button>
+        
+        <!-- Single carousel box - responses will be dynamically inserted -->
+        <div class="carousel-box active" id="carouselContent">
+          <div class="content-area">
+            <div class="loading">Loading responses...</div>
+          </div>
+        </div>
+        
+        <!-- Dot indicator -->
+        <div class="swipe-indicator" id="dotIndicator"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <button class="nav-button" onclick="window.close()" title="Close">✕</button>
+      <button class="nav-button" onclick="goToAnalytics()" title="Back to Analytics">📊</button>
+      <button class="nav-button" id="refreshBtn" onclick="refreshData()" title="Refresh">🔄</button>
+    </footer>
+  </div>
+
   <script>
-    // Subtle constellation
-    function createConstellation() {
-      const constellation = document.getElementById('constellation');
-      const starCount = 40;
-      
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 4 + 's';
-        star.style.animationDuration = (4 + Math.random() * 4) + 's';
-        constellation.appendChild(star);
+    let currentQuestion = null;
+    let responses = [];
+    let currentSlide = 0;
+    let isAnimating = false;
+
+    // Elements
+    const carouselContent = document.getElementById('carouselContent');
+    const dotIndicator = document.getElementById('dotIndicator');
+    const questionDisplay = document.getElementById('questionDisplay');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Load data from localStorage
+    function loadData() {
+      try {
+        // Load current question
+        const questionData = localStorage.getItem('display_question');
+        if (questionData) {
+          currentQuestion = JSON.parse(questionData);
+        }
+
+        // Load responses
+        const responsesData = localStorage.getItem('display_responses');
+        if (responsesData) {
+          responses = JSON.parse(responsesData);
+        } else {
+          // Fallback to older format
+          const oldResponses = localStorage.getItem('alm_student_responses');
+          if (oldResponses) {
+            responses = JSON.parse(oldResponses);
+          }
+        }
+
+        // Sort by timestamp (newest first)
+        responses.sort((a, b) => {
+          const timeA = new Date(a.timestamp || a.created_at || 0);
+          const timeB = new Date(b.timestamp || b.created_at || 0);
+          return timeB - timeA;
+        });
+
+        console.log('Loaded data:', { question: currentQuestion, responses: responses.length });
+        return true;
+      } catch (error) {
+        console.error('Error loading data:', error);
+        return false;
       }
     }
 
-    // Display mode functions
-    function openDisplay(mode) {
-      // Add subtle loading state
-      const button = event.target.closest('.display-option');
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Opening...</span>';
+    // Display question
+    function displayQuestion() {
+      if (currentQuestion) {
+        const questionStr = currentQuestion.questionText || currentQuestion.text || currentQuestion.question_text || 'Question';
+        questionDisplay.textContent = questionStr;
+      } else {
+        questionDisplay.textContent = 'No question selected';
+      }
+    }
+
+    // Create dots for navigation
+    function createDots() {
+      dotIndicator.innerHTML = '';
+      
+      if (responses.length === 0) return;
+      
+      responses.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        if (index === currentSlide) dot.classList.add('active');
+        
+        dot.addEventListener('click', () => {
+          if (!isAnimating) updateSlide(index);
+        });
+        
+        dotIndicator.appendChild(dot);
+      });
+    }
+
+    // Update slide
+    function updateSlide(index) {
+      if (isAnimating || index === currentSlide || responses.length === 0) return;
+      
+      isAnimating = true;
+      
+      // Update dots
+      const dots = dotIndicator.querySelectorAll('.dot');
+      dots[currentSlide]?.classList.remove('active');
+      dots[index]?.classList.add('active');
+      
+      // Update current slide
+      currentSlide = index;
+      
+      // Display the response
+      displayCurrentResponse();
+      
+      // Update navigation buttons
+      updateNavigationButtons();
+      
+      setTimeout(() => { isAnimating = false; }, 500);
+    }
+
+    // Display current response
+    function displayCurrentResponse() {
+      if (responses.length === 0) {
+        carouselContent.innerHTML = `
+          <div class="content-area">
+            <div class="no-responses">
+              <div class="no-responses-icon">💭</div>
+              <div>No responses yet</div>
+              <div style="margin-top: 10px; font-size: 14px; opacity: 0.6;">Responses will appear here as students submit them</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const response = responses[currentSlide];
+      const studentName = response.studentName || response.student_name || 'Anonymous';
+      const answer = response.answer || 'No response text';
+      const wordCount = response.wordCount || response.word_count || 0;
+      const timestamp = formatTimestamp(response.timestamp || response.created_at);
+      const hasPhoto = !!(response.photoUrl || response.photo_url);
+
+      carouselContent.innerHTML = `
+        <div class="content-area">
+          <div class="student-name">${escapeHtml(studentName)}</div>
+          <div class="response-text">${escapeHtml(answer)}</div>
+          <div class="response-meta">
+            <span class="word-count">${wordCount} words</span>
+            <span class="timestamp">${timestamp}</span>
+            ${hasPhoto ? '<span class="photo-indicator">📸</span>' : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // Update navigation buttons
+    function updateNavigationButtons() {
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide >= responses.length - 1;
+      
+      if (responses.length === 0) {
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+      }
+    }
+
+    // Format timestamp
+    function formatTimestamp(timestamp) {
+      if (!timestamp) return 'Unknown time';
+      
+      try {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        
+        return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      } catch (error) {
+        return 'Unknown time';
+      }
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Navigation functions
+    function goToPrevious() {
+      if (currentSlide > 0) {
+        updateSlide(currentSlide - 1);
+      }
+    }
+
+    function goToNext() {
+      if (currentSlide < responses.length - 1) {
+        updateSlide(currentSlide + 1);
+      }
+    }
+
+    // Refresh data
+    function refreshData() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      refreshBtn.style.transform = 'rotate(360deg)';
+      
+      const oldCount = responses.length;
+      loadData();
+      const newCount = responses.length;
+      
+      // Reset to first slide if new responses arrived
+      if (newCount > oldCount) {
+        currentSlide = 0;
+      }
+      
+      // Ensure current slide is within bounds
+      if (currentSlide >= responses.length) {
+        currentSlide = Math.max(0, responses.length - 1);
+      }
+      
+      displayQuestion();
+      createDots();
+      displayCurrentResponse();
+      updateNavigationButtons();
       
       setTimeout(() => {
-        switch(mode) {
-          case 'live':
-            // Open live response feed (fullscreen for projector)
-            window.open('../displays/display1.html', '_blank');
-            break;
-          case 'summary':
-            // Open summary view
-            window.open('../displays/display2.html', '_blank');
-            break;
-          case 'discussion':
-            // Open discussion board
-            window.open('../displays/display3.html', '_blank');
-            break;
-          case 'analytics':
-            // Navigate to full analytics
-            window.location.href = '../visualisation/';
-            break;
+        refreshBtn.style.transform = 'rotate(0deg)';
+      }, 500);
+    }
+
+    // Go back to analytics
+    function goToAnalytics() {
+      window.location.href = '../visualisation/';
+    }
+
+    // Keyboard navigation
+    function handleKeydown(e) {
+      if (isAnimating) return;
+      
+      switch(e.key) {
+        case 'ArrowLeft':
+          goToPrevious();
+          break;
+        case 'ArrowRight':
+          goToNext();
+          break;
+        case ' ':
+        case 'Enter':
+          goToNext();
+          e.preventDefault();
+          break;
+      }
+    }
+
+    // Touch navigation
+    let startX = 0;
+    let startY = 0;
+
+    function handleTouchStart(e) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }
+
+    function handleTouchEnd(e) {
+      if (!startX || !startY) return;
+      
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      
+      const diffX = startX - endX;
+      const diffY = startY - endY;
+      
+      // Only respond to horizontal swipes
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          goToNext(); // Swipe left = next
+        } else {
+          goToPrevious(); // Swipe right = previous
         }
+      }
+      
+      startX = 0;
+      startY = 0;
+    }
+
+    // Auto-refresh
+    function startAutoRefresh() {
+      setInterval(() => {
+        const oldCount = responses.length;
+        loadData();
+        const newCount = responses.length;
         
-        // Reset button after delay
-        setTimeout(() => {
-          button.innerHTML = originalContent;
-        }, 1000);
-      }, 800);
+        if (newCount !== oldCount) {
+          refreshData();
+        }
+      }, 5000);
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      createConstellation();
+    function init() {
+      console.log('Initializing INTUITY Carousel Display...');
+      
+      // Load initial data
+      if (!loadData()) {
+        // Demo data if needed
+        currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
+        responses = [
+          {
+            studentName: 'Demo Student',
+            answer: 'This is a demo response to show how the carousel works. Each response gets its own focused view.',
+            wordCount: 18,
+            timestamp: new Date().toISOString()
+          }
+        ];
+      }
+
+      // Set up display
+      displayQuestion();
+      createDots();
+      displayCurrentResponse();
+      updateNavigationButtons();
+      
+      // Event listeners
+      prevBtn.addEventListener('click', goToPrevious);
+      nextBtn.addEventListener('click', goToNext);
+      document.addEventListener('keydown', handleKeydown);
+      carouselContent.addEventListener('touchstart', handleTouchStart);
+      carouselContent.addEventListener('touchend', handleTouchEnd);
+      
+      // Start auto-refresh
+      startAutoRefresh();
+
+      console.log('Carousel display ready!');
+    }
+
+    // Listen for storage changes
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'display_responses' || e.key === 'display_question') {
+        refreshData();
+      }
     });
+
+    // Start when page loads
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
