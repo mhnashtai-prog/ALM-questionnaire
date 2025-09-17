@@ -1,33 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTUITY Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INTUITY - Analytics</title>
+  
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  
   <style>
-    :root {
-      --bg-primary: #1a2332;
-      --bg-secondary: #243447;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --accent-teal: #2dd4bf;
-      --accent-gold: #ffd54f;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --blur: blur(20px);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --error: #ef4444;
-      --success: #10b981;
-      --apple-radius: 12px;
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -35,135 +16,299 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
+      opacity: 0.3;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(15deg);
+      border: 1.5px solid rgba(255, 140, 60, 0.6);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
+      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
+      opacity: 0.8;
+    }
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(80deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
+      opacity: 0.2;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
 
-    /* Header */
     .header {
       text-align: center;
-      padding: 2rem;
+      margin-bottom: 40px;
     }
 
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 3rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.25rem;
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
-    .page-title {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-      margin-bottom: 0.25rem;
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
     }
 
-    .author {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* Main Container */
-    .container {
+    .main-content {
       flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 140px;
+    }
+
+    .analytics-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .analytics-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    /* Central Question Box - HERO ELEMENT */
-    .question-central {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 2px solid var(--card-border);
-      border-radius: 20px;
-      padding: 3rem;
-      text-align: center;
-      box-shadow: var(--shadow);
+    .analytics-box:hover {
+      transform: translateY(-2px);
     }
 
-    .question-label {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
+    /* Question Dropdown */
+    .question-selector-container {
+      padding: 20px 20px 10px;
     }
 
     .question-dropdown {
       width: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid var(--card-border);
-      border-radius: var(--apple-radius);
-      padding: 1.25rem 1.5rem;
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--blur);
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
       outline: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-family: inherit;
     }
 
     .question-dropdown:focus {
-      border-color: var(--accent-teal);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      border-color: rgba(255, 140, 60, 0.6);
+      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
     }
 
     .question-dropdown option {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: 1rem;
+      background: #000;
+      color: #fff;
+      padding: 10px;
     }
 
-    /* Response Count & Controls */
-    .controls-bar {
+    /* Current Question Display */
+    .current-question {
+      flex: 1;
       display: flex;
+      align-items: center;
       justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
+      padding: 20px;
+      text-align: center;
     }
 
-    .response-pill {
-      background: rgba(45, 212, 191, 0.1);
-      border: 1px solid var(--accent-teal);
-      border-radius: 20px;
-      padding: 0.75rem 1.5rem;
-      color: var(--accent-teal);
+    .question-text {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 500;
+      line-height: 1.4;
+      max-width: 90%;
+    }
+
+    .no-question {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      padding: 10px 20px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .response-count {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
       font-weight: 600;
+    }
+
+    .response-count.live-update {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        color: rgba(255, 140, 60, 0.9);
+        text-shadow: 0 0 5px rgba(255, 140, 60, 0.3);
+      }
+      50% { 
+        color: rgba(255, 140, 60, 1);
+        text-shadow: 0 0 15px rgba(255, 140, 60, 0.6);
+      }
+    }
+
+    .controls-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .refresh-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: rgba(34, 197, 94, 0.8);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: rgba(34, 197, 94, 0.5);
+      color: rgba(34, 197, 94, 1);
+      transform: scale(1.1);
     }
 
     .delete-btn {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--error);
-      border-radius: 10px;
-      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: rgba(239, 68, 68, 0.8);
+      font-size: 16px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -171,326 +316,284 @@
 
     .delete-btn:hover {
       background: rgba(239, 68, 68, 0.2);
-      transform: scale(1.05);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: rgba(239, 68, 68, 1);
+      transform: scale(1.1);
     }
 
-    .delete-btn:disabled {
-      opacity: 0.5;
+    .delete-btn:disabled,
+    .refresh-btn:disabled {
+      opacity: 0.3;
       cursor: not-allowed;
       transform: none;
     }
 
-    /* Presentation Mode Box */
-    .presentation-modes {
-      background: var(--card-bg);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--card-border);
-      border-radius: var(--apple-radius);
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .modes-title {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-    }
-
-    .mode-buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-
-    .mode-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1.5rem 1rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .mode-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--accent-teal);
-      color: var(--text-primary);
-      transform: translateY(-2px);
-    }
-
-    .mode-btn.active {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border-color: transparent;
-      color: var(--bg-primary);
-    }
-
-    .mode-icon {
-      font-size: 1.5rem;
-    }
-
-    .mode-name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Footer */
+    /* SIMPLIFIED FOOTER - Only 3 buttons */
     .footer {
-      background: rgba(26, 35, 50, 0.8);
-      backdrop-filter: var(--blur);
-      border-top: 1px solid var(--card-border);
-      padding: 1.5rem;
-    }
-
-    .footer-buttons {
-      max-width: 800px;
-      margin: 0 auto;
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
     }
 
-    .footer-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
       text-decoration: none;
-      font-weight: 500;
     }
 
-    .footer-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--accent-teal);
-      transform: translateY(-1px);
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
     }
 
-    .footer-btn.primary {
-      background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-      border-color: transparent;
-      color: var(--bg-primary);
+    .nav-button:active {
+      transform: scale(0.95);
     }
 
-    .footer-btn.primary:hover {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+    .nav-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
     }
+
+    /* Primary display button - make it stand out */
+    .nav-button.display {
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+    }
+
+    .nav-button.display:hover {
+      background: rgba(255, 140, 60, 0.3);
+      color: #fff;
+      border-color: rgba(255, 140, 60, 0.5);
+      transform: scale(1.1);
+    }
+
+    .nav-button.display:disabled {
+      opacity: 0.4;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      border: none;
+      transform: none;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
+    }
+
+    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
     /* Loading State */
     .loading {
-      animation: spin 1s linear infinite;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 16px;
+      text-align: center;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    /* Connection Status */
+    .connection-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
     /* Notification */
     .notification {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 1rem 1.5rem;
+      top: 30px;
+      right: 30px;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 140, 60, 0.5);
       border-radius: 8px;
-      backdrop-filter: var(--blur);
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 500;
       z-index: 1000;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      opacity: 0;
       transform: translateX(100%);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .notification.show {
+      opacity: 1;
       transform: translateX(0);
     }
 
-    .notification.success {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid var(--success);
-      color: var(--success);
-    }
-
-    .notification.info {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      color: rgb(59, 130, 246);
-    }
-
-    .notification.error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--error);
-      color: var(--error);
-    }
-
-    /* Mobile Responsive */
+    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .container {
-        padding: 0 1rem;
-        gap: 1.5rem;
+        padding: 40px 15px 15px;
       }
-
-      .brand-name {
-        font-size: 2.5rem;
+      
+      .header h1 {
+        font-size: 28px;
       }
-
-      .question-central {
-        padding: 2rem;
+      
+      .analytics-container {
+        height: 4cm;
       }
-
-      .controls-bar {
-        flex-direction: column;
-        gap: 1rem;
+      
+      .question-text {
+        font-size: 16px;
       }
-
-      .mode-buttons {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+      
+      .question-dropdown {
+        font-size: 14px;
+        padding: 10px 12px;
       }
-
-      .mode-btn {
-        padding: 1rem 0.75rem;
+      
+      .response-count {
+        font-size: 14px;
       }
-
-      .footer-buttons {
-        gap: 1rem;
-      }
-
-      .footer-btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .mode-buttons {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-      }
-
-      .mode-btn {
-        padding: 1rem 0.5rem;
-      }
-
-      .mode-icon {
-        font-size: 1.25rem;
-      }
-
-      .mode-name {
-        font-size: 0.75rem;
+      
+      .delete-btn, .refresh-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
       }
     }
   </style>
 </head>
-
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="brand-name">INTUITY</div>
-    <div class="page-title">Analytics</div>
-    <div class="author">by Majid Nashtai</div>
-  </header>
-
-  <!-- Main Container -->
-  <div class="container">
-    
-    <!-- Central Question Box - HERO -->
-    <div class="question-central">
-      <div class="question-label">Select Question</div>
-      
-      <select class="question-dropdown" id="questionSelector">
-        <option value="">Loading questions from database...</option>
-      </select>
-      
-      <!-- Response Count & Delete Controls -->
-      <div class="controls-bar">
-        <div class="response-pill">
-          <i class="fas fa-users"></i>
-          <span id="responseCount">0 Responses</span>
-        </div>
-        
-        <button class="delete-btn" id="deleteBtn" title="Delete Selected Question" disabled>
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
     </div>
-
-    <!-- Presentation Modes -->
-    <div class="presentation-modes">
-      <div class="modes-title">Presentation Mode</div>
-      
-      <div class="mode-buttons">
-        <button class="mode-btn" data-mode="mind-map">
-          <div class="mode-icon">🗺️</div>
-          <div class="mode-name">Mind Map</div>
-        </button>
-        
-        <button class="mode-btn active" data-mode="stacked">
-          <div class="mode-icon">📚</div>
-          <div class="mode-name">Stacked</div>
-        </button>
-        
-        <button class="mode-btn" data-mode="floating">
-          <div class="mode-icon">☁️</div>
-          <div class="mode-name">Floating</div>
-        </button>
-        
-        <button class="mode-btn" data-mode="cosmos">
-          <div class="mode-icon">🌌</div>
-          <div class="mode-name">Cosmos</div>
-        </button>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-buttons">
-      <a href="../teachers/questions/" class="footer-btn primary">
-        <i class="fas fa-plus"></i>
-        <span>Create Questions</span>
-      </a>
-      
-      <a href="../games/" class="footer-btn">
-        <i class="fas fa-gamepad"></i>
-        <span>Word Games</span>
-      </a>
-      
-      <a href="../" class="footer-btn">
-        <i class="fas fa-home"></i>
-        <span>Return</span>
-      </a>
-    </div>
-  </footer>
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">Connecting...</div>
+
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Analytics<br>By Majid Nashtai</p>
+    </header>
+
+    <main class="main-content">
+      <div class="analytics-container">
+        <div class="analytics-box">
+          <!-- Question Selector -->
+          <div class="question-selector-container">
+            <select class="question-dropdown" id="questionDropdown">
+              <option value="">Loading questions...</option>
+            </select>
+          </div>
+          
+          <!-- Current Question Display -->
+          <div class="current-question">
+            <div class="question-text" id="questionText">
+              <div class="loading">Loading questions from database...</div>
+            </div>
+          </div>
+          
+          <!-- Controls -->
+          <div class="controls-bar">
+            <div class="response-count" id="responseCount">0 responses</div>
+            <div class="controls-right">
+              <button class="refresh-btn" id="refreshBtn" title="Refresh">🔄</button>
+              <button class="delete-btn" id="deleteBtn" disabled title="Delete Question">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- SIMPLIFIED FOOTER: Home | Create Questions | Display Responses -->
+    <footer class="footer">
+      <a href="../" class="nav-button" title="Home">🏠</a>
+      <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
+      <button class="nav-button display" id="displayBtn" title="Display Responses" disabled>📺</button>
+    </footer>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
 
   <script>
     // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Global data variables
+    // Global data variables - SWISS CLOCK PRECISION
     let supabase;
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
     let isConnected = false;
+
+    // Elements
+    const questionDropdown = document.getElementById('questionDropdown');
+    const questionText = document.getElementById('questionText');
+    const responseCount = document.getElementById('responseCount');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const displayBtn = document.getElementById('displayBtn');
+    const notification = document.getElementById('notification');
+    const connectionStatus = document.getElementById('connectionStatus');
 
     // Initialize Supabase
     function initSupabase() {
@@ -524,7 +627,7 @@
         console.error('❌ Supabase connection failed:', error);
         isConnected = false;
         
-        // Fallback to localStorage
+        // Fallback to localStorage - ROBUST VERSION
         loadLocalStorageData();
       }
     }
@@ -556,6 +659,9 @@
         allResponses = responses || [];
         console.log(`✅ Loaded ${allResponses.length} responses from Supabase`);
 
+        // ALWAYS merge with localStorage - KEY ENHANCEMENT
+        loadLocalStorageData();
+        
         // Update UI
         updateUI();
         
@@ -570,12 +676,12 @@
       }
     }
 
-    // Fallback to localStorage data
+    // ENHANCED localStorage loading - TRANSPLANTED FROM WORKING VERSION
     function loadLocalStorageData() {
       console.log('📱 Loading data from localStorage...');
       
       try {
-        // Load questions from multiple possible keys
+        // Load questions from multiple possible keys - ROBUST FALLBACK
         const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
         for (const key of questionKeys) {
           const storedQuestions = localStorage.getItem(key);
@@ -583,36 +689,79 @@
             const parsed = JSON.parse(storedQuestions);
             
             if (Array.isArray(parsed)) {
-              allQuestions = parsed;
-              break;
-            } else if (typeof parsed === 'object' && parsed.text) {
-              allQuestions = [parsed];
-              break;
+              // Merge with existing, avoid duplicates
+              parsed.forEach(newQ => {
+                const exists = allQuestions.find(q => 
+                  q.id === newQ.id || 
+                  (q.text || q.question_text) === (newQ.text || newQ.question_text)
+                );
+                if (!exists) {
+                  allQuestions.push(newQ);
+                }
+              });
+            } else if (typeof parsed === 'object' && (parsed.text || parsed.question_text)) {
+              // Single question object
+              const exists = allQuestions.find(q => 
+                q.id === parsed.id || 
+                (q.text || q.question_text) === (parsed.text || parsed.question_text)
+              );
+              if (!exists) {
+                allQuestions = [parsed, ...allQuestions];
+              }
             }
           }
         }
 
-        // Load responses from multiple possible keys
-        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses'];
-        allResponses = [];
+        // Load responses from multiple possible keys - ENHANCED ROBUSTNESS
+        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses', 'display_responses'];
         
         for (const key of responseKeys) {
           const storedResponses = localStorage.getItem(key);
           if (storedResponses) {
             const parsed = JSON.parse(storedResponses);
             if (Array.isArray(parsed)) {
-              allResponses = allResponses.concat(parsed);
+              parsed.forEach(newResponse => {
+                // Enhanced duplicate checking
+                const exists = allResponses.find(existingResponse => {
+                  const nameMatch = (existingResponse.student_name || existingResponse.studentName) === (newResponse.studentName || newResponse.student_name);
+                  const answerMatch = existingResponse.answer === newResponse.answer;
+                  const timeMatch = Math.abs(
+                    new Date(existingResponse.created_at || existingResponse.submitted_at || existingResponse.timestamp) - 
+                    new Date(newResponse.timestamp || newResponse.created_at || newResponse.submitted_at)
+                  ) < 60000; // Within 1 minute
+                  return nameMatch && answerMatch && timeMatch;
+                });
+                
+                if (!exists) {
+                  // Normalize response format for consistency
+                  const normalizedResponse = {
+                    id: newResponse.id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    question_id: newResponse.questionId || newResponse.question_id,
+                    student_name: newResponse.studentName || newResponse.student_name,
+                    answer: newResponse.answer,
+                    word_count: newResponse.wordCount || newResponse.word_count || (newResponse.answer ? newResponse.answer.split(/\s+/).length : 0),
+                    photo_url: newResponse.photoUrl || newResponse.photo_url,
+                    created_at: newResponse.timestamp || newResponse.created_at || newResponse.submitted_at,
+                    submitted_at: newResponse.submittedAt || newResponse.submitted_at || newResponse.timestamp,
+                    // Keep original for reference
+                    questionText: newResponse.questionText,
+                    source: key // Track where it came from
+                  };
+                  
+                  allResponses.push(normalizedResponse);
+                }
+              });
             }
           }
         }
 
-        console.log(`📱 Loaded ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
+        console.log(`📱 Final counts: ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
         
         updateUI();
         
         if (allQuestions.length === 0) {
           showNotification('No questions found - create one first', 'info');
-        } else {
+        } else if (!isConnected) {
           showNotification('Using offline data', 'info');
         }
         
@@ -629,9 +778,9 @@
       updateDeleteButton();
     }
 
-    // Populate question dropdown
+    // Populate question dropdown - ENHANCED
     function populateQuestionDropdown() {
-      const selector = document.getElementById('questionSelector');
+      const selector = document.getElementById('questionDropdown');
       
       if (allQuestions.length === 0) {
         selector.innerHTML = '<option value="">No questions available - Create one first</option>';
@@ -645,7 +794,8 @@
         option.value = question.id || index;
         
         const questionText = question.text || question.question_text || 'Untitled Question';
-        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''}`;
+        const responseCountForQ = getResponsesForQuestion(question).length;
+        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''} (${responseCountForQ})`;
         selector.appendChild(option);
       });
 
@@ -655,22 +805,42 @@
         selector.value = currentSelectedQuestion.id || 0;
         updateResponseCount();
         updateDeleteButton();
-        updateQuestionBoxAppearance();
+        updateQuestionDisplay();
       }
     }
 
-    // Get responses for a specific question
+    // Get responses for a specific question - ENHANCED MATCHING LOGIC
     function getResponsesForQuestion(question) {
       if (!question) return [];
       
       return allResponses.filter(response => {
-        return (
-          response.question_id === question.id ||
-          response.questionId === question.id ||
-          response.questionText === (question.text || question.question_text) ||
-          response.question_id == question.id ||
-          (typeof question.id === 'undefined' && response.questionId === 0)
-        );
+        // Method 1: Direct ID matching
+        if (response.question_id === question.id || response.questionId === question.id) {
+          return true;
+        }
+        
+        // Method 2: Text matching (case insensitive)
+        const questionText = (question.text || question.question_text || '').trim().toLowerCase();
+        const responseQuestionText = (response.questionText || '').trim().toLowerCase();
+        if (questionText && responseQuestionText && questionText === responseQuestionText) {
+          return true;
+        }
+        
+        // Method 3: Demo question special handling
+        if (question.id === 'demo' && (
+            response.question_id === 'demo' || 
+            response.questionId === 'demo' ||
+            (response.questionText || '').toLowerCase().includes('demo')
+          )) {
+          return true;
+        }
+        
+        // Method 4: Index-based fallback for questions without IDs
+        if (typeof question.id === 'undefined' && response.questionId === allQuestions.indexOf(question)) {
+          return true;
+        }
+        
+        return false;
       });
     }
 
@@ -694,21 +864,24 @@
       deleteBtn.disabled = !currentSelectedQuestion;
     }
 
-    // Update question box appearance when selected
-    function updateQuestionBoxAppearance() {
-      const questionBox = document.querySelector('.question-central');
-      if (currentSelectedQuestion) {
-        questionBox.style.borderColor = 'var(--accent-teal)';
-        questionBox.style.background = 'rgba(45, 212, 191, 0.08)';
-      } else {
-        questionBox.style.borderColor = 'var(--card-border)';
-        questionBox.style.background = 'var(--card-bg)';
+    // Update question display
+    function updateQuestionDisplay() {
+      if (!currentSelectedQuestion) {
+        questionText.innerHTML = '<div class="no-question">Select a question</div>';
+        return;
       }
+      
+      const questionStr = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'Untitled Question';
+      questionText.textContent = questionStr;
+      
+      // Enable display button if there are responses
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      displayBtn.disabled = responses.length === 0;
     }
 
     // Handle question selection change
     function handleQuestionChange() {
-      const selector = document.getElementById('questionSelector');
+      const selector = document.getElementById('questionDropdown');
       const selectedValue = selector.value;
       
       if (!selectedValue) {
@@ -725,10 +898,10 @@
       
       updateResponseCount();
       updateDeleteButton();
-      updateQuestionBoxAppearance();
+      updateQuestionDisplay();
     }
 
-    // Delete question
+    // Delete question - ENHANCED
     async function deleteQuestion() {
       if (!currentSelectedQuestion) {
         alert('Please select a question to delete.');
@@ -742,11 +915,11 @@
 
       const deleteBtn = document.getElementById('deleteBtn');
       const originalContent = deleteBtn.innerHTML;
-      deleteBtn.innerHTML = '<i class="fas fa-spinner loading"></i>';
+      deleteBtn.innerHTML = '⏳';
       deleteBtn.disabled = true;
 
       try {
-        if (isConnected) {
+        if (isConnected && currentSelectedQuestion.id) {
           // Delete from Supabase
           const { error } = await supabase
             .from('questions')
@@ -760,20 +933,23 @@
 
         // Remove from local arrays
         allQuestions = allQuestions.filter(q => q.id !== currentSelectedQuestion.id);
-        allResponses = allResponses.filter(r => r.question_id !== currentSelectedQuestion.id);
+        allResponses = allResponses.filter(r => 
+          r.question_id !== currentSelectedQuestion.id && 
+          r.questionId !== currentSelectedQuestion.id
+        );
 
         // Update localStorage
         localStorage.setItem('alm_questions', JSON.stringify(allQuestions));
         localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
 
         // Reset selection
-        const selector = document.getElementById('questionSelector');
+        const selector = document.getElementById('questionDropdown');
         selector.value = '';
         currentSelectedQuestion = null;
 
         // Update UI
         updateUI();
-        updateQuestionBoxAppearance();
+        updateQuestionDisplay();
 
         showNotification('Question deleted successfully!', 'success');
         
@@ -788,100 +964,152 @@
       }
     }
 
-    // Show notification
+    // Launch Display - ENHANCED DATA PREPARATION
+    function launchDisplay() {
+      if (!currentSelectedQuestion) {
+        showNotification('Please select a question first', 'error');
+        return;
+      }
+      
+      const responsesForQuestion = getResponsesForQuestion(currentSelectedQuestion);
+      if (responsesForQuestion.length === 0) {
+        showNotification('No responses for this question', 'error');
+        return;
+      }
+      
+      // Prepare data for display with comprehensive format
+      const questionForDisplay = {
+        id: currentSelectedQuestion.id,
+        text: currentSelectedQuestion.text || currentSelectedQuestion.question_text,
+        question_text: currentSelectedQuestion.text || currentSelectedQuestion.question_text,
+        questionText: currentSelectedQuestion.text || currentSelectedQuestion.question_text
+      };
+      
+      const responsesForDisplay = responsesForQuestion.map(r => ({
+        id: r.id,
+        student_name: r.student_name,
+        studentName: r.student_name, // Compatibility
+        answer: r.answer,
+        word_count: r.word_count,
+        photo_url: r.photo_url,
+        created_at: r.created_at,
+        question_id: currentSelectedQuestion.id,
+        questionText: questionForDisplay.questionText
+      }));
+      
+      // Store for all display interfaces
+      localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
+      localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
+      localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
+      localStorage.setItem('alm_student_responses', JSON.stringify(responsesForDisplay));
+      
+      console.log(`🚀 Launching display with ${responsesForQuestion.length} responses`);
+      showNotification(`Launching display with ${responsesForQuestion.length} responses...`, 'success');
+      
+      // Launch display
+      setTimeout(() => {
+        window.open('../displays/', '_blank');
+      }, 500);
+    }
+
+    // Show notification - ENHANCED
     function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
+      console.log(`📢 ${message}`);
+      
+      // Remove existing notification
+      const existingNotification = document.querySelector('.notification.show');
+      if (existingNotification) {
+        existingNotification.classList.remove('show');
+      }
+      
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
       notification.className = `notification ${type}`;
-      notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-        <span>${message}</span>
-      `;
+      notification.classList.add('show');
       
-      document.body.appendChild(notification);
-      
-      // Show notification
-      setTimeout(() => notification.classList.add('show'), 100);
-      
-      // Hide and remove notification
       setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
       }, 3000);
     }
 
-    // Initialize when page loads
+    // Auto-refresh localStorage - ENHANCED MONITORING
+    function setupAutoRefresh() {
+      // Monitor localStorage changes
+      setInterval(() => {
+        const currentResponseCount = allResponses.length;
+        loadLocalStorageData();
+        
+        if (allResponses.length > currentResponseCount) {
+          console.log(`🔄 Found ${allResponses.length - currentResponseCount} new responses`);
+          updateUI();
+          showNotification('New responses detected!', 'success');
+        }
+      }, 5000);
+
+      // Listen for storage events from other tabs
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'alm_student_responses' || e.key === 'current_question') {
+          console.log('🔄 Storage updated from another tab');
+          loadLocalStorageData();
+        }
+      });
+    }
+
+    // Initialize when page loads - ENHANCED INITIALIZATION
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics Loading...');
+      console.log('🚀 INTUITY Analytics (Enhanced Minimalist) Loading...');
+      
+      // Update connection status immediately
+      connectionStatus.textContent = '● Connecting...';
+      connectionStatus.className = 'connection-status';
       
       // Initialize Supabase
       initSupabase();
       
+      // Setup auto-refresh
+      setupAutoRefresh();
+      
       // Set up event listeners
-      const questionSelector = document.getElementById('questionSelector');
-      questionSelector.addEventListener('change', handleQuestionChange);
-      
-      const deleteBtn = document.getElementById('deleteBtn');
+      questionDropdown.addEventListener('change', handleQuestionChange);
       deleteBtn.addEventListener('click', deleteQuestion);
+      displayBtn.addEventListener('click', launchDisplay);
       
-      // Presentation mode selection with improved data passing
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          if (!currentSelectedQuestion) {
-            alert('Please select a question first.');
-            return;
-          }
-          
-          // Remove active from all buttons
-          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-          
-          // Add active to clicked button
-          this.classList.add('active');
-          
-          const mode = this.dataset.mode;
-          const modeName = this.querySelector('.mode-name').textContent;
-          
-          console.log(`🎨 Launching ${mode} presentation mode for question:`, currentSelectedQuestion);
-          showNotification(`Launching ${modeName} mode...`, 'info');
-          
-          // Visual feedback
-          this.style.transform = 'scale(0.95)';
+      // Manual refresh button
+      refreshBtn.addEventListener('click', () => {
+        refreshBtn.innerHTML = '⏳';
+        refreshBtn.disabled = true;
+        
+        if (isConnected) {
+          loadInitialData().finally(() => {
+            refreshBtn.innerHTML = '🔄';
+            refreshBtn.disabled = false;
+          });
+        } else {
+          loadLocalStorageData();
           setTimeout(() => {
-            this.style.transform = 'translateY(-2px)';
-            
-            // Store current question and responses in localStorage for displays to access
-            localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
-            localStorage.setItem('display_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
-            localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
-            localStorage.setItem('alm_student_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
-            
-            // Navigate to appropriate display file
-            let displayUrl = '';
-            switch (mode) {
-              case 'mind-map':
-                displayUrl = '../displays/display1.html';
-                break;
-              case 'stacked':
-                displayUrl = '../displays/display2.html';
-                break;
-              case 'floating':
-                displayUrl = '../displays/display3.html';
-                break;
-              case 'cosmos':
-                displayUrl = '../displays/display4.html';
-                break;
-              default:
-                displayUrl = '../displays/display2.html';
-            }
-            
-            console.log(`🔗 Opening display: ${displayUrl}`);
-            
-            // Open in new tab/window for better user experience
-            window.open(displayUrl, '_blank');
-            
-          }, 100);
-        });
+            refreshBtn.innerHTML = '🔄';
+            refreshBtn.disabled = false;
+            showNotification('Local data refreshed', 'info');
+          }, 1000);
+        }
       });
       
+      // Update connection status display
+      setTimeout(() => {
+        if (isConnected) {
+          connectionStatus.textContent = '● Online';
+          connectionStatus.className = 'connection-status online';
+        } else {
+          connectionStatus.textContent = '● Offline';
+          connectionStatus.className = 'connection-status offline';
+        }
+      }, 2000);
+      
+      console.log('✅ Enhanced Minimalist Analytics Ready!');
+    });
+  </script>
+</body>
+</html>
       console.log('✅ INTUITY Analytics Ready!');
     });
   </script>
