@@ -371,6 +371,30 @@
       font-size: 18px;
     }
 
+    /* STATUS INDICATOR */
+    .status-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+
+    .status-indicator.live {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-indicator.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
     /* FOOTER - Matches your design exactly */
     .footer {
       margin-top: 40px;
@@ -482,6 +506,9 @@
     </div>
   </div>
 
+  <!-- Status Indicator -->
+  <div class="status-indicator" id="statusIndicator">● Loading...</div>
+
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
@@ -521,6 +548,7 @@
     let responses = [];
     let currentSlide = 0;
     let isAnimating = false;
+    let refreshInterval = null;
 
     // Elements
     const carouselContent = document.getElementById('carouselContent');
@@ -528,39 +556,116 @@
     const questionDisplay = document.getElementById('questionDisplay');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const statusIndicator = document.getElementById('statusIndicator');
 
-    // Load data from localStorage
+    // Debug function
+    function debugDisplay() {
+      console.log('=== Display Debug ===');
+      console.log('Question:', currentQuestion);
+      console.log('Responses:', responses.length);
+      console.log('Current slide:', currentSlide);
+      console.log('Raw localStorage data:');
+      console.log('  display_question:', localStorage.getItem('display_question'));
+      console.log('  display_responses:', localStorage.getItem('display_responses'));
+      console.log('  alm_student_responses:', localStorage.getItem('alm_student_responses'));
+    }
+
+    // Load data from localStorage - IMPROVED VERSION
     function loadData() {
       try {
-        // Load current question
+        console.log('🔍 Loading display data...');
+        
+        // Load current question - try multiple sources
+        let questionLoaded = false;
+        
+        // 1. Try display_question first
         const questionData = localStorage.getItem('display_question');
         if (questionData) {
-          currentQuestion = JSON.parse(questionData);
+          try {
+            currentQuestion = JSON.parse(questionData);
+            questionLoaded = true;
+            console.log('✅ Loaded question from display_question');
+          } catch (e) {
+            console.warn('Error parsing display_question:', e);
+          }
         }
-
-        // Load responses
-        const responsesData = localStorage.getItem('display_responses');
-        if (responsesData) {
-          responses = JSON.parse(responsesData);
-        } else {
-          // Fallback to older format
-          const oldResponses = localStorage.getItem('alm_student_responses');
-          if (oldResponses) {
-            responses = JSON.parse(oldResponses);
+        
+        // 2. Fallback to current_question
+        if (!questionLoaded) {
+          const fallbackQuestion = localStorage.getItem('current_question');
+          if (fallbackQuestion) {
+            try {
+              const parsed = JSON.parse(fallbackQuestion);
+              currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
+              questionLoaded = true;
+              console.log('✅ Loaded question from current_question fallback');
+            } catch (e) {
+              console.warn('Error parsing current_question:', e);
+            }
           }
         }
 
-        // Sort by timestamp (newest first)
-        responses.sort((a, b) => {
-          const timeA = new Date(a.timestamp || a.created_at || 0);
-          const timeB = new Date(b.timestamp || b.created_at || 0);
-          return timeB - timeA;
+        // Load responses - try multiple sources
+        let responsesLoaded = false;
+        
+        // 1. Try display_responses first
+        const responsesData = localStorage.getItem('display_responses');
+        if (responsesData) {
+          try {
+            const parsed = JSON.parse(responsesData);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              responses = parsed;
+              responsesLoaded = true;
+              console.log('✅ Loaded responses from display_responses:', responses.length);
+            }
+          } catch (e) {
+            console.warn('Error parsing display_responses:', e);
+          }
+        }
+        
+        // 2. Fallback to alm_student_responses
+        if (!responsesLoaded) {
+          const fallbackResponses = localStorage.getItem('alm_student_responses');
+          if (fallbackResponses) {
+            try {
+              const parsed = JSON.parse(fallbackResponses);
+              if (Array.isArray(parsed)) {
+                // Normalize the format for display
+                responses = parsed.map(r => ({
+                  ...r,
+                  student_name: r.studentName || r.student_name,
+                  created_at: r.timestamp || r.created_at,
+                  word_count: r.wordCount || r.word_count,
+                  photo_url: r.photoUrl || r.photo_url
+                }));
+                responsesLoaded = true;
+                console.log('✅ Loaded responses from alm_student_responses fallback:', responses.length);
+              }
+            } catch (e) {
+              console.warn('Error parsing alm_student_responses:', e);
+            }
+          }
+        }
+
+        // Sort responses by timestamp (newest first)
+        if (responses.length > 0) {
+          responses.sort((a, b) => {
+            const timeA = new Date(a.timestamp || a.created_at || 0);
+            const timeB = new Date(b.timestamp || b.created_at || 0);
+            return timeB - timeA;
+          });
+        }
+
+        console.log('📊 Final loaded data:', { 
+          question: questionLoaded, 
+          responses: responses.length,
+          questionText: currentQuestion?.text || currentQuestion?.questionText || 'No question'
         });
 
-        console.log('Loaded data:', { question: currentQuestion, responses: responses.length });
-        return true;
+        return responsesLoaded;
+        
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('❌ Error loading data:', error);
         return false;
       }
     }
@@ -568,7 +673,10 @@
     // Display question
     function displayQuestion() {
       if (currentQuestion) {
-        const questionStr = currentQuestion.questionText || currentQuestion.text || currentQuestion.question_text || 'Question';
+        const questionStr = currentQuestion.questionText || 
+                           currentQuestion.text || 
+                           currentQuestion.question_text || 
+                           'Question';
         questionDisplay.textContent = questionStr;
       } else {
         questionDisplay.textContent = 'No question selected';
@@ -663,6 +771,18 @@
       }
     }
 
+    // Update status indicator
+    function updateStatus() {
+      const responseCount = responses.length;
+      if (responseCount > 0) {
+        statusIndicator.textContent = `● Live (${responseCount})`;
+        statusIndicator.className = 'status-indicator live';
+      } else {
+        statusIndicator.textContent = '● Waiting...';
+        statusIndicator.className = 'status-indicator offline';
+      }
+    }
+
     // Format timestamp
     function formatTimestamp(timestamp) {
       if (!timestamp) return 'Unknown time';
@@ -702,18 +822,21 @@
       }
     }
 
-    // Refresh data
+    // Refresh data - IMPROVED VERSION
     function refreshData() {
       const refreshBtn = document.getElementById('refreshBtn');
       refreshBtn.style.transform = 'rotate(360deg)';
       
       const oldCount = responses.length;
-      loadData();
+      const dataLoaded = loadData();
       const newCount = responses.length;
       
+      console.log(`🔄 Refresh: ${oldCount} → ${newCount} responses`);
+      
       // Reset to first slide if new responses arrived
-      if (newCount > oldCount) {
+      if (newCount > oldCount && newCount > 0) {
         currentSlide = 0;
+        console.log('🆕 New responses detected, resetting to first slide');
       }
       
       // Ensure current slide is within bounds
@@ -725,10 +848,13 @@
       createDots();
       displayCurrentResponse();
       updateNavigationButtons();
+      updateStatus();
       
       setTimeout(() => {
         refreshBtn.style.transform = 'rotate(0deg)';
       }, 500);
+
+      return dataLoaded;
     }
 
     // Go back to analytics
@@ -751,6 +877,13 @@
         case 'Enter':
           goToNext();
           e.preventDefault();
+          break;
+        case 'r':
+        case 'R':
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            refreshData();
+          }
           break;
       }
     }
@@ -786,31 +919,50 @@
       startY = 0;
     }
 
-    // Auto-refresh
+    // Auto-refresh with improved logic
     function startAutoRefresh() {
-      setInterval(() => {
+      refreshInterval = setInterval(() => {
         const oldCount = responses.length;
-        loadData();
+        const dataLoaded = loadData();
         const newCount = responses.length;
         
-        if (newCount !== oldCount) {
-          refreshData();
+        if (newCount !== oldCount || !dataLoaded) {
+          console.log(`🔄 Auto-refresh: ${oldCount} → ${newCount} responses`);
+          
+          // Only update display if we have new data
+          if (newCount > oldCount && newCount > 0) {
+            currentSlide = 0; // Show newest response
+          }
+          
+          // Ensure current slide is valid
+          if (currentSlide >= responses.length) {
+            currentSlide = Math.max(0, responses.length - 1);
+          }
+          
+          displayQuestion();
+          createDots();
+          displayCurrentResponse();
+          updateNavigationButtons();
+          updateStatus();
         }
-      }, 5000);
+      }, 3000); // Check every 3 seconds
     }
 
     // Initialize
     function init() {
-      console.log('Initializing INTUITY Carousel Display...');
+      console.log('🚀 Initializing INTUITY Display...');
       
       // Load initial data
-      if (!loadData()) {
+      const dataLoaded = loadData();
+      
+      if (!dataLoaded) {
+        console.log('⚠️ No data found, using demo data');
         // Demo data if needed
         currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
         responses = [
           {
             studentName: 'Demo Student',
-            answer: 'This is a demo response to show how the carousel works. Each response gets its own focused view.',
+            answer: 'This is a demo response to show how the display works. Each response gets its own focused view.',
             wordCount: 18,
             timestamp: new Date().toISOString()
           }
@@ -822,6 +974,7 @@
       createDots();
       displayCurrentResponse();
       updateNavigationButtons();
+      updateStatus();
       
       // Event listeners
       prevBtn.addEventListener('click', goToPrevious);
@@ -833,15 +986,44 @@
       // Start auto-refresh
       startAutoRefresh();
 
-      console.log('Carousel display ready!');
+      console.log('✅ Display ready!', {
+        question: !!currentQuestion,
+        responses: responses.length
+      });
     }
 
-    // Listen for storage changes
+    // Listen for storage changes from other tabs
     window.addEventListener('storage', (e) => {
-      if (e.key === 'display_responses' || e.key === 'display_question') {
+      if (e.key === 'display_responses' || 
+          e.key === 'display_question' || 
+          e.key === 'alm_student_responses') {
+        console.log('📡 Storage change detected:', e.key);
         refreshData();
       }
     });
+
+    // Listen for focus events (when user returns to tab)
+    window.addEventListener('focus', () => {
+      console.log('👁️ Window focused, refreshing data');
+      refreshData();
+    });
+
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    });
+
+    // Debug keyboard shortcut
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        debugDisplay();
+      }
+    });
+
+    // Expose debug function globally
+    window.debugDisplay = debugDisplay;
 
     // Start when page loads
     document.addEventListener('DOMContentLoaded', init);
