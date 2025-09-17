@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Analytics DEBUG</title>
+  <title>INTUITY - Analytics</title>
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     * {
@@ -15,7 +18,7 @@
     body {
       height: 100vh;
       width: 100vw;
-      overflow-x: hidden;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       position: relative;
       background: #000000;
@@ -34,18 +37,105 @@
                   linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
     }
 
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
+      opacity: 0.3;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(15deg);
+      border: 1.5px solid rgba(255, 140, 60, 0.6);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
+      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
+      opacity: 0.8;
+    }
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(80deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
+      opacity: 0.2;
+    }
+
     .container {
       position: relative;
       z-index: 10;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .header h1 {
@@ -61,523 +151,1158 @@
       font-size: 14px;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
+      letter-spacing: 0.5px;
     }
 
-    .debug-panel {
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    .debug-section {
-      margin-bottom: 20px;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      border-left: 3px solid rgba(255, 140, 60, 0.5);
-    }
-
-    .debug-section h3 {
-      color: rgba(255, 140, 60, 0.9);
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-
-    .debug-content {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 4px;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      color: #0f0;
-    }
-
-    .controls {
+    .main-content {
+      flex: 1;
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 140px;
     }
 
-    .btn {
-      background: rgba(255, 140, 60, 0.2);
-      border: 1px solid rgba(255, 140, 60, 0.5);
-      color: rgba(255, 140, 60, 0.9);
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
+    .analytics-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .analytics-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
       transition: all 0.3s ease;
     }
 
-    .btn:hover {
-      background: rgba(255, 140, 60, 0.3);
-      color: #fff;
+    .analytics-box:hover {
+      transform: translateY(-2px);
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .status {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-
-    .status-item {
-      color: #fff;
-      font-size: 14px;
-    }
-
-    .status-value {
-      color: rgba(255, 140, 60, 0.9);
-      font-weight: 600;
-    }
-
-    .question-display {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .question-text {
-      color: #fff;
-      font-size: 18px;
-      margin-bottom: 10px;
+    /* Question Dropdown */
+    .question-selector-container {
+      padding: 20px 20px 10px;
     }
 
     .question-dropdown {
       width: 100%;
-      padding: 10px;
+      padding: 12px 16px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 6px;
+      border-radius: 10px;
       color: #fff;
-      font-size: 14px;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .question-dropdown:focus {
+      border-color: rgba(255, 140, 60, 0.6);
+      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
     }
 
     .question-dropdown option {
       background: #000;
       color: #fff;
+      padding: 10px;
     }
 
-    .footer {
-      margin-top: 20px;
+    /* Current Question Display */
+    .current-question {
+      flex: 1;
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .question-text {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 500;
+      line-height: 1.4;
+      max-width: 90%;
+    }
+
+    .no-question {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      padding: 10px 20px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .response-count {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .response-count.live-update {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        color: rgba(255, 140, 60, 0.9);
+        text-shadow: 0 0 5px rgba(255, 140, 60, 0.3);
+      }
+      50% { 
+        color: rgba(255, 140, 60, 1);
+        text-shadow: 0 0 15px rgba(255, 140, 60, 0.6);
+      }
+    }
+
+    .controls-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .refresh-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: rgba(34, 197, 94, 0.8);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: rgba(34, 197, 94, 0.5);
+      color: rgba(34, 197, 94, 1);
+      transform: scale(1.1);
+    }
+
+    .delete-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: rgba(239, 68, 68, 0.8);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: rgba(239, 68, 68, 1);
+      transform: scale(1.1);
+    }
+
+    .delete-btn:disabled,
+    .refresh-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* SIMPLIFIED FOOTER - Only 3 buttons */
+    .footer {
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
     }
 
     .nav-button {
-      padding: 10px 20px;
-      background: rgba(255, 140, 60, 0.2);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      color: rgba(255, 140, 60, 1);
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 14px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
       transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
     }
 
     .nav-button:hover {
-      background: rgba(255, 140, 60, 0.3);
+      background: rgba(255, 140, 60, 0.2);
       color: #fff;
+      transform: scale(1.1);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
     }
 
     .nav-button:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Primary display button - make it stand out */
+    .nav-button.display {
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+    }
+
+    .nav-button.display:hover {
+      background: rgba(255, 140, 60, 0.3);
+      color: #fff;
+      border-color: rgba(255, 140, 60, 0.5);
+      transform: scale(1.1);
+    }
+
+    .nav-button.display:disabled {
+      opacity: 0.4;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      border: none;
+      transform: none;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
+    }
+
+    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
+
+    /* Loading State */
+    .loading {
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* Connection Status */
+    .connection-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 140, 60, 0.5);
+      border-radius: 8px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Debug info */
+    .debug-info {
+      position: fixed;
+      top: 60px;
+      right: 10px;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #0f0;
+      font-size: 10px;
+      font-family: monospace;
+      border-radius: 4px;
+      max-width: 200px;
+      display: none;
+      z-index: 1001;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        padding: 40px 15px 15px;
+      }
+      
+      .header h1 {
+        font-size: 28px;
+      }
+      
+      .analytics-container {
+        height: 4cm;
+      }
+      
+      .question-text {
+        font-size: 16px;
+      }
+      
+      .question-dropdown {
+        font-size: 14px;
+        padding: 10px 12px;
+      }
+      
+      .response-count {
+        font-size: 14px;
+      }
+      
+      .delete-btn, .refresh-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="background"></div>
-
-  <div class="container">
-    <header class="header">
-      <h1>INTUITY DEBUG</h1>
-      <p>Analytics Debugging Interface</p>
-    </header>
-
-    <div class="controls">
-      <button class="btn" onclick="refreshData()">Refresh Data</button>
-      <button class="btn" onclick="clearLocalStorage()">Clear LocalStorage</button>
-      <button class="btn" onclick="createTestResponse()">Create Test Response</button>
-      <button class="btn" id="displayBtn" onclick="launchDisplay()" disabled>Launch Display</button>
-    </div>
-
-    <div class="status">
-      <div class="status-item">Questions: <span class="status-value" id="questionCount">0</span></div>
-      <div class="status-item">Responses: <span class="status-value" id="responseCount">0</span></div>
-      <div class="status-item">Current Question Responses: <span class="status-value" id="currentResponseCount">0</span></div>
-    </div>
-
-    <div class="question-display">
-      <h3 style="color: rgba(255, 140, 60, 0.9); margin-bottom: 10px;">Current Question</h3>
-      <div class="question-text" id="questionText">No question selected</div>
-      <select class="question-dropdown" id="questionDropdown" onchange="handleQuestionChange()">
-        <option value="">Loading...</option>
-      </select>
-    </div>
-
-    <div class="debug-panel">
-      <div class="debug-section">
-        <h3>📊 LocalStorage Raw Data</h3>
-        <div class="debug-content" id="localStorageDebug">Loading...</div>
-      </div>
-
-      <div class="debug-section">
-        <h3>📚 Questions Array</h3>
-        <div class="debug-content" id="questionsDebug">Loading...</div>
-      </div>
-
-      <div class="debug-section">
-        <h3>💬 Responses Array</h3>
-        <div class="debug-content" id="responsesDebug">Loading...</div>
-      </div>
-
-      <div class="debug-section">
-        <h3>🎯 Current Question Analysis</h3>
-        <div class="debug-content" id="currentQuestionDebug">Loading...</div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <a href="../" class="nav-button">🏠 Home</a>
-      <a href="../teachers/questions/" class="nav-button">✏️ Create Questions</a>
-      <a href="../displays/" class="nav-button">📺 Display</a>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
     </div>
   </div>
 
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">Connecting...</div>
+
+  <!-- Debug info -->
+  <div class="debug-info" id="debugInfo"></div>
+
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Analytics<br>By Majid Nashtai</p>
+    </header>
+
+    <main class="main-content">
+      <div class="analytics-container">
+        <div class="analytics-box">
+          <!-- Question Selector -->
+          <div class="question-selector-container">
+            <select class="question-dropdown" id="questionDropdown">
+              <option value="">Loading questions...</option>
+            </select>
+          </div>
+          
+          <!-- Current Question Display -->
+          <div class="current-question">
+            <div class="question-text" id="questionText">
+              <div class="loading">Loading questions from database...</div>
+            </div>
+          </div>
+          
+          <!-- Controls -->
+          <div class="controls-bar">
+            <div class="response-count" id="responseCount">0 responses</div>
+            <div class="controls-right">
+              <button class="refresh-btn" id="refreshBtn" title="Refresh">🔄</button>
+              <button class="delete-btn" id="deleteBtn" disabled title="Delete Question">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- SIMPLIFIED FOOTER: Home | Create Questions | Display Responses -->
+    <footer class="footer">
+      <a href="../" class="nav-button" title="Home">🏠</a>
+      <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
+      <button class="nav-button display" id="displayBtn" title="Display Responses" disabled>📺</button>
+    </footer>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+
   <script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+
+    // Global State
+    let supabase;
     let questions = [];
     let responses = [];
     let currentQuestion = null;
+    let isConnected = false;
+    let realtimeSubscription = null;
+    let lastResponseCount = 0;
+    let debugMode = false;
+
+    // Elements
+    const questionDropdown = document.getElementById('questionDropdown');
+    const questionText = document.getElementById('questionText');
+    const responseCount = document.getElementById('responseCount');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const displayBtn = document.getElementById('displayBtn');
+    const notification = document.getElementById('notification');
+    const connectionStatus = document.getElementById('connectionStatus');
+    const debugInfo = document.getElementById('debugInfo');
+
+    // Debug function for troubleshooting - ENHANCED
+    function debugLocalStorage() {
+      console.log('=== INTUITY DEBUG INFO ===');
+      console.log('Questions array:', questions);
+      console.log('Responses array:', responses);
+      console.log('Current question:', currentQuestion);
+      console.log('Connection status:', isConnected);
+      console.log('=== LocalStorage ===');
+      
+      const almResponses = localStorage.getItem('alm_student_responses');
+      const displayResponses = localStorage.getItem('display_responses');
+      const currentQ = localStorage.getItem('current_question');
+      const displayQ = localStorage.getItem('display_question');
+      
+      console.log('alm_student_responses:', almResponses ? JSON.parse(almResponses) : null);
+      console.log('display_responses:', displayResponses ? JSON.parse(displayResponses) : null);
+      console.log('current_question:', currentQ ? JSON.parse(currentQ) : null);
+      console.log('display_question:', displayQ ? JSON.parse(displayQ) : null);
+      
+      // Show debug info on screen
+      if (debugMode) {
+        const info = {
+          questions: questions.length,
+          responses: responses.length,
+          localStorage: {
+            alm: almResponses ? JSON.parse(almResponses).length : 0,
+            display: displayResponses ? JSON.parse(displayResponses).length : 0
+          },
+          currentQ: currentQuestion?.text?.substring(0, 30) + '...' || 'none'
+        };
+        debugInfo.textContent = JSON.stringify(info, null, 2);
+        debugInfo.classList.add('show');
+      } else {
+        debugInfo.classList.remove('show');
+      }
+      
+      return {
+        questions,
+        responses,
+        currentQuestion,
+        localStorage: {
+          alm_student_responses: almResponses ? JSON.parse(almResponses) : null,
+          display_responses: displayResponses ? JSON.parse(displayResponses) : null,
+          current_question: currentQ ? JSON.parse(currentQ) : null,
+          display_question: displayQ ? JSON.parse(displayQ) : null
+        }
+      };
+    }
 
     // Initialize
-    function init() {
-      console.log('🚀 DEBUG MODE: Initializing...');
-      refreshData();
-      
-      // Auto-refresh every 3 seconds
-      setInterval(refreshData, 3000);
-    }
-
-    // Refresh all data
-    function refreshData() {
-      console.log('🔄 Refreshing data...');
-      
-      // Clear arrays
-      questions = [];
-      responses = [];
-      
-      loadLocalStorageData();
-      updateDisplay();
-    }
-
-    // Load data from localStorage
-    function loadLocalStorageData() {
-      console.log('📱 Loading from localStorage...');
+    async function init() {
+      console.log('🚀 INTUITY Analytics initializing...');
       
       try {
-        // Load questions
-        const storedQuestion = localStorage.getItem('current_question');
-        if (storedQuestion) {
-          const parsed = JSON.parse(storedQuestion);
-          questions = Array.isArray(parsed) ? parsed : [parsed];
-          console.log('📚 Loaded questions:', questions);
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        await loadData();
+        setupRealtimeSubscription();
+      } catch (error) {
+        console.error('Failed to initialize database connection:', error);
+        isConnected = false;
+        updateConnectionStatus();
+        loadLocalData();
+      }
+
+      // Setup automatic refresh
+      setupAutoRefresh();
+      console.log('✅ Analytics initialized');
+    }
+
+    // Load Data from Supabase and LocalStorage - FIXED
+    async function loadData() {
+      try {
+        // Test connection
+        const { data: testData, error: testError } = await supabase
+          .from('questions')
+          .select('count')
+          .limit(1);
+        
+        if (testError) throw testError;
+        isConnected = true;
+        updateConnectionStatus();
+
+        // Load questions from database
+        const { data: questionsData, error: questionsError } = await supabase
+          .from('questions')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (questionsError) {
+          console.warn('Error loading questions:', questionsError);
+          questions = [];
         } else {
-          console.log('📚 No questions found in localStorage');
+          questions = questionsData || [];
+          console.log(`📚 Loaded ${questions.length} questions from database`);
         }
 
-        // Load responses
+        // Load responses from database
+        const { data: responsesData, error: responsesError } = await supabase
+          .from('student_responses')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (responsesError) {
+          console.warn('Error loading responses:', responsesError);
+          responses = [];
+        } else {
+          responses = responsesData || [];
+          console.log(`💬 Loaded ${responses.length} responses from database`);
+        }
+
+        // ALWAYS load localStorage data and merge
+        loadLocalStorageData();
+        updateUI();
+        notify('Connected to database');
+        
+      } catch (error) {
+        console.error('Database error:', error);
+        isConnected = false;
+        updateConnectionStatus();
+        loadLocalData();
+      }
+    }
+
+    // Load from Local Storage ONLY - FIXED
+    function loadLocalData() {
+      console.log('📱 Loading data from localStorage only...');
+      updateConnectionStatus(false);
+      
+      loadLocalStorageData();
+      updateUI();
+      notify('Using offline data');
+    }
+
+    // Load localStorage data - COMPLETELY REWRITTEN
+    function loadLocalStorageData() {
+      try {
+        // Load questions from localStorage
+        const storedQuestion = localStorage.getItem('current_question');
+        if (storedQuestion) {
+          try {
+            const parsed = JSON.parse(storedQuestion);
+            const localQuestions = Array.isArray(parsed) ? parsed : [parsed];
+            
+            // Merge with existing questions (avoid duplicates)
+            localQuestions.forEach(localQ => {
+              const exists = questions.find(q => 
+                q.id === localQ.id || 
+                (q.text || q.question_text) === (localQ.text || localQ.question_text)
+              );
+              if (!exists) {
+                questions.push(localQ);
+              }
+            });
+            
+            console.log(`📚 Added ${localQuestions.length} questions from localStorage`);
+          } catch (parseError) {
+            console.warn('Error parsing stored question:', parseError);
+          }
+        }
+
+        // Load responses from localStorage - THE KEY FIX
         const storedResponses = localStorage.getItem('alm_student_responses');
         if (storedResponses) {
-          const parsedResponses = JSON.parse(storedResponses);
-          console.log('💬 Raw responses from localStorage:', parsedResponses);
-          
-          if (Array.isArray(parsedResponses)) {
-            responses = parsedResponses.map((r, index) => {
-              console.log(`💬 Processing response ${index + 1}:`, r);
-              return {
-                id: r.id || `local_${index}`,
-                question_id: r.questionId || r.question_id,
-                student_name: r.studentName || r.student_name,
-                answer: r.answer,
-                word_count: r.wordCount || r.word_count,
-                photo_url: r.photoUrl || r.photo_url,
-                created_at: r.timestamp || r.created_at,
-                original: r // Keep original for debugging
-              };
+          try {
+            const localResponses = JSON.parse(storedResponses) || [];
+            console.log(`💬 Found ${localResponses.length} responses in localStorage`);
+            
+            localResponses.forEach(localResponse => {
+              // Check for duplicates more carefully
+              const exists = responses.find(r => {
+                const nameMatch = (r.student_name || r.studentName) === (localResponse.studentName || localResponse.student_name);
+                const answerMatch = r.answer === localResponse.answer;
+                const timeMatch = Math.abs(
+                  new Date(r.created_at || r.timestamp) - 
+                  new Date(localResponse.timestamp || localResponse.created_at)
+                ) < 60000; // Within 1 minute
+                return nameMatch && answerMatch && timeMatch;
+              });
+              
+              if (!exists) {
+                // Normalize the response format
+                const normalizedResponse = {
+                  id: localResponse.id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                  question_id: localResponse.questionId || localResponse.question_id,
+                  student_name: localResponse.studentName || localResponse.student_name,
+                  answer: localResponse.answer,
+                  word_count: localResponse.wordCount || localResponse.word_count || (localResponse.answer ? localResponse.answer.split(/\s+/).length : 0),
+                  photo_url: localResponse.photoUrl || localResponse.photo_url,
+                  created_at: localResponse.timestamp || localResponse.created_at,
+                  // Keep original data in metadata for reference
+                  metadata: localResponse
+                };
+                
+                responses.push(normalizedResponse);
+                console.log(`✅ Added response from ${normalizedResponse.student_name}`);
+              }
             });
-            console.log('💬 Processed responses:', responses);
-          } else {
-            console.log('💬 Responses data is not an array:', typeof parsedResponses);
-            responses = [];
+            
+            console.log(`💬 Total responses after localStorage merge: ${responses.length}`);
+          } catch (parseError) {
+            console.error('Error parsing stored responses:', parseError);
           }
         } else {
-          console.log('💬 No responses found in localStorage');
-          responses = [];
+          console.log('📭 No responses found in localStorage');
         }
 
       } catch (error) {
-        console.error('❌ Error loading localStorage data:', error);
+        console.error('Error loading localStorage data:', error);
       }
     }
 
-    // Update display
-    function updateDisplay() {
-      // Update status
-      document.getElementById('questionCount').textContent = questions.length;
-      document.getElementById('responseCount').textContent = responses.length;
-      
-      // Update question dropdown
-      updateQuestionDropdown();
-      
-      // Update current question
-      if (!currentQuestion && questions.length > 0) {
-        currentQuestion = questions[0];
+    // Setup real-time subscription
+    function setupRealtimeSubscription() {
+      if (!supabase || !isConnected) return;
+
+      try {
+        realtimeSubscription = supabase
+          .channel('student_responses_updates')
+          .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'student_responses' },
+            (payload) => {
+              console.log('📨 New response received via realtime:', payload.new);
+              responses.unshift(payload.new);
+              updateCurrentQuestionDisplay();
+              
+              if (currentQuestion && payload.new.question_id === currentQuestion.id) {
+                notify(`New response from ${payload.new.student_name}!`);
+                responseCount.classList.add('live-update');
+                setTimeout(() => {
+                  responseCount.classList.remove('live-update');
+                }, 2000);
+              }
+            }
+          )
+          .on('postgres_changes',
+            { event: 'DELETE', schema: 'public', table: 'student_responses' },
+            (payload) => {
+              console.log('🗑️ Response deleted via realtime:', payload.old);
+              responses = responses.filter(r => r.id !== payload.old.id);
+              updateCurrentQuestionDisplay();
+            }
+          )
+          .subscribe();
+
+        console.log('🔄 Real-time subscription established');
+        
+      } catch (error) {
+        console.error('Error setting up real-time subscription:', error);
       }
-      
-      updateCurrentQuestion();
-      updateDebugPanels();
     }
 
-    // Update question dropdown
-    function updateQuestionDropdown() {
-      const dropdown = document.getElementById('questionDropdown');
-      dropdown.innerHTML = '';
+    // Setup automatic refresh - SIMPLIFIED
+    function setupAutoRefresh() {
+      // Check localStorage every 5 seconds for new responses
+      setInterval(() => {
+        const previousResponseCount = responses.length;
+        loadLocalStorageData();
+        
+        if (responses.length > previousResponseCount) {
+          console.log(`🔄 Found ${responses.length - previousResponseCount} new responses`);
+          updateUI();
+        }
+      }, 5000);
+
+      // Refresh database data every 30 seconds if online
+      setInterval(async () => {
+        if (isConnected) {
+          try {
+            await loadData();
+          } catch (error) {
+            console.warn('Auto-refresh failed:', error);
+          }
+        }
+      }, 30000);
+
+      // Refresh when page gains focus
+      window.addEventListener('focus', () => {
+        setTimeout(() => {
+          if (isConnected) {
+            loadData();
+          } else {
+            loadLocalStorageData();
+            updateUI();
+          }
+        }, 500);
+      });
+    }
+
+    // Update connection status
+    function updateConnectionStatus(connected = isConnected) {
+      const status = connectionStatus;
+      if (connected) {
+        status.textContent = '● Online';
+        status.className = 'connection-status online';
+      } else {
+        status.textContent = '● Offline';
+        status.className = 'connection-status offline';
+      }
+    }
+
+    // Update UI
+    function updateUI() {
+      console.log(`🔄 Updating UI: ${questions.length} questions, ${responses.length} responses`);
       
       if (questions.length === 0) {
-        dropdown.innerHTML = '<option value="">No questions found</option>';
+        showNoQuestions();
         return;
       }
+
+      populateDropdown();
       
-      questions.forEach((q, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        const questionText = q.text || q.question_text || 'Untitled';
-        const responseCount = getResponseCountForQuestion(q);
-        option.textContent = `Q${index + 1}: ${questionText.substring(0, 40)} (${responseCount} responses)`;
-        dropdown.appendChild(option);
-      });
+      // Set current question if none selected
+      if (!currentQuestion && questions.length > 0) {
+        // Try to find the most recent question
+        const latestQuestion = questions.find(q => q.is_published || q.id === 'demo') || questions[0];
+        currentQuestion = latestQuestion;
+        questionDropdown.value = currentQuestion.id || '0';
+      }
       
       if (currentQuestion) {
-        const currentIndex = questions.findIndex(q => q.id === currentQuestion.id);
-        dropdown.value = currentIndex >= 0 ? currentIndex : 0;
+        displayQuestion();
       }
     }
 
-    // Update current question display
-    function updateCurrentQuestion() {
-      const questionTextEl = document.getElementById('questionText');
-      const currentResponseCountEl = document.getElementById('currentResponseCount');
-      const displayBtn = document.getElementById('displayBtn');
-      
-      if (!currentQuestion) {
-        questionTextEl.textContent = 'No question selected';
-        currentResponseCountEl.textContent = '0';
-        displayBtn.disabled = true;
-        return;
-      }
-      
-      const questionText = currentQuestion.text || currentQuestion.question_text || 'Untitled Question';
-      questionTextEl.textContent = questionText;
-      
-      const responseCount = getResponseCountForQuestion(currentQuestion);
-      currentResponseCountEl.textContent = responseCount;
-      displayBtn.disabled = responseCount === 0;
-      
-      // Store for display
-      if (responseCount > 0) {
-        const questionForDisplay = {
-          id: currentQuestion.id,
-          text: questionText,
-          question_text: questionText,
-          questionText: questionText
-        };
-        
-        const responsesForDisplay = getResponsesForQuestion(currentQuestion).map(r => ({
-          id: r.id,
-          student_name: r.student_name,
-          studentName: r.student_name,
-          answer: r.answer,
-          word_count: r.word_count,
-          photo_url: r.photo_url,
-          created_at: r.created_at,
-          question_id: currentQuestion.id,
-          questionText: questionText
-        }));
-        
-        localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
-        localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
-        
-        console.log('💾 Stored for display:', {
-          question: questionForDisplay,
-          responses: responsesForDisplay
-        });
-      }
+    // Show No Questions State
+    function showNoQuestions() {
+      questionText.innerHTML = '<div class="no-question">No questions found<br><span style="font-size: 14px; opacity: 0.6;">Create one first or check localStorage</span></div>';
+      questionDropdown.innerHTML = '<option value="">No questions available</option>';
+      responseCount.textContent = '0 responses';
+      deleteBtn.disabled = true;
+      displayBtn.disabled = true;
     }
 
-    // Get response count for question
+    // Populate Dropdown - ENHANCED
+    function populateDropdown() {
+      questionDropdown.innerHTML = '';
+      
+      questions.forEach((question, index) => {
+        const option = document.createElement('option');
+        option.value = question.id || index.toString();
+        
+        const questionStr = question.text || question.question_text || 'Untitled Question';
+        const responseCountForQ = getResponseCountForQuestion(question);
+        const prefix = question.id === 'demo' ? 'DEMO' : `Q${index + 1}`;
+        
+        option.textContent = `${prefix}: ${questionStr.substring(0, 35)}${questionStr.length > 35 ? '...' : ''} (${responseCountForQ})`;
+        questionDropdown.appendChild(option);
+      });
+      
+      console.log(`📋 Populated dropdown with ${questions.length} questions`);
+    }
+
+    // Get response count for a specific question - FIXED
     function getResponseCountForQuestion(question) {
-      return getResponsesForQuestion(question).length;
-    }
-
-    // Get responses for specific question
-    function getResponsesForQuestion(question) {
-      if (!question) return [];
+      if (!question) return 0;
       
-      const matchingResponses = responses.filter(r => {
-        console.log(`🔍 Matching response for question "${question.text || question.question_text}":`, {
-          responseQuestionId: r.question_id,
-          currentQuestionId: question.id,
-          idMatch: r.question_id === question.id,
-          response: r
-        });
-        
-        // Try ID match
-        if (r.question_id === question.id) return true;
-        
-        // Try text match
-        const questionText = (question.text || question.question_text || '').trim().toLowerCase();
-        const responseQuestionText = (r.original?.questionText || '').trim().toLowerCase();
-        
-        if (questionText && responseQuestionText && questionText === responseQuestionText) {
+      const matchingResponses = responses.filter(response => {
+        // Try exact ID match first
+        if (response.question_id === question.id || response.questionId === question.id) {
           return true;
         }
         
-        // Demo mode
-        if (question.id === 'demo' && r.question_id === 'demo') return true;
+        // Try text match as fallback
+        const questionText = question.text || question.question_text;
+        const responseQuestionText = response.metadata?.questionText || response.questionText;
+        
+        if (questionText && responseQuestionText) {
+          return questionText.trim().toLowerCase() === responseQuestionText.trim().toLowerCase();
+        }
+        
+        // Demo question special case
+        if (question.id === 'demo' && (
+            response.question_id === 'demo' || 
+            response.questionId === 'demo' ||
+            (response.metadata?.questionText || '').includes('Demo')
+          )) {
+          return true;
+        }
         
         return false;
       });
       
-      console.log(`🎯 Found ${matchingResponses.length} responses for question "${question.text || question.question_text}"`);
+      console.log(`🔢 Question "${question.text || question.question_text}" has ${matchingResponses.length} responses`);
+      return matchingResponses.length;
+    }
+
+    // Display Selected Question
+    function displayQuestion() {
+      if (!currentQuestion) return;
+
+      const questionStr = currentQuestion.text || currentQuestion.question_text || 'Untitled Question';
+      questionText.textContent = questionStr;
+      console.log(`📝 Displaying question: ${questionStr.substring(0, 50)}...`);
+
+      updateCurrentQuestionDisplay();
+    }
+
+    // Update current question display - FIXED
+    function updateCurrentQuestionDisplay() {
+      if (!currentQuestion) return;
+
+      const count = getResponseCount();
+      const countText = `${count} response${count !== 1 ? 's' : ''}`;
+      responseCount.textContent = countText;
+      
+      // Pulse animation for new responses
+      if (count > lastResponseCount) {
+        responseCount.classList.add('live-update');
+        setTimeout(() => {
+          responseCount.classList.remove('live-update');
+        }, 2000);
+      }
+      lastResponseCount = count;
+      
+      deleteBtn.disabled = false;
+      displayBtn.disabled = count === 0;
+
+      // Store for display interface - Clean format
+      const questionForDisplay = {
+        id: currentQuestion.id,
+        text: currentQuestion.text || currentQuestion.question_text,
+        question_text: currentQuestion.text || currentQuestion.question_text,
+        questionText: currentQuestion.text || currentQuestion.question_text // For compatibility
+      };
+      
+      const responsesForDisplay = getResponses().map(r => ({
+        id: r.id,
+        student_name: r.student_name || r.studentName,
+        studentName: r.student_name || r.studentName, // For compatibility
+        answer: r.answer,
+        word_count: r.word_count,
+        photo_url: r.photo_url,
+        created_at: r.created_at,
+        question_id: currentQuestion.id,
+        questionText: questionForDisplay.questionText
+      }));
+      
+      // Store display data
+      localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
+      localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
+      
+      console.log(`💾 Stored display data: ${responsesForDisplay.length} responses for question "${questionForDisplay.questionText}"`);
+    }
+
+    // Get Response Count for current question
+    function getResponseCount() {
+      return getResponses().length;
+    }
+
+    // Get Responses for Current Question - FIXED
+    function getResponses() {
+      if (!currentQuestion) return [];
+      
+      const matchingResponses = responses.filter(response => {
+        // Try exact ID match first
+        if (response.question_id === currentQuestion.id || response.questionId === currentQuestion.id) {
+          return true;
+        }
+        
+        // Try text match as fallback
+        const questionText = currentQuestion.text || currentQuestion.question_text;
+        const responseQuestionText = response.metadata?.questionText || response.questionText;
+        
+        if (questionText && responseQuestionText) {
+          return questionText.trim().toLowerCase() === responseQuestionText.trim().toLowerCase();
+        }
+        
+        // Demo question special case
+        if (currentQuestion.id === 'demo' && (
+            response.question_id === 'demo' || 
+            response.questionId === 'demo' ||
+            (response.metadata?.questionText || '').includes('Demo')
+          )) {
+          return true;
+        }
+        
+        return false;
+      });
+      
       return matchingResponses;
     }
 
-    // Update debug panels
-    function updateDebugPanels() {
-      // LocalStorage debug
-      const localStorageData = {
-        'alm_student_responses': localStorage.getItem('alm_student_responses'),
-        'display_responses': localStorage.getItem('display_responses'),
-        'current_question': localStorage.getItem('current_question'),
-        'display_question': localStorage.getItem('display_question')
-      };
-      document.getElementById('localStorageDebug').textContent = JSON.stringify(localStorageData, null, 2);
-      
-      // Questions debug
-      document.getElementById('questionsDebug').textContent = JSON.stringify(questions, null, 2);
-      
-      // Responses debug
-      document.getElementById('responsesDebug').textContent = JSON.stringify(responses, null, 2);
-      
-      // Current question debug
-      const currentQuestionAnalysis = {
-        currentQuestion: currentQuestion,
-        responsesForCurrent: currentQuestion ? getResponsesForQuestion(currentQuestion) : [],
-        matchingLogic: currentQuestion ? {
-          questionId: currentQuestion.id,
-          questionText: currentQuestion.text || currentQuestion.question_text,
-          totalResponses: responses.length,
-          matchingResponses: currentQuestion ? getResponsesForQuestion(currentQuestion).length : 0
-        } : null
-      };
-      document.getElementById('currentQuestionDebug').textContent = JSON.stringify(currentQuestionAnalysis, null, 2);
-    }
-
-    // Handle question selection
+    // Handle Question Selection
     function handleQuestionChange() {
-      const selectedIndex = document.getElementById('questionDropdown').value;
-      if (selectedIndex !== '' && questions[selectedIndex]) {
-        currentQuestion = questions[selectedIndex];
-        console.log('🎯 Selected question:', currentQuestion);
-        updateCurrentQuestion();
-        updateDebugPanels();
+      const selectedValue = questionDropdown.value;
+      console.log(`🎯 Question selected: ${selectedValue}`);
+      
+      if (!selectedValue) {
+        currentQuestion = null;
+        questionText.innerHTML = '<div class="no-question">Select a question</div>';
+        responseCount.textContent = '0 responses';
+        deleteBtn.disabled = true;
+        displayBtn.disabled = true;
+        return;
+      }
+
+      // Find question by ID or index
+      currentQuestion = questions.find(q => 
+        (q.id && q.id == selectedValue) || 
+        questions.indexOf(q) == selectedValue
+      ) || questions[0];
+
+      if (currentQuestion) {
+        console.log(`✅ Selected question: "${currentQuestion.text || currentQuestion.question_text}"`);
+        displayQuestion();
       }
     }
 
-    // Clear localStorage
-    function clearLocalStorage() {
-      if (confirm('Clear all localStorage data?')) {
-        localStorage.removeItem('alm_student_responses');
-        localStorage.removeItem('display_responses');
-        localStorage.removeItem('current_question');
-        localStorage.removeItem('display_question');
-        refreshData();
-        console.log('🗑️ LocalStorage cleared');
+    // Manual refresh function
+    function manualRefresh() {
+      refreshBtn.innerHTML = '⏳';
+      refreshBtn.disabled = true;
+
+      if (isConnected) {
+        loadData().finally(() => {
+          refreshBtn.innerHTML = '🔄';
+          refreshBtn.disabled = false;
+          notify('Data refreshed from database');
+        });
+      } else {
+        loadLocalStorageData();
+        updateUI();
+        notify('Local data refreshed');
+        setTimeout(() => {
+          refreshBtn.innerHTML = '🔄';
+          refreshBtn.disabled = false;
+        }, 1000);
       }
     }
 
-    // Create test response
-    function createTestResponse() {
-      const testResponse = {
-        id: 'test_' + Date.now(),
-        questionId: currentQuestion?.id || 'demo',
-        questionText: currentQuestion?.text || currentQuestion?.question_text || 'Test Question',
-        studentName: 'Test Student',
-        answer: 'This is a test response created at ' + new Date().toLocaleTimeString(),
-        wordCount: 10,
-        timestamp: new Date().toISOString(),
-        photoUrl: null
-      };
+    // Delete Question
+    async function deleteQuestion() {
+      if (!currentQuestion) return;
       
-      // Get existing responses
-      const existing = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-      existing.push(testResponse);
-      
-      // Save back
-      localStorage.setItem('alm_student_responses', JSON.stringify(existing));
-      
-      console.log('🧪 Created test response:', testResponse);
-      refreshData();
+      const questionStr = currentQuestion.text || currentQuestion.question_text || 'this question';
+      if (!confirm(`Delete "${questionStr}" and all its responses?`)) return;
+
+      deleteBtn.innerHTML = '⏳';
+      deleteBtn.disabled = true;
+
+      try {
+        // Delete from database if online
+        if (isConnected && currentQuestion.id && currentQuestion.id !== 'demo') {
+          const { error: responseError } = await supabase
+            .from('student_responses')
+            .delete()
+            .eq('question_id', currentQuestion.id);
+
+          const { error: questionError } = await supabase
+            .from('questions')
+            .delete()
+            .eq('id', currentQuestion.id);
+
+          if (questionError) throw questionError;
+        }
+
+        // Remove from local arrays
+        questions = questions.filter(q => q.id !== currentQuestion.id);
+        responses = responses.filter(r => 
+          r.question_id !== currentQuestion.id && 
+          r.questionId !== currentQuestion.id
+        );
+
+        // Update localStorage
+        if (questions.length > 0) {
+          localStorage.setItem('current_question', JSON.stringify(questions[0]));
+        } else {
+          localStorage.removeItem('current_question');
+        }
+        
+        // Clean up responses in localStorage
+        const localResponses = responses
+          .filter(r => r.metadata) // Only keep responses that came from localStorage
+          .map(r => r.metadata);
+        localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
+
+        currentQuestion = null;
+        updateUI();
+        notify('Question deleted successfully');
+        
+      } catch (error) {
+        console.error('Delete error:', error);
+        notify('Error deleting question');
+      } finally {
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.disabled = !currentQuestion;
+      }
     }
 
-    // Launch display
+    // Launch Display
     function launchDisplay() {
       if (!currentQuestion) {
-        alert('No question selected');
+        notify('Please select a question first');
         return;
       }
-      
-      const responseCount = getResponseCountForQuestion(currentQuestion);
-      if (responseCount === 0) {
-        alert('No responses for this question');
+
+      const responsesForQuestion = getResponses();
+      if (responsesForQuestion.length === 0) {
+        notify('No responses yet for this question');
         return;
       }
+
+      // Ensure latest data is stored
+      updateCurrentQuestionDisplay();
       
-      console.log(`🚀 Launching display with ${responseCount} responses`);
-      window.open('../displays/', '_blank');
+      console.log(`🚀 Launching display with ${responsesForQuestion.length} responses for question: "${currentQuestion.text || currentQuestion.question_text}"`);
+      notify(`Launching display with ${responsesForQuestion.length} responses...`);
+      
+      setTimeout(() => {
+        window.open('../displays/', '_blank');
+      }, 500);
     }
 
-    // Listen for localStorage changes
+    // Notification
+    function notify(message) {
+      console.log(`📢 ${message}`);
+      notification.textContent = message;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Toggle debug mode
+    function toggleDebugMode() {
+      debugMode = !debugMode;
+      debugLocalStorage();
+      notify(`Debug mode ${debugMode ? 'enabled' : 'disabled'}`);
+    }
+
+    // Cleanup function
+    function cleanup() {
+      if (realtimeSubscription) {
+        realtimeSubscription.unsubscribe();
+      }
+    }
+
+    // Storage event listener - Listen for new student responses
     window.addEventListener('storage', (e) => {
-      if (e.key === 'alm_student_responses' || e.key === 'current_question') {
-        console.log('🔄 Storage changed:', e.key);
-        refreshData();
+      if (e.key === 'alm_student_responses') {
+        console.log('🔄 Student responses updated in localStorage');
+        loadLocalStorageData();
+        updateUI();
+        notify('New responses detected!');
+      } else if (e.key === 'current_question') {
+        console.log('🔄 Current question updated in localStorage');
+        loadLocalStorageData();
+        updateUI();
       }
     });
+
+    // Event Listeners
+    questionDropdown.addEventListener('change', handleQuestionChange);
+    deleteBtn.addEventListener('click', deleteQuestion);
+    refreshBtn.addEventListener('click', manualRefresh);
+    displayBtn.addEventListener('click', launchDisplay);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        toggleDebugMode();
+      }
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        manualRefresh();
+      }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', cleanup);
 
     // Initialize on load
     document.addEventListener('DOMContentLoaded', init);
 
-    // Make functions available in console
-    window.refreshData = refreshData;
-    window.createTestResponse = createTestResponse;
+    // Expose debug functions globally
+    window.debugIntuity = debugLocalStorage;
+    window.toggleIntuityDebug = toggleDebugMode;
+    
+    console.log('💡 Debug shortcuts: Ctrl+Shift+D (toggle debug), Ctrl+R (refresh)');
+    console.log('💡 Console commands: debugIntuity(), toggleIntuityDebug()');
   </script>
 </body>
 </html>
