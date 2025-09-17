@@ -59,7 +59,6 @@
       background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
       box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
       opacity: 0.9;
-      animation: float 8s ease-in-out infinite;
     }
 
     .curve2 {
@@ -72,7 +71,6 @@
       background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
       box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
       opacity: 0.7;
-      animation: float 10s ease-in-out infinite reverse;
     }
 
     .curve3 {
@@ -85,7 +83,6 @@
       background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
       box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
       opacity: 0.5;
-      animation: drift 6s ease-in-out infinite;
     }
 
     .curve4 {
@@ -98,7 +95,6 @@
       background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
       box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
       opacity: 0.3;
-      animation: pulse 12s ease-in-out infinite;
     }
 
     .curve5 {
@@ -111,7 +107,6 @@
       background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
       box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
       opacity: 0.8;
-      animation: float 9s ease-in-out infinite reverse;
     }
 
     .curve6 {
@@ -123,33 +118,7 @@
       border: 1px solid rgba(255, 160, 80, 0.2);
       background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
       opacity: 0.2;
-      animation: drift 15s ease-in-out infinite reverse;
     }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); opacity: var(--base-opacity, 0.5); }
-      33% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 1deg)); opacity: calc(var(--base-opacity, 0.5) * 1.2); }
-      66% { transform: translateY(-4px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); opacity: calc(var(--base-opacity, 0.5) * 0.8); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: var(--base-opacity, 0.3); transform: scale(1) rotate(var(--rotation, 0deg)); }
-      50% { opacity: calc(var(--base-opacity, 0.3) * 1.5); transform: scale(1.02) rotate(var(--rotation, 0deg)); }
-    }
-
-    @keyframes drift {
-      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotation, 0deg)); }
-      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotation, 0deg) + 1deg)); }
-      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); }
-      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotation, 0deg) + 0.8deg)); }
-    }
-
-    .curve1 { --base-opacity: 0.9; --rotation: 30deg; }
-    .curve2 { --base-opacity: 0.7; --rotation: -20deg; }
-    .curve3 { --base-opacity: 0.5; --rotation: 60deg; }
-    .curve4 { --base-opacity: 0.3; --rotation: -45deg; }
-    .curve5 { --base-opacity: 0.8; --rotation: 15deg; }
-    .curve6 { --base-opacity: 0.2; --rotation: 80deg; }
 
     .container {
       position: relative;
@@ -167,76 +136,79 @@
     }
 
     .header h1 {
-      font-size: 48px;
+      font-size: 32px;
       font-weight: 800;
       color: #fff;
-      margin-bottom: 12px;
-      letter-spacing: 3px;
-      text-shadow: 0 0 30px rgba(255, 140, 60, 0.4);
-      animation: glow 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      0% { text-shadow: 0 0 30px rgba(255, 140, 60, 0.4); }
-      100% { text-shadow: 0 0 40px rgba(255, 140, 60, 0.6), 0 0 60px rgba(255, 100, 40, 0.3); }
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
     .header p {
-      font-size: 16px;
+      font-size: 14px;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: rgba(255, 140, 60, 0.8);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 0.5px;
     }
 
     .main-content {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding: 20px 0;
+      padding-bottom: 140px;
     }
 
+    /* SINGLE BLACK BOX - Matches all other components */
     .navigation-container {
       width: 100%;
-      max-width: 500px;
-      background: rgba(0, 0, 0, 0.8);
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .navigation-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
       border-radius: 20px;
-      padding: 40px 30px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 140, 60, 0.2);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      text-align: center;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    .nav-title {
-      font-size: 20px;
-      color: #fff;
-      margin-bottom: 30px;
-      font-weight: 600;
+    .navigation-box:hover {
+      transform: translateY(-2px);
     }
 
-    .nav-buttons {
+    /* CONTENT AREA - Simple two-button layout */
+    .content-area {
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
       gap: 20px;
     }
 
-    .nav-button {
+    /* NAV BUTTONS - Clean and simple */
+    .nav-option {
+      width: 80%;
+      max-width: 300px;
       padding: 18px 25px;
-      background: rgba(255, 255, 255, 0.05);
+      background: transparent;
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 15px;
       color: #fff;
       font-size: 16px;
+      font-family: inherit;
       text-decoration: none;
       transition: all 0.3s ease;
       display: flex;
@@ -244,136 +216,122 @@
       justify-content: center;
       gap: 12px;
       font-weight: 500;
-      backdrop-filter: blur(5px);
+      cursor: pointer;
     }
 
-    .nav-button:hover {
-      background: rgba(255, 140, 60, 0.15);
+    .nav-option:hover {
+      background: rgba(255, 140, 60, 0.1);
       border-color: rgba(255, 140, 60, 0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(255, 140, 60, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.2);
     }
 
-    .nav-button.primary {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.3), rgba(255, 100, 40, 0.3));
-      border-color: rgba(255, 140, 60, 0.5);
-    }
-
-    .nav-button.primary:hover {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.5), rgba(255, 100, 40, 0.5));
-      border-color: rgba(255, 140, 60, 0.8);
-      transform: translateY(-3px) scale(1.02);
+    .nav-option:active {
+      transform: translateY(0);
     }
 
     .nav-icon {
       font-size: 18px;
+      opacity: 0.8;
     }
 
+    /* FOOTER - Just two buttons */
     .footer {
+      margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
       padding: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
-      justify-content: center;
-      gap: 15px;
+      justify-content: space-around;
+      align-items: center;
     }
 
-    .footer-button {
-      padding: 12px 20px;
-      border-radius: 15px;
-      border: none;
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 14px;
+      font-size: 18px;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
-      font-weight: 500;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .footer-button:hover {
+    .nav-button:hover {
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
-      transform: translateY(-2px);
+      transform: scale(1.1);
     }
 
-    .info-pills {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 25px;
-      flex-wrap: wrap;
+    .nav-button:active {
+      transform: scale(0.95);
     }
 
-    .info-pill {
-      background: rgba(255, 140, 60, 0.1);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 20px;
-      padding: 8px 16px;
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    /* ANIMATIONS - Same as blueprint */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
     }
 
-    /* Mobile Optimizations */
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
+    }
+
+    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
       }
       
       .header h1 {
-        font-size: 36px;
-        letter-spacing: 2px;
+        font-size: 28px;
       }
       
       .header p {
-        font-size: 14px;
-      }
-      
-      .subtitle {
-        font-size: 12px;
+        font-size: 13px;
       }
       
       .navigation-container {
-        max-width: 100%;
-        padding: 30px 25px;
+        height: 4cm;
       }
       
-      .nav-title {
-        font-size: 18px;
-        margin-bottom: 25px;
+      .content-area {
+        padding: 15px;
+        gap: 15px;
       }
       
-      .nav-button {
+      .nav-option {
+        width: 90%;
         padding: 15px 20px;
         font-size: 15px;
       }
       
-      .footer {
-        gap: 10px;
-      }
-      
-      .footer-button {
-        padding: 10px 15px;
-        font-size: 13px;
-      }
-      
-      .info-pills {
-        gap: 10px;
-        margin-top: 20px;
-      }
-      
-      .info-pill {
-        font-size: 11px;
-        padding: 6px 12px;
+      .nav-icon {
+        font-size: 16px;
       }
     }
   </style>
@@ -393,114 +351,46 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Intuitive Learning</p>
-      <div class="subtitle">By Majid Nashtai</div>
+      <p>Intuitive Learning<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
       <div class="navigation-container">
-        <div class="nav-title">Choose Your Path</div>
-        
-        <div class="nav-buttons">
-          <a href="teachers/questions/" class="nav-button primary">
-            <span class="nav-icon">👨‍🏫</span>
-            <span>Teacher Portal</span>
-          </a>
-          
-          <a href="students/answers/" class="nav-button">
-            <span class="nav-icon">🎓</span>
-            <span>Student Portal</span>
-          </a>
-          
-          <a href="visualisation/" class="nav-button">
-            <span class="nav-icon">📊</span>
-            <span>Analytics & Reports</span>
-          </a>
-        </div>
-        
-        <div class="info-pills">
-          <div class="info-pill">📝 Create Questions</div>
-          <div class="info-pill">💭 Collect Responses</div>
-          <div class="info-pill">📈 Visualize Data</div>
+        <div class="navigation-box">
+          <div class="content-area">
+            
+            <a href="teachers/questions/" class="nav-option">
+              <span class="nav-icon">✏️</span>
+              <span>Create Questions</span>
+            </a>
+            
+            <a href="visualisation/" class="nav-option">
+              <span class="nav-icon">📊</span>
+              <span>Analytics</span>
+            </a>
+            
+          </div>
         </div>
       </div>
     </main>
 
     <footer class="footer">
-      <a href="https://github.com/majidnashtai" class="footer-button" target="_blank">
-        <span>💻</span>
-        <span>GitHub</span>
-      </a>
-      
-      <a href="mailto:majid@nashtai.com" class="footer-button">
-        <span>📧</span>
-        <span>Contact</span>
-      </a>
-      
-      <a href="https://majidnashtai.com" class="footer-button" target="_blank">
-        <span>🌐</span>
-        <span>Portfolio</span>
-      </a>
+      <a href="teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
+      <a href="visualisation/" class="nav-button" title="Analytics">📊</a>
     </footer>
   </div>
 
   <script>
-    // Add some interactive sparkle effects
-    function createSparkles() {
-      const container = document.querySelector('.navigation-container');
+    // Simple hover effects
+    function enhanceNavOptions() {
+      const navOptions = document.querySelectorAll('.nav-option');
       
-      setInterval(() => {
-        if (Math.random() > 0.85) { // 15% chance every interval
-          const sparkle = document.createElement('div');
-          sparkle.innerHTML = '✨';
-          sparkle.style.position = 'absolute';
-          sparkle.style.left = Math.random() * 100 + '%';
-          sparkle.style.top = Math.random() * 100 + '%';
-          sparkle.style.fontSize = '16px';
-          sparkle.style.pointerEvents = 'none';
-          sparkle.style.zIndex = '15';
-          sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
-          
-          const style = document.createElement('style');
-          style.textContent = `
-            @keyframes sparkleFloat {
-              0% { opacity: 0; transform: translateY(20px) scale(0.5); }
-              50% { opacity: 1; transform: translateY(-10px) scale(1); }
-              100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
-            }
-          `;
-          document.head.appendChild(style);
-          
-          container.appendChild(sparkle);
-          
-          setTimeout(() => {
-            sparkle.remove();
-            style.remove();
-          }, 2000);
-        }
-      }, 2000);
-    }
-
-    // Add hover effects to navigation buttons
-    function enhanceNavButtons() {
-      const navButtons = document.querySelectorAll('.nav-button');
-      
-      navButtons.forEach(button => {
-        button.addEventListener('mouseenter', () => {
-          // Add subtle glow effect
-          button.style.boxShadow = '0 15px 35px rgba(255, 140, 60, 0.3), 0 0 20px rgba(255, 140, 60, 0.2)';
-        });
-        
-        button.addEventListener('mouseleave', () => {
-          // Remove glow effect
-          button.style.boxShadow = '';
-        });
-        
-        button.addEventListener('click', (e) => {
+      navOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
           // Add click animation
-          button.style.transform = 'translateY(1px) scale(0.98)';
+          option.style.transform = 'translateY(1px) scale(0.98)';
           setTimeout(() => {
-            button.style.transform = '';
+            option.style.transform = '';
           }, 150);
         });
       });
@@ -510,11 +400,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('🚀 INTUITY Landing Page Loading...');
       
-      // Start sparkle effects
-      setTimeout(createSparkles, 2000);
-      
-      // Enhance navigation buttons
-      enhanceNavButtons();
+      // Enhance navigation options
+      enhanceNavOptions();
       
       // Add welcome animation
       const navContainer = document.querySelector('.navigation-container');
