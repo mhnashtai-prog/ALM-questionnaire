@@ -18,7 +18,7 @@
     body {
       height: 100vh;
       width: 100vw;
-      overflow: hidden;
+      overflow-x: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       position: relative;
       background: #000000;
@@ -131,11 +131,13 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 60px 20px 20px;
+      overflow-y: auto;
     }
 
     .header {
       text-align: center;
       margin-bottom: 40px;
+      flex-shrink: 0;
     }
 
     .header h1 {
@@ -175,8 +177,10 @@
     .main-content {
       flex: 1;
       display: flex;
-      align-items: flex-end;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
+      gap: 15px;
       padding-bottom: 140px;
     }
 
@@ -206,7 +210,7 @@
       transform: translateY(-2px);
     }
 
-    /* CONTENT AREA - Simple layout */
+    /* CONTENT AREA - Enhanced layout */
     .content-area {
       width: 100%;
       height: 100%;
@@ -215,7 +219,7 @@
       padding: 20px;
     }
 
-    /* NAME INPUT - Simple, clean */
+    /* NAME INPUT - Enhanced with validation */
     .name-section {
       display: flex;
       align-items: center;
@@ -240,12 +244,16 @@
       border-bottom-color: rgba(255, 140, 60, 0.6);
     }
 
+    .name-input.valid {
+      border-bottom-color: rgba(16, 185, 129, 0.6);
+    }
+
     .name-input::placeholder {
       color: rgba(255, 255, 255, 0.4);
       font-style: italic;
     }
 
-    /* CAMERA ICON - Brick color, no text */
+    /* CAMERA ICON - Enhanced with states */
     .camera-icon {
       width: 40px;
       height: 40px;
@@ -259,6 +267,7 @@
       font-size: 18px;
       color: #000;
       flex-shrink: 0;
+      position: relative;
     }
 
     .camera-icon:hover {
@@ -275,11 +284,12 @@
       background: rgba(16, 185, 129, 1);
     }
 
-    /* ANSWER AREA - Takes up most of the space */
+    /* ANSWER AREA - Enhanced with word counting */
     .answer-area {
       flex: 1;
       display: flex;
       flex-direction: column;
+      gap: 8px;
     }
 
     .answer-input {
@@ -293,6 +303,7 @@
       resize: none;
       line-height: 1.6;
       padding: 0;
+      min-height: 60px;
     }
 
     .answer-input::placeholder {
@@ -304,7 +315,42 @@
       color: #fff;
     }
 
-    /* SUCCESS STATE - Simple overlay */
+    .answer-input.valid {
+      color: rgba(16, 185, 129, 0.9);
+    }
+
+    /* WORD COUNTER - New addition */
+    .word-counter {
+      align-self: flex-end;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+    }
+
+    .word-counter.has-words {
+      color: rgba(255, 140, 60, 0.8);
+    }
+
+    /* VALIDATION FEEDBACK - New addition */
+    .validation-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .validation-bar.valid {
+      background: rgba(16, 185, 129, 0.6);
+    }
+
+    .validation-bar.incomplete {
+      background: rgba(255, 140, 60, 0.6);
+    }
+
+    /* SUCCESS STATE - Enhanced */
     .success-overlay {
       position: absolute;
       top: 0;
@@ -343,7 +389,65 @@
       font-size: 16px;
     }
 
-    /* FOOTER - Matches blueprint exactly */
+    /* LOADING STATE - New addition */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 15;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: rgba(255, 140, 60, 0.9);
+    }
+
+    .loading-spinner {
+      font-size: 24px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* NO QUESTION STATE - Enhanced */
+    .no-question-section {
+      width: 100%;
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .demo-tag {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .demo-text {
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* FOOTER - Enhanced */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -354,6 +458,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .nav-button {
@@ -373,7 +478,7 @@
       text-decoration: none;
     }
 
-    .nav-button:hover {
+    .nav-button:hover:not(:disabled) {
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
       transform: scale(1.1);
@@ -394,7 +499,7 @@
       color: rgba(255, 140, 60, 1);
     }
 
-    .nav-button.primary:hover {
+    .nav-button.primary:hover:not(:disabled) {
       background: rgba(255, 140, 60, 0.3);
       color: #fff;
       transform: scale(1.1);
@@ -433,7 +538,7 @@
     .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Photo Modal - Simplified */
+    /* Photo Modal - Enhanced */
     .photo-modal {
       position: fixed;
       top: 0;
@@ -462,6 +567,7 @@
       max-width: 100%;
       max-height: 100%;
       border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
     .photo-modal-controls {
@@ -476,18 +582,20 @@
       background: rgba(255, 140, 60, 0.8);
       border: none;
       border-radius: 8px;
-      padding: 8px;
+      padding: 8px 12px;
       color: #000;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
+      font-weight: 600;
     }
 
     .photo-modal-btn:hover {
       background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
     }
 
-    /* Camera Preview - Simplified */
+    /* Camera Preview - Enhanced */
     .camera-preview {
       position: fixed;
       top: 0;
@@ -510,6 +618,7 @@
       max-width: 100%;
       max-height: 70vh;
       border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(255, 140, 60, 0.3);
     }
 
     .camera-controls {
@@ -543,7 +652,32 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
-    /* Mobile Responsive */
+    /* CONNECTION STATUS - New addition */
+    .connection-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Mobile Responsive - Enhanced */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -559,7 +693,7 @@
       }
       
       .response-container {
-        height: 4cm;
+        height: 4.5cm;
       }
       
       .content-area {
@@ -579,6 +713,10 @@
         height: 35px;
         font-size: 16px;
       }
+
+      .word-counter {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
@@ -594,6 +732,9 @@
     </div>
   </div>
 
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">Connecting...</div>
+
   <!-- Question Overlay on Background -->
   <div class="question-overlay" id="questionOverlay">
     Loading question...
@@ -606,6 +747,12 @@
     </header>
 
     <main class="main-content">
+      <!-- No Question State -->
+      <div class="no-question-section" id="noQuestionSection" style="display: none;">
+        <div class="demo-tag">Demo Mode</div>
+        <div class="demo-text">Try typing to see how the interface works!</div>
+      </div>
+
       <div class="response-container">
         <div class="response-box">
           
@@ -629,6 +776,20 @@
                 id="studentAnswer"
                 placeholder="Your answer..."
               ></textarea>
+              
+              <!-- Word Counter -->
+              <div class="word-counter" id="wordCounter">0 words</div>
+            </div>
+          </div>
+          
+          <!-- Validation Bar -->
+          <div class="validation-bar" id="validationBar"></div>
+          
+          <!-- Loading Overlay -->
+          <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-content">
+              <div class="loading-spinner">⏳</div>
+              <div>Submitting your response...</div>
             </div>
           </div>
           
@@ -655,9 +816,9 @@
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-content">
       <div class="photo-modal-controls">
-        <button class="photo-modal-btn" id="retakeBtn">📷</button>
-        <button class="photo-modal-btn" id="removePhotoBtn">🗑️</button>
-        <button class="photo-modal-btn" id="closeModalBtn">✕</button>
+        <button class="photo-modal-btn" id="retakeBtn">📷 Retake</button>
+        <button class="photo-modal-btn" id="removePhotoBtn">🗑️ Remove</button>
+        <button class="photo-modal-btn" id="closeModalBtn">✕ Close</button>
       </div>
       <img id="photoModalImg" />
     </div>
@@ -687,6 +848,21 @@
     let cameraStream = null;
     let isSubmitted = false;
     let isConnected = false;
+    let wordCount = 0;
+
+    // Elements
+    const questionOverlay = document.getElementById('questionOverlay');
+    const noQuestionSection = document.getElementById('noQuestionSection');
+    const studentName = document.getElementById('studentName');
+    const studentAnswer = document.getElementById('studentAnswer');
+    const cameraIcon = document.getElementById('cameraIcon');
+    const wordCounter = document.getElementById('wordCounter');
+    const validationBar = document.getElementById('validationBar');
+    const submitBtn = document.getElementById('submitBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const successOverlay = document.getElementById('successOverlay');
+    const connectionStatus = document.getElementById('connectionStatus');
 
     // Initialize Supabase
     function initSupabase() {
@@ -700,12 +876,36 @@
       }
     }
 
-    // Load question
+    // Test connection
+    async function testConnection() {
+      try {
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        if (error) throw error;
+        
+        isConnected = true;
+        updateConnectionStatus('online', 'Connected');
+        return true;
+      } catch (error) {
+        console.warn('Database connection failed:', error);
+        isConnected = false;
+        updateConnectionStatus('offline', 'Offline');
+        return false;
+      }
+    }
+
+    // Update connection status
+    function updateConnectionStatus(status, message) {
+      connectionStatus.textContent = `● ${message}`;
+      connectionStatus.className = `connection-status ${status}`;
+    }
+
+    // Load question - ENHANCED VERSION
     async function loadQuestion() {
       console.log('🔍 Loading question...');
+      updateConnectionStatus('', 'Loading...');
       
       try {
-        // Check URL parameters first
+        // Check URL parameters first (QR code support)
         const urlParams = new URLSearchParams(window.location.search);
         const questionId = urlParams.get('q');
         const questionText = urlParams.get('t');
@@ -714,48 +914,66 @@
           currentQuestion = {
             id: questionId || Date.now(),
             text: decodeURIComponent(questionText),
-            source: 'url'
+            source: 'url',
+            isReal: true
           };
           displayQuestion();
           return;
         }
         
-        // Try to get from Supabase
+        // Try Supabase if available
         if (supabase) {
-          try {
-            const { data, error } = await supabase
-              .from('questions')
-              .select('*')
-              .eq('is_published', true)
-              .order('published_at', { ascending: false })
-              .limit(1);
+          await testConnection();
+          
+          if (isConnected) {
+            try {
+              const { data, error } = await supabase
+                .from('questions')
+                .select('*')
+                .eq('is_published', true)
+                .order('published_at', { ascending: false })
+                .limit(1);
 
-            if (!error && data && data[0]) {
-              currentQuestion = data[0];
-              isConnected = true;
-              displayQuestion();
-              return;
+              if (!error && data && data[0]) {
+                currentQuestion = {
+                  ...data[0],
+                  source: 'supabase',
+                  isReal: true
+                };
+                displayQuestion();
+                return;
+              }
+            } catch (dbError) {
+              console.warn('Database query failed:', dbError);
             }
-          } catch (dbError) {
-            console.warn('Database connection failed:', dbError);
-            isConnected = false;
           }
         }
         
-        // Try localStorage
-        const storedQuestion = localStorage.getItem('current_question');
-        if (storedQuestion) {
-          try {
-            const parsed = JSON.parse(storedQuestion);
-            currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
-            displayQuestion();
-            return;
-          } catch (parseError) {
-            console.warn('Error parsing stored question:', parseError);
+        // Try localStorage fallback - ENHANCED
+        const storageKeys = ['current_question', 'display_question', 'alm_questions'];
+        for (const key of storageKeys) {
+          const storedQuestion = localStorage.getItem(key);
+          if (storedQuestion) {
+            try {
+              const parsed = JSON.parse(storedQuestion);
+              const questionData = Array.isArray(parsed) ? parsed[0] : parsed;
+              
+              if (questionData && (questionData.text || questionData.question_text)) {
+                currentQuestion = {
+                  ...questionData,
+                  source: 'localStorage',
+                  isReal: true
+                };
+                displayQuestion();
+                return;
+              }
+            } catch (parseError) {
+              console.warn(`Error parsing ${key}:`, parseError);
+            }
           }
         }
         
-        // Fallback
+        // No question found - show demo
         showDemoQuestion();
         
       } catch (error) {
@@ -764,46 +982,91 @@
       }
     }
 
-    // Display question on background overlay
+    // Display question - ENHANCED
     function displayQuestion() {
-      const questionOverlay = document.getElementById('questionOverlay');
       if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
-        questionOverlay.textContent = currentQuestion.text || currentQuestion.question_text;
+        const questionText = currentQuestion.text || currentQuestion.question_text;
+        questionOverlay.textContent = questionText;
+        noQuestionSection.style.display = 'none';
+        
+        if (isConnected) {
+          updateConnectionStatus('online', 'Connected');
+        } else {
+          updateConnectionStatus('offline', 'Offline mode');
+        }
+        
+        console.log('✅ Question displayed:', questionText.substring(0, 50) + '...');
       } else {
         showDemoQuestion();
       }
     }
 
-    // Show demo question
+    // Show demo question - ENHANCED
     function showDemoQuestion() {
-      const questionOverlay = document.getElementById('questionOverlay');
       questionOverlay.textContent = 'Demo: What would you like to learn today?';
+      noQuestionSection.style.display = 'block';
       
       currentQuestion = {
         id: 'demo',
         text: 'Demo: What would you like to learn today?',
-        source: 'demo'
+        source: 'demo',
+        isReal: false
       };
+      
+      updateConnectionStatus('offline', 'Demo mode');
+      console.log('🎭 Demo mode activated');
     }
 
-    // Handle input changes
+    // Handle input changes - ENHANCED
     function handleInput() {
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      const submitBtn = document.getElementById('submitBtn');
+      const name = studentName.value.trim();
+      const answer = studentAnswer.value.trim();
       
-      const name = nameInput.value.trim();
-      const answer = answerInput.value.trim();
+      // Count words
+      const words = answer ? answer.split(/\s+/).filter(word => word.length > 0) : [];
+      wordCount = words.length;
+      updateWordCounter();
       
-      // Simple validation - just check if both fields have content
-      if (name && answer) {
+      // Auto-resize textarea
+      studentAnswer.style.height = 'auto';
+      studentAnswer.style.height = Math.min(Math.max(60, studentAnswer.scrollHeight), 120) + 'px';
+      
+      // Validate inputs
+      const hasValidName = name.length >= 1;
+      const hasValidAnswer = wordCount > 0;
+      
+      // Update visual feedback
+      studentName.classList.toggle('valid', hasValidName);
+      studentAnswer.classList.toggle('valid', hasValidAnswer);
+      
+      // Update validation bar
+      if (hasValidName && hasValidAnswer) {
+        validationBar.className = 'validation-bar valid';
         submitBtn.disabled = false;
+      } else if (hasValidName || hasValidAnswer) {
+        validationBar.className = 'validation-bar incomplete';
+        submitBtn.disabled = true;
       } else {
+        validationBar.className = 'validation-bar';
         submitBtn.disabled = true;
       }
     }
 
-    // Photo functions
+    // Update word counter
+    function updateWordCounter() {
+      if (wordCount === 0) {
+        wordCounter.textContent = 'No words yet';
+        wordCounter.classList.remove('has-words');
+      } else if (wordCount === 1) {
+        wordCounter.textContent = '1 word';
+        wordCounter.classList.add('has-words');
+      } else {
+        wordCounter.textContent = `${wordCount} words`;
+        wordCounter.classList.add('has-words');
+      }
+    }
+
+    // Photo functions - ENHANCED
     function handleCameraClick() {
       if (currentPhoto) {
         showPhotoModal();
@@ -815,7 +1078,11 @@
     async function startCamera() {
       try {
         cameraStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'user' } 
+          video: { 
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
         });
         
         const video = document.getElementById('cameraVideo');
@@ -855,16 +1122,39 @@
       const fileInput = document.getElementById('fileInput');
       fileInput.onchange = (e) => {
         const file = e.target.files[0];
-        if (file) setPhoto(file);
+        if (file) {
+          // Compress image
+          compressImage(file).then(setPhoto);
+        }
       };
       fileInput.click();
     }
 
+    // Image compression
+    function compressImage(file, maxWidth = 800, quality = 0.8) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+          
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(resolve, 'image/jpeg', quality);
+        };
+        
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
     function setPhoto(photoBlob) {
       currentPhoto = photoBlob;
-      const icon = document.getElementById('cameraIcon');
-      icon.textContent = '✓';
-      icon.classList.add('has-photo');
+      cameraIcon.textContent = '✓';
+      cameraIcon.classList.add('has-photo');
+      console.log('📸 Photo captured and compressed');
     }
 
     function showPhotoModal() {
@@ -879,85 +1169,104 @@
 
     function removePhoto() {
       currentPhoto = null;
-      const icon = document.getElementById('cameraIcon');
-      icon.textContent = '📸';
-      icon.classList.remove('has-photo');
+      cameraIcon.textContent = '📸';
+      cameraIcon.classList.remove('has-photo');
       document.getElementById('photoModal').classList.remove('show');
+      console.log('🗑️ Photo removed');
     }
 
-    // Submit response
+    // Submit response - ENHANCED VERSION
     async function submitResponse() {
       if (isSubmitted) return;
       
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      const submitBtn = document.getElementById('submitBtn');
+      const name = studentName.value.trim();
+      const answer = studentAnswer.value.trim();
       
-      const studentName = nameInput.value.trim();
-      const studentAnswer = answerInput.value.trim();
-      
-      if (!studentName || !studentAnswer) {
+      if (!name || !answer) {
         return; // Button should be disabled anyway
       }
 
       // Show loading
-      submitBtn.innerHTML = '⏳';
+      loadingOverlay.style.display = 'flex';
       submitBtn.disabled = true;
 
       try {
         let photoUrl = null;
         
-        // Upload photo if exists
+        // Upload photo if exists and we're connected
         if (currentPhoto && supabase && isConnected) {
           try {
             const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
             const { data, error } = await supabase.storage
               .from('student-responses')
-              .upload(fileName, currentPhoto);
+              .upload(fileName, currentPhoto, {
+                contentType: 'image/jpeg',
+                upsert: false
+              });
 
             if (!error) {
               const { data: urlData } = supabase.storage
                 .from('student-responses')
                 .getPublicUrl(fileName);
               photoUrl = urlData.publicUrl;
+              console.log('📸 Photo uploaded to cloud storage');
             }
           } catch (photoError) {
-            console.warn('Photo upload failed:', photoError);
+            console.warn('Photo upload failed, storing locally:', photoError);
+            // Convert to base64 for local storage
+            photoUrl = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.readAsDataURL(currentPhoto);
+            });
           }
+        } else if (currentPhoto) {
+          // Offline mode - store as base64
+          photoUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(currentPhoto);
+          });
         }
 
-        // Create response object
+        // Create response object - COMPREHENSIVE FORMAT
         const timestamp = new Date().toISOString();
         const questionId = currentQuestion?.id || 'demo';
         const questionText = currentQuestion?.text || currentQuestion?.question_text || 'Demo Question';
         
         const response = {
+          id: `response_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           questionId: questionId,
           questionText: questionText,
-          studentName: studentName,
-          answer: studentAnswer,
-          wordCount: studentAnswer.split(/\s+/).filter(word => word.length > 0).length,
+          studentName: name,
+          answer: answer,
+          wordCount: wordCount,
           timestamp: timestamp,
-          photoUrl: photoUrl
+          submittedAt: timestamp,
+          photoUrl: photoUrl,
+          quality: determineQuality(wordCount),
+          score: calculateScore(wordCount, answer),
+          source: currentQuestion?.source || 'unknown'
         };
 
-        console.log('Submitting response:', response);
+        console.log('💾 Submitting response:', response);
 
-        // Submit to Supabase if available
-        let dbSuccess = false;
-        if (supabase && isConnected && questionId !== 'demo') {
+        // Submit to Supabase if connected and real question
+        if (supabase && isConnected && currentQuestion?.isReal && questionId !== 'demo') {
           try {
             const { data, error } = await supabase
               .from('student_responses')
               .insert([{
                 question_id: questionId,
-                student_name: studentName,
-                answer: studentAnswer,
-                word_count: response.wordCount,
+                student_name: name,
+                answer: answer,
+                word_count: wordCount,
                 photo_url: photoUrl,
                 metadata: {
                   timestamp: timestamp,
-                  question_text: questionText
+                  question_text: questionText,
+                  quality: response.quality,
+                  score: response.score
                 }
               }]);
 
@@ -965,16 +1274,15 @@
               console.warn('Database submission failed:', error);
             } else {
               console.log('✅ Response saved to database');
-              dbSuccess = true;
             }
           } catch (dbError) {
             console.warn('Database error:', dbError);
           }
         }
 
-        // Always save to localStorage
+        // ALWAYS save to localStorage - MULTIPLE FORMATS for compatibility
         const localResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        localResponses.push(response);
+        localResponses.unshift(response); // Add to beginning
         localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
 
         // Also save in display format
@@ -988,7 +1296,7 @@
         displayResponses.unshift(displayFormat);
         localStorage.setItem('display_responses', JSON.stringify(displayResponses));
 
-        // Update current question
+        // Update current question data
         if (currentQuestion) {
           localStorage.setItem('current_question', JSON.stringify(currentQuestion));
           localStorage.setItem('display_question', JSON.stringify({
@@ -998,71 +1306,95 @@
         }
 
         // Show success
-        console.log('✅ Response submitted successfully');
-        showSuccess();
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+          showSuccess();
+        }, 1000);
+
         isSubmitted = true;
+        console.log('✅ Response submitted successfully');
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
-        showSuccess(); // Still show success - it's saved locally
+        // Still show success since we saved locally
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+          showSuccess();
+        }, 1000);
         isSubmitted = true;
       }
     }
 
-    // Show success state
-    function showSuccess() {
-      document.getElementById('successOverlay').style.display = 'flex';
-      
-      const clearBtn = document.getElementById('clearBtn');
-      clearBtn.innerHTML = '✓';
-      clearBtn.onclick = () => window.location.reload();
+    // Quality and scoring functions
+    function determineQuality(wordCount) {
+      if (wordCount >= 25) return 'excellent';
+      if (wordCount >= 10) return 'good';
+      return 'needs-work';
     }
 
-    // Clear form
+    function calculateScore(wordCount, answer) {
+      let score = 30; // Base score
+      
+      // Word count score (40% of total)
+      const wordScore = Math.min(40, (wordCount / 25) * 40);
+      score += wordScore;
+      
+      // Content quality score (30% of total)
+      const sentences = answer.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+      const contentScore = Math.min(30, sentences * 10);
+      score += contentScore;
+      
+      return Math.min(100, Math.round(score));
+    }
+
+    // Show success state - ENHANCED
+    function showSuccess() {
+      successOverlay.style.display = 'flex';
+      
+      clearBtn.innerHTML = '✓';
+      clearBtn.onclick = () => window.location.reload();
+      
+      submitBtn.style.display = 'none';
+    }
+
+    // Clear form - ENHANCED
     function clearForm() {
       if (isSubmitted) {
         window.location.reload();
         return;
       }
       
-      if (confirm('Clear your response?')) {
-        document.getElementById('studentName').value = '';
-        document.getElementById('studentAnswer').value = '';
+      if (confirm('Clear your response? This cannot be undone.')) {
+        studentName.value = '';
+        studentAnswer.value = '';
+        wordCount = 0;
+        updateWordCounter();
         removePhoto();
         handleInput();
+        
+        studentName.focus();
       }
     }
 
-    // Initialize
+    // Initialize - ENHANCED
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Student Interface initializing...');
+      console.log('🚀 INTUITY Student Interface (Enhanced) initializing...');
       
       // Initialize Supabase
       const supabaseOk = initSupabase();
-      if (supabaseOk) {
-        try {
-          const { data } = await supabase.from('questions').select('count').limit(1);
-          isConnected = true;
-          console.log('✅ Database connection verified');
-        } catch (error) {
-          isConnected = false;
-          console.warn('⚠️ Database connection failed, using offline mode');
-        }
-      } else {
-        isConnected = false;
-      }
+      updateConnectionStatus('', 'Connecting...');
       
       // Load question
       await loadQuestion();
       
       // Set up event listeners
-      document.getElementById('studentName').addEventListener('input', handleInput);
-      document.getElementById('studentAnswer').addEventListener('input', handleInput);
-      document.getElementById('submitBtn').addEventListener('click', submitResponse);
-      document.getElementById('clearBtn').addEventListener('click', clearForm);
+      studentName.addEventListener('input', handleInput);
+      studentAnswer.addEventListener('input', handleInput);
+      submitBtn.addEventListener('click', submitResponse);
+      clearBtn.addEventListener('click', clearForm);
       
       // Camera event listeners
-      document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
+      cameraIcon.addEventListener('click', handleCameraClick);
       document.getElementById('captureBtn').addEventListener('click', capturePhoto);
       document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
       document.getElementById('retakeBtn').addEventListener('click', () => {
@@ -1081,16 +1413,30 @@
         }
       });
       
-      // Keyboard shortcuts
+      // Keyboard shortcuts - ENHANCED
       document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Enter to submit
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const submitBtn = document.getElementById('submitBtn');
           if (!submitBtn.disabled) submitResponse();
         }
-        if (e.key === 'Escape' && !isSubmitted) clearForm();
+        
+        // Escape to clear form
+        if (e.key === 'Escape' && !isSubmitted) {
+          clearForm();
+        }
+        
+        // Ctrl/Cmd + P for photo
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+          e.preventDefault();
+          handleCameraClick();
+        }
       });
       
-      console.log('✅ Student interface ready!');
+      // Focus on name input initially
+      studentName.focus();
+      
+      console.log('✅ Enhanced Student interface ready!');
     });
   </script>
 </body>
