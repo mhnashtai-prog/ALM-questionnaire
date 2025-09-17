@@ -280,26 +280,27 @@
     }
 
     .nav-button {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
       border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 12px;
+      padding: 12px 20px;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 18px;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
       text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 80px;
+      text-align: center;
     }
 
     .nav-button:hover {
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
-      transform: scale(1.1);
+      transform: translateY(-2px);
     }
 
     .nav-button:active {
@@ -320,7 +321,7 @@
     .nav-button.primary:hover {
       background: rgba(255, 140, 60, 0.3);
       color: #fff;
-      transform: scale(1.1);
+      transform: translateY(-2px);
     }
 
     .nav-button.primary:disabled {
@@ -435,9 +436,9 @@
     </main>
 
     <footer class="footer">
-      <button class="nav-button primary" id="displayBtn" disabled>📊</button>
-      <a href="../" class="nav-button">⌂</a>
-      <a href="../teachers/questions/" class="nav-button">+</a>
+      <button class="nav-button primary" id="displayBtn" disabled>DISPLAY</button>
+      <a href="../index.html" class="nav-button">HOME</a>
+      <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
   </div>
 
