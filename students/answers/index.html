@@ -156,7 +156,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Question Overlay - matches blueprint */
     .question-overlay {
       position: absolute;
       top: 25%;
@@ -184,7 +183,6 @@
       padding-bottom: 140px;
     }
 
-    /* SINGLE BLACK BOX - Matches carousel exactly */
     .response-container {
       width: 100%;
       height: 5cm;
@@ -210,7 +208,6 @@
       transform: translateY(-2px);
     }
 
-    /* CONTENT AREA - Enhanced layout */
     .content-area {
       width: 100%;
       height: 100%;
@@ -219,7 +216,6 @@
       padding: 20px;
     }
 
-    /* NAME INPUT - Enhanced with validation */
     .name-section {
       display: flex;
       align-items: center;
@@ -253,7 +249,6 @@
       font-style: italic;
     }
 
-    /* CAMERA ICON - Enhanced with states */
     .camera-icon {
       width: 40px;
       height: 40px;
@@ -284,7 +279,6 @@
       background: rgba(16, 185, 129, 1);
     }
 
-    /* ANSWER AREA - Enhanced with word counting */
     .answer-area {
       flex: 1;
       display: flex;
@@ -319,7 +313,6 @@
       color: rgba(16, 185, 129, 0.9);
     }
 
-    /* WORD COUNTER - New addition */
     .word-counter {
       align-self: flex-end;
       font-size: 12px;
@@ -331,7 +324,6 @@
       color: rgba(255, 140, 60, 0.8);
     }
 
-    /* VALIDATION FEEDBACK - New addition */
     .validation-bar {
       position: absolute;
       bottom: 0;
@@ -350,7 +342,6 @@
       background: rgba(255, 140, 60, 0.6);
     }
 
-    /* SUCCESS STATE - Enhanced */
     .success-overlay {
       position: absolute;
       top: 0;
@@ -389,7 +380,6 @@
       font-size: 16px;
     }
 
-    /* LOADING STATE - New addition */
     .loading-overlay {
       position: absolute;
       top: 0;
@@ -421,7 +411,6 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* NO QUESTION STATE - Enhanced */
     .no-question-section {
       width: 100%;
       background: rgba(255, 140, 60, 0.1);
@@ -447,7 +436,6 @@
       line-height: 1.4;
     }
 
-    /* FOOTER - Enhanced */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -512,7 +500,6 @@
       transform: none;
     }
 
-    /* ANIMATIONS - Same as blueprint */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
@@ -538,7 +525,6 @@
     .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Photo Modal - Enhanced */
     .photo-modal {
       position: fixed;
       top: 0;
@@ -595,7 +581,6 @@
       transform: scale(1.05);
     }
 
-    /* Camera Preview - Enhanced */
     .camera-preview {
       position: fixed;
       top: 0;
@@ -652,7 +637,6 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
-    /* CONNECTION STATUS - New addition */
     .connection-status {
       position: fixed;
       top: 10px;
@@ -677,7 +661,6 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    /* Mobile Responsive - Enhanced */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -732,10 +715,8 @@
     </div>
   </div>
 
-  <!-- Connection Status -->
   <div class="connection-status" id="connectionStatus">Connecting...</div>
 
-  <!-- Question Overlay on Background -->
   <div class="question-overlay" id="questionOverlay">
     Loading question...
   </div>
@@ -747,7 +728,6 @@
     </header>
 
     <main class="main-content">
-      <!-- No Question State -->
       <div class="no-question-section" id="noQuestionSection" style="display: none;">
         <div class="demo-tag">Demo Mode</div>
         <div class="demo-text">Try typing to see how the interface works!</div>
@@ -757,7 +737,6 @@
         <div class="response-box">
           
           <div class="content-area">
-            <!-- Name and Camera Section -->
             <div class="name-section">
               <input 
                 type="text" 
@@ -769,7 +748,6 @@
               <div class="camera-icon" id="cameraIcon">📸</div>
             </div>
             
-            <!-- Answer Area -->
             <div class="answer-area">
               <textarea 
                 class="answer-input" 
@@ -777,15 +755,12 @@
                 placeholder="Your answer..."
               ></textarea>
               
-              <!-- Word Counter -->
               <div class="word-counter" id="wordCounter">0 words</div>
             </div>
           </div>
           
-          <!-- Validation Bar -->
           <div class="validation-bar" id="validationBar"></div>
           
-          <!-- Loading Overlay -->
           <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-content">
               <div class="loading-spinner">⏳</div>
@@ -793,7 +768,6 @@
             </div>
           </div>
           
-          <!-- Success Overlay -->
           <div class="success-overlay" id="successOverlay">
             <div class="success-content">
               <div class="success-icon">✨</div>
@@ -812,7 +786,6 @@
     </footer>
   </div>
 
-  <!-- Photo Modal -->
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-content">
       <div class="photo-modal-controls">
@@ -824,7 +797,6 @@
     </div>
   </div>
 
-  <!-- Camera Preview -->
   <div class="camera-preview" id="cameraPreview">
     <video id="cameraVideo" autoplay muted playsinline></video>
     <div class="camera-controls">
@@ -833,7 +805,6 @@
     </div>
   </div>
 
-  <!-- Hidden file input -->
   <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
   <script>
@@ -899,13 +870,12 @@
       connectionStatus.className = `connection-status ${status}`;
     }
 
-    // Load question - ENHANCED VERSION
+    // Load question
     async function loadQuestion() {
       console.log('🔍 Loading question...');
       updateConnectionStatus('', 'Loading...');
       
       try {
-        // Check URL parameters first (QR code support)
         const urlParams = new URLSearchParams(window.location.search);
         const questionId = urlParams.get('q');
         const questionText = urlParams.get('t');
@@ -921,7 +891,6 @@
           return;
         }
         
-        // Try Supabase if available
         if (supabase) {
           await testConnection();
           
@@ -949,7 +918,6 @@
           }
         }
         
-        // Try localStorage fallback - ENHANCED
         const storageKeys = ['current_question', 'display_question', 'alm_questions'];
         for (const key of storageKeys) {
           const storedQuestion = localStorage.getItem(key);
@@ -973,7 +941,6 @@
           }
         }
         
-        // No question found - show demo
         showDemoQuestion();
         
       } catch (error) {
@@ -982,7 +949,7 @@
       }
     }
 
-    // Display question - ENHANCED
+    // Display question
     function displayQuestion() {
       if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
         const questionText = currentQuestion.text || currentQuestion.question_text;
@@ -1001,7 +968,7 @@
       }
     }
 
-    // Show demo question - ENHANCED
+    // Show demo question
     function showDemoQuestion() {
       questionOverlay.textContent = 'Demo: What would you like to learn today?';
       noQuestionSection.style.display = 'block';
@@ -1017,29 +984,24 @@
       console.log('🎭 Demo mode activated');
     }
 
-    // Handle input changes - ENHANCED
+    // Handle input changes
     function handleInput() {
       const name = studentName.value.trim();
       const answer = studentAnswer.value.trim();
       
-      // Count words
       const words = answer ? answer.split(/\s+/).filter(word => word.length > 0) : [];
       wordCount = words.length;
       updateWordCounter();
       
-      // Auto-resize textarea
       studentAnswer.style.height = 'auto';
       studentAnswer.style.height = Math.min(Math.max(60, studentAnswer.scrollHeight), 120) + 'px';
       
-      // Validate inputs
       const hasValidName = name.length >= 1;
       const hasValidAnswer = wordCount > 0;
       
-      // Update visual feedback
       studentName.classList.toggle('valid', hasValidName);
       studentAnswer.classList.toggle('valid', hasValidAnswer);
       
-      // Update validation bar
       if (hasValidName && hasValidAnswer) {
         validationBar.className = 'validation-bar valid';
         submitBtn.disabled = false;
@@ -1066,7 +1028,7 @@
       }
     }
 
-    // Photo functions - ENHANCED
+    // Photo functions
     function handleCameraClick() {
       if (currentPhoto) {
         showPhotoModal();
@@ -1123,14 +1085,12 @@
       fileInput.onchange = (e) => {
         const file = e.target.files[0];
         if (file) {
-          // Compress image
           compressImage(file).then(setPhoto);
         }
       };
       fileInput.click();
     }
 
-    // Image compression
     function compressImage(file, maxWidth = 800, quality = 0.8) {
       return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1175,25 +1135,21 @@
       console.log('🗑️ Photo removed');
     }
 
-    // Submit response - ENHANCED VERSION
+    // FIXED SUBMIT RESPONSE - Using consistent localStorage keys
     async function submitResponse() {
       if (isSubmitted) return;
       
       const name = studentName.value.trim();
       const answer = studentAnswer.value.trim();
       
-      if (!name || !answer) {
-        return; // Button should be disabled anyway
-      }
+      if (!name || !answer) return;
 
-      // Show loading
       loadingOverlay.style.display = 'flex';
       submitBtn.disabled = true;
 
       try {
         let photoUrl = null;
         
-        // Upload photo if exists and we're connected
         if (currentPhoto && supabase && isConnected) {
           try {
             const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
@@ -1213,7 +1169,6 @@
             }
           } catch (photoError) {
             console.warn('Photo upload failed, storing locally:', photoError);
-            // Convert to base64 for local storage
             photoUrl = await new Promise((resolve) => {
               const reader = new FileReader();
               reader.onload = () => resolve(reader.result);
@@ -1221,7 +1176,6 @@
             });
           }
         } else if (currentPhoto) {
-          // Offline mode - store as base64
           photoUrl = await new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
@@ -1229,29 +1183,34 @@
           });
         }
 
-        // Create response object - COMPREHENSIVE FORMAT
         const timestamp = new Date().toISOString();
         const questionId = currentQuestion?.id || 'demo';
         const questionText = currentQuestion?.text || currentQuestion?.question_text || 'Demo Question';
         
+        // STANDARDIZED RESPONSE FORMAT
         const response = {
           id: `response_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           questionId: questionId,
+          question_id: questionId, // Both formats
           questionText: questionText,
           studentName: name,
+          student_name: name, // Both formats
           answer: answer,
           wordCount: wordCount,
+          word_count: wordCount, // Both formats
           timestamp: timestamp,
+          created_at: timestamp, // Both formats
+          submitted_at: timestamp,
           submittedAt: timestamp,
           photoUrl: photoUrl,
+          photo_url: photoUrl, // Both formats
           quality: determineQuality(wordCount),
           score: calculateScore(wordCount, answer),
           source: currentQuestion?.source || 'unknown'
         };
 
-        console.log('💾 Submitting response:', response);
+        console.log('💾 Submitting standardized response:', response);
 
-        // Submit to Supabase if connected and real question
         if (supabase && isConnected && currentQuestion?.isReal && questionId !== 'demo') {
           try {
             const { data, error } = await supabase
@@ -1270,9 +1229,7 @@
                 }
               }]);
 
-            if (error) {
-              console.warn('Database submission failed:', error);
-            } else {
+            if (!error) {
               console.log('✅ Response saved to database');
             }
           } catch (dbError) {
@@ -1280,76 +1237,53 @@
           }
         }
 
-        // ALWAYS save to localStorage - MULTIPLE FORMATS for compatibility
-        const localResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        localResponses.unshift(response); // Add to beginning
-        localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
+        // CRITICAL FIX: Use exact same localStorage keys as analytics expects
+        const existingResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        existingResponses.unshift(response); // Add to beginning (newest first)
+        localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
 
-        // Also save in display format
-        const displayResponses = JSON.parse(localStorage.getItem('display_responses') || '[]');
-        const displayFormat = {
-          ...response,
-          student_name: response.studentName,
-          created_at: response.timestamp,
-          question_id: response.questionId
-        };
-        displayResponses.unshift(displayFormat);
-        localStorage.setItem('display_responses', JSON.stringify(displayResponses));
-
-        // CRUCIAL: Update the analytics-compatible format
-        const analyticsResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        analyticsResponses.unshift({
-          id: response.id,
-          questionId: response.questionId,
-          question_id: response.questionId,
-          studentName: response.studentName,
-          student_name: response.studentName,
-          answer: response.answer,
-          wordCount: response.wordCount,
-          word_count: response.wordCount,
-          timestamp: response.timestamp,
-          created_at: response.timestamp,
-          submitted_at: response.timestamp,
-          questionText: questionText,
-          photoUrl: response.photoUrl,
-          photo_url: response.photoUrl,
-          quality: response.quality,
-          score: response.score,
-          source: response.source
-        });
-        localStorage.setItem('alm_student_responses', JSON.stringify(analyticsResponses));
-
-        // Update current question data
+        // Also save current question in the expected format
         if (currentQuestion) {
+          // Save individual question
           localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-          localStorage.setItem('display_question', JSON.stringify({
-            ...currentQuestion,
-            questionText: questionText
-          }));
+          
+          // Save in questions array format
+          const existingQuestions = JSON.parse(localStorage.getItem('alm_questions') || '[]');
+          const questionExists = existingQuestions.find(q => 
+            q.id === currentQuestion.id || 
+            (q.text || q.question_text) === (currentQuestion.text || currentQuestion.question_text)
+          );
+          
+          if (!questionExists) {
+            existingQuestions.unshift({
+              id: currentQuestion.id,
+              text: currentQuestion.text || currentQuestion.question_text,
+              question_text: currentQuestion.text || currentQuestion.question_text,
+              created_at: timestamp,
+              is_published: true
+            });
+            localStorage.setItem('alm_questions', JSON.stringify(existingQuestions));
+          }
         }
 
-        // FORCE STORAGE EVENT for cross-tab communication
+        // FORCE UPDATE: Dispatch storage event to notify analytics
         window.dispatchEvent(new StorageEvent('storage', {
           key: 'alm_student_responses',
-          newValue: JSON.stringify(analyticsResponses)
+          newValue: JSON.stringify(existingResponses)
         }));
 
-        console.log('💾 Response saved successfully:', response);
-        console.log('📊 Analytics format saved:', analyticsResponses.length, 'responses');
-        console.log('🎭 Display format saved:', displayResponses.length, 'responses');
+        console.log('✅ Response saved to localStorage with key "alm_student_responses"');
+        console.log('📊 Total responses now:', existingResponses.length);
 
-        // Show success
         setTimeout(() => {
           loadingOverlay.style.display = 'none';
           showSuccess();
         }, 1000);
 
         isSubmitted = true;
-        console.log('✅ Response submitted successfully');
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
-        // Still show success since we saved locally
         setTimeout(() => {
           loadingOverlay.style.display = 'none';
           showSuccess();
@@ -1358,7 +1292,6 @@
       }
     }
 
-    // Quality and scoring functions
     function determineQuality(wordCount) {
       if (wordCount >= 25) return 'excellent';
       if (wordCount >= 10) return 'good';
@@ -1366,31 +1299,22 @@
     }
 
     function calculateScore(wordCount, answer) {
-      let score = 30; // Base score
-      
-      // Word count score (40% of total)
+      let score = 30;
       const wordScore = Math.min(40, (wordCount / 25) * 40);
       score += wordScore;
-      
-      // Content quality score (30% of total)
       const sentences = answer.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
       const contentScore = Math.min(30, sentences * 10);
       score += contentScore;
-      
       return Math.min(100, Math.round(score));
     }
 
-    // Show success state - ENHANCED
     function showSuccess() {
       successOverlay.style.display = 'flex';
-      
       clearBtn.innerHTML = '✓';
       clearBtn.onclick = () => window.location.reload();
-      
       submitBtn.style.display = 'none';
     }
 
-    // Clear form - ENHANCED
     function clearForm() {
       if (isSubmitted) {
         window.location.reload();
@@ -1404,29 +1328,23 @@
         updateWordCounter();
         removePhoto();
         handleInput();
-        
         studentName.focus();
       }
     }
 
-    // Initialize - ENHANCED
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Student Interface (Enhanced) initializing...');
+      console.log('🚀 INTUITY Student Interface initializing...');
       
-      // Initialize Supabase
       const supabaseOk = initSupabase();
       updateConnectionStatus('', 'Connecting...');
       
-      // Load question
       await loadQuestion();
       
-      // Set up event listeners
       studentName.addEventListener('input', handleInput);
       studentAnswer.addEventListener('input', handleInput);
       submitBtn.addEventListener('click', submitResponse);
       clearBtn.addEventListener('click', clearForm);
       
-      // Camera event listeners
       cameraIcon.addEventListener('click', handleCameraClick);
       document.getElementById('captureBtn').addEventListener('click', capturePhoto);
       document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
@@ -1439,37 +1357,30 @@
         document.getElementById('photoModal').classList.remove('show');
       });
       
-      // Modal click outside to close
       document.getElementById('photoModal').addEventListener('click', (e) => {
         if (e.target.id === 'photoModal') {
           document.getElementById('photoModal').classList.remove('show');
         }
       });
       
-      // Keyboard shortcuts - ENHANCED
       document.addEventListener('keydown', (e) => {
-        // Ctrl/Cmd + Enter to submit
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const submitBtn = document.getElementById('submitBtn');
           if (!submitBtn.disabled) submitResponse();
         }
         
-        // Escape to clear form
         if (e.key === 'Escape' && !isSubmitted) {
           clearForm();
         }
         
-        // Ctrl/Cmd + P for photo
         if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
           e.preventDefault();
           handleCameraClick();
         }
       });
       
-      // Focus on name input initially
       studentName.focus();
-      
-      console.log('✅ Enhanced Student interface ready!');
+      console.log('✅ Student interface ready!');
     });
   </script>
 </body>
