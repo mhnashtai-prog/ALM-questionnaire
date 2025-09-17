@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Analytics</title>
+  <meta charset="UTF-8">
+  <title>INTUITY - Student Response</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -154,6 +154,24 @@
       letter-spacing: 0.5px;
     }
 
+    /* Question Overlay - matches blueprint */
+    .question-overlay {
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 80%;
+      text-align: center;
+      z-index: 5;
+      opacity: 0.1;
+      font-size: 24px;
+      font-weight: 300;
+      color: #ffffff;
+      line-height: 1.4;
+      pointer-events: none;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
     .main-content {
       flex: 1;
       display: flex;
@@ -162,7 +180,8 @@
       padding-bottom: 140px;
     }
 
-    .analytics-container {
+    /* SINGLE BLACK BOX - Matches carousel exactly */
+    .response-container {
       width: 100%;
       height: 5cm;
       position: relative;
@@ -170,7 +189,7 @@
       overflow: hidden;
     }
 
-    .analytics-box {
+    .response-box {
       width: 100%;
       height: 100%;
       background: #000000;
@@ -178,157 +197,153 @@
       border: none;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
     }
 
-    .analytics-box:hover {
+    .response-box:hover {
       transform: translateY(-2px);
     }
 
-    /* Question Dropdown */
-    .question-selector-container {
-      padding: 20px 20px 10px;
-    }
-
-    .question-dropdown {
+    /* CONTENT AREA - Simple layout */
+    .content-area {
       width: 100%;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 16px;
-      outline: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      font-family: inherit;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
     }
 
-    .question-dropdown:focus {
-      border-color: rgba(255, 140, 60, 0.6);
-      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
-    }
-
-    .question-dropdown option {
-      background: #000;
-      color: #fff;
-      padding: 10px;
-    }
-
-    /* Current Question Display */
-    .current-question {
-      flex: 1;
+    /* NAME INPUT - Simple, clean */
+    .name-section {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
+      gap: 15px;
+      margin-bottom: 20px;
     }
 
-    .question-text {
-      font-size: 18px;
+    .name-input {
+      flex: 1;
+      background: transparent;
+      border: none;
       color: #fff;
-      font-weight: 500;
-      line-height: 1.4;
-      max-width: 90%;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
     }
 
-    .no-question {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.5);
+    .name-input:focus {
+      border-bottom-color: rgba(255, 140, 60, 0.6);
+    }
+
+    .name-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
       font-style: italic;
     }
 
-    /* Controls Bar */
-    .controls-bar {
-      padding: 10px 20px 20px;
+    /* CAMERA ICON - Brick color, no text */
+    .camera-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255, 140, 60, 0.8);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 18px;
+      color: #000;
+      flex-shrink: 0;
     }
 
-    .response-count {
-      color: rgba(255, 140, 60, 0.9);
+    .camera-icon:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
+    }
+
+    .camera-icon.has-photo {
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+    }
+
+    .camera-icon.has-photo:hover {
+      background: rgba(16, 185, 129, 1);
+    }
+
+    /* ANSWER AREA - Takes up most of the space */
+    .answer-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .answer-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
       font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    .answer-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+      font-style: italic;
+    }
+
+    .answer-input:focus {
+      color: #fff;
+    }
+
+    /* SUCCESS STATE - Simple overlay */
+    .success-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 20px;
+    }
+
+    .success-content {
+      color: #fff;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 20px;
+    }
+
+    .success-title {
+      font-size: 24px;
       font-weight: 600;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 15px;
     }
 
-    .response-count.live-update {
-      animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { 
-        color: rgba(255, 140, 60, 0.9);
-        text-shadow: 0 0 5px rgba(255, 140, 60, 0.3);
-      }
-      50% { 
-        color: rgba(255, 140, 60, 1);
-        text-shadow: 0 0 15px rgba(255, 140, 60, 0.6);
-      }
-    }
-
-    .controls-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .refresh-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: rgba(34, 197, 94, 0.8);
+    .success-text {
+      color: rgba(255, 255, 255, 0.8);
       font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .refresh-btn:hover {
-      background: rgba(34, 197, 94, 0.2);
-      border-color: rgba(34, 197, 94, 0.5);
-      color: rgba(34, 197, 94, 1);
-      transform: scale(1.1);
-    }
-
-    .delete-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: rgba(239, 68, 68, 0.8);
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .delete-btn:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.5);
-      color: rgba(239, 68, 68, 1);
-      transform: scale(1.1);
-    }
-
-    .delete-btn:disabled,
-    .refresh-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* SIMPLIFIED FOOTER - Only 3 buttons */
+    /* FOOTER - Matches blueprint exactly */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -374,29 +389,25 @@
       transform: none;
     }
 
-    /* Primary display button - make it stand out */
-    .nav-button.display {
+    .nav-button.primary {
       background: rgba(255, 140, 60, 0.2);
       color: rgba(255, 140, 60, 1);
-      border: 1px solid rgba(255, 140, 60, 0.3);
     }
 
-    .nav-button.display:hover {
+    .nav-button.primary:hover {
       background: rgba(255, 140, 60, 0.3);
       color: #fff;
-      border-color: rgba(255, 140, 60, 0.5);
       transform: scale(1.1);
     }
 
-    .nav-button.display:disabled {
+    .nav-button.primary:disabled {
       opacity: 0.4;
       background: rgba(255, 255, 255, 0.08);
       color: rgba(255, 255, 255, 0.7);
-      border: none;
       transform: none;
     }
 
-    /* Animations */
+    /* ANIMATIONS - Same as blueprint */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
@@ -422,62 +433,117 @@
     .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Loading State */
-    .loading {
-      color: rgba(255, 140, 60, 0.8);
-      font-size: 16px;
-      text-align: center;
-    }
-
-    /* Connection Status */
-    .connection-status {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 12px;
-      font-weight: 500;
-      z-index: 100;
-    }
-
-    .connection-status.online {
-      background: rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 0.9);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .connection-status.offline {
-      background: rgba(239, 68, 68, 0.2);
-      color: rgba(239, 68, 68, 0.9);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    /* Notification */
-    .notification {
+    /* Photo Modal - Simplified */
+    .photo-modal {
       position: fixed;
-      top: 30px;
-      right: 30px;
-      padding: 12px 20px;
-      background: rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(255, 140, 60, 0.5);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .photo-modal.show {
+      display: flex;
+    }
+
+    .photo-modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .photo-modal img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+    }
+
+    .photo-modal-controls {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .photo-modal-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
       border-radius: 8px;
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 1000;
-      opacity: 0;
-      transform: translateX(100%);
+      padding: 8px;
+      color: #000;
+      cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
 
-    .notification.show {
-      opacity: 1;
-      transform: translateX(0);
+    .photo-modal-btn:hover {
+      background: rgba(255, 140, 60, 1);
     }
 
-    /* Mobile Responsiveness */
+    /* Camera Preview - Simplified */
+    .camera-preview {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: black;
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .camera-preview.show {
+      display: flex;
+    }
+
+    .camera-preview video {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 12px;
+    }
+
+    .camera-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .camera-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 25px;
+      padding: 15px 25px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .camera-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
+    }
+
+    .camera-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .camera-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -487,27 +553,31 @@
         font-size: 28px;
       }
       
-      .analytics-container {
+      .question-overlay {
+        font-size: 20px;
+        max-width: 90%;
+      }
+      
+      .response-container {
         height: 4cm;
       }
       
-      .question-text {
+      .content-area {
+        padding: 15px;
+      }
+      
+      .name-input {
+        font-size: 15px;
+      }
+      
+      .answer-input {
+        font-size: 15px;
+      }
+      
+      .camera-icon {
+        width: 35px;
+        height: 35px;
         font-size: 16px;
-      }
-      
-      .question-dropdown {
-        font-size: 14px;
-        padding: 10px 12px;
-      }
-      
-      .response-count {
-        font-size: 14px;
-      }
-      
-      .delete-btn, .refresh-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
       }
     }
   </style>
@@ -524,588 +594,503 @@
     </div>
   </div>
 
-  <!-- Connection Status -->
-  <div class="connection-status" id="connectionStatus">Connecting...</div>
+  <!-- Question Overlay on Background -->
+  <div class="question-overlay" id="questionOverlay">
+    Loading question...
+  </div>
 
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Analytics<br>By Majid Nashtai</p>
+      <p>Student Response<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
-      <div class="analytics-container">
-        <div class="analytics-box">
-          <!-- Question Selector -->
-          <div class="question-selector-container">
-            <select class="question-dropdown" id="questionDropdown">
-              <option value="">Loading questions...</option>
-            </select>
-          </div>
+      <div class="response-container">
+        <div class="response-box">
           
-          <!-- Current Question Display -->
-          <div class="current-question">
-            <div class="question-text" id="questionText">
-              <div class="loading">Loading questions from database...</div>
+          <div class="content-area">
+            <!-- Name and Camera Section -->
+            <div class="name-section">
+              <input 
+                type="text" 
+                class="name-input" 
+                id="studentName"
+                placeholder="Your name..."
+                maxlength="50"
+              />
+              <div class="camera-icon" id="cameraIcon">📸</div>
+            </div>
+            
+            <!-- Answer Area -->
+            <div class="answer-area">
+              <textarea 
+                class="answer-input" 
+                id="studentAnswer"
+                placeholder="Your answer..."
+              ></textarea>
             </div>
           </div>
           
-          <!-- Controls -->
-          <div class="controls-bar">
-            <div class="response-count" id="responseCount">0 responses</div>
-            <div class="controls-right">
-              <button class="refresh-btn" id="refreshBtn" title="Refresh">🔄</button>
-              <button class="delete-btn" id="deleteBtn" disabled title="Delete Question">🗑️</button>
+          <!-- Success Overlay -->
+          <div class="success-overlay" id="successOverlay">
+            <div class="success-content">
+              <div class="success-icon">✨</div>
+              <div class="success-title">Response Submitted!</div>
+              <div class="success-text">Thank you for sharing your thoughts!</div>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- SIMPLIFIED FOOTER: Home | Create Questions | Display Responses -->
     <footer class="footer">
-      <a href="../" class="nav-button" title="Home">🏠</a>
-      <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
-      <button class="nav-button display" id="displayBtn" title="Display Responses" disabled>📺</button>
+      <button class="nav-button" id="clearBtn">🗑️</button>
+      <a href="../" class="nav-button">⌂</a>
+      <button class="nav-button primary" id="submitBtn" disabled>→</button>
     </footer>
   </div>
 
-  <!-- Notification -->
-  <div class="notification" id="notification"></div>
+  <!-- Photo Modal -->
+  <div class="photo-modal" id="photoModal">
+    <div class="photo-modal-content">
+      <div class="photo-modal-controls">
+        <button class="photo-modal-btn" id="retakeBtn">📷</button>
+        <button class="photo-modal-btn" id="removePhotoBtn">🗑️</button>
+        <button class="photo-modal-btn" id="closeModalBtn">✕</button>
+      </div>
+      <img id="photoModalImg" />
+    </div>
+  </div>
+
+  <!-- Camera Preview -->
+  <div class="camera-preview" id="cameraPreview">
+    <video id="cameraVideo" autoplay muted playsinline></video>
+    <div class="camera-controls">
+      <button class="camera-btn" id="captureBtn">Capture</button>
+      <button class="camera-btn secondary" id="cancelCameraBtn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
   <script>
     // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Global data variables - SWISS CLOCK PRECISION
+    // Global variables
     let supabase;
-    let allQuestions = [];
-    let allResponses = [];
-    let currentSelectedQuestion = null;
+    let currentQuestion = null;
+    let currentPhoto = null;
+    let cameraStream = null;
+    let isSubmitted = false;
     let isConnected = false;
-
-    // Elements
-    const questionDropdown = document.getElementById('questionDropdown');
-    const questionText = document.getElementById('questionText');
-    const responseCount = document.getElementById('responseCount');
-    const deleteBtn = document.getElementById('deleteBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const displayBtn = document.getElementById('displayBtn');
-    const notification = document.getElementById('notification');
-    const connectionStatus = document.getElementById('connectionStatus');
 
     // Initialize Supabase
     function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
-        
-        testConnection();
         return true;
       } catch (error) {
         console.error('❌ Error initializing Supabase:', error);
-        loadLocalStorageData();
         return false;
       }
     }
 
-    // Test Supabase connection
-    async function testConnection() {
-      try {
-        const { data, error } = await supabase.from('questions').select('count').limit(1);
-        
-        if (error) throw error;
-        
-        isConnected = true;
-        console.log('✅ Supabase connection successful');
-        
-        // Start loading data
-        await loadInitialData();
-        
-      } catch (error) {
-        console.error('❌ Supabase connection failed:', error);
-        isConnected = false;
-        
-        // Fallback to localStorage - ROBUST VERSION
-        loadLocalStorageData();
-      }
-    }
-
-    // Load initial data from Supabase
-    async function loadInitialData() {
-      try {
-        console.log('📊 Loading data from Supabase...');
-        
-        // Load questions
-        const { data: questions, error: questionsError } = await supabase
-          .from('questions')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (questionsError) throw questionsError;
-
-        allQuestions = questions || [];
-        console.log(`✅ Loaded ${allQuestions.length} questions from Supabase`);
-
-        // Load responses
-        const { data: responses, error: responsesError } = await supabase
-          .from('student_responses')
-          .select('*')
-          .order('submitted_at', { ascending: false });
-
-        if (responsesError) throw responsesError;
-
-        allResponses = responses || [];
-        console.log(`✅ Loaded ${allResponses.length} responses from Supabase`);
-
-        // ALWAYS merge with localStorage - KEY ENHANCEMENT
-        loadLocalStorageData();
-        
-        // Update UI
-        updateUI();
-        
-        showNotification('Connected to database successfully!', 'success');
-        
-      } catch (error) {
-        console.error('❌ Error loading data from Supabase:', error);
-        showNotification('Error loading from database, using local data', 'error');
-        
-        // Fallback to localStorage
-        loadLocalStorageData();
-      }
-    }
-
-    // ENHANCED localStorage loading - TRANSPLANTED FROM WORKING VERSION
-    function loadLocalStorageData() {
-      console.log('📱 Loading data from localStorage...');
+    // Load question
+    async function loadQuestion() {
+      console.log('🔍 Loading question...');
       
       try {
-        // Load questions from multiple possible keys - ROBUST FALLBACK
-        const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
-        for (const key of questionKeys) {
-          const storedQuestions = localStorage.getItem(key);
-          if (storedQuestions) {
-            const parsed = JSON.parse(storedQuestions);
-            
-            if (Array.isArray(parsed)) {
-              // Merge with existing, avoid duplicates
-              parsed.forEach(newQ => {
-                const exists = allQuestions.find(q => 
-                  q.id === newQ.id || 
-                  (q.text || q.question_text) === (newQ.text || newQ.question_text)
-                );
-                if (!exists) {
-                  allQuestions.push(newQ);
-                }
-              });
-            } else if (typeof parsed === 'object' && (parsed.text || parsed.question_text)) {
-              // Single question object
-              const exists = allQuestions.find(q => 
-                q.id === parsed.id || 
-                (q.text || q.question_text) === (parsed.text || parsed.question_text)
-              );
-              if (!exists) {
-                allQuestions = [parsed, ...allQuestions];
-              }
+        // Check URL parameters first
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionId = urlParams.get('q');
+        const questionText = urlParams.get('t');
+        
+        if (questionText) {
+          currentQuestion = {
+            id: questionId || Date.now(),
+            text: decodeURIComponent(questionText),
+            source: 'url'
+          };
+          displayQuestion();
+          return;
+        }
+        
+        // Try to get from Supabase
+        if (supabase) {
+          try {
+            const { data, error } = await supabase
+              .from('questions')
+              .select('*')
+              .eq('is_published', true)
+              .order('published_at', { ascending: false })
+              .limit(1);
+
+            if (!error && data && data[0]) {
+              currentQuestion = data[0];
+              isConnected = true;
+              displayQuestion();
+              return;
             }
+          } catch (dbError) {
+            console.warn('Database connection failed:', dbError);
+            isConnected = false;
           }
         }
-
-        // Load responses from multiple possible keys - ENHANCED ROBUSTNESS
-        const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses', 'display_responses'];
         
-        for (const key of responseKeys) {
-          const storedResponses = localStorage.getItem(key);
-          if (storedResponses) {
-            const parsed = JSON.parse(storedResponses);
-            if (Array.isArray(parsed)) {
-              parsed.forEach(newResponse => {
-                // Enhanced duplicate checking
-                const exists = allResponses.find(existingResponse => {
-                  const nameMatch = (existingResponse.student_name || existingResponse.studentName) === (newResponse.studentName || newResponse.student_name);
-                  const answerMatch = existingResponse.answer === newResponse.answer;
-                  const timeMatch = Math.abs(
-                    new Date(existingResponse.created_at || existingResponse.submitted_at || existingResponse.timestamp) - 
-                    new Date(newResponse.timestamp || newResponse.created_at || newResponse.submitted_at)
-                  ) < 60000; // Within 1 minute
-                  return nameMatch && answerMatch && timeMatch;
-                });
-                
-                if (!exists) {
-                  // Normalize response format for consistency
-                  const normalizedResponse = {
-                    id: newResponse.id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                    question_id: newResponse.questionId || newResponse.question_id,
-                    student_name: newResponse.studentName || newResponse.student_name,
-                    answer: newResponse.answer,
-                    word_count: newResponse.wordCount || newResponse.word_count || (newResponse.answer ? newResponse.answer.split(/\s+/).length : 0),
-                    photo_url: newResponse.photoUrl || newResponse.photo_url,
-                    created_at: newResponse.timestamp || newResponse.created_at || newResponse.submitted_at,
-                    submitted_at: newResponse.submittedAt || newResponse.submitted_at || newResponse.timestamp,
-                    // Keep original for reference
-                    questionText: newResponse.questionText,
-                    source: key // Track where it came from
-                  };
-                  
-                  allResponses.push(normalizedResponse);
-                }
-              });
-            }
+        // Try localStorage
+        const storedQuestion = localStorage.getItem('current_question');
+        if (storedQuestion) {
+          try {
+            const parsed = JSON.parse(storedQuestion);
+            currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
+            displayQuestion();
+            return;
+          } catch (parseError) {
+            console.warn('Error parsing stored question:', parseError);
           }
         }
-
-        console.log(`📱 Final counts: ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
         
-        updateUI();
-        
-        if (allQuestions.length === 0) {
-          showNotification('No questions found - create one first', 'info');
-        } else if (!isConnected) {
-          showNotification('Using offline data', 'info');
-        }
+        // Fallback
+        showDemoQuestion();
         
       } catch (error) {
-        console.error('❌ Error loading localStorage data:', error);
-        updateUI();
+        console.error('❌ Error loading question:', error);
+        showDemoQuestion();
       }
     }
 
-    // Update UI
-    function updateUI() {
-      populateQuestionDropdown();
-      updateResponseCount();
-      updateDeleteButton();
-    }
-
-    // Populate question dropdown - ENHANCED
-    function populateQuestionDropdown() {
-      const selector = document.getElementById('questionDropdown');
-      
-      if (allQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions available - Create one first</option>';
-        return;
-      }
-
-      selector.innerHTML = '';
-
-      allQuestions.forEach((question, index) => {
-        const option = document.createElement('option');
-        option.value = question.id || index;
-        
-        const questionText = question.text || question.question_text || 'Untitled Question';
-        const responseCountForQ = getResponsesForQuestion(question).length;
-        option.textContent = `Question ${index + 1}: ${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''} (${responseCountForQ})`;
-        selector.appendChild(option);
-      });
-
-      // Auto-select first question if none selected
-      if (!currentSelectedQuestion && allQuestions.length > 0) {
-        currentSelectedQuestion = allQuestions[0];
-        selector.value = currentSelectedQuestion.id || 0;
-        updateResponseCount();
-        updateDeleteButton();
-        updateQuestionDisplay();
-      }
-    }
-
-    // Get responses for a specific question - ENHANCED MATCHING LOGIC
-    function getResponsesForQuestion(question) {
-      if (!question) return [];
-      
-      return allResponses.filter(response => {
-        // Method 1: Direct ID matching
-        if (response.question_id === question.id || response.questionId === question.id) {
-          return true;
-        }
-        
-        // Method 2: Text matching (case insensitive)
-        const questionText = (question.text || question.question_text || '').trim().toLowerCase();
-        const responseQuestionText = (response.questionText || '').trim().toLowerCase();
-        if (questionText && responseQuestionText && questionText === responseQuestionText) {
-          return true;
-        }
-        
-        // Method 3: Demo question special handling
-        if (question.id === 'demo' && (
-            response.question_id === 'demo' || 
-            response.questionId === 'demo' ||
-            (response.questionText || '').toLowerCase().includes('demo')
-          )) {
-          return true;
-        }
-        
-        // Method 4: Index-based fallback for questions without IDs
-        if (typeof question.id === 'undefined' && response.questionId === allQuestions.indexOf(question)) {
-          return true;
-        }
-        
-        return false;
-      });
-    }
-
-    // Update response count
-    function updateResponseCount() {
-      const responseCountElement = document.getElementById('responseCount');
-      
-      if (!currentSelectedQuestion) {
-        responseCountElement.textContent = '0 Responses';
-        return;
-      }
-
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      const count = responses.length;
-      responseCountElement.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
-    }
-
-    // Update delete button state
-    function updateDeleteButton() {
-      const deleteBtn = document.getElementById('deleteBtn');
-      deleteBtn.disabled = !currentSelectedQuestion;
-    }
-
-    // Update question display
-    function updateQuestionDisplay() {
-      if (!currentSelectedQuestion) {
-        questionText.innerHTML = '<div class="no-question">Select a question</div>';
-        return;
-      }
-      
-      const questionStr = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'Untitled Question';
-      questionText.textContent = questionStr;
-      
-      // Enable display button if there are responses
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      displayBtn.disabled = responses.length === 0;
-    }
-
-    // Handle question selection change
-    function handleQuestionChange() {
-      const selector = document.getElementById('questionDropdown');
-      const selectedValue = selector.value;
-      
-      if (!selectedValue) {
-        currentSelectedQuestion = null;
+    // Display question on background overlay
+    function displayQuestion() {
+      const questionOverlay = document.getElementById('questionOverlay');
+      if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
+        questionOverlay.textContent = currentQuestion.text || currentQuestion.question_text;
       } else {
-        // Find the selected question
-        currentSelectedQuestion = allQuestions.find(q => 
-          q.id == selectedValue || 
-          allQuestions.indexOf(q) == selectedValue
-        );
+        showDemoQuestion();
       }
-
-      console.log('📋 Selected question:', currentSelectedQuestion);
-      
-      updateResponseCount();
-      updateDeleteButton();
-      updateQuestionDisplay();
     }
 
-    // Delete question - ENHANCED
-    async function deleteQuestion() {
-      if (!currentSelectedQuestion) {
-        alert('Please select a question to delete.');
-        return;
-      }
+    // Show demo question
+    function showDemoQuestion() {
+      const questionOverlay = document.getElementById('questionOverlay');
+      questionOverlay.textContent = 'Demo: What would you like to learn today?';
       
-      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
-      if (!confirm(`Delete "${questionText}" and all its responses?`)) {
-        return;
+      currentQuestion = {
+        id: 'demo',
+        text: 'Demo: What would you like to learn today?',
+        source: 'demo'
+      };
+    }
+
+    // Handle input changes
+    function handleInput() {
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      const name = nameInput.value.trim();
+      const answer = answerInput.value.trim();
+      
+      // Simple validation - just check if both fields have content
+      if (name && answer) {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
       }
+    }
 
-      const deleteBtn = document.getElementById('deleteBtn');
-      const originalContent = deleteBtn.innerHTML;
-      deleteBtn.innerHTML = '⏳';
-      deleteBtn.disabled = true;
+    // Photo functions
+    function handleCameraClick() {
+      if (currentPhoto) {
+        showPhotoModal();
+      } else {
+        startCamera();
+      }
+    }
 
+    async function startCamera() {
       try {
-        if (isConnected && currentSelectedQuestion.id) {
-          // Delete from Supabase
-          const { error } = await supabase
-            .from('questions')
-            .delete()
-            .eq('id', currentSelectedQuestion.id);
-
-          if (error) throw error;
-          
-          console.log('✅ Question deleted from Supabase');
-        }
-
-        // Remove from local arrays
-        allQuestions = allQuestions.filter(q => q.id !== currentSelectedQuestion.id);
-        allResponses = allResponses.filter(r => 
-          r.question_id !== currentSelectedQuestion.id && 
-          r.questionId !== currentSelectedQuestion.id
-        );
-
-        // Update localStorage
-        localStorage.setItem('alm_questions', JSON.stringify(allQuestions));
-        localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
-
-        // Reset selection
-        const selector = document.getElementById('questionDropdown');
-        selector.value = '';
-        currentSelectedQuestion = null;
-
-        // Update UI
-        updateUI();
-        updateQuestionDisplay();
-
-        showNotification('Question deleted successfully!', 'success');
+        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'user' } 
+        });
+        
+        const video = document.getElementById('cameraVideo');
+        video.srcObject = cameraStream;
+        document.getElementById('cameraPreview').classList.add('show');
         
       } catch (error) {
-        console.error('❌ Error deleting question:', error);
-        showNotification('Error deleting question', 'error');
-      } finally {
-        setTimeout(() => {
-          deleteBtn.innerHTML = originalContent;
-          updateDeleteButton();
-        }, 1000);
+        console.log('Camera not available, using file upload');
+        triggerFileUpload();
       }
     }
 
-    // Launch Display - ENHANCED DATA PREPARATION
-    function launchDisplay() {
-      if (!currentSelectedQuestion) {
-        showNotification('Please select a question first', 'error');
-        return;
-      }
+    function capturePhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
       
-      const responsesForQuestion = getResponsesForQuestion(currentSelectedQuestion);
-      if (responsesForQuestion.length === 0) {
-        showNotification('No responses for this question', 'error');
-        return;
-      }
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
       
-      // Prepare data for display with comprehensive format
-      const questionForDisplay = {
-        id: currentSelectedQuestion.id,
-        text: currentSelectedQuestion.text || currentSelectedQuestion.question_text,
-        question_text: currentSelectedQuestion.text || currentSelectedQuestion.question_text,
-        questionText: currentSelectedQuestion.text || currentSelectedQuestion.question_text
+      canvas.toBlob((blob) => {
+        setPhoto(blob);
+        stopCamera();
+      }, 'image/jpeg', 0.8);
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      document.getElementById('cameraPreview').classList.remove('show');
+    }
+
+    function triggerFileUpload() {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) setPhoto(file);
       };
-      
-      const responsesForDisplay = responsesForQuestion.map(r => ({
-        id: r.id,
-        student_name: r.student_name,
-        studentName: r.student_name, // Compatibility
-        answer: r.answer,
-        word_count: r.word_count,
-        photo_url: r.photo_url,
-        created_at: r.created_at,
-        question_id: currentSelectedQuestion.id,
-        questionText: questionForDisplay.questionText
-      }));
-      
-      // Store for all display interfaces
-      localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
-      localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
-      localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
-      localStorage.setItem('alm_student_responses', JSON.stringify(responsesForDisplay));
-      
-      console.log(`🚀 Launching display with ${responsesForQuestion.length} responses`);
-      showNotification(`Launching display with ${responsesForQuestion.length} responses...`, 'success');
-      
-      // Launch display
-      setTimeout(() => {
-        window.open('../displays/', '_blank');
-      }, 500);
+      fileInput.click();
     }
 
-    // Show notification - ENHANCED
-    function showNotification(message, type = 'info') {
-      console.log(`📢 ${message}`);
+    function setPhoto(photoBlob) {
+      currentPhoto = photoBlob;
+      const icon = document.getElementById('cameraIcon');
+      icon.textContent = '✓';
+      icon.classList.add('has-photo');
+    }
+
+    function showPhotoModal() {
+      if (!currentPhoto) return;
       
-      // Remove existing notification
-      const existingNotification = document.querySelector('.notification.show');
-      if (existingNotification) {
-        existingNotification.classList.remove('show');
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('photoModalImg');
+      
+      modalImg.src = URL.createObjectURL(currentPhoto);
+      modal.classList.add('show');
+    }
+
+    function removePhoto() {
+      currentPhoto = null;
+      const icon = document.getElementById('cameraIcon');
+      icon.textContent = '📸';
+      icon.classList.remove('has-photo');
+      document.getElementById('photoModal').classList.remove('show');
+    }
+
+    // Submit response
+    async function submitResponse() {
+      if (isSubmitted) return;
+      
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      const studentName = nameInput.value.trim();
+      const studentAnswer = answerInput.value.trim();
+      
+      if (!studentName || !studentAnswer) {
+        return; // Button should be disabled anyway
+      }
+
+      // Show loading
+      submitBtn.innerHTML = '⏳';
+      submitBtn.disabled = true;
+
+      try {
+        let photoUrl = null;
+        
+        // Upload photo if exists
+        if (currentPhoto && supabase && isConnected) {
+          try {
+            const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+            const { data, error } = await supabase.storage
+              .from('student-responses')
+              .upload(fileName, currentPhoto);
+
+            if (!error) {
+              const { data: urlData } = supabase.storage
+                .from('student-responses')
+                .getPublicUrl(fileName);
+              photoUrl = urlData.publicUrl;
+            }
+          } catch (photoError) {
+            console.warn('Photo upload failed:', photoError);
+          }
+        }
+
+        // Create response object
+        const timestamp = new Date().toISOString();
+        const questionId = currentQuestion?.id || 'demo';
+        const questionText = currentQuestion?.text || currentQuestion?.question_text || 'Demo Question';
+        
+        const response = {
+          questionId: questionId,
+          questionText: questionText,
+          studentName: studentName,
+          answer: studentAnswer,
+          wordCount: studentAnswer.split(/\s+/).filter(word => word.length > 0).length,
+          timestamp: timestamp,
+          photoUrl: photoUrl
+        };
+
+        console.log('Submitting response:', response);
+
+        // Submit to Supabase if available
+        let dbSuccess = false;
+        if (supabase && isConnected && questionId !== 'demo') {
+          try {
+            const { data, error } = await supabase
+              .from('student_responses')
+              .insert([{
+                question_id: questionId,
+                student_name: studentName,
+                answer: studentAnswer,
+                word_count: response.wordCount,
+                photo_url: photoUrl,
+                metadata: {
+                  timestamp: timestamp,
+                  question_text: questionText
+                }
+              }]);
+
+            if (error) {
+              console.warn('Database submission failed:', error);
+            } else {
+              console.log('✅ Response saved to database');
+              dbSuccess = true;
+            }
+          } catch (dbError) {
+            console.warn('Database error:', dbError);
+          }
+        }
+
+        // Always save to localStorage
+        const localResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        localResponses.push(response);
+        localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
+
+        // Also save in display format
+        const displayResponses = JSON.parse(localStorage.getItem('display_responses') || '[]');
+        const displayFormat = {
+          ...response,
+          student_name: response.studentName,
+          created_at: response.timestamp,
+          question_id: response.questionId
+        };
+        displayResponses.unshift(displayFormat);
+        localStorage.setItem('display_responses', JSON.stringify(displayResponses));
+
+        // Update current question
+        if (currentQuestion) {
+          localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+          localStorage.setItem('display_question', JSON.stringify({
+            ...currentQuestion,
+            questionText: questionText
+          }));
+        }
+
+        // Show success
+        console.log('✅ Response submitted successfully');
+        showSuccess();
+        isSubmitted = true;
+        
+      } catch (error) {
+        console.error('❌ Error submitting response:', error);
+        showSuccess(); // Still show success - it's saved locally
+        isSubmitted = true;
+      }
+    }
+
+    // Show success state
+    function showSuccess() {
+      document.getElementById('successOverlay').style.display = 'flex';
+      
+      const clearBtn = document.getElementById('clearBtn');
+      clearBtn.innerHTML = '✓';
+      clearBtn.onclick = () => window.location.reload();
+    }
+
+    // Clear form
+    function clearForm() {
+      if (isSubmitted) {
+        window.location.reload();
+        return;
       }
       
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
+      if (confirm('Clear your response?')) {
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentAnswer').value = '';
+        removePhoto();
+        handleInput();
+      }
     }
 
-    // Auto-refresh localStorage - ENHANCED MONITORING
-    function setupAutoRefresh() {
-      // Monitor localStorage changes
-      setInterval(() => {
-        const currentResponseCount = allResponses.length;
-        loadLocalStorageData();
-        
-        if (allResponses.length > currentResponseCount) {
-          console.log(`🔄 Found ${allResponses.length - currentResponseCount} new responses`);
-          updateUI();
-          showNotification('New responses detected!', 'success');
-        }
-      }, 5000);
-
-      // Listen for storage events from other tabs
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'alm_student_responses' || e.key === 'current_question') {
-          console.log('🔄 Storage updated from another tab');
-          loadLocalStorageData();
-        }
-      });
-    }
-
-    // Initialize when page loads - ENHANCED INITIALIZATION
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics (Enhanced Minimalist) Loading...');
-      
-      // Update connection status immediately
-      connectionStatus.textContent = '● Connecting...';
-      connectionStatus.className = 'connection-status';
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Student Interface initializing...');
       
       // Initialize Supabase
-      initSupabase();
+      const supabaseOk = initSupabase();
+      if (supabaseOk) {
+        try {
+          const { data } = await supabase.from('questions').select('count').limit(1);
+          isConnected = true;
+          console.log('✅ Database connection verified');
+        } catch (error) {
+          isConnected = false;
+          console.warn('⚠️ Database connection failed, using offline mode');
+        }
+      } else {
+        isConnected = false;
+      }
       
-      // Setup auto-refresh
-      setupAutoRefresh();
+      // Load question
+      await loadQuestion();
       
       // Set up event listeners
-      questionDropdown.addEventListener('change', handleQuestionChange);
-      deleteBtn.addEventListener('click', deleteQuestion);
-      displayBtn.addEventListener('click', launchDisplay);
+      document.getElementById('studentName').addEventListener('input', handleInput);
+      document.getElementById('studentAnswer').addEventListener('input', handleInput);
+      document.getElementById('submitBtn').addEventListener('click', submitResponse);
+      document.getElementById('clearBtn').addEventListener('click', clearForm);
       
-      // Manual refresh button
-      refreshBtn.addEventListener('click', () => {
-        refreshBtn.innerHTML = '⏳';
-        refreshBtn.disabled = true;
-        
-        if (isConnected) {
-          loadInitialData().finally(() => {
-            refreshBtn.innerHTML = '🔄';
-            refreshBtn.disabled = false;
-          });
-        } else {
-          loadLocalStorageData();
-          setTimeout(() => {
-            refreshBtn.innerHTML = '🔄';
-            refreshBtn.disabled = false;
-            showNotification('Local data refreshed', 'info');
-          }, 1000);
+      // Camera event listeners
+      document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
+      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+      document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
+      document.getElementById('retakeBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+        startCamera();
+      });
+      document.getElementById('removePhotoBtn').addEventListener('click', removePhoto);
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+      });
+      
+      // Modal click outside to close
+      document.getElementById('photoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'photoModal') {
+          document.getElementById('photoModal').classList.remove('show');
         }
       });
       
-      // Update connection status display
-      setTimeout(() => {
-        if (isConnected) {
-          connectionStatus.textContent = '● Online';
-          connectionStatus.className = 'connection-status online';
-        } else {
-          connectionStatus.textContent = '● Offline';
-          connectionStatus.className = 'connection-status offline';
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          const submitBtn = document.getElementById('submitBtn');
+          if (!submitBtn.disabled) submitResponse();
         }
-      }, 2000);
+        if (e.key === 'Escape' && !isSubmitted) clearForm();
+      });
       
-      console.log('✅ Enhanced Minimalist Analytics Ready!');
+      console.log('✅ Student interface ready!');
     });
   </script>
 </body>
