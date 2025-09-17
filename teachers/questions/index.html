@@ -664,8 +664,9 @@
       
       const baseURL = window.location.origin;
       const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); 
-      pathParts.pop(); 
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'questions'
+      pathParts.pop(); // remove 'teachers'
       pathParts.push('students', 'answers', '');
       const studentURL = baseURL + pathParts.join('/');
       
