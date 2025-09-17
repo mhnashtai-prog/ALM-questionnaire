@@ -190,7 +190,6 @@
       transform: translateY(-2px);
     }
 
-    /* Question Dropdown */
     .question-selector-container {
       padding: 20px 20px 10px;
     }
@@ -220,7 +219,6 @@
       padding: 10px;
     }
 
-    /* Current Question Display */
     .current-question {
       flex: 1;
       display: flex;
@@ -244,7 +242,6 @@
       font-style: italic;
     }
 
-    /* Controls Bar */
     .controls-bar {
       padding: 10px 20px 20px;
       display: flex;
@@ -330,7 +327,6 @@
       transform: none;
     }
 
-    /* RESTORED PRESENTATION MODES */
     .presentation-modes {
       background: rgba(64, 64, 64, 0.1);
       backdrop-filter: blur(10px);
@@ -394,7 +390,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* FOOTER */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -461,7 +456,6 @@
       transform: none;
     }
 
-    /* Animations */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
@@ -487,16 +481,14 @@
     .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Loading State */
     .loading {
       color: rgba(255, 140, 60, 0.8);
       font-size: 16px;
       text-align: center;
     }
 
-    /* Connection Status */
     .connection-status {
-      position: absolute;
+      position: fixed;
       top: 10px;
       right: 10px;
       padding: 5px 10px;
@@ -518,7 +510,6 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    /* Notification */
     .notification {
       position: fixed;
       top: 30px;
@@ -542,7 +533,6 @@
       transform: translateX(0);
     }
 
-    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -598,7 +588,6 @@
     </div>
   </div>
 
-  <!-- Connection Status -->
   <div class="connection-status" id="connectionStatus">Connecting...</div>
 
   <div class="container">
@@ -610,21 +599,18 @@
     <main class="main-content">
       <div class="analytics-container">
         <div class="analytics-box">
-          <!-- Question Selector -->
           <div class="question-selector-container">
             <select class="question-dropdown" id="questionDropdown">
               <option value="">Loading questions...</option>
             </select>
           </div>
           
-          <!-- Current Question Display -->
           <div class="current-question">
             <div class="question-text" id="questionText">
               <div class="loading">Loading questions from database...</div>
             </div>
           </div>
           
-          <!-- Controls -->
           <div class="controls-bar">
             <div class="response-count" id="responseCount">0 responses</div>
             <div class="controls-right">
@@ -635,10 +621,34 @@
         </div>
       </div>
 
-
+      <!-- RESTORED PRESENTATION MODES -->
+      <div class="presentation-modes">
+        <div class="modes-title">Presentation Mode</div>
+        
+        <div class="mode-buttons">
+          <button class="mode-btn" data-mode="mind-map">
+            <div class="mode-icon">🗺️</div>
+            <div class="mode-name">Mind Map</div>
+          </button>
+          
+          <button class="mode-btn active" data-mode="stacked">
+            <div class="mode-icon">📚</div>
+            <div class="mode-name">Stacked</div>
+          </button>
+          
+          <button class="mode-btn" data-mode="floating">
+            <div class="mode-icon">☁️</div>
+            <div class="mode-name">Floating</div>
+          </button>
+          
+          <button class="mode-btn" data-mode="cosmos">
+            <div class="mode-icon">🌌</div>
+            <div class="mode-name">Cosmos</div>
+          </button>
+        </div>
+      </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
       <a href="../" class="nav-button" title="Home">🏠</a>
       <a href="../teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
@@ -646,7 +656,6 @@
     </footer>
   </div>
 
-  <!-- Notification -->
   <div class="notification" id="notification"></div>
 
   <script>
@@ -654,7 +663,7 @@
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Global data variables - SWISS CLOCK PRECISION
+    // FIXED GLOBAL VARIABLES - Using exact same structure as working analytics
     let supabase;
     let allQuestions = [];
     let allResponses = [];
@@ -676,7 +685,6 @@
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
-        
         testConnection();
         return true;
       } catch (error) {
@@ -695,15 +703,11 @@
         
         isConnected = true;
         console.log('✅ Supabase connection successful');
-        
-        // Start loading data
         await loadInitialData();
         
       } catch (error) {
         console.error('❌ Supabase connection failed:', error);
         isConnected = false;
-        
-        // Fallback to localStorage - ROBUST VERSION
         loadLocalStorageData();
       }
     }
@@ -713,7 +717,6 @@
       try {
         console.log('📊 Loading data from Supabase...');
         
-        // Load questions
         const { data: questions, error: questionsError } = await supabase
           .from('questions')
           .select('*')
@@ -724,7 +727,6 @@
         allQuestions = questions || [];
         console.log(`✅ Loaded ${allQuestions.length} questions from Supabase`);
 
-        // Load responses
         const { data: responses, error: responsesError } = await supabase
           .from('student_responses')
           .select('*')
@@ -735,29 +737,24 @@
         allResponses = responses || [];
         console.log(`✅ Loaded ${allResponses.length} responses from Supabase`);
 
-        // ALWAYS merge with localStorage - KEY ENHANCEMENT
+        // ALWAYS merge with localStorage
         loadLocalStorageData();
-        
-        // Update UI
         updateUI();
-        
         showNotification('Connected to database successfully!', 'success');
         
       } catch (error) {
         console.error('❌ Error loading data from Supabase:', error);
         showNotification('Error loading from database, using local data', 'error');
-        
-        // Fallback to localStorage
         loadLocalStorageData();
       }
     }
 
-    // ENHANCED localStorage loading - TRANSPLANTED FROM WORKING VERSION
+    // FIXED localStorage loading - EXACT SAME as working version
     function loadLocalStorageData() {
       console.log('📱 Loading data from localStorage...');
       
       try {
-        // Load questions from multiple possible keys - ROBUST FALLBACK
+        // EXACT SAME key matching as working version
         const questionKeys = ['alm_questions', 'intuity_questions', 'current_question'];
         for (const key of questionKeys) {
           const storedQuestions = localStorage.getItem(key);
@@ -765,7 +762,6 @@
             const parsed = JSON.parse(storedQuestions);
             
             if (Array.isArray(parsed)) {
-              // Merge with existing, avoid duplicates
               parsed.forEach(newQ => {
                 const exists = allQuestions.find(q => 
                   q.id === newQ.id || 
@@ -776,7 +772,6 @@
                 }
               });
             } else if (typeof parsed === 'object' && (parsed.text || parsed.question_text)) {
-              // Single question object
               const exists = allQuestions.find(q => 
                 q.id === parsed.id || 
                 (q.text || q.question_text) === (parsed.text || parsed.question_text)
@@ -788,7 +783,7 @@
           }
         }
 
-        // Load responses from multiple possible keys - ENHANCED ROBUSTNESS
+        // EXACT SAME response key matching as working version
         const responseKeys = ['alm_student_responses', 'intuity_responses', 'student_responses', 'display_responses'];
         
         for (const key of responseKeys) {
@@ -797,7 +792,6 @@
             const parsed = JSON.parse(storedResponses);
             if (Array.isArray(parsed)) {
               parsed.forEach(newResponse => {
-                // Enhanced duplicate checking
                 const exists = allResponses.find(existingResponse => {
                   const nameMatch = (existingResponse.student_name || existingResponse.studentName) === (newResponse.studentName || newResponse.student_name);
                   const answerMatch = existingResponse.answer === newResponse.answer;
@@ -809,7 +803,7 @@
                 });
                 
                 if (!exists) {
-                  // Normalize response format for consistency
+                  // NORMALIZE response format - EXACT same as working version
                   const normalizedResponse = {
                     id: newResponse.id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
                     question_id: newResponse.questionId || newResponse.question_id,
@@ -819,9 +813,8 @@
                     photo_url: newResponse.photoUrl || newResponse.photo_url,
                     created_at: newResponse.timestamp || newResponse.created_at || newResponse.submitted_at,
                     submitted_at: newResponse.submittedAt || newResponse.submitted_at || newResponse.timestamp,
-                    // Keep original for reference
                     questionText: newResponse.questionText,
-                    source: key // Track where it came from
+                    source: key
                   };
                   
                   allResponses.push(normalizedResponse);
@@ -832,7 +825,6 @@
         }
 
         console.log(`📱 Final counts: ${allQuestions.length} questions and ${allResponses.length} responses from localStorage`);
-        
         updateUI();
         
         if (allQuestions.length === 0) {
@@ -855,7 +847,7 @@
       updateResponsesButton();
     }
 
-    // Populate question dropdown - ENHANCED
+    // FIXED - EXACT same as working version
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionDropdown');
       
@@ -876,7 +868,6 @@
         selector.appendChild(option);
       });
 
-      // Auto-select first question if none selected
       if (!currentSelectedQuestion && allQuestions.length > 0) {
         currentSelectedQuestion = allQuestions[0];
         selector.value = currentSelectedQuestion.id || 0;
@@ -886,7 +877,7 @@
       }
     }
 
-    // Get responses for a specific question - ENHANCED MATCHING LOGIC
+    // EXACT same response matching as working version
     function getResponsesForQuestion(question) {
       if (!question) return [];
       
@@ -912,7 +903,7 @@
           return true;
         }
         
-        // Method 4: Index-based fallback for questions without IDs
+        // Method 4: Index-based fallback
         if (typeof question.id === 'undefined' && response.questionId === allQuestions.indexOf(question)) {
           return true;
         }
@@ -921,27 +912,21 @@
       });
     }
 
-    // Update response count
     function updateResponseCount() {
-      const responseCountElement = document.getElementById('responseCount');
-      
       if (!currentSelectedQuestion) {
-        responseCountElement.textContent = '0 Responses';
+        responseCount.textContent = '0 Responses';
         return;
       }
 
       const responses = getResponsesForQuestion(currentSelectedQuestion);
       const count = responses.length;
-      responseCountElement.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+      responseCount.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
     }
 
-    // Update delete button state
     function updateDeleteButton() {
-      const deleteBtn = document.getElementById('deleteBtn');
       deleteBtn.disabled = !currentSelectedQuestion;
     }
 
-    // Update responses button state
     function updateResponsesButton() {
       if (!currentSelectedQuestion) {
         responsesBtn.disabled = true;
@@ -952,7 +937,6 @@
       responsesBtn.disabled = responses.length === 0;
     }
 
-    // Update question display
     function updateQuestionDisplay() {
       if (!currentSelectedQuestion) {
         questionText.innerHTML = '<div class="no-question">Select a question</div>';
@@ -963,7 +947,6 @@
       questionText.textContent = questionStr;
     }
 
-    // Handle question selection change
     function handleQuestionChange() {
       const selector = document.getElementById('questionDropdown');
       const selectedValue = selector.value;
@@ -971,7 +954,6 @@
       if (!selectedValue) {
         currentSelectedQuestion = null;
       } else {
-        // Find the selected question
         currentSelectedQuestion = allQuestions.find(q => 
           q.id == selectedValue || 
           allQuestions.indexOf(q) == selectedValue
@@ -986,7 +968,7 @@
       updateQuestionDisplay();
     }
 
-    // Delete question - ENHANCED
+    // FIXED DELETE FUNCTION - Same as working version
     async function deleteQuestion() {
       if (!currentSelectedQuestion) {
         alert('Please select a question to delete.');
@@ -1005,37 +987,31 @@
 
       try {
         if (isConnected && currentSelectedQuestion.id) {
-          // Delete from Supabase
           const { error } = await supabase
             .from('questions')
             .delete()
             .eq('id', currentSelectedQuestion.id);
 
           if (error) throw error;
-          
           console.log('✅ Question deleted from Supabase');
         }
 
-        // Remove from local arrays
         allQuestions = allQuestions.filter(q => q.id !== currentSelectedQuestion.id);
         allResponses = allResponses.filter(r => 
           r.question_id !== currentSelectedQuestion.id && 
           r.questionId !== currentSelectedQuestion.id
         );
 
-        // Update localStorage
         localStorage.setItem('alm_questions', JSON.stringify(allQuestions));
         localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
 
-        // Reset selection
         const selector = document.getElementById('questionDropdown');
         selector.value = '';
         currentSelectedQuestion = null;
 
-        // Update UI
         updateUI();
         updateResponsesButton();
-      updateQuestionDisplay();
+        updateQuestionDisplay();
 
         showNotification('Question deleted successfully!', 'success');
         
@@ -1050,7 +1026,7 @@
       }
     }
 
-    // Launch Responses Page
+    // FIXED LAUNCH RESPONSES - Exact same data preparation as working version
     function launchResponses() {
       console.log('🔥 RESPONSES button clicked!');
       console.log('Current question:', currentSelectedQuestion);
@@ -1068,7 +1044,7 @@
         return;
       }
       
-      // Prepare data for responses page
+      // EXACT SAME data preparation as working version
       const questionForDisplay = {
         id: currentSelectedQuestion.id,
         text: currentSelectedQuestion.text || currentSelectedQuestion.question_text,
@@ -1088,7 +1064,7 @@
         questionText: questionForDisplay.questionText
       }));
       
-      // Store data for responses page
+      // EXACT SAME localStorage setup as working version
       localStorage.setItem('display_question', JSON.stringify(questionForDisplay));
       localStorage.setItem('display_responses', JSON.stringify(responsesForDisplay));
       localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
@@ -1097,16 +1073,11 @@
       console.log(`🚀 Launching responses page with ${responsesForQuestion.length} responses`);
       showNotification(`Opening responses page with ${responsesForQuestion.length} responses...`, 'success');
       
-      // Navigate to displays page - MULTIPLE FALLBACKS
-      console.log('Attempting to open displays page...');
+      // FIXED PATH - Use correct relative path to displays
       setTimeout(() => {
         try {
           const newWindow = window.open('../displays/', '_blank');
           if (!newWindow || newWindow.closed) {
-            // Fallback attempts
-            window.open('./displays/', '_blank') || 
-            window.open('displays/', '_blank') ||
-            window.open('../displays/index.html', '_blank') ||
             alert('Please navigate to the displays page manually');
           }
           console.log('Displays window opened:', !!newWindow);
@@ -1117,11 +1088,9 @@
       }, 500);
     }
 
-    // Show notification - ENHANCED
     function showNotification(message, type = 'info') {
       console.log(`📢 ${message}`);
       
-      // Remove existing notification
       const existingNotification = document.querySelector('.notification.show');
       if (existingNotification) {
         existingNotification.classList.remove('show');
@@ -1137,9 +1106,8 @@
       }, 3000);
     }
 
-    // Auto-refresh localStorage - ENHANCED MONITORING
+    // FIXED Auto-refresh
     function setupAutoRefresh() {
-      // Monitor localStorage changes
       setInterval(() => {
         const currentResponseCount = allResponses.length;
         loadLocalStorageData();
@@ -1151,7 +1119,6 @@
         }
       }, 5000);
 
-      // Listen for storage events from other tabs
       window.addEventListener('storage', (e) => {
         if (e.key === 'alm_student_responses' || e.key === 'current_question') {
           console.log('🔄 Storage updated from another tab');
@@ -1160,34 +1127,75 @@
       });
     }
 
-    // Initialize when page loads - ENHANCED INITIALIZATION
+    // FIXED - Initialize with presentation modes
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Analytics (Enhanced Minimalist) Loading...');
+      console.log('🚀 INTUITY Analytics (FIXED) Loading...');
       
-      // Update connection status immediately
       connectionStatus.textContent = '● Connecting...';
       connectionStatus.className = 'connection-status';
       
-      // Initialize Supabase
       initSupabase();
-      
-      // Setup auto-refresh
       setupAutoRefresh();
       
-      // Set up event listeners
       questionDropdown.addEventListener('change', handleQuestionChange);
       deleteBtn.addEventListener('click', deleteQuestion);
-      responsesBtn.addEventListener('click', () => {
-        console.log('🎯 RESPONSES button clicked!');
-        console.log('Button disabled?', responsesBtn.disabled);
-        console.log('Current question:', currentSelectedQuestion);
-        if (currentSelectedQuestion) {
-          console.log('Responses for this question:', getResponsesForQuestion(currentSelectedQuestion).length);
-        }
-        launchResponses();
+      responsesBtn.addEventListener('click', launchResponses);
+      
+      // RESTORED PRESENTATION MODES from working version
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!currentSelectedQuestion) {
+            alert('Please select a question first.');
+            return;
+          }
+          
+          // Remove active from all buttons
+          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const mode = this.dataset.mode;
+          const modeName = this.querySelector('.mode-name').textContent;
+          
+          console.log(`🎨 Launching ${mode} presentation mode for question:`, currentSelectedQuestion);
+          showNotification(`Launching ${modeName} mode...`, 'info');
+          
+          // Visual feedback
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'translateY(-2px)';
+            
+            // Store current question and responses in localStorage for displays to access
+            localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
+            localStorage.setItem('display_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
+            localStorage.setItem('current_question', JSON.stringify(currentSelectedQuestion));
+            localStorage.setItem('alm_student_responses', JSON.stringify(getResponsesForQuestion(currentSelectedQuestion)));
+            
+            // Navigate to appropriate display file
+            let displayUrl = '';
+            switch (mode) {
+              case 'mind-map':
+                displayUrl = '../displays/display1.html';
+                break;
+              case 'stacked':
+                displayUrl = '../displays/display2.html';
+                break;
+              case 'floating':
+                displayUrl = '../displays/display3.html';
+                break;
+              case 'cosmos':
+                displayUrl = '../displays/display4.html';
+                break;
+              default:
+                displayUrl = '../displays/';
+            }
+            
+            console.log(`🔗 Opening display: ${displayUrl}`);
+            window.open(displayUrl, '_blank');
+            
+          }, 100);
+        });
       });
       
-      // Manual refresh button
       refreshBtn.addEventListener('click', () => {
         refreshBtn.innerHTML = '⏳';
         refreshBtn.disabled = true;
@@ -1207,7 +1215,6 @@
         }
       });
       
-      // Update connection status display
       setTimeout(() => {
         if (isConnected) {
           connectionStatus.textContent = '● Online';
@@ -1218,7 +1225,7 @@
         }
       }, 2000);
       
-      console.log('✅ Enhanced Analytics Ready!');
+      console.log('✅ FIXED Analytics Ready!');
     });
   </script>
 </body>
