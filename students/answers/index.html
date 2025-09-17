@@ -343,6 +343,30 @@
       font-size: 16px;
     }
 
+    /* CONNECTION STATUS */
+    .connection-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
     /* FOOTER - Matches blueprint exactly */
     .footer {
       margin-top: 40px;
@@ -594,6 +618,9 @@
     </div>
   </div>
 
+  <!-- Connection Status -->
+  <div class="connection-status" id="connectionStatus">Connecting...</div>
+
   <!-- Question Overlay on Background -->
   <div class="question-overlay" id="questionOverlay">
     Loading question...
@@ -700,6 +727,18 @@
       }
     }
 
+    // Update connection status
+    function updateConnectionStatus(connected = isConnected) {
+      const status = document.getElementById('connectionStatus');
+      if (connected) {
+        status.textContent = '● Online';
+        status.className = 'connection-status online';
+      } else {
+        status.textContent = '● Offline';
+        status.className = 'connection-status offline';
+      }
+    }
+
     // Load question
     async function loadQuestion() {
       console.log('🔍 Loading question...');
@@ -721,7 +760,7 @@
         }
         
         // Try to get from Supabase
-        if (supabase) {
+        if (supabase && isConnected) {
           try {
             const { data, error } = await supabase
               .from('questions')
@@ -732,13 +771,13 @@
 
             if (!error && data && data[0]) {
               currentQuestion = data[0];
-              isConnected = true;
               displayQuestion();
               return;
             }
           } catch (dbError) {
             console.warn('Database connection failed:', dbError);
             isConnected = false;
+            updateConnectionStatus(false);
           }
         }
         
@@ -885,7 +924,7 @@
       document.getElementById('photoModal').classList.remove('show');
     }
 
-    // Submit response
+    // Submit response - IMPROVED VERSION
     async function submitResponse() {
       if (isSubmitted) return;
       
@@ -926,12 +965,13 @@
           }
         }
 
-        // Create response object
+        // Create response object - CONSISTENT FORMAT
         const timestamp = new Date().toISOString();
         const questionId = currentQuestion?.id || 'demo';
         const questionText = currentQuestion?.text || currentQuestion?.question_text || 'Demo Question';
         
         const response = {
+          id: 'student_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
           questionId: questionId,
           questionText: questionText,
           studentName: studentName,
@@ -972,12 +1012,25 @@
           }
         }
 
-        // Always save to localStorage
-        const localResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        localResponses.push(response);
-        localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
+        // ALWAYS save to localStorage with CONSISTENT format
+        let existingResponses = [];
+        try {
+          const stored = localStorage.getItem('alm_student_responses');
+          if (stored) {
+            existingResponses = JSON.parse(stored) || [];
+          }
+        } catch (e) {
+          console.warn('Error reading existing responses:', e);
+          existingResponses = [];
+        }
 
-        // Also save in display format
+        // Add new response
+        existingResponses.push(response);
+        
+        // Save back to localStorage
+        localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
+
+        // Also save in display format for immediate viewing
         const displayResponses = JSON.parse(localStorage.getItem('display_responses') || '[]');
         const displayFormat = {
           ...response,
@@ -997,8 +1050,10 @@
           }));
         }
 
-        // Show success
         console.log('✅ Response submitted successfully');
+        console.log('Total responses in localStorage:', existingResponses.length);
+        
+        // Show success
         showSuccess();
         isSubmitted = true;
         
@@ -1037,7 +1092,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Student Interface initializing...');
       
-      // Initialize Supabase
+      // Initialize Supabase and test connection
       const supabaseOk = initSupabase();
       if (supabaseOk) {
         try {
@@ -1051,6 +1106,8 @@
       } else {
         isConnected = false;
       }
+      
+      updateConnectionStatus();
       
       // Load question
       await loadQuestion();
