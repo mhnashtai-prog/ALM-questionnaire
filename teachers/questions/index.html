@@ -57,11 +57,11 @@
       height: 400px;
       top: -100px;
       right: -50px;
-      transform: rotate(30deg);
-      border: 2px solid rgba(255, 140, 60, 0.7);
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
-      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
-      opacity: 0.9;
+      transform: rotate(8deg);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
+      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
+      opacity: 0.4;
       animation: float 8s ease-in-out infinite;
     }
 
@@ -70,11 +70,11 @@
       height: 300px;
       bottom: -80px;
       left: -30px;
-      transform: rotate(-20deg);
-      border: 1px solid rgba(255, 100, 40, 0.5);
-      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
-      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
-      opacity: 0.7;
+      transform: rotate(-5deg);
+      border: 1px solid rgba(255, 100, 40, 0.2);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
+      opacity: 0.3;
       animation: float 10s ease-in-out infinite reverse;
     }
 
@@ -83,11 +83,11 @@
       height: 250px;
       top: 40%;
       right: 10%;
-      transform: rotate(60deg);
-      border: 1px solid rgba(255, 160, 80, 0.4);
-      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
-      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
-      opacity: 0.5;
+      transform: rotate(12deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
+      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
+      opacity: 0.25;
       animation: drift 6s ease-in-out infinite;
     }
 
@@ -96,11 +96,11 @@
       height: 160px;
       top: 20%;
       left: 20%;
-      transform: rotate(-45deg);
-      border: 1px solid rgba(255, 120, 50, 0.3);
-      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
-      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
-      opacity: 0.3;
+      transform: rotate(-10deg);
+      border: 1px solid rgba(255, 120, 50, 0.15);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
+      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
+      opacity: 0.2;
       animation: pulse 12s ease-in-out infinite;
     }
 
@@ -109,37 +109,37 @@
       height: 360px;
       bottom: 10%;
       right: 15%;
-      transform: rotate(15deg);
-      border: 1.5px solid rgba(255, 140, 60, 0.6);
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
-      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
-      opacity: 0.8;
+      transform: rotate(6deg);
+      border: 1px solid rgba(255, 140, 60, 0.25);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
+      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
+      opacity: 0.35;
       animation: float 9s ease-in-out infinite reverse;
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); opacity: var(--base-opacity, 0.5); }
-      33% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 1deg)); opacity: calc(var(--base-opacity, 0.5) * 1.2); }
-      66% { transform: translateY(-4px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); opacity: calc(var(--base-opacity, 0.5) * 0.8); }
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: var(--base-opacity, 0.3); transform: scale(1); }
-      50% { opacity: calc(var(--base-opacity, 0.3) * 1.5); transform: scale(1.02); }
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
     }
 
     @keyframes drift {
-      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotation, 0deg)); }
-      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotation, 0deg) + 1deg)); }
-      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); }
-      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotation, 0deg) + 0.8deg)); }
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
     }
 
-    .curve1 { --base-opacity: 0.9; --rotation: 30deg; }
-    .curve2 { --base-opacity: 0.7; --rotation: -20deg; }
-    .curve3 { --base-opacity: 0.5; --rotation: 60deg; }
-    .curve4 { --base-opacity: 0.3; --rotation: -45deg; }
-    .curve5 { --base-opacity: 0.8; --rotation: 15deg; }
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
 
     .container {
       position: relative;
@@ -175,12 +175,11 @@
     .main-content {
       flex: 1;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
       padding-bottom: 140px;
     }
 
-    /* SINGLE BLACK BOX - Matches all other components */
     .question-container {
       width: 100%;
       height: 5cm;
@@ -196,8 +195,7 @@
       border-radius: 20px;
       border: none;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
@@ -207,19 +205,15 @@
       transform: translateY(-2px);
     }
 
-    /* CONTENT AREA - Simple layout */
     .content-area {
-      width: 100%;
-      height: 100%;
+      flex: 1;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       padding: 20px;
     }
 
     .question-input {
-      width: 100%;
-      height: 100%;
+      flex: 1;
       background: transparent;
       border: none;
       color: #fff;
@@ -239,6 +233,99 @@
 
     .question-input:focus {
       color: #fff;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .action-buttons.show {
+      opacity: 1;
+    }
+
+    .action-btn {
+      background: rgba(255, 140, 60, 0.6);
+      border: none;
+      border-radius: 12px;
+      padding: 8px 16px;
+      color: #000;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 140, 60, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .action-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 140, 60, 0.9);
+      display: none;
+    }
+
+    .action-btn.secondary.show {
+      display: block;
+    }
+
+    .action-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 140, 60, 1);
+    }
+
+    .footer {
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
     }
 
     .success-notification {
@@ -261,7 +348,7 @@
       min-width: 300px;
     }
 
-    .success-notification .icon {
+    .success-icon {
       font-size: 48px;
       margin-bottom: 15px;
       display: block;
@@ -272,75 +359,7 @@
       to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 
-    /* SUBTLE FOOTER - Circular icon buttons */
-    .footer {
-      margin-top: 40px;
-      background: rgba(64, 64, 64, 0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 25px;
-      padding: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .footer-button {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
-    }
-
-    .footer-button:hover {
-      background: rgba(255, 140, 60, 0.2);
-      color: #fff;
-      transform: scale(1.1);
-    }
-
-    .footer-button:active {
-      transform: scale(0.95);
-    }
-
-    .footer-button.primary {
-      background: rgba(255, 140, 60, 0.2);
-      color: rgba(255, 140, 60, 1);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-    }
-
-    .footer-button.primary:hover {
-      background: rgba(255, 140, 60, 0.3);
-      color: #fff;
-      border-color: rgba(255, 140, 60, 0.5);
-      transform: scale(1.1);
-    }
-
-    .footer-button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .loading {
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* QR Modal */
-    .modal {
+    .qr-modal {
       position: fixed;
       top: 0;
       left: 0;
@@ -354,7 +373,7 @@
       backdrop-filter: blur(10px);
     }
 
-    .modal-content {
+    .qr-modal-content {
       background: rgba(0, 0, 0, 0.9);
       border: 2px solid rgba(255, 140, 60, 0.5);
       border-radius: 20px;
@@ -365,7 +384,7 @@
       margin: 20px;
     }
 
-    .modal h3 {
+    .qr-modal h3 {
       margin-bottom: 20px;
       color: #fff;
       font-size: 20px;
@@ -394,7 +413,7 @@
     }
 
     .close-btn {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.8), rgba(255, 100, 40, 0.8));
+      background: rgba(255, 140, 60, 0.8);
       border: none;
       border-radius: 12px;
       padding: 12px 24px;
@@ -406,11 +425,10 @@
     }
 
     .close-btn:hover {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 1), rgba(255, 100, 40, 1));
+      background: rgba(255, 140, 60, 1);
       transform: scale(1.05);
     }
 
-    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -432,24 +450,13 @@
         font-size: 15px;
       }
       
-      .footer {
-        padding: 12px;
+      .action-buttons {
+        gap: 10px;
       }
       
-      .footer-button {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-      }
-      
-      .modal-content {
-        margin: 15px;
-        padding: 25px;
-      }
-      
-      .qr-display {
-        width: 240px;
-        height: 240px;
+      .action-btn {
+        padding: 6px 12px;
+        font-size: 11px;
       }
     }
   </style>
@@ -468,7 +475,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Intuitive Learning<br>By Majid Nashtai</p>
+      <p>Create Question<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
@@ -480,60 +487,55 @@
               id="questionInput"
               placeholder="What would you like to ask your students?"
             ></textarea>
+            
+            <div class="action-buttons" id="actionButtons">
+              <button class="action-btn" id="publishBtn" disabled>Publish</button>
+              <button class="action-btn secondary" id="qrBtn">QR Code</button>
+            </div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- SUBTLE FOOTER - Just icons with tooltips -->
     <footer class="footer">
-      <button class="footer-button" id="clearBtn" title="Clear">🗑️</button>
-      <button class="footer-button primary" id="publishBtn" disabled title="Publish">📤</button>
-      <button class="footer-button" id="shareBtn" title="Share Link">🔗</button>
-      <button class="footer-button" id="qrBtn" title="QR Code">📱</button>
-      <button class="footer-button" id="analyticsBtn" title="Analytics">📊</button>
+      <a href="../../index.html" class="nav-button" title="Home">⌂</a>
+      <button class="nav-button" id="nextQuestionBtn" title="Next Question">+</button>
+      <a href="../../visualisation/" class="nav-button" title="Analytics">📊</a>
     </footer>
   </div>
 
-  <!-- Success Notification -->
   <div class="success-notification" id="successNotification">
-    <span class="icon">✨</span>
-    <div>Question Published Successfully!</div>
+    <span class="success-icon">✨</span>
+    <div>Question Published!</div>
     <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
       Students can now access your question.
     </div>
   </div>
 
-  <!-- QR Modal -->
-  <div id="qrModal" class="modal">
-    <div class="modal-content">
-      <h3>📱 Student QR Code</h3>
-      
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-content">
+      <h3>Student QR Code</h3>
       <div id="qrDisplay" class="qr-display">
-        <div>🔄 Generating QR Code...</div>
+        <div>Generating QR Code...</div>
       </div>
-      
       <button class="close-btn" onclick="closeQRModal()">Close</button>
     </div>
   </div>
 
   <script>
-    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Global variables
     let supabase;
     let currentQuestion = null;
     let isConnected = false;
+    let isPublished = false;
 
-    // Initialize Supabase
     async function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
         
-        // Test connection
         const { data, error } = await supabase.from('questions').select('count').limit(1);
         if (error) throw error;
         
@@ -547,45 +549,40 @@
       }
     }
 
-    // Handle question input
     function handleQuestionInput() {
       const input = document.getElementById('questionInput');
       const publishBtn = document.getElementById('publishBtn');
+      const actionButtons = document.getElementById('actionButtons');
 
       const text = input.value.trim();
       
-      // Simple validation - just check if there's any text
-      if (text.length > 0) {
+      if (text.length > 0 && !isPublished) {
         publishBtn.disabled = false;
-      } else {
+        actionButtons.classList.add('show');
+      } else if (!isPublished) {
         publishBtn.disabled = true;
+        actionButtons.classList.remove('show');
       }
     }
 
-    // Publish question
     async function publishQuestion() {
       const questionText = document.getElementById('questionInput').value.trim();
       
-      if (!questionText) {
-        alert('Please write a question first.');
-        return;
-      }
+      if (!questionText) return;
 
       const publishBtn = document.getElementById('publishBtn');
-      const originalContent = publishBtn.innerHTML;
+      const qrBtn = document.getElementById('qrBtn');
       
       publishBtn.innerHTML = '⏳';
       publishBtn.disabled = true;
 
       try {
         if (isConnected) {
-          // Unpublish any existing questions first
           await supabase
             .from('questions')
             .update({ is_published: false })
             .eq('is_published', true);
 
-          // Insert new question
           const { data, error } = await supabase
             .from('questions')
             .insert([{
@@ -603,7 +600,6 @@
           if (error) throw error;
           currentQuestion = data[0];
         } else {
-          // Fallback to localStorage
           currentQuestion = {
             id: Date.now(),
             text: questionText,
@@ -613,22 +609,20 @@
         }
 
         console.log('✅ Question published:', currentQuestion);
+        
+        isPublished = true;
+        publishBtn.innerHTML = '✓ Published';
+        qrBtn.classList.add('show');
+        
         showSuccessNotification();
 
       } catch (error) {
         console.error('❌ Error publishing question:', error);
-        alert(`Failed to publish question: ${error.message}`);
-      } finally {
-        setTimeout(() => {
-          publishBtn.innerHTML = originalContent;
-          if (document.getElementById('questionInput').value.trim().length > 0) {
-            publishBtn.disabled = false;
-          }
-        }, 1000);
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = false;
       }
     }
 
-    // Show success notification
     function showSuccessNotification() {
       const notification = document.getElementById('successNotification');
       notification.style.display = 'block';
@@ -638,54 +632,43 @@
       }, 3000);
     }
 
-    // Clear question
-    function clearQuestion() {
-      if (confirm('Clear the current question?')) {
+    function nextQuestion() {
+      if (confirm('Start a new question? This will clear the current one.')) {
         document.getElementById('questionInput').value = '';
-        handleQuestionInput();
+        document.getElementById('questionInput').placeholder = 'What would you like to ask your students?';
+        
+        const publishBtn = document.getElementById('publishBtn');
+        const qrBtn = document.getElementById('qrBtn');
+        const actionButtons = document.getElementById('actionButtons');
+        
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = true;
+        qrBtn.classList.remove('show');
+        actionButtons.classList.remove('show');
+        
+        isPublished = false;
+        currentQuestion = null;
+        
         document.getElementById('questionInput').focus();
       }
     }
 
-    // Share student link
-    function shareStudentLink() {
-      const baseURL = window.location.origin;
-      const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); // remove current file
-      pathParts.pop(); // remove 'questions'
-      pathParts.pop(); // remove 'teachers'
-      pathParts.push('students', 'answers', '');
-      const studentURL = baseURL + pathParts.join('/');
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(studentURL).then(() => {
-          alert('Student link copied to clipboard!');
-        }).catch(() => {
-          prompt('Copy this link:', studentURL);
-        });
-      } else {
-        prompt('Copy this link:', studentURL);
-      }
-    }
-
-    // Generate QR Code
     function generateQR() {
+      if (!currentQuestion) return;
+      
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
       
       modal.style.display = 'flex';
-      display.innerHTML = '<div>🔄 Generating QR Code...</div>';
+      display.innerHTML = '<div>Generating QR Code...</div>';
       
-      // Generate student URL
       const baseURL = window.location.origin;
       const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); // remove current file
-      pathParts.pop(); // remove 'questions'
-      pathParts.pop(); // remove 'teachers'
+      pathParts.pop(); 
+      pathParts.pop(); 
       pathParts.push('students', 'answers', '');
       const studentURL = baseURL + pathParts.join('/');
       
-      // Generate QR code
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
       
       const img = new Image();
@@ -706,50 +689,29 @@
       img.src = qrCodeURL;
     }
 
-    // Close QR modal
     function closeQRModal() {
       document.getElementById('qrModal').style.display = 'none';
     }
 
-    // Open analytics
-    function openAnalytics() {
-      const baseURL = window.location.origin;
-      const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); // remove current file
-      pathParts.pop(); // remove 'questions'
-      pathParts.pop(); // remove 'teachers'
-      pathParts.push('visualisation', '');
-      const analyticsURL = baseURL + pathParts.join('/');
-      
-      window.open(analyticsURL, '_blank');
-    }
-
-    // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Teacher Question Creator initializing...');
       
-      // Initialize Supabase
       await initSupabase();
       
-      // Set up event listeners
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
       questionInput.focus();
       
       document.getElementById('publishBtn').addEventListener('click', publishQuestion);
-      document.getElementById('clearBtn').addEventListener('click', clearQuestion);
-      document.getElementById('shareBtn').addEventListener('click', shareStudentLink);
       document.getElementById('qrBtn').addEventListener('click', generateQR);
-      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
+      document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
       
-      // Modal click outside to close
       document.getElementById('qrModal').addEventListener('click', (e) => {
         if (e.target.id === 'qrModal') {
           closeQRModal();
         }
       });
 
-      // Keyboard shortcuts
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           if (!document.getElementById('publishBtn').disabled) {
