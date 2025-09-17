@@ -1052,12 +1052,17 @@
 
     // Launch Responses Page
     function launchResponses() {
+      console.log('🔥 RESPONSES button clicked!');
+      console.log('Current question:', currentSelectedQuestion);
+      
       if (!currentSelectedQuestion) {
         showNotification('Please select a question first', 'error');
         return;
       }
       
       const responsesForQuestion = getResponsesForQuestion(currentSelectedQuestion);
+      console.log('Responses found:', responsesForQuestion.length);
+      
       if (responsesForQuestion.length === 0) {
         showNotification('No responses for this question', 'error');
         return;
@@ -1092,9 +1097,23 @@
       console.log(`🚀 Launching responses page with ${responsesForQuestion.length} responses`);
       showNotification(`Opening responses page with ${responsesForQuestion.length} responses...`, 'success');
       
-      // Navigate to displays page
+      // Navigate to displays page - MULTIPLE FALLBACKS
+      console.log('Attempting to open displays page...');
       setTimeout(() => {
-        window.open('../displays/', '_blank');
+        try {
+          const newWindow = window.open('../displays/', '_blank');
+          if (!newWindow || newWindow.closed) {
+            // Fallback attempts
+            window.open('./displays/', '_blank') || 
+            window.open('displays/', '_blank') ||
+            window.open('../displays/index.html', '_blank') ||
+            alert('Please navigate to the displays page manually');
+          }
+          console.log('Displays window opened:', !!newWindow);
+        } catch (error) {
+          console.error('Error opening displays:', error);
+          alert('Could not open displays page. Please check the file path.');
+        }
       }, 500);
     }
 
@@ -1158,7 +1177,15 @@
       // Set up event listeners
       questionDropdown.addEventListener('change', handleQuestionChange);
       deleteBtn.addEventListener('click', deleteQuestion);
-      responsesBtn.addEventListener('click', launchResponses);
+      responsesBtn.addEventListener('click', () => {
+        console.log('🎯 RESPONSES button clicked!');
+        console.log('Button disabled?', responsesBtn.disabled);
+        console.log('Current question:', currentSelectedQuestion);
+        if (currentSelectedQuestion) {
+          console.log('Responses for this question:', getResponsesForQuestion(currentSelectedQuestion).length);
+        }
+        launchResponses();
+      });
       
       // Manual refresh button
       refreshBtn.addEventListener('click', () => {
