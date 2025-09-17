@@ -154,7 +154,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Question Overlay on Background */
+    /* Question Overlay - matches blueprint */
     .question-overlay {
       position: absolute;
       top: 25%;
@@ -180,6 +180,7 @@
       padding-bottom: 140px;
     }
 
+    /* SINGLE BLACK BOX - Matches carousel exactly */
     .response-container {
       width: 100%;
       height: 5cm;
@@ -205,78 +206,78 @@
       transform: translateY(-2px);
     }
 
-    /* Header inside black box */
-    .response-header {
+    /* CONTENT AREA - Simple layout */
+    .content-area {
+      width: 100%;
+      height: 100%;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    /* NAME INPUT - Simple, clean */
+    .name-section {
+      display: flex;
       align-items: center;
-      padding: 20px 20px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      gap: 15px;
+      margin-bottom: 20px;
     }
 
     .name-input {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 12px 16px;
+      flex: 1;
+      background: transparent;
+      border: none;
       color: #fff;
       font-size: 16px;
-      outline: none;
-      transition: all 0.3s ease;
       font-family: inherit;
-      width: 60%;
+      outline: none;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
     }
 
     .name-input:focus {
-      border-color: rgba(255, 140, 60, 0.6);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
+      border-bottom-color: rgba(255, 140, 60, 0.6);
     }
 
     .name-input::placeholder {
       color: rgba(255, 255, 255, 0.4);
+      font-style: italic;
     }
 
-    .photo-trigger {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.8), rgba(255, 100, 40, 0.8));
-      border: 2px solid rgba(255, 140, 60, 0.9);
-      border-radius: 12px;
-      padding: 12px 20px;
-      color: #000;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 140, 60, 0.3);
+    /* CAMERA ICON - Brick color, no text */
+    .camera-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255, 140, 60, 0.8);
       display: flex;
       align-items: center;
-      gap: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 18px;
+      color: #000;
+      flex-shrink: 0;
     }
 
-    .photo-trigger:hover {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 1), rgba(255, 100, 40, 1));
-      border-color: rgba(255, 140, 60, 1);
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.5);
+    .camera-icon:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
     }
 
-    .photo-trigger.has-photo {
-      background: linear-gradient(45deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8));
-      border-color: rgba(16, 185, 129, 0.9);
+    .camera-icon.has-photo {
+      background: rgba(16, 185, 129, 0.8);
       color: #000;
     }
 
-    .photo-trigger.has-photo:hover {
-      background: linear-gradient(45deg, rgba(16, 185, 129, 1), rgba(5, 150, 105, 1));
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+    .camera-icon.has-photo:hover {
+      background: rgba(16, 185, 129, 1);
     }
 
-    /* Answer area gets prominence */
+    /* ANSWER AREA - Takes up most of the space */
     .answer-area {
       flex: 1;
-      padding: 20px;
       display: flex;
       flex-direction: column;
     }
@@ -286,7 +287,7 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 18px;
+      font-size: 16px;
       font-family: inherit;
       outline: none;
       resize: none;
@@ -303,41 +304,46 @@
       color: #fff;
     }
 
-    /* Status bar */
-    .status-bar {
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
+    /* SUCCESS STATE - Simple overlay */
+    .success-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 20;
+      display: none;
       align-items: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      justify-content: center;
+      text-align: center;
+      border-radius: 20px;
     }
 
-    .word-counter {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-      font-weight: 500;
+    .success-content {
+      color: #fff;
     }
 
-    .word-counter.has-words {
-      color: rgba(255, 140, 60, 0.8);
+    .success-icon {
+      font-size: 48px;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 20px;
     }
 
-    .validation-status {
-      color: rgba(16, 185, 129, 0.8);
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    .success-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 15px;
     }
 
-    .validation-status.show {
-      opacity: 1;
+    .success-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 16px;
     }
 
-    .validation-status.error {
-      color: rgba(239, 68, 68, 0.8);
-    }
-
+    /* FOOTER - Matches blueprint exactly */
     .footer {
       margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
@@ -384,13 +390,13 @@
     }
 
     .nav-button.primary {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.8), rgba(255, 100, 40, 0.8));
-      color: #000;
-      font-weight: 600;
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
     }
 
     .nav-button.primary:hover {
-      background: linear-gradient(45deg, rgba(255, 140, 60, 1), rgba(255, 100, 40, 1));
+      background: rgba(255, 140, 60, 0.3);
+      color: #fff;
       transform: scale(1.1);
     }
 
@@ -401,46 +407,7 @@
       transform: none;
     }
 
-    /* Success State */
-    .success-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 20;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      border-radius: 20px;
-    }
-
-    .success-content {
-      color: #fff;
-    }
-
-    .success-icon {
-      font-size: 48px;
-      color: rgba(16, 185, 129, 0.9);
-      margin-bottom: 20px;
-    }
-
-    .success-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: rgba(16, 185, 129, 0.9);
-      margin-bottom: 15px;
-    }
-
-    .success-text {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 16px;
-    }
-
-    /* Animations */
+    /* ANIMATIONS - Same as blueprint */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
@@ -466,7 +433,7 @@
     .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Photo Modal */
+    /* Photo Modal - Simplified */
     .photo-modal {
       position: fixed;
       top: 0;
@@ -506,21 +473,21 @@
     }
 
     .photo-modal-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
       border-radius: 8px;
       padding: 8px;
-      color: white;
+      color: #000;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
 
     .photo-modal-btn:hover {
-      background: rgba(255, 140, 60, 0.2);
+      background: rgba(255, 140, 60, 1);
     }
 
-    /* Camera Preview */
+    /* Camera Preview - Simplified */
     .camera-preview {
       position: fixed;
       top: 0;
@@ -591,23 +558,25 @@
         max-width: 90%;
       }
       
-      .response-header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: stretch;
+      .response-container {
+        height: 4cm;
+      }
+      
+      .content-area {
+        padding: 15px;
       }
       
       .name-input {
-        width: 100%;
-      }
-      
-      .photo-trigger {
-        padding: 12px 20px;
-        font-size: 14px;
-        justify-content: center;
+        font-size: 15px;
       }
       
       .answer-input {
+        font-size: 15px;
+      }
+      
+      .camera-icon {
+        width: 35px;
+        height: 35px;
         font-size: 16px;
       }
     }
@@ -640,31 +609,27 @@
       <div class="response-container">
         <div class="response-box">
           
-          <!-- Header with Name and Photo -->
-          <div class="response-header">
-            <input 
-              type="text" 
-              class="name-input" 
-              id="studentName"
-              placeholder="Enter your name..."
-              maxlength="50"
-            />
-            <div class="photo-trigger" id="photoTrigger">📸 Photo</div>
-          </div>
-          
-          <!-- Answer Area - Gets Prominence -->
-          <div class="answer-area">
-            <textarea 
-              class="answer-input" 
-              id="studentAnswer"
-              placeholder="Share your thoughts here..."
-            ></textarea>
-          </div>
-          
-          <!-- Status Bar -->
-          <div class="status-bar">
-            <div class="word-counter" id="wordCounter">0 words</div>
-            <div class="validation-status" id="validationStatus">Ready to submit!</div>
+          <div class="content-area">
+            <!-- Name and Camera Section -->
+            <div class="name-section">
+              <input 
+                type="text" 
+                class="name-input" 
+                id="studentName"
+                placeholder="Your name..."
+                maxlength="50"
+              />
+              <div class="camera-icon" id="cameraIcon">📸</div>
+            </div>
+            
+            <!-- Answer Area -->
+            <div class="answer-area">
+              <textarea 
+                class="answer-input" 
+                id="studentAnswer"
+                placeholder="Your answer..."
+              ></textarea>
+            </div>
           </div>
           
           <!-- Success Overlay -->
@@ -690,9 +655,9 @@
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-content">
       <div class="photo-modal-controls">
-        <button class="photo-modal-btn" id="retakeBtn" title="Retake">📷</button>
-        <button class="photo-modal-btn" id="removePhotoBtn" title="Remove">🗑️</button>
-        <button class="photo-modal-btn" id="closeModalBtn" title="Close">✕</button>
+        <button class="photo-modal-btn" id="retakeBtn">📷</button>
+        <button class="photo-modal-btn" id="removePhotoBtn">🗑️</button>
+        <button class="photo-modal-btn" id="closeModalBtn">✕</button>
       </div>
       <img id="photoModalImg" />
     </div>
@@ -720,8 +685,8 @@
     let currentQuestion = null;
     let currentPhoto = null;
     let cameraStream = null;
-    let wordCount = 0;
     let isSubmitted = false;
+    let isConnected = false;
 
     // Initialize Supabase
     function initSupabase() {
@@ -757,17 +722,36 @@
         
         // Try to get from Supabase
         if (supabase) {
-          const { data, error } = await supabase
-            .from('questions')
-            .select('*')
-            .eq('is_published', true)
-            .order('published_at', { ascending: false })
-            .limit(1);
+          try {
+            const { data, error } = await supabase
+              .from('questions')
+              .select('*')
+              .eq('is_published', true)
+              .order('published_at', { ascending: false })
+              .limit(1);
 
-          if (!error && data && data[0]) {
-            currentQuestion = data[0];
+            if (!error && data && data[0]) {
+              currentQuestion = data[0];
+              isConnected = true;
+              displayQuestion();
+              return;
+            }
+          } catch (dbError) {
+            console.warn('Database connection failed:', dbError);
+            isConnected = false;
+          }
+        }
+        
+        // Try localStorage
+        const storedQuestion = localStorage.getItem('current_question');
+        if (storedQuestion) {
+          try {
+            const parsed = JSON.parse(storedQuestion);
+            currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
             displayQuestion();
             return;
+          } catch (parseError) {
+            console.warn('Error parsing stored question:', parseError);
           }
         }
         
@@ -783,8 +767,8 @@
     // Display question on background overlay
     function displayQuestion() {
       const questionOverlay = document.getElementById('questionOverlay');
-      if (currentQuestion && currentQuestion.text) {
-        questionOverlay.textContent = currentQuestion.text;
+      if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
+        questionOverlay.textContent = currentQuestion.text || currentQuestion.question_text;
       } else {
         showDemoQuestion();
       }
@@ -794,6 +778,12 @@
     function showDemoQuestion() {
       const questionOverlay = document.getElementById('questionOverlay');
       questionOverlay.textContent = 'Demo: What would you like to learn today?';
+      
+      currentQuestion = {
+        id: 'demo',
+        text: 'Demo: What would you like to learn today?',
+        source: 'demo'
+      };
     }
 
     // Handle input changes
@@ -801,53 +791,20 @@
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
       const submitBtn = document.getElementById('submitBtn');
-      const validationStatus = document.getElementById('validationStatus');
       
       const name = nameInput.value.trim();
       const answer = answerInput.value.trim();
       
-      // Count words
-      const words = answer ? answer.split(/\s+/).filter(word => word.length > 0) : [];
-      wordCount = words.length;
-      updateWordCounter();
-      
-      // Validation
-      if (name && wordCount > 0) {
+      // Simple validation - just check if both fields have content
+      if (name && answer) {
         submitBtn.disabled = false;
-        validationStatus.textContent = 'Ready to submit!';
-        validationStatus.classList.remove('error');
-        validationStatus.classList.add('show');
       } else {
         submitBtn.disabled = true;
-        if (!name && wordCount === 0) {
-          validationStatus.classList.remove('show');
-        } else if (!name) {
-          validationStatus.textContent = 'Please enter your name';
-          validationStatus.classList.add('error');
-          validationStatus.classList.add('show');
-        } else {
-          validationStatus.textContent = 'Please write your response';
-          validationStatus.classList.add('error');
-          validationStatus.classList.add('show');
-        }
-      }
-    }
-
-    // Update word counter
-    function updateWordCounter() {
-      const wordCounter = document.getElementById('wordCounter');
-      
-      if (wordCount === 0) {
-        wordCounter.textContent = 'No words yet';
-        wordCounter.classList.remove('has-words');
-      } else {
-        wordCounter.textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
-        wordCounter.classList.add('has-words');
       }
     }
 
     // Photo functions
-    function handlePhotoTrigger() {
+    function handleCameraClick() {
       if (currentPhoto) {
         showPhotoModal();
       } else {
@@ -905,9 +862,9 @@
 
     function setPhoto(photoBlob) {
       currentPhoto = photoBlob;
-      const trigger = document.getElementById('photoTrigger');
-      trigger.textContent = '✨ Added';
-      trigger.classList.add('has-photo');
+      const icon = document.getElementById('cameraIcon');
+      icon.textContent = '✓';
+      icon.classList.add('has-photo');
     }
 
     function showPhotoModal() {
@@ -922,9 +879,9 @@
 
     function removePhoto() {
       currentPhoto = null;
-      const trigger = document.getElementById('photoTrigger');
-      trigger.textContent = '📸 Photo';
-      trigger.classList.remove('has-photo');
+      const icon = document.getElementById('cameraIcon');
+      icon.textContent = '📸';
+      icon.classList.remove('has-photo');
       document.getElementById('photoModal').classList.remove('show');
     }
 
@@ -939,9 +896,8 @@
       const studentName = nameInput.value.trim();
       const studentAnswer = answerInput.value.trim();
       
-      if (!studentName || wordCount === 0) {
-        alert('Please complete all fields.');
-        return;
+      if (!studentName || !studentAnswer) {
+        return; // Button should be disabled anyway
       }
 
       // Show loading
@@ -952,54 +908,103 @@
         let photoUrl = null;
         
         // Upload photo if exists
-        if (currentPhoto && supabase) {
-          const fileName = `student-photos/${Date.now()}.jpg`;
-          const { data, error } = await supabase.storage
-            .from('student-responses')
-            .upload(fileName, currentPhoto);
-
-          if (!error) {
-            const { data: urlData } = supabase.storage
+        if (currentPhoto && supabase && isConnected) {
+          try {
+            const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+            const { data, error } = await supabase.storage
               .from('student-responses')
-              .getPublicUrl(fileName);
-            photoUrl = urlData.publicUrl;
+              .upload(fileName, currentPhoto);
+
+            if (!error) {
+              const { data: urlData } = supabase.storage
+                .from('student-responses')
+                .getPublicUrl(fileName);
+              photoUrl = urlData.publicUrl;
+            }
+          } catch (photoError) {
+            console.warn('Photo upload failed:', photoError);
           }
         }
 
         // Create response object
+        const timestamp = new Date().toISOString();
+        const questionId = currentQuestion?.id || 'demo';
+        const questionText = currentQuestion?.text || currentQuestion?.question_text || 'Demo Question';
+        
         const response = {
-          questionId: currentQuestion?.id || 'demo',
-          questionText: currentQuestion?.text || 'Demo Question',
+          questionId: questionId,
+          questionText: questionText,
           studentName: studentName,
           answer: studentAnswer,
-          wordCount: wordCount,
-          timestamp: new Date().toISOString(),
+          wordCount: studentAnswer.split(/\s+/).filter(word => word.length > 0).length,
+          timestamp: timestamp,
           photoUrl: photoUrl
         };
 
+        console.log('Submitting response:', response);
+
         // Submit to Supabase if available
-        if (supabase && currentQuestion?.id !== 'demo') {
-          await supabase.from('student_responses').insert([{
-            question_id: response.questionId,
-            student_name: response.studentName,
-            answer: response.answer,
-            word_count: response.wordCount,
-            photo_url: response.photoUrl,
-            metadata: {
-              timestamp: response.timestamp,
-              photo_url: response.photoUrl
+        let dbSuccess = false;
+        if (supabase && isConnected && questionId !== 'demo') {
+          try {
+            const { data, error } = await supabase
+              .from('student_responses')
+              .insert([{
+                question_id: questionId,
+                student_name: studentName,
+                answer: studentAnswer,
+                word_count: response.wordCount,
+                photo_url: photoUrl,
+                metadata: {
+                  timestamp: timestamp,
+                  question_text: questionText
+                }
+              }]);
+
+            if (error) {
+              console.warn('Database submission failed:', error);
+            } else {
+              console.log('✅ Response saved to database');
+              dbSuccess = true;
             }
-          }]);
+          } catch (dbError) {
+            console.warn('Database error:', dbError);
+          }
+        }
+
+        // Always save to localStorage
+        const localResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        localResponses.push(response);
+        localStorage.setItem('alm_student_responses', JSON.stringify(localResponses));
+
+        // Also save in display format
+        const displayResponses = JSON.parse(localStorage.getItem('display_responses') || '[]');
+        const displayFormat = {
+          ...response,
+          student_name: response.studentName,
+          created_at: response.timestamp,
+          question_id: response.questionId
+        };
+        displayResponses.unshift(displayFormat);
+        localStorage.setItem('display_responses', JSON.stringify(displayResponses));
+
+        // Update current question
+        if (currentQuestion) {
+          localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+          localStorage.setItem('display_question', JSON.stringify({
+            ...currentQuestion,
+            questionText: questionText
+          }));
         }
 
         // Show success
+        console.log('✅ Response submitted successfully');
         showSuccess();
         isSubmitted = true;
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
-        alert('Response saved! It will be submitted when connection is restored.');
-        showSuccess();
+        showSuccess(); // Still show success - it's saved locally
         isSubmitted = true;
       }
     }
@@ -1023,8 +1028,6 @@
       if (confirm('Clear your response?')) {
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
-        wordCount = 0;
-        updateWordCounter();
         removePhoto();
         handleInput();
       }
@@ -1035,7 +1038,19 @@
       console.log('🚀 INTUITY Student Interface initializing...');
       
       // Initialize Supabase
-      initSupabase();
+      const supabaseOk = initSupabase();
+      if (supabaseOk) {
+        try {
+          const { data } = await supabase.from('questions').select('count').limit(1);
+          isConnected = true;
+          console.log('✅ Database connection verified');
+        } catch (error) {
+          isConnected = false;
+          console.warn('⚠️ Database connection failed, using offline mode');
+        }
+      } else {
+        isConnected = false;
+      }
       
       // Load question
       await loadQuestion();
@@ -1046,8 +1061,8 @@
       document.getElementById('submitBtn').addEventListener('click', submitResponse);
       document.getElementById('clearBtn').addEventListener('click', clearForm);
       
-      // Photo event listeners
-      document.getElementById('photoTrigger').addEventListener('click', handlePhotoTrigger);
+      // Camera event listeners
+      document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
       document.getElementById('captureBtn').addEventListener('click', capturePhoto);
       document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
       document.getElementById('retakeBtn').addEventListener('click', () => {
