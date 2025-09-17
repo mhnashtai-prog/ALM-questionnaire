@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MINIMAL TEST - Student Response</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 40px; 
+            background: #f0f0f0; 
+        }
+        .container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        input, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 15px 0; 
+            display: none;
+        }
+        .debug { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 15px 0; 
+            font-family: monospace; 
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 MINIMAL TEST - Student Response</h1>
+        <p>This is a simplified version to test data flow.</p>
+        
+        <div>
+            <label>Your Name:</label>
+            <input type="text" id="studentName" placeholder="Enter your name" />
+        </div>
+        
+        <div>
+            <label>Your Answer:</label>
+            <textarea id="studentAnswer" placeholder="Enter your answer" rows="4"></textarea>
+        </div>
+        
+        <button id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
+        
+        <div class="success" id="successMsg">
+            ✅ Response submitted successfully!
+        </div>
+        
+        <div class="debug" id="debugOutput">
+            Debug info will appear here...
+        </div>
+        
+        <hr>
+        <h3>Debug Tools</h3>
+        <button onclick="checkLocalStorage()">Check LocalStorage</button>
+        <button onclick="clearData()">Clear All Data</button>
+        <button onclick="testLocalStorage()">Test LocalStorage</button>
+    </div>
+
+    <script>
+        console.log('🧪 MINIMAL TEST VERSION LOADED');
+        
+        // Global variables for debugging
+        let debugOutput = document.getElementById('debugOutput');
+        
+        // Log function
+        function log(message) {
+            console.log(message);
+            debugOutput.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+        }
+        
+        // Enable/disable submit button based on input
+        function checkInputs() {
+            const name = document.getElementById('studentName').value.trim();
+            const answer = document.getElementById('studentAnswer').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            submitBtn.disabled = !(name && answer);
+        }
+        
+        // Submit response function
+        function submitResponse() {
+            log('🚀 Starting submission...');
+            
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentAnswer = document.getElementById('studentAnswer').value.trim();
+            
+            if (!studentName || !studentAnswer) {
+                log('❌ Missing name or answer');
+                return;
+            }
+            
+            // Create response object
+            const response = {
+                id: 'test_' + Date.now(),
+                studentName: studentName,
+                answer: studentAnswer,
+                wordCount: studentAnswer.split(/\s+/).filter(word => word.length > 0).length,
+                timestamp: new Date().toISOString(),
+                questionId: 'demo',
+                questionText: 'Test Question'
+            };
+            
+            log('📝 Created response object: ' + JSON.stringify(response, null, 2));
+            
+            try {
+                // Get existing responses
+                let existingResponses = [];
+                const stored = localStorage.getItem('alm_student_responses');
+                if (stored) {
+                    existingResponses = JSON.parse(stored);
+                    log('📂 Found existing responses: ' + existingResponses.length);
+                } else {
+                    log('📂 No existing responses found');
+                }
+                
+                // Add new response
+                existingResponses.push(response);
+                
+                // Save to localStorage
+                localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
+                log('💾 Saved to localStorage. Total responses: ' + existingResponses.length);
+                
+                // Also save in display format
+                localStorage.setItem('display_responses', JSON.stringify(existingResponses));
+                
+                // Save demo question
+                const demoQuestion = {
+                    id: 'demo',
+                    text: 'Test Question',
+                    questionText: 'Test Question'
+                };
+                localStorage.setItem('current_question', JSON.stringify(demoQuestion));
+                localStorage.setItem('display_question', JSON.stringify(demoQuestion));
+                
+                log('✅ All data saved successfully!');
+                
+                // Show success message
+                document.getElementById('successMsg').style.display = 'block';
+                
+                // Disable form
+                document.getElementById('submitBtn').disabled = true;
+                
+            } catch (error) {
+                log('❌ ERROR: ' + error.message);
+                console.error('Submission error:', error);
+            }
+        }
+        
+        // Debug functions
+        function checkLocalStorage() {
+            log('🔍 CHECKING LOCALSTORAGE:');
+            
+            const responses = localStorage.getItem('alm_student_responses');
+            if (responses) {
+                const parsed = JSON.parse(responses);
+                log('✅ Found ' + parsed.length + ' responses');
+                log('First response: ' + JSON.stringify(parsed[0], null, 2));
+            } else {
+                log('❌ No responses found');
+            }
+            
+            const question = localStorage.getItem('current_question');
+            if (question) {
+                log('✅ Found question: ' + question);
+            } else {
+                log('❌ No question found');
+            }
+        }
+        
+        function clearData() {
+            localStorage.clear();
+            log('🗑️ All localStorage data cleared');
+            document.getElementById('successMsg').style.display = 'none';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentAnswer').value = '';
+            checkInputs();
+        }
+        
+        function testLocalStorage() {
+            try {
+                localStorage.setItem('test', 'hello');
+                const result = localStorage.getItem('test');
+                if (result === 'hello') {
+                    log('✅ LocalStorage is working');
+                    localStorage.removeItem('test');
+                } else {
+                    log('❌ LocalStorage test failed');
+                }
+            } catch (error) {
+                log('❌ LocalStorage error: ' + error.message);
+            }
+        }
+        
+        // Set up event listeners
+        document.getElementById('studentName').addEventListener('input', checkInputs);
+        document.getElementById('studentAnswer').addEventListener('input', checkInputs);
+        
+        // Initial setup
+        log('🚀 Minimal test version ready');
+        checkInputs();
+    </script>
+</body>
+</html>
