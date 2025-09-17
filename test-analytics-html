@@ -1,1 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MINIMAL TEST - Analytics</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 40px; 
+            background: #f0f0f0; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button { 
+            background: #28a745; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+        button:hover { background: #218838; }
+        .debug { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 15px 0; 
+            font-family: monospace; 
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .response-box {
+            background: #e9ecef;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 MINIMAL TEST - Analytics</h1>
+        <p>This page tests reading data from localStorage.</p>
+        
+        <div class="count" id="responseCount">
+            Loading...
+        </div>
+        
+        <div>
+            <button onclick="loadData()">🔄 Load Data</button>
+            <button onclick="showRawData()">📄 Show Raw Data</button>
+            <button onclick="clearAll()">🗑️ Clear All</button>
+            <button onclick="autoRefresh()">⚡ Start Auto-Refresh</button>
+            <button onclick="stopRefresh()">⏹️ Stop Auto-Refresh</button>
+        </div>
+        
+        <div id="responsesContainer"></div>
+        
+        <div class="debug" id="debugOutput">
+            Debug info will appear here...
+        </div>
+    </div>
 
+    <script>
+        console.log('🧪 MINIMAL ANALYTICS TEST VERSION LOADED');
+        
+        // Global variables
+        let responses = [];
+        let currentQuestion = null;
+        let debugOutput = document.getElementById('debugOutput');
+        let refreshInterval = null;
+        
+        // Log function
+        function log(message) {
+            console.log(message);
+            debugOutput.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            log('🔍 Loading data from localStorage...');
+            
+            try {
+                // Clear previous data
+                responses = [];
+                currentQuestion = null;
+                
+                // Load responses
+                const storedResponses = localStorage.getItem('alm_student_responses');
+                if (storedResponses) {
+                    const parsed = JSON.parse(storedResponses);
+                    if (Array.isArray(parsed)) {
+                        responses = parsed;
+                        log('✅ Loaded ' + responses.length + ' responses');
+                    } else {
+                        log('❌ Responses data is not an array');
+                    }
+                } else {
+                    log('❌ No responses found in localStorage');
+                }
+                
+                // Also try display_responses as fallback
+                if (responses.length === 0) {
+                    const displayResponses = localStorage.getItem('display_responses');
+                    if (displayResponses) {
+                        const parsed = JSON.parse(displayResponses);
+                        if (Array.isArray(parsed)) {
+                            responses = parsed;
+                            log('✅ Loaded ' + responses.length + ' responses from display_responses');
+                        }
+                    }
+                }
+                
+                // Load question
+                const storedQuestion = localStorage.getItem('current_question');
+                if (storedQuestion) {
+                    currentQuestion = JSON.parse(storedQuestion);
+                    log('✅ Loaded question: ' + (currentQuestion.text || currentQuestion.questionText || 'No text'));
+                } else {
+                    // Try display_question
+                    const displayQuestion = localStorage.getItem('display_question');
+                    if (displayQuestion) {
+                        currentQuestion = JSON.parse(displayQuestion);
+                        log('✅ Loaded question from display_question');
+                    } else {
+                        log('❌ No question found');
+                    }
+                }
+                
+                updateDisplay();
+                
+            } catch (error) {
+                log('❌ ERROR loading data: ' + error.message);
+                console.error('Load error:', error);
+            }
+        }
+        
+        // Update the display
+        function updateDisplay() {
+            // Update count
+            const countElement = document.getElementById('responseCount');
+            countElement.textContent = responses.length + ' Responses Found';
+            
+            // Update responses container
+            const container = document.getElementById('responsesContainer');
+            container.innerHTML = '';
+            
+            if (responses.length === 0) {
+                container.innerHTML = '<div class="response-box">No responses found</div>';
+                return;
+            }
+            
+            responses.forEach((response, index) => {
+                const div = document.createElement('div');
+                div.className = 'response-box';
+                div.innerHTML = `
+                    <strong>#${index + 1}: ${response.studentName || response.student_name || 'Unknown'}</strong><br>
+                    <em>Answer:</em> ${response.answer || 'No answer'}<br>
+                    <small>Time: ${new Date(response.timestamp || response.created_at).toLocaleString()}</small>
+                `;
+                container.appendChild(div);
+            });
+            
+            log('📊 Display updated with ' + responses.length + ' responses');
+        }
+        
+        // Show raw localStorage data
+        function showRawData() {
+            log('📄 RAW LOCALSTORAGE DATA:');
+            log('');
+            
+            // Check all relevant keys
+            const keys = ['alm_student_responses', 'display_responses', 'current_question', 'display_question'];
+            
+            keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    log(`${key}:`);
+                    log(value);
+                    log('');
+                } else {
+                    log(`${key}: (not found)`);
+                }
+            });
+            
+            // Check all localStorage keys
+            log('ALL LOCALSTORAGE KEYS:');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                log(`  ${key}: ${localStorage.getItem(key).substring(0, 100)}...`);
+            }
+        }
+        
+        // Clear all data
+        function clearAll() {
+            localStorage.clear();
+            responses = [];
+            currentQuestion = null;
+            updateDisplay();
+            log('🗑️ All data cleared');
+        }
+        
+        // Auto-refresh functions
+        function autoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            refreshInterval = setInterval(() => {
+                const oldCount = responses.length;
+                loadData();
+                const newCount = responses.length;
+                
+                if (newCount !== oldCount) {
+                    log(`🔄 Auto-refresh: ${oldCount} → ${newCount} responses`);
+                }
+            }, 5000); // Check every 5 seconds
+            
+            log('⚡ Auto-refresh started (every 5 seconds)');
+        }
+        
+        function stopRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+                log('⏹️ Auto-refresh stopped');
+            }
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            log('🚀 Analytics test page ready');
+            loadData();
+        });
+        
+        // Listen for storage changes from other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'alm_student_responses' || e.key === 'display_responses') {
+                log('📡 Storage change detected: ' + e.key);
+                loadData();
+            }
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopRefresh();
+        });
+    </script>
+</body>
+</html>
+</html>
