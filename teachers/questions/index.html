@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response DEBUG</title>
+  <title>INTUITY - Teacher Questions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     * {
@@ -13,16 +16,16 @@
     }
 
     body {
-      min-height: 100vh;
+      height: 100vh;
       width: 100vw;
-      overflow-x: hidden;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       position: relative;
       background: #000000;
     }
 
     .background {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
@@ -34,18 +37,123 @@
                   linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
     }
 
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
+      opacity: 0.3;
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(15deg);
+      border: 1.5px solid rgba(255, 140, 60, 0.6);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
+      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
+      opacity: 0.8;
+      animation: float 9s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); opacity: var(--base-opacity, 0.5); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 1deg)); opacity: calc(var(--base-opacity, 0.5) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); opacity: calc(var(--base-opacity, 0.5) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity, 0.3); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity, 0.3) * 1.5); transform: scale(1.02); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotation, 0deg)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotation, 0deg) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotation, 0deg) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotation, 0deg) + 0.8deg)); }
+    }
+
+    .curve1 { --base-opacity: 0.9; --rotation: 30deg; }
+    .curve2 { --base-opacity: 0.7; --rotation: -20deg; }
+    .curve3 { --base-opacity: 0.5; --rotation: 60deg; }
+    .curve4 { --base-opacity: 0.3; --rotation: -45deg; }
+    .curve5 { --base-opacity: 0.8; --rotation: 15deg; }
+
     .container {
       position: relative;
       z-index: 10;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .header h1 {
@@ -64,649 +172,597 @@
       letter-spacing: 0.5px;
     }
 
-    /* Question Display */
-    .question-display {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      text-align: center;
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 140px;
     }
 
-    .question-text {
-      color: #fff;
-      font-size: 18px;
-      opacity: 0.7;
+    /* SINGLE BLACK BOX - Matches all other components */
+    .question-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
     }
 
-    /* Response Form */
-    .response-form {
+    .question-box {
+      width: 100%;
+      height: 100%;
       background: #000000;
       border-radius: 20px;
-      padding: 30px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .question-box:hover {
+      transform: translateY(-2px);
     }
 
-    .form-label {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 14px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .form-input {
+    /* CONTENT AREA - Simple layout */
+    .content-area {
       width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .question-input {
+      width: 100%;
+      height: 100%;
       background: transparent;
       border: none;
       color: #fff;
       font-size: 16px;
       font-family: inherit;
       outline: none;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
+      resize: none;
+      line-height: 1.6;
+      padding: 0;
+      text-align: center;
     }
 
-    .form-input:focus {
-      border-bottom-color: rgba(255, 140, 60, 0.6);
-    }
-
-    .form-input::placeholder {
+    .question-input::placeholder {
       color: rgba(255, 255, 255, 0.4);
       font-style: italic;
     }
 
-    .form-textarea {
-      min-height: 120px;
-      resize: vertical;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      padding: 15px;
+    .question-input:focus {
+      color: #fff;
     }
 
-    .form-textarea:focus {
-      border-color: rgba(255, 140, 60, 0.6);
-    }
-
-    /* Submit Button */
-    .submit-section {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-    }
-
-    .btn {
-      background: rgba(255, 140, 60, 0.2);
-      border: 1px solid rgba(255, 140, 60, 0.5);
-      color: rgba(255, 140, 60, 0.9);
-      padding: 15px 30px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
+    .success-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid rgba(16, 185, 129, 0.5);
+      border-radius: 16px;
+      padding: 30px;
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 18px;
       font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
       text-align: center;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.3s ease;
+      min-width: 300px;
     }
 
-    .btn:hover {
+    .success-notification .icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* SUBTLE FOOTER - Circular icon buttons */
+    .footer {
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .footer-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .footer-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .footer-button:active {
+      transform: scale(0.95);
+    }
+
+    .footer-button.primary {
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+    }
+
+    .footer-button.primary:hover {
       background: rgba(255, 140, 60, 0.3);
       color: #fff;
-      transform: translateY(-2px);
+      border-color: rgba(255, 140, 60, 0.5);
+      transform: scale(1.1);
     }
 
-    .btn:disabled {
-      opacity: 0.5;
+    .footer-button:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
     }
 
-    .btn.primary {
-      background: rgba(255, 140, 60, 0.8);
-      color: #000;
+    .loading {
+      animation: spin 1s linear infinite;
     }
 
-    .btn.primary:hover {
-      background: rgba(255, 140, 60, 1);
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Debug Panel */
-    .debug-panel {
+    /* QR Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-content {
       background: rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 20px;
-    }
-
-    .debug-section {
-      margin-bottom: 20px;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      border-left: 3px solid rgba(255, 140, 60, 0.5);
-    }
-
-    .debug-section h4 {
-      color: rgba(255, 140, 60, 0.9);
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-
-    .debug-content {
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 4px;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      color: #0f0;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    /* Status Messages */
-    .status-message {
-      padding: 15px;
-      border-radius: 8px;
-      margin: 10px 0;
-      font-weight: 500;
-    }
-
-    .status-success {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: rgba(16, 185, 129, 0.9);
-    }
-
-    .status-error {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: rgba(239, 68, 68, 0.9);
-    }
-
-    .status-info {
-      background: rgba(59, 130, 246, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      color: rgba(59, 130, 246, 0.9);
-    }
-
-    /* Footer */
-    .footer {
-      margin-top: 20px;
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
       text-align: center;
+      max-width: 400px;
+      margin: 20px;
     }
 
-    /* Mobile responsive */
+    .modal h3 {
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .qr-display {
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 20px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 16px;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      overflow: hidden;
+    }
+
+    .qr-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .close-btn {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.8), rgba(255, 100, 40, 0.8));
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: linear-gradient(45deg, rgba(255, 140, 60, 1), rgba(255, 100, 40, 1));
+      transform: scale(1.05);
+    }
+
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .container {
+        padding: 40px 15px 15px;
+      }
+      
+      .header h1 {
+        font-size: 28px;
+      }
+      
+      .question-container {
+        height: 4cm;
+      }
+      
+      .content-area {
         padding: 15px;
       }
       
-      .response-form {
-        padding: 20px;
+      .question-input {
+        font-size: 15px;
       }
       
-      .btn {
-        padding: 12px 20px;
-        font-size: 14px;
+      .footer {
+        padding: 12px;
+      }
+      
+      .footer-button {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+      
+      .modal-content {
+        margin: 15px;
+        padding: 25px;
+      }
+      
+      .qr-display {
+        width: 240px;
+        height: 240px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="background"></div>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+    </div>
+  </div>
 
   <div class="container">
     <header class="header">
-      <h1>INTUITY DEBUG</h1>
-      <p>Student Response Interface<br>DEBUG MODE</p>
+      <h1>INTUITY</h1>
+      <p>Intuitive Learning<br>By Majid Nashtai</p>
     </header>
 
-    <!-- Question Display -->
-    <div class="question-display">
-      <div class="question-text" id="questionText">Loading question...</div>
-    </div>
+    <main class="main-content">
+      <div class="question-container">
+        <div class="question-box">
+          <div class="content-area">
+            <textarea 
+              class="question-input" 
+              id="questionInput"
+              placeholder="What would you like to ask your students?"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </main>
 
-    <!-- Response Form -->
-    <div class="response-form">
-      <div class="form-group">
-        <label class="form-label">Student Name</label>
-        <input 
-          type="text" 
-          class="form-input" 
-          id="studentName"
-          placeholder="Enter your name..."
-          maxlength="50"
-        />
+    <!-- SUBTLE FOOTER - Just icons with tooltips -->
+    <footer class="footer">
+      <button class="footer-button" id="clearBtn" title="Clear">🗑️</button>
+      <button class="footer-button primary" id="publishBtn" disabled title="Publish">📤</button>
+      <button class="footer-button" id="shareBtn" title="Share Link">🔗</button>
+      <button class="footer-button" id="qrBtn" title="QR Code">📱</button>
+      <button class="footer-button" id="analyticsBtn" title="Analytics">📊</button>
+    </footer>
+  </div>
+
+  <!-- Success Notification -->
+  <div class="success-notification" id="successNotification">
+    <span class="icon">✨</span>
+    <div>Question Published Successfully!</div>
+    <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
+      Students can now access your question.
+    </div>
+  </div>
+
+  <!-- QR Modal -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content">
+      <h3>📱 Student QR Code</h3>
+      
+      <div id="qrDisplay" class="qr-display">
+        <div>🔄 Generating QR Code...</div>
       </div>
       
-      <div class="form-group">
-        <label class="form-label">Your Answer</label>
-        <textarea 
-          class="form-input form-textarea" 
-          id="studentAnswer"
-          placeholder="Type your answer here..."
-        ></textarea>
-      </div>
-      
-      <div class="submit-section">
-        <button class="btn" onclick="clearForm()">Clear</button>
-        <button class="btn" onclick="testLocalStorage()">Test Storage</button>
-        <button class="btn primary" id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
-      </div>
-    </div>
-
-    <!-- Status Messages -->
-    <div id="statusMessages"></div>
-
-    <!-- Debug Panel -->
-    <div class="debug-panel">
-      <h3 style="color: rgba(255, 140, 60, 0.9); margin-bottom: 15px; text-align: center;">🔧 Debug Information</h3>
-      
-      <div class="debug-section">
-        <h4>📝 Current Form Data</h4>
-        <div class="debug-content" id="formDataDebug">No data</div>
-      </div>
-
-      <div class="debug-section">
-        <h4>💾 LocalStorage Content</h4>
-        <div class="debug-content" id="localStorageDebug">Loading...</div>
-      </div>
-
-      <div class="debug-section">
-        <h4>📋 Submission Log</h4>
-        <div class="debug-content" id="submissionLog">No submissions yet</div>
-      </div>
-
-      <div class="debug-section">
-        <h4>⚙️ Browser Info</h4>
-        <div class="debug-content" id="browserInfo">Loading...</div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <a href="../" class="btn">🏠 Home</a>
-      <a href="../visualisation/" class="btn">📊 Analytics</a>
+      <button class="close-btn" onclick="closeQRModal()">Close</button>
     </div>
   </div>
 
   <script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+
     // Global variables
+    let supabase;
     let currentQuestion = null;
-    let submissionLog = [];
+    let isConnected = false;
 
-    // Initialize
-    function init() {
-      console.log('🚀 DEBUG MODE: Student interface initializing...');
-      
-      loadQuestion();
-      setupEventListeners();
-      updateDebugPanels();
-      checkBrowserCapabilities();
-      
-      // Update debug info every 2 seconds
-      setInterval(updateDebugPanels, 2000);
-      
-      logMessage('🚀 Debug interface initialized');
-    }
-
-    // Load question
-    function loadQuestion() {
-      // Try URL parameters first
-      const urlParams = new URLSearchParams(window.location.search);
-      const questionText = urlParams.get('t');
-      
-      if (questionText) {
-        currentQuestion = {
-          id: urlParams.get('q') || 'demo',
-          text: decodeURIComponent(questionText),
-          source: 'url'
-        };
-        displayQuestion();
-        return;
-      }
-      
-      // Try localStorage
-      const storedQuestion = localStorage.getItem('current_question');
-      if (storedQuestion) {
-        try {
-          const parsed = JSON.parse(storedQuestion);
-          currentQuestion = Array.isArray(parsed) ? parsed[0] : parsed;
-          displayQuestion();
-          return;
-        } catch (error) {
-          logMessage('⚠️ Error parsing stored question: ' + error.message, 'error');
-        }
-      }
-      
-      // Fallback to demo
-      currentQuestion = {
-        id: 'demo',
-        text: 'Demo: What would you like to learn today?',
-        source: 'demo'
-      };
-      displayQuestion();
-    }
-
-    // Display question
-    function displayQuestion() {
-      const questionElement = document.getElementById('questionText');
-      if (currentQuestion) {
-        questionElement.textContent = currentQuestion.text || currentQuestion.question_text || 'Demo Question';
-        logMessage('📝 Question loaded: ' + (currentQuestion.text || currentQuestion.question_text));
-      }
-    }
-
-    // Setup event listeners
-    function setupEventListeners() {
-      document.getElementById('studentName').addEventListener('input', handleInput);
-      document.getElementById('studentAnswer').addEventListener('input', handleInput);
-    }
-
-    // Handle input changes
-    function handleInput() {
-      const name = document.getElementById('studentName').value.trim();
-      const answer = document.getElementById('studentAnswer').value.trim();
-      const submitBtn = document.getElementById('submitBtn');
-      
-      submitBtn.disabled = !(name && answer);
-      
-      updateDebugPanels();
-    }
-
-    // Test localStorage
-    function testLocalStorage() {
-      logMessage('🧪 Testing localStorage...', 'info');
-      
+    // Initialize Supabase
+    async function initSupabase() {
       try {
-        // Test basic functionality
-        localStorage.setItem('test_key', 'test_value');
-        const testValue = localStorage.getItem('test_key');
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
         
-        if (testValue === 'test_value') {
-          logMessage('✅ localStorage is working', 'success');
-          localStorage.removeItem('test_key');
-        } else {
-          logMessage('❌ localStorage read/write failed', 'error');
-        }
+        // Test connection
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        if (error) throw error;
         
-        // Test with complex data
-        const testData = {
-          timestamp: new Date().toISOString(),
-          test: true,
-          data: [1, 2, 3]
-        };
-        
-        localStorage.setItem('test_complex', JSON.stringify(testData));
-        const retrievedData = JSON.parse(localStorage.getItem('test_complex'));
-        
-        if (retrievedData.test === true) {
-          logMessage('✅ localStorage complex data works', 'success');
-          localStorage.removeItem('test_complex');
-        } else {
-          logMessage('❌ localStorage complex data failed', 'error');
-        }
-        
+        isConnected = true;
+        console.log('✅ Connected to Supabase');
+        return true;
       } catch (error) {
-        logMessage('❌ localStorage error: ' + error.message, 'error');
+        console.error('❌ Supabase connection failed:', error);
+        isConnected = false;
+        return false;
       }
-      
-      updateDebugPanels();
     }
 
-    // Submit response - DETAILED DEBUG VERSION
-    function submitResponse() {
-      const nameInput = document.getElementById('studentName');
-      const answerInput = document.getElementById('studentAnswer');
-      const submitBtn = document.getElementById('submitBtn');
+    // Handle question input
+    function handleQuestionInput() {
+      const input = document.getElementById('questionInput');
+      const publishBtn = document.getElementById('publishBtn');
+
+      const text = input.value.trim();
       
-      const studentName = nameInput.value.trim();
-      const studentAnswer = answerInput.value.trim();
+      // Simple validation - just check if there's any text
+      if (text.length > 0) {
+        publishBtn.disabled = false;
+      } else {
+        publishBtn.disabled = true;
+      }
+    }
+
+    // Publish question
+    async function publishQuestion() {
+      const questionText = document.getElementById('questionInput').value.trim();
       
-      logMessage('🚀 Starting submission process...', 'info');
-      logMessage(`📝 Name: "${studentName}", Answer length: ${studentAnswer.length}`);
-      
-      if (!studentName || !studentAnswer) {
-        logMessage('❌ Validation failed: missing name or answer', 'error');
+      if (!questionText) {
+        alert('Please write a question first.');
         return;
       }
 
-      // Show loading
-      submitBtn.innerHTML = '⏳ Submitting...';
-      submitBtn.disabled = true;
+      const publishBtn = document.getElementById('publishBtn');
+      const originalContent = publishBtn.innerHTML;
+      
+      publishBtn.innerHTML = '⏳';
+      publishBtn.disabled = true;
 
       try {
-        // Create response object
-        const timestamp = new Date().toISOString();
-        const questionId = currentQuestion?.id || 'demo';
-        const questionText = currentQuestion?.text || currentQuestion?.question_text || 'Demo Question';
-        
-        const response = {
-          id: 'student_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-          questionId: questionId,
-          questionText: questionText,
-          studentName: studentName,
-          answer: studentAnswer,
-          wordCount: studentAnswer.split(/\s+/).filter(word => word.length > 0).length,
-          timestamp: timestamp,
-          photoUrl: null
-        };
+        if (isConnected) {
+          // Unpublish any existing questions first
+          await supabase
+            .from('questions')
+            .update({ is_published: false })
+            .eq('is_published', true);
 
-        logMessage('📦 Created response object:');
-        logMessage(JSON.stringify(response, null, 2));
+          // Insert new question
+          const { data, error } = await supabase
+            .from('questions')
+            .insert([{
+              text: questionText,
+              question_type: 'open-ended',
+              is_published: true,
+              published_at: new Date().toISOString(),
+              metadata: {
+                createdBy: 'teacher',
+                source: 'intuity_teacher_interface'
+              }
+            }])
+            .select();
 
-        // Get existing responses from localStorage
-        let existingResponses = [];
-        try {
-          const stored = localStorage.getItem('alm_student_responses');
-          logMessage('📥 Existing localStorage data:');
-          logMessage(stored || 'NULL');
-          
-          if (stored) {
-            existingResponses = JSON.parse(stored) || [];
-            logMessage(`📋 Found ${existingResponses.length} existing responses`);
-          } else {
-            logMessage('📋 No existing responses found');
-          }
-        } catch (parseError) {
-          logMessage('⚠️ Error parsing existing responses: ' + parseError.message, 'error');
-          existingResponses = [];
-        }
-
-        // Add new response
-        existingResponses.push(response);
-        logMessage(`📝 Total responses after adding new: ${existingResponses.length}`);
-        
-        // Save to localStorage
-        const dataToSave = JSON.stringify(existingResponses);
-        logMessage('💾 Attempting to save to localStorage...');
-        logMessage('💾 Data to save (first 200 chars):');
-        logMessage(dataToSave.substring(0, 200) + (dataToSave.length > 200 ? '...' : ''));
-        
-        localStorage.setItem('alm_student_responses', dataToSave);
-        
-        // Verify it was saved
-        const verification = localStorage.getItem('alm_student_responses');
-        if (verification) {
-          const parsed = JSON.parse(verification);
-          logMessage(`✅ Successfully saved ${parsed.length} responses to localStorage`, 'success');
+          if (error) throw error;
+          currentQuestion = data[0];
         } else {
-          logMessage('❌ Failed to save to localStorage - data not found after save', 'error');
-        }
-
-        // Also save in display format
-        const displayResponses = JSON.parse(localStorage.getItem('display_responses') || '[]');
-        const displayFormat = {
-          ...response,
-          student_name: response.studentName,
-          created_at: response.timestamp,
-          question_id: response.questionId
-        };
-        displayResponses.unshift(displayFormat);
-        localStorage.setItem('display_responses', JSON.stringify(displayResponses));
-        logMessage('💾 Also saved in display format');
-
-        // Update current question
-        if (currentQuestion) {
+          // Fallback to localStorage
+          currentQuestion = {
+            id: Date.now(),
+            text: questionText,
+            published_at: new Date().toISOString()
+          };
           localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-          logMessage('💾 Updated current question');
         }
 
-        // Show success
-        showSuccess();
-        logMessage('🎉 Submission completed successfully!', 'success');
-        
+        console.log('✅ Question published:', currentQuestion);
+        showSuccessNotification();
+
       } catch (error) {
-        logMessage('❌ Error during submission: ' + error.message, 'error');
-        logMessage('❌ Error stack: ' + error.stack);
-        submitBtn.innerHTML = 'Submit Response';
-        submitBtn.disabled = false;
+        console.error('❌ Error publishing question:', error);
+        alert(`Failed to publish question: ${error.message}`);
+      } finally {
+        setTimeout(() => {
+          publishBtn.innerHTML = originalContent;
+          if (document.getElementById('questionInput').value.trim().length > 0) {
+            publishBtn.disabled = false;
+          }
+        }, 1000);
       }
-      
-      updateDebugPanels();
     }
 
-    // Show success
-    function showSuccess() {
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.innerHTML = '✅ Submitted!';
-      submitBtn.style.background = 'rgba(16, 185, 129, 0.8)';
-      
-      // Clear form
-      document.getElementById('studentName').value = '';
-      document.getElementById('studentAnswer').value = '';
+    // Show success notification
+    function showSuccessNotification() {
+      const notification = document.getElementById('successNotification');
+      notification.style.display = 'block';
       
       setTimeout(() => {
-        submitBtn.innerHTML = 'Submit Response';
-        submitBtn.style.background = '';
-        submitBtn.disabled = true;
+        notification.style.display = 'none';
       }, 3000);
     }
 
-    // Clear form
-    function clearForm() {
-      document.getElementById('studentName').value = '';
-      document.getElementById('studentAnswer').value = '';
-      document.getElementById('submitBtn').disabled = true;
-      logMessage('🗑️ Form cleared');
-      updateDebugPanels();
+    // Clear question
+    function clearQuestion() {
+      if (confirm('Clear the current question?')) {
+        document.getElementById('questionInput').value = '';
+        handleQuestionInput();
+        document.getElementById('questionInput').focus();
+      }
     }
 
-    // Update debug panels
-    function updateDebugPanels() {
-      // Form data
-      const formData = {
-        studentName: document.getElementById('studentName').value,
-        studentAnswer: document.getElementById('studentAnswer').value,
-        answerLength: document.getElementById('studentAnswer').value.length,
-        wordCount: document.getElementById('studentAnswer').value.split(/\s+/).filter(word => word.length > 0).length,
-        currentQuestion: currentQuestion,
-        submitButtonDisabled: document.getElementById('submitBtn').disabled
-      };
-      document.getElementById('formDataDebug').textContent = JSON.stringify(formData, null, 2);
+    // Share student link
+    function shareStudentLink() {
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'questions'
+      pathParts.pop(); // remove 'teachers'
+      pathParts.push('students', 'answers', '');
+      const studentURL = baseURL + pathParts.join('/');
       
-      // localStorage
-      const localStorageData = {
-        'alm_student_responses': localStorage.getItem('alm_student_responses'),
-        'display_responses': localStorage.getItem('display_responses'),
-        'current_question': localStorage.getItem('current_question'),
-        'display_question': localStorage.getItem('display_question'),
-        localStorageLength: localStorage.length,
-        keys: Object.keys(localStorage)
-      };
-      document.getElementById('localStorageDebug').textContent = JSON.stringify(localStorageData, null, 2);
-      
-      // Submission log
-      document.getElementById('submissionLog').textContent = submissionLog.join('\n');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(studentURL).then(() => {
+          alert('Student link copied to clipboard!');
+        }).catch(() => {
+          prompt('Copy this link:', studentURL);
+        });
+      } else {
+        prompt('Copy this link:', studentURL);
+      }
     }
 
-    // Check browser capabilities
-    function checkBrowserCapabilities() {
-      const info = {
-        userAgent: navigator.userAgent,
-        localStorage: typeof(Storage) !== "undefined",
-        localStorageQuota: 'unknown',
-        cookiesEnabled: navigator.cookieEnabled,
-        onLine: navigator.onLine,
-        language: navigator.language,
-        platform: navigator.platform,
-        url: window.location.href,
-        timestamp: new Date().toISOString()
+    // Generate QR Code
+    function generateQR() {
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
+      
+      modal.style.display = 'flex';
+      display.innerHTML = '<div>🔄 Generating QR Code...</div>';
+      
+      // Generate student URL
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'questions'
+      pathParts.pop(); // remove 'teachers'
+      pathParts.push('students', 'answers', '');
+      const studentURL = baseURL + pathParts.join('/');
+      
+      // Generate QR code
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      const img = new Image();
+      img.onload = () => {
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code for Students">`;
       };
       
-      // Test localStorage quota
-      try {
-        let testString = '';
-        for (let i = 0; i < 1000; i++) {
-          testString += 'x';
+      img.onerror = () => {
+        display.innerHTML = `
+          <div style="color: #ef4444; padding: 20px;">
+            <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
+            <div><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 14px; margin-top: 5px;">Check your internet connection</div>
+          </div>
+        `;
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    // Close QR modal
+    function closeQRModal() {
+      document.getElementById('qrModal').style.display = 'none';
+    }
+
+    // Open analytics
+    function openAnalytics() {
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'questions'
+      pathParts.pop(); // remove 'teachers'
+      pathParts.push('visualisation', '');
+      const analyticsURL = baseURL + pathParts.join('/');
+      
+      window.open(analyticsURL, '_blank');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Teacher Question Creator initializing...');
+      
+      // Initialize Supabase
+      await initSupabase();
+      
+      // Set up event listeners
+      const questionInput = document.getElementById('questionInput');
+      questionInput.addEventListener('input', handleQuestionInput);
+      questionInput.focus();
+      
+      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
+      document.getElementById('clearBtn').addEventListener('click', clearQuestion);
+      document.getElementById('shareBtn').addEventListener('click', shareStudentLink);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
+      
+      // Modal click outside to close
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQRModal();
         }
-        localStorage.setItem('quota_test', testString);
-        localStorage.removeItem('quota_test');
-        info.localStorageQuota = 'working (tested 1KB)';
-      } catch (error) {
-        info.localStorageQuota = 'error: ' + error.message;
-      }
-      
-      document.getElementById('browserInfo').textContent = JSON.stringify(info, null, 2);
-    }
+      });
 
-    // Log message
-    function logMessage(message, type = 'info') {
-      const timestamp = new Date().toLocaleTimeString();
-      const logEntry = `[${timestamp}] ${message}`;
-      
-      submissionLog.push(logEntry);
-      
-      // Keep only last 20 messages
-      if (submissionLog.length > 20) {
-        submissionLog = submissionLog.slice(-20);
-      }
-      
-      console.log(logEntry);
-      
-      // Show status message
-      showStatusMessage(message, type);
-    }
-
-    // Show status message
-    function showStatusMessage(message, type) {
-      const statusContainer = document.getElementById('statusMessages');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `status-message status-${type}`;
-      messageDiv.textContent = message;
-      
-      statusContainer.insertBefore(messageDiv, statusContainer.firstChild);
-      
-      // Remove after 5 seconds
-      setTimeout(() => {
-        if (messageDiv.parentNode) {
-          messageDiv.parentNode.removeChild(messageDiv);
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          if (!document.getElementById('publishBtn').disabled) {
+            publishQuestion();
+          }
         }
-      }, 5000);
-      
-      // Keep only last 3 messages visible
-      const messages = statusContainer.querySelectorAll('.status-message');
-      if (messages.length > 3) {
-        messages[messages.length - 1].remove();
-      }
-    }
+        if (e.key === 'Escape') {
+          closeQRModal();
+        }
+      });
 
-    // Initialize on load
-    document.addEventListener('DOMContentLoaded', init);
-
-    // Make functions available in console
-    window.testLocalStorage = testLocalStorage;
-    window.updateDebugPanels = updateDebugPanels;
+      console.log('✅ Teacher Question Creator ready!');
+    });
   </script>
 </body>
 </html>
