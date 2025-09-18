@@ -140,6 +140,11 @@
       50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
     }
 
+    @keyframes buttonPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
     @keyframes drift {
       0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
       25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
@@ -187,19 +192,39 @@
 
     .question-overlay {
       position: absolute;
-      top: 25%;
+      top: 22%;
       left: 50%;
       transform: translateX(-50%);
-      max-width: 80%;
+      max-width: 85%;
       text-align: center;
       z-index: 5;
-      opacity: 0.15;
-      font-size: 24px;
-      font-weight: 300;
+      opacity: 0.4;
+      font-size: 26px;
+      font-weight: 400;
       color: #ffffff;
       line-height: 1.4;
       pointer-events: none;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8),
+                   0 0 40px rgba(0, 0, 0, 0.6);
+      background: linear-gradient(135deg, 
+                  rgba(0, 0, 0, 0.15) 0%, 
+                  rgba(0, 0, 0, 0.05) 50%, 
+                  rgba(0, 0, 0, 0.15) 100%);
+      padding: 20px 30px;
+      border-radius: 15px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.5s ease;
+    }
+
+    .question-overlay.focused {
+      opacity: 0.2;
+      transform: translateX(-50%) scale(0.95);
+    }
+
+    .question-overlay.typing {
+      opacity: 0.15;
+      transform: translateX(-50%) scale(0.9);
     }
 
     .main-content {
@@ -248,6 +273,7 @@
       align-items: center;
       gap: 15px;
       margin-bottom: 20px;
+      position: relative;
     }
 
     .name-input {
@@ -270,6 +296,77 @@
     .name-input::placeholder {
       color: rgba(255, 255, 255, 0.4);
       font-style: italic;
+    }
+
+    /* Name autocomplete dropdown */
+    .name-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 60px; /* Leave space for camera icon */
+      background: #000000;
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .name-suggestions.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .name-suggestion {
+      padding: 10px 15px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .name-suggestion:last-child {
+      border-bottom: none;
+    }
+
+    .name-suggestion:hover {
+      background: rgba(255, 140, 60, 0.1);
+      color: #fff;
+    }
+
+    .name-suggestion.highlighted {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+    }
+
+    .suggestion-photo {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      flex-shrink: 0;
+    }
+
+    .suggestion-name {
+      flex: 1;
+    }
+
+    .suggestion-count {
+      font-size: 11px;
+      color: rgba(255, 140, 60, 0.6);
+      background: rgba(255, 140, 60, 0.1);
+      padding: 2px 6px;
+      border-radius: 8px;
     }
 
     .camera-icon {
@@ -767,8 +864,10 @@
                 id="studentName"
                 placeholder="Your name..."
                 maxlength="50"
+                autocomplete="off"
               />
-              <div class="camera-icon" id="cameraIcon">📸</div>
+              <div class="name-suggestions" id="nameSuggestions"></div>
+              <div class="camera-icon" id="cameraIcon" title="Add photo">📸</div>
             </div>
             
             <div class="answer-area">
@@ -784,9 +883,9 @@
             <div class="success-content">
               <div class="success-icon">✨</div>
               <div class="success-title">Response Submitted!</div>
-              <div class="success-text">Thank you for sharing your thoughts!</div>
+              <div class="success-text">Thank you for sharing your thoughts!<br><small style="opacity: 0.7; margin-top: 10px; display: block;" id="photoSaveMessage">Your photo has been saved for future responses</small></div>
               <div class="success-actions">
-                <button class="success-btn" onclick="window.location.reload()">Submit Another</button>
+                <button class="success-btn" onclick="clearForm()">Write Another Response</button>
               </div>
             </div>
           </div>
@@ -823,9 +922,9 @@
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-content">
       <div class="photo-modal-controls">
-        <button class="photo-modal-btn" id="retakeBtn">📷</button>
-        <button class="photo-modal-btn" id="removePhotoBtn">🗑️</button>
-        <button class="photo-modal-btn" id="closeModalBtn">✕</button>
+        <button class="photo-modal-btn" id="retakeBtn">📷 Change</button>
+        <button class="photo-modal-btn" id="removePhotoBtn">🗑️ Remove</button>
+        <button class="photo-modal-btn" id="closeModalBtn">✕ Keep</button>
       </div>
       <img id="photoModalImg" />
     </div>
@@ -1121,7 +1220,222 @@
       }
     }
 
-    // Photo functions
+    // Name autocomplete functions
+    let currentSuggestionIndex = -1;
+
+    function getAllStudentNames() {
+      const names = new Map(); // Use Map to avoid duplicates and store metadata
+      
+      try {
+        // Get names from photo database
+        const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+        Object.values(studentPhotos).forEach(student => {
+          const key = student.name.toLowerCase();
+          names.set(key, {
+            name: student.name,
+            hasPhoto: true,
+            photo: student.photo,
+            responses: 0
+          });
+        });
+
+        // Get names from responses and count them
+        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        responses.forEach(response => {
+          const studentName = response.studentName || response.student_name;
+          if (studentName) {
+            const key = studentName.toLowerCase();
+            const existing = names.get(key);
+            if (existing) {
+              existing.responses++;
+            } else {
+              names.set(key, {
+                name: studentName,
+                hasPhoto: false,
+                photo: null,
+                responses: 1
+              });
+            }
+          }
+        });
+
+        // Convert to array and sort by response count, then alphabetically
+        return Array.from(names.values()).sort((a, b) => {
+          if (a.responses !== b.responses) {
+            return b.responses - a.responses; // More responses first
+          }
+          return a.name.localeCompare(b.name); // Then alphabetically
+        });
+      } catch (error) {
+        console.error('Error getting student names:', error);
+        return [];
+      }
+    }
+
+    function showNameSuggestions(query) {
+      const suggestions = document.getElementById('nameSuggestions');
+      const allNames = getAllStudentNames();
+      
+      if (!query || query.length < 1) {
+        suggestions.classList.remove('show');
+        return;
+      }
+
+      const filtered = allNames.filter(student => 
+        student.name.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5); // Limit to 5 suggestions
+
+      if (filtered.length === 0) {
+        suggestions.classList.remove('show');
+        return;
+      }
+
+      suggestions.innerHTML = filtered.map((student, index) => {
+        const photoHtml = student.hasPhoto 
+          ? `<img src="${student.photo}" alt="${student.name}" class="suggestion-photo">`
+          : `<div class="suggestion-photo" style="background: rgba(255,140,60,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: rgba(255,140,60,0.8);">👤</div>`;
+        
+        const countHtml = student.responses > 0 
+          ? `<span class="suggestion-count">${student.responses}</span>`
+          : '';
+
+        return `
+          <div class="name-suggestion" data-name="${student.name}" data-index="${index}">
+            ${photoHtml}
+            <span class="suggestion-name">${student.name}</span>
+            ${countHtml}
+          </div>
+        `;
+      }).join('');
+
+      suggestions.classList.add('show');
+      currentSuggestionIndex = -1;
+    }
+
+    function hideNameSuggestions() {
+      document.getElementById('nameSuggestions').classList.remove('show');
+      currentSuggestionIndex = -1;
+    }
+
+    function selectNameSuggestion(studentName) {
+      const nameInput = document.getElementById('studentName');
+      nameInput.value = studentName;
+      hideNameSuggestions();
+      
+      // Load photo if available
+      loadStudentPhoto(studentName);
+      
+      // Update form state
+      handleInput();
+      
+      // Focus on answer field
+      setTimeout(() => {
+        document.getElementById('studentAnswer').focus();
+      }, 100);
+    }
+
+    function navigateSuggestions(direction) {
+      const suggestions = document.querySelectorAll('.name-suggestion');
+      if (suggestions.length === 0) return;
+
+      // Remove current highlight
+      suggestions.forEach(s => s.classList.remove('highlighted'));
+
+      // Update index
+      if (direction === 'down') {
+        currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestions.length;
+      } else if (direction === 'up') {
+        currentSuggestionIndex = currentSuggestionIndex <= 0 
+          ? suggestions.length - 1 
+          : currentSuggestionIndex - 1;
+      }
+
+      // Highlight new selection
+      if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
+        suggestions[currentSuggestionIndex].classList.add('highlighted');
+      }
+    }
+
+    function selectCurrentSuggestion() {
+      const highlighted = document.querySelector('.name-suggestion.highlighted');
+      if (highlighted) {
+        const studentName = highlighted.dataset.name;
+        selectNameSuggestion(studentName);
+        return true;
+      }
+      return false;
+    }
+    function saveStudentPhoto(studentName, photoBlob) {
+      try {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+          studentPhotos[studentName.toLowerCase().trim()] = {
+            name: studentName,
+            photo: reader.result,
+            saved: new Date().toISOString()
+          };
+          localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+          console.log(`📸 Photo saved for ${studentName}`);
+        };
+        reader.readAsDataURL(photoBlob);
+      } catch (error) {
+        console.error('Error saving student photo:', error);
+      }
+    }
+
+    function loadStudentPhoto(studentName) {
+      try {
+        const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+        const photoData = studentPhotos[studentName.toLowerCase().trim()];
+        
+        if (photoData && photoData.photo) {
+          // Convert data URL back to blob
+          fetch(photoData.photo)
+            .then(response => response.blob())
+            .then(blob => {
+              setPhoto(blob, true); // Mark as auto-loaded
+              showPhotoLoadedNotification(photoData.name);
+            });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Error loading student photo:', error);
+        return false;
+      }
+    }
+
+    function showPhotoLoadedNotification(studentName) {
+      // Create subtle notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: rgba(16, 185, 129, 0.9);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-size: 12px;
+        z-index: 1000;
+        opacity: 0;
+        transition: all 0.3s ease;
+      `;
+      notification.textContent = `📸 Photo loaded for ${studentName}`;
+      
+      document.body.appendChild(notification);
+      
+      // Fade in
+      setTimeout(() => notification.style.opacity = '1', 100);
+      
+      // Fade out and remove
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
     function compressImage(file, maxWidth = 800, quality = 0.8) {
       return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1246,14 +1560,23 @@
       document.getElementById('cameraPreview').classList.remove('show');
     }
 
-    async function setPhoto(photoBlob) {
+    async function setPhoto(photoBlob, isAutoLoaded = false) {
       currentPhoto = photoBlob;
       
       const trigger = document.getElementById('cameraIcon');
       trigger.classList.add('has-photo');
       trigger.textContent = '✓';
       
-      console.log('📸 Photo set');
+      if (isAutoLoaded) {
+        trigger.title = 'Photo auto-loaded - click to view or change';
+        // Add subtle animation to indicate auto-load
+        trigger.style.animation = 'buttonPulse 0.5s ease';
+        setTimeout(() => trigger.style.animation = '', 500);
+      } else {
+        trigger.title = 'Click to view or change photo';
+      }
+      
+      console.log(`📸 Photo ${isAutoLoaded ? 'auto-loaded' : 'set'}`);
     }
 
     function showPhotoModal() {
@@ -1267,13 +1590,32 @@
     }
 
     function removePhoto() {
+      const nameInput = document.getElementById('studentName');
+      const studentName = nameInput.value.trim();
+      
+      // Remove from current session
       currentPhoto = null;
       
       const trigger = document.getElementById('cameraIcon');
       trigger.classList.remove('has-photo');
       trigger.textContent = '📸';
+      trigger.title = 'Add photo';
       
       document.getElementById('photoModal').classList.remove('show');
+      
+      // Also remove from saved photos if this student has one saved
+      if (studentName) {
+        try {
+          const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+          if (studentPhotos[studentName.toLowerCase().trim()]) {
+            delete studentPhotos[studentName.toLowerCase().trim()];
+            localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+            console.log(`🗑️ Photo removed for ${studentName} (from saved photos too)`);
+          }
+        } catch (error) {
+          console.error('Error removing saved photo:', error);
+        }
+      }
       
       console.log('🗑️ Photo removed');
     }
@@ -1362,9 +1704,35 @@
       const answerInput = document.getElementById('studentAnswer');
       const submitBtn = document.getElementById('submitBtn');
       const clearBtn = document.getElementById('clearBtn');
+      const questionOverlay = document.getElementById('questionOverlay');
       
       const name = nameInput.value.trim();
       const answer = answerInput.value.trim();
+      
+      // Dynamic question overlay visibility
+      if (name || answer) {
+        questionOverlay.classList.add('typing');
+        questionOverlay.classList.remove('focused');
+      } else if (document.activeElement === nameInput || document.activeElement === answerInput) {
+        questionOverlay.classList.add('focused');
+        questionOverlay.classList.remove('typing');
+      } else {
+        questionOverlay.classList.remove('focused', 'typing');
+      }
+      
+      // Show name suggestions as user types
+      if (document.activeElement === nameInput) {
+        showNameSuggestions(name);
+      }
+      
+      // Check for existing photo when name is entered
+      if (name.length >= 2 && !currentPhoto) {
+        // Small delay to avoid excessive lookups while typing
+        clearTimeout(window.photoLookupTimeout);
+        window.photoLookupTimeout = setTimeout(() => {
+          loadStudentPhoto(name);
+        }, 500);
+      }
       
       // Enable/disable submit button
       if (name && answer) {
@@ -1450,6 +1818,11 @@
 
         console.log('✅ Response submitted successfully');
 
+        // Save student photo for future use
+        if (currentPhoto && studentName) {
+          saveStudentPhoto(studentName, currentPhoto);
+        }
+
         // Success - show success overlay
         showSuccess();
         isSubmitted = true;
@@ -1487,21 +1860,64 @@
     }
 
     function showSuccess() {
-      document.getElementById('successOverlay').style.display = 'flex';
+      const successOverlay = document.getElementById('successOverlay');
+      const photoSaveMessage = document.getElementById('photoSaveMessage');
+      
+      // Update message based on whether there was a photo
+      if (currentPhoto) {
+        photoSaveMessage.textContent = 'Your photo has been saved for future responses';
+        photoSaveMessage.style.display = 'block';
+      } else {
+        photoSaveMessage.style.display = 'none';
+      }
+      
+      successOverlay.style.display = 'flex';
       document.getElementById('clearBtn').classList.remove('visible');
     }
 
     function clearForm() {
       if (isSubmitted) {
-        window.location.reload();
+        // Reset for new response
+        isSubmitted = false;
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentAnswer').value = '';
+        document.getElementById('successOverlay').style.display = 'none';
+        
+        // Clear current photo (will auto-reload when name is typed again)
+        currentPhoto = null;
+        const trigger = document.getElementById('cameraIcon');
+        trigger.classList.remove('has-photo');
+        trigger.textContent = '📸';
+        trigger.title = 'Add photo';
+        
+        // Reset submit button
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.textContent = 'SUBMIT';
+        submitBtn.classList.remove('submitting');
+        
+        handleInput(); // Update button states
         return;
       }
       
-      if (confirm('Clear your response? This cannot be undone.')) {
+      if (confirm('Clear your response? Your saved photo will remain available for future use.')) {
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
-        removePhoto();
+        
+        // Clear current photo but don't delete from database
+        currentPhoto = null;
+        const trigger = document.getElementById('cameraIcon');
+        trigger.classList.remove('has-photo');
+        trigger.textContent = '📸';
+        trigger.title = 'Add photo';
+        
         handleInput();
+      }
+    }
+
+    // Add function to clear photo specifically
+    function clearPhotoOnly() {
+      if (confirm('Remove your photo? You can add it back anytime.')) {
+        removePhoto();
       }
     }
 
@@ -1517,10 +1933,39 @@
       }
       
       // Event listeners
-      document.getElementById('studentName').addEventListener('input', handleInput);
-      document.getElementById('studentAnswer').addEventListener('input', handleInput);
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      
+      nameInput.addEventListener('input', handleInput);
+      nameInput.addEventListener('focus', () => {
+        handleInput(); // Update overlay state
+        if (nameInput.value.trim()) {
+          showNameSuggestions(nameInput.value.trim());
+        }
+      });
+      nameInput.addEventListener('blur', () => {
+        handleInput(); // Update overlay state
+        // Delay hiding to allow clicking on suggestions
+        setTimeout(() => hideNameSuggestions(), 150);
+      });
+
+      answerInput.addEventListener('input', handleInput);
+      answerInput.addEventListener('focus', handleInput);
+      answerInput.addEventListener('blur', handleInput);
+      
       document.getElementById('submitBtn').addEventListener('click', submitResponse);
       document.getElementById('clearBtn').addEventListener('click', clearForm);
+
+      // Name suggestion click handlers
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.name-suggestion')) {
+          const suggestion = e.target.closest('.name-suggestion');
+          const studentName = suggestion.dataset.name;
+          selectNameSuggestion(studentName);
+        } else if (!e.target.closest('.name-section')) {
+          hideNameSuggestions();
+        }
+      });
       
       // Photo event listeners
       document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
@@ -1561,15 +2006,42 @@
         }
       });
       
-      // Keyboard shortcuts
+      // Keyboard shortcuts and navigation
       document.addEventListener('keydown', (e) => {
+        // Handle name suggestion navigation
+        if (document.getElementById('nameSuggestions').classList.contains('show')) {
+          switch(e.key) {
+            case 'ArrowDown':
+              e.preventDefault();
+              navigateSuggestions('down');
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              navigateSuggestions('up');
+              break;
+            case 'Enter':
+              if (selectCurrentSuggestion()) {
+                e.preventDefault();
+              }
+              break;
+            case 'Escape':
+              e.preventDefault();
+              hideNameSuggestions();
+              break;
+          }
+          return;
+        }
+
+        // Global shortcuts
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const submitBtn = document.getElementById('submitBtn');
           if (!submitBtn.disabled) submitResponse();
         }
+        
         if (e.key === 'Escape' && !isSubmitted) {
           // Close any open modals
           hidePhotoOptions();
+          hideNameSuggestions();
           document.getElementById('photoModal').classList.remove('show');
           stopCamera();
         }
