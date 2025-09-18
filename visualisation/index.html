@@ -271,13 +271,13 @@
     }
 
     .delete-btn {
-      width: 32px;
-      height: 32px;
+      width: 37px;
+      height: 37px;
       border-radius: 50%;
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.2);
       color: rgba(239, 68, 68, 0.6);
-      font-size: 14px;
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
       opacity: 0;
@@ -552,7 +552,7 @@
             
             <div class="response-counter">
               <span id="responseCounter">0 Responses</span>
-              <button class="delete-btn" id="deleteBtn" title="Delete all responses for this question">🗑</button>
+              <button class="delete-btn" id="deleteBtn" title="Delete this question and all its responses">🗑</button>
             </div>
           </div>
         </div>
@@ -569,7 +569,7 @@
   <!-- Confirmation Dialog -->
   <div class="dialog-overlay" id="confirmDialog">
     <div class="dialog-box">
-      <div class="dialog-title">Delete Responses</div>
+      <div class="dialog-title">Delete Question</div>
       <div class="dialog-message" id="dialogMessage">
         Are you sure you want to delete all responses for this question? This action cannot be undone.
       </div>
@@ -782,13 +782,7 @@
     function updateDeleteButton() {
       const deleteBtn = document.getElementById('deleteBtn');
       
-      if (!currentSelectedQuestion) {
-        deleteBtn.classList.remove('visible');
-        return;
-      }
-
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      if (responses.length > 0) {
+      if (currentSelectedQuestion) {
         deleteBtn.classList.add('visible');
       } else {
         deleteBtn.classList.remove('visible');
@@ -824,7 +818,14 @@
       const count = responses.length;
       
       const message = document.getElementById('dialogMessage');
-      message.textContent = `Are you sure you want to delete all ${count} response${count !== 1 ? 's' : ''} for this question? This action cannot be undone.`;
+      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
+      const shortQuestion = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
+      
+      if (count > 0) {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} associated response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
+      } else {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}"? This action cannot be undone.`;
+      }
       
       document.getElementById('confirmDialog').classList.add('show');
     }
@@ -841,23 +842,33 @@
         return;
       }
 
+      const questionToDelete = currentSelectedQuestion;
+
       try {
-        showNotification('Deleting responses...', 'info');
+        showNotification('Deleting question...', 'info');
         
         if (isConnected) {
-          // Delete from Supabase
-          const { error } = await supabase
+          // Delete responses from Supabase first
+          const { error: responseError } = await supabase
             .from('student_responses')
             .delete()
-            .eq('question_id', currentSelectedQuestion.id);
+            .eq('question_id', questionToDelete.id);
 
-          if (error) throw error;
+          if (responseError) console.warn('Warning deleting responses:', responseError);
+
+          // Delete question from Supabase
+          const { error: questionError } = await supabase
+            .from('questions')
+            .delete()
+            .eq('id', questionToDelete.id);
+
+          if (questionError) throw questionError;
           
-          console.log('✅ Responses deleted from database');
+          console.log('✅ Question and responses deleted from database');
         }
 
         // Delete from local arrays
-        const responsesToDelete = getResponsesForQuestion(currentSelectedQuestion);
+        const responsesToDelete = getResponsesForQuestion(questionToDelete);
         responsesToDelete.forEach(response => {
           const index = allResponses.indexOf(response);
           if (index > -1) {
@@ -865,23 +876,42 @@
           }
         });
 
+        // Remove question from local array
+        const questionIndex = allQuestions.indexOf(questionToDelete);
+        if (questionIndex > -1) {
+          allQuestions.splice(questionIndex, 1);
+        }
+
         // Update localStorage
+        localStorage.setItem('alm_questions', JSON.stringify(allQuestions));
+        localStorage.setItem('intuity_questions', JSON.stringify(allQuestions));
         localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
         localStorage.setItem('intuity_responses', JSON.stringify(allResponses));
         localStorage.setItem('student_responses', JSON.stringify(allResponses));
 
-        // Clear display storage
-        localStorage.removeItem('display_responses');
+        // Clear display storage if it was for this question
+        const currentDisplayQuestion = localStorage.getItem('display_question');
+        if (currentDisplayQuestion) {
+          const parsedDisplayQuestion = JSON.parse(currentDisplayQuestion);
+          if (parsedDisplayQuestion.id === questionToDelete.id) {
+            localStorage.removeItem('display_question');
+            localStorage.removeItem('display_responses');
+            localStorage.removeItem('current_question');
+          }
+        }
         
-        console.log('✅ Responses deleted from local storage');
+        console.log('✅ Question and responses deleted from local storage');
         
+        // Reset selection and update UI
+        currentSelectedQuestion = null;
+        document.getElementById('questionSelector').value = '';
         updateUI();
         closeConfirmDialog();
-        showNotification('Responses deleted successfully', 'success');
+        showNotification('Question deleted successfully', 'success');
         
       } catch (error) {
-        console.error('❌ Error deleting responses:', error);
-        showNotification('Error deleting responses', 'error');
+        console.error('❌ Error deleting question:', error);
+        showNotification('Error deleting question', 'error');
         closeConfirmDialog();
       }
     }
