@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response</title>
+  <title>INTUITY - Student Response (Enhanced)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -152,6 +152,11 @@
       75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
     }
 
+    @keyframes slideDown {
+      from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
     .curve1 { --base-opacity: 0.9; --rotate: 30deg; }
     .curve2 { --base-opacity: 0.7; --rotate: -20deg; }
     .curve3 { --base-opacity: 0.5; --rotate: 60deg; }
@@ -172,6 +177,7 @@
     .header {
       text-align: center;
       margin-bottom: 40px;
+      position: relative;
     }
 
     .header h1 {
@@ -188,6 +194,64 @@
       color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
       letter-spacing: 0.5px;
+    }
+
+    /* Session Status Indicator */
+    .session-indicator {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 20px;
+      padding: 8px 15px;
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.5s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .session-indicator.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .session-indicator.progress {
+      background: rgba(255, 140, 60, 0.15);
+      border-color: rgba(255, 140, 60, 0.4);
+      color: rgba(255, 140, 60, 0.9);
+    }
+
+    /* Welcome Back Notification */
+    .welcome-notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: rgba(16, 185, 129, 0.9);
+      padding: 15px 25px;
+      border-radius: 15px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.5s ease;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      max-width: 350px;
+    }
+
+    .welcome-notification.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .question-overlay {
@@ -298,12 +362,17 @@
       font-style: italic;
     }
 
+    .name-input.session-loaded {
+      border-bottom-color: rgba(16, 185, 129, 0.6);
+      color: rgba(16, 185, 129, 0.9);
+    }
+
     /* Name autocomplete dropdown */
     .name-suggestions {
       position: absolute;
       top: 100%;
       left: 0;
-      right: 60px; /* Leave space for camera icon */
+      right: 60px;
       background: #000000;
       border: 1px solid rgba(255, 140, 60, 0.3);
       border-radius: 10px;
@@ -398,6 +467,11 @@
       background: rgba(16, 185, 129, 1);
     }
 
+    .camera-icon.session-loaded {
+      background: rgba(16, 185, 129, 0.9);
+      animation: buttonPulse 0.5s ease;
+    }
+
     .answer-area {
       flex: 1;
       display: flex;
@@ -462,10 +536,15 @@
     .success-text {
       color: rgba(255, 255, 255, 0.8);
       font-size: 16px;
+      line-height: 1.5;
     }
 
     .success-actions {
       margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .success-btn {
@@ -488,7 +567,29 @@
       transform: translateY(-2px);
     }
 
-    /* Submit Button - The Star */
+    .success-btn.primary {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.5);
+      color: rgba(16, 185, 129, 1);
+    }
+
+    .success-btn.primary:hover {
+      background: rgba(16, 185, 129, 0.3);
+      color: #fff;
+    }
+
+    .success-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .success-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* Submit Button */
     .submit-section {
       margin-top: 40px;
       display: flex;
@@ -537,7 +638,7 @@
       transform: none;
     }
 
-    /* Clear button - subtle when needed */
+    /* Clear button */
     .clear-hint {
       position: fixed;
       top: 20px;
@@ -778,6 +879,44 @@
       color: white;
     }
 
+    /* Session Management UI */
+    .session-actions {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .session-actions.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .session-action-btn {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 8px 15px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .session-action-btn:hover {
+      background: rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.4);
+      color: rgba(255, 140, 60, 1);
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -828,6 +967,19 @@
         margin: 20px;
         padding: 25px;
       }
+
+      .session-indicator {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+
+      .welcome-notification {
+        max-width: 300px;
+        font-size: 13px;
+        padding: 12px 20px;
+      }
     }
   </style>
 </head>
@@ -843,6 +995,17 @@
     </div>
   </div>
 
+  <!-- Session Indicator -->
+  <div class="session-indicator" id="sessionIndicator">
+    <span id="sessionIcon">🎯</span>
+    <span id="sessionText">Q1/10</span>
+  </div>
+
+  <!-- Welcome Back Notification -->
+  <div class="welcome-notification" id="welcomeNotification">
+    <div id="welcomeText">Welcome back! Ready for your next question?</div>
+  </div>
+
   <div class="question-overlay" id="questionOverlay">
     Loading question...
   </div>
@@ -850,7 +1013,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Student Response<br>By Majid Nashtai</p>
+      <p>Student Response (Enhanced)<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
@@ -882,10 +1045,12 @@
           <div class="success-overlay" id="successOverlay">
             <div class="success-content">
               <div class="success-icon">✨</div>
-              <div class="success-title">Response Submitted!</div>
-              <div class="success-text">Thank you for sharing your thoughts!<br><small style="opacity: 0.7; margin-top: 10px; display: block;" id="photoSaveMessage">Your photo has been saved for future responses</small></div>
+              <div class="success-title" id="successTitle">Response Submitted!</div>
+              <div class="success-text" id="successText">Thank you for sharing your thoughts!</div>
               <div class="success-actions">
-                <button class="success-btn" onclick="clearForm()">Write Another Response</button>
+                <button class="success-btn primary" id="nextQuestionBtn">Next Question</button>
+                <button class="success-btn secondary" id="endSessionBtn">End Session</button>
+                <button class="success-btn" id="newResponseBtn">Write Another Response</button>
               </div>
             </div>
           </div>
@@ -898,7 +1063,13 @@
     </div>
   </div>
 
-  <!-- Clear button - only visible when needed -->
+  <!-- Session Actions (Bottom) -->
+  <div class="session-actions" id="sessionActions">
+    <button class="session-action-btn" onclick="endCurrentSession()">End Session</button>
+    <button class="session-action-btn" onclick="viewSessionProgress()">View Progress</button>
+  </div>
+
+  <!-- Clear button -->
   <div class="clear-hint" id="clearBtn" title="Clear form">✕</div>
 
   <!-- Photo Options Modal -->
@@ -955,7 +1126,206 @@
     let isSubmitted = false;
     let isConnected = false;
     let isOnline = navigator.onLine;
-    let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
+    let currentFacingMode = 'user';
+    let studentSession; // Session manager instance
+
+    // Enhanced Student Session Manager
+    class StudentSessionManager {
+      constructor() {
+        this.activeSession = this.loadActiveSession();
+        this.sessionStarted = false;
+        this.initializeSession();
+      }
+
+      loadActiveSession() {
+        const stored = localStorage.getItem('intuity_active_session');
+        return stored ? JSON.parse(stored) : null;
+      }
+
+      initializeSession() {
+        if (this.activeSession) {
+          this.sessionStarted = true;
+          this.autoPopulateStudentData();
+          this.showWelcomeBack();
+          this.updateSessionIndicator();
+          this.showSessionActions();
+        }
+      }
+
+      autoPopulateStudentData() {
+        const nameInput = document.getElementById('studentName');
+        nameInput.value = this.activeSession.name;
+        nameInput.classList.add('session-loaded');
+        
+        // Load photo if available
+        if (this.activeSession.photo) {
+          this.convertDataURLToBlob(this.activeSession.photo).then(blob => {
+            setPhoto(blob, true, true); // Mark as session-loaded
+          });
+        }
+
+        // Disable name input since session is active
+        nameInput.readOnly = true;
+        nameInput.title = "Session active - name locked. End session to change.";
+      }
+
+      async convertDataURLToBlob(dataURL) {
+        const response = await fetch(dataURL);
+        return response.blob();
+      }
+
+      showWelcomeBack() {
+        const welcome = document.getElementById('welcomeNotification');
+        const welcomeText = document.getElementById('welcomeText');
+        
+        const questionsLeft = Math.max(0, 10 - this.activeSession.questionsAnswered);
+        welcomeText.textContent = `Welcome back, ${this.activeSession.name}! ${questionsLeft} questions remaining.`;
+        
+        welcome.classList.add('show');
+        
+        setTimeout(() => {
+          welcome.classList.remove('show');
+        }, 4000);
+      }
+
+      updateSessionIndicator() {
+        const indicator = document.getElementById('sessionIndicator');
+        const icon = document.getElementById('sessionIcon');
+        const text = document.getElementById('sessionText');
+        
+        if (this.activeSession) {
+          const currentQ = this.activeSession.questionsAnswered + 1;
+          text.textContent = `Q${currentQ}/10`;
+          
+          if (currentQ <= 10) {
+            indicator.classList.add('progress');
+            icon.textContent = '🎯';
+          } else {
+            indicator.classList.remove('progress');
+            icon.textContent = '🏆';
+            text.textContent = 'Complete!';
+          }
+          
+          indicator.classList.add('show');
+        } else {
+          indicator.classList.remove('show');
+        }
+      }
+
+      showSessionActions() {
+        const actions = document.getElementById('sessionActions');
+        if (this.activeSession) {
+          actions.classList.add('show');
+        } else {
+          actions.classList.remove('show');
+        }
+      }
+
+      startNewSession(name, photo = null) {
+        this.activeSession = {
+          name: name,
+          photo: photo,
+          questionsAnswered: 0,
+          startTime: new Date().toISOString(),
+          sessionId: Date.now(),
+          lastActivity: new Date().toISOString()
+        };
+        
+        this.sessionStarted = true;
+        this.saveSession();
+        this.updateSessionIndicator();
+        this.showSessionActions();
+        
+        // Lock name input
+        const nameInput = document.getElementById('studentName');
+        nameInput.readOnly = true;
+        nameInput.classList.add('session-loaded');
+        nameInput.title = "Session active - name locked. End session to change.";
+        
+        console.log('🚀 New session started for:', name);
+      }
+
+      updateSession() {
+        if (this.activeSession) {
+          this.activeSession.questionsAnswered++;
+          this.activeSession.lastActivity = new Date().toISOString();
+          this.saveSession();
+          this.updateSessionIndicator();
+          
+          console.log(`📝 Session updated: ${this.activeSession.questionsAnswered} questions completed`);
+        }
+      }
+
+      updateSessionPhoto(photo) {
+        if (this.activeSession && photo) {
+          // Convert blob to data URL for storage
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.activeSession.photo = reader.result;
+            this.saveSession();
+            console.log('📸 Session photo updated');
+          };
+          reader.readAsDataURL(photo);
+        }
+      }
+
+      saveSession() {
+        if (this.activeSession) {
+          localStorage.setItem('intuity_active_session', JSON.stringify(this.activeSession));
+        }
+      }
+
+      endSession() {
+        if (this.activeSession) {
+          const completedCount = this.activeSession.questionsAnswered;
+          const studentName = this.activeSession.name;
+          
+          localStorage.removeItem('intuity_active_session');
+          this.activeSession = null;
+          this.sessionStarted = false;
+          
+          // Reset UI
+          const nameInput = document.getElementById('studentName');
+          nameInput.readOnly = false;
+          nameInput.classList.remove('session-loaded');
+          nameInput.title = "";
+          nameInput.value = "";
+          
+          const cameraIcon = document.getElementById('cameraIcon');
+          cameraIcon.classList.remove('has-photo', 'session-loaded');
+          cameraIcon.textContent = '📸';
+          
+          currentPhoto = null;
+          
+          document.getElementById('sessionIndicator').classList.remove('show');
+          document.getElementById('sessionActions').classList.remove('show');
+          
+          console.log(`🎯 Session ended for ${studentName}. Completed ${completedCount} questions.`);
+          
+          return { studentName, completedCount };
+        }
+        return null;
+      }
+
+      getSessionInfo() {
+        return this.activeSession;
+      }
+
+      isSessionActive() {
+        return this.sessionStarted && this.activeSession !== null;
+      }
+
+      getProgressInfo() {
+        if (this.activeSession) {
+          return {
+            completed: this.activeSession.questionsAnswered,
+            remaining: Math.max(0, 10 - this.activeSession.questionsAnswered),
+            percentage: Math.min(100, (this.activeSession.questionsAnswered / 10) * 100)
+          };
+        }
+        return { completed: 0, remaining: 10, percentage: 0 };
+      }
+    }
 
     // Initialize Supabase
     function initSupabase() {
@@ -1000,7 +1370,7 @@
       console.log('✅ INTUITY Student Data Layer initialized');
     }
 
-    // Student Data Access Layer for Supabase
+    // Student Data Access Layer (same as original)
     class INTUITYStudentDataLayer {
       constructor() {
         this.isOnline = navigator.onLine;
@@ -1139,7 +1509,9 @@
                 timestamp: responseData.timestamp,
                 submittedAt: responseData.submittedAt,
                 questionText: responseData.questionText,
-                photo_url: responseData.photo_url || null
+                photo_url: responseData.photo_url || null,
+                sessionId: responseData.sessionId || null,
+                questionNumber: responseData.questionNumber || null
               }
             }])
             .select();
@@ -1209,7 +1581,9 @@
             timestamp: response.metadata?.timestamp || response.submitted_at || response.timestamp,
             submittedAt: response.submitted_at || response.submittedAt,
             questionText: response.metadata?.questionText || response.questionText || '',
-            photo_url: response.metadata?.photo_url || response.photo_url || null
+            photo_url: response.metadata?.photo_url || response.photo_url || null,
+            sessionId: response.metadata?.sessionId || response.sessionId || null,
+            questionNumber: response.metadata?.questionNumber || response.questionNumber || null
           };
           
           existingResponses.push(legacyResponse);
@@ -1220,14 +1594,13 @@
       }
     }
 
-    // Name autocomplete functions
+    // Name autocomplete functions (same as original)
     let currentSuggestionIndex = -1;
 
     function getAllStudentNames() {
-      const names = new Map(); // Use Map to avoid duplicates and store metadata
+      const names = new Map();
       
       try {
-        // Get names from photo database
         const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
         Object.values(studentPhotos).forEach(student => {
           const key = student.name.toLowerCase();
@@ -1239,7 +1612,6 @@
           });
         });
 
-        // Get names from responses and count them
         const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
         responses.forEach(response => {
           const studentName = response.studentName || response.student_name;
@@ -1259,12 +1631,11 @@
           }
         });
 
-        // Convert to array and sort by response count, then alphabetically
         return Array.from(names.values()).sort((a, b) => {
           if (a.responses !== b.responses) {
-            return b.responses - a.responses; // More responses first
+            return b.responses - a.responses;
           }
-          return a.name.localeCompare(b.name); // Then alphabetically
+          return a.name.localeCompare(b.name);
         });
       } catch (error) {
         console.error('Error getting student names:', error);
@@ -1273,6 +1644,9 @@
     }
 
     function showNameSuggestions(query) {
+      // Don't show suggestions if session is active
+      if (studentSession && studentSession.isSessionActive()) return;
+      
       const suggestions = document.getElementById('nameSuggestions');
       const allNames = getAllStudentNames();
       
@@ -1283,7 +1657,7 @@
 
       const filtered = allNames.filter(student => 
         student.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 5); // Limit to 5 suggestions
+      ).slice(0, 5);
 
       if (filtered.length === 0) {
         suggestions.classList.remove('show');
@@ -1322,13 +1696,9 @@
       nameInput.value = studentName;
       hideNameSuggestions();
       
-      // Load photo if available
       loadStudentPhoto(studentName);
-      
-      // Update form state
       handleInput();
       
-      // Focus on answer field
       setTimeout(() => {
         document.getElementById('studentAnswer').focus();
       }, 100);
@@ -1338,10 +1708,8 @@
       const suggestions = document.querySelectorAll('.name-suggestion');
       if (suggestions.length === 0) return;
 
-      // Remove current highlight
       suggestions.forEach(s => s.classList.remove('highlighted'));
 
-      // Update index
       if (direction === 'down') {
         currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestions.length;
       } else if (direction === 'up') {
@@ -1350,7 +1718,6 @@
           : currentSuggestionIndex - 1;
       }
 
-      // Highlight new selection
       if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
         suggestions[currentSuggestionIndex].classList.add('highlighted');
       }
@@ -1365,6 +1732,8 @@
       }
       return false;
     }
+
+    // Photo management functions (enhanced for sessions)
     function saveStudentPhoto(studentName, photoBlob) {
       try {
         const reader = new FileReader();
@@ -1390,11 +1759,10 @@
         const photoData = studentPhotos[studentName.toLowerCase().trim()];
         
         if (photoData && photoData.photo) {
-          // Convert data URL back to blob
           fetch(photoData.photo)
             .then(response => response.blob())
             .then(blob => {
-              setPhoto(blob, true); // Mark as auto-loaded
+              setPhoto(blob, true);
               showPhotoLoadedNotification(photoData.name);
             });
           return true;
@@ -1407,7 +1775,6 @@
     }
 
     function showPhotoLoadedNotification(studentName) {
-      // Create subtle notification
       const notification = document.createElement('div');
       notification.style.cssText = `
         position: fixed;
@@ -1427,15 +1794,14 @@
       
       document.body.appendChild(notification);
       
-      // Fade in
       setTimeout(() => notification.style.opacity = '1', 100);
       
-      // Fade out and remove
       setTimeout(() => {
         notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 300);
       }, 2000);
     }
+
     function compressImage(file, maxWidth = 800, quality = 0.8) {
       return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1473,7 +1839,6 @@
 
     async function startCamera() {
       try {
-        // Stop any existing stream
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
         }
@@ -1504,10 +1869,8 @@
     }
 
     async function flipCamera() {
-      // Toggle between front and rear camera
       currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
       
-      // Restart camera with new facing mode
       if (cameraStream) {
         await startCamera();
       }
@@ -1516,7 +1879,6 @@
     }
 
     function showCameraError() {
-      // Fallback to file upload if camera fails
       const confirmResult = confirm('Camera not available. Choose photo from album instead?');
       if (confirmResult) {
         triggerFileUpload();
@@ -1560,23 +1922,32 @@
       document.getElementById('cameraPreview').classList.remove('show');
     }
 
-    async function setPhoto(photoBlob, isAutoLoaded = false) {
+    async function setPhoto(photoBlob, isAutoLoaded = false, isSessionLoaded = false) {
       currentPhoto = photoBlob;
       
       const trigger = document.getElementById('cameraIcon');
       trigger.classList.add('has-photo');
-      trigger.textContent = '✓';
       
-      if (isAutoLoaded) {
+      if (isSessionLoaded) {
+        trigger.classList.add('session-loaded');
+        trigger.textContent = '✓';
+        trigger.title = 'Photo loaded from session - click to view or change';
+      } else if (isAutoLoaded) {
+        trigger.textContent = '✓';
         trigger.title = 'Photo auto-loaded - click to view or change';
-        // Add subtle animation to indicate auto-load
         trigger.style.animation = 'buttonPulse 0.5s ease';
         setTimeout(() => trigger.style.animation = '', 500);
       } else {
+        trigger.textContent = '✓';
         trigger.title = 'Click to view or change photo';
+        
+        // Update session photo if session is active
+        if (studentSession && studentSession.isSessionActive()) {
+          studentSession.updateSessionPhoto(photoBlob);
+        }
       }
       
-      console.log(`📸 Photo ${isAutoLoaded ? 'auto-loaded' : 'set'}`);
+      console.log(`📸 Photo ${isSessionLoaded ? 'loaded from session' : isAutoLoaded ? 'auto-loaded' : 'captured'}`);
     }
 
     function showPhotoModal() {
@@ -1593,17 +1964,15 @@
       const nameInput = document.getElementById('studentName');
       const studentName = nameInput.value.trim();
       
-      // Remove from current session
       currentPhoto = null;
       
       const trigger = document.getElementById('cameraIcon');
-      trigger.classList.remove('has-photo');
+      trigger.classList.remove('has-photo', 'session-loaded');
       trigger.textContent = '📸';
       trigger.title = 'Add photo';
       
       document.getElementById('photoModal').classList.remove('show');
       
-      // Also remove from saved photos if this student has one saved
       if (studentName) {
         try {
           const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
@@ -1615,6 +1984,12 @@
         } catch (error) {
           console.error('Error removing saved photo:', error);
         }
+      }
+      
+      // Update session if active
+      if (studentSession && studentSession.isSessionActive()) {
+        studentSession.activeSession.photo = null;
+        studentSession.saveSession();
       }
       
       console.log('🗑️ Photo removed');
@@ -1720,14 +2095,13 @@
         questionOverlay.classList.remove('focused', 'typing');
       }
       
-      // Show name suggestions as user types
-      if (document.activeElement === nameInput) {
+      // Show name suggestions as user types (only if no active session)
+      if (document.activeElement === nameInput && !studentSession.isSessionActive()) {
         showNameSuggestions(name);
       }
       
-      // Check for existing photo when name is entered
-      if (name.length >= 2 && !currentPhoto) {
-        // Small delay to avoid excessive lookups while typing
+      // Check for existing photo when name is entered (only if no active session)
+      if (name.length >= 2 && !currentPhoto && !studentSession.isSessionActive()) {
         clearTimeout(window.photoLookupTimeout);
         window.photoLookupTimeout = setTimeout(() => {
           loadStudentPhoto(name);
@@ -1789,6 +2163,11 @@
       submitBtn.disabled = true;
 
       try {
+        // Create or update session
+        if (!studentSession.isSessionActive()) {
+          studentSession.startNewSession(studentName, currentPhoto);
+        }
+
         let photoUrl = null;
         
         if (currentPhoto) {
@@ -1797,6 +2176,7 @@
         }
 
         const wordCount = studentAnswer.split(/\s+/).filter(word => word.length > 0).length;
+        const sessionInfo = studentSession.getSessionInfo();
 
         const response = {
           questionId: currentQuestion.id,
@@ -1809,7 +2189,9 @@
           quality: determineQuality(wordCount),
           score: calculateScore(wordCount, studentAnswer),
           source: currentQuestion.source || 'web',
-          photo_url: photoUrl
+          photo_url: photoUrl,
+          sessionId: sessionInfo ? sessionInfo.sessionId : null,
+          questionNumber: sessionInfo ? sessionInfo.questionsAnswered + 1 : 1
         };
 
         console.log('💾 Submitting response:', response);
@@ -1823,23 +2205,27 @@
           saveStudentPhoto(studentName, currentPhoto);
         }
 
-        // Success - show success overlay
-        showSuccess();
+        // Update session
+        studentSession.updateSession();
+
+        // Success - show enhanced success overlay
+        showEnhancedSuccess();
         isSubmitted = true;
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
         
-        // Always reset button state on error, then decide what to do
         resetSubmitButton();
         
-        // If offline, treat as success (data saved locally)
         if (!isOnline) {
           console.log('📱 Offline submission - showing success');
-          showSuccess();
+          if (!studentSession.isSessionActive()) {
+            studentSession.startNewSession(studentName, currentPhoto);
+          }
+          studentSession.updateSession();
+          showEnhancedSuccess();
           isSubmitted = true;
         } else {
-          // Online but failed - show error and allow retry
           alert('Failed to submit response. Please try again.');
         }
       }
@@ -1850,7 +2236,6 @@
       submitBtn.textContent = 'SUBMIT';
       submitBtn.classList.remove('submitting');
       
-      // Re-enable button based on current form state
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
       const name = nameInput.value.trim();
@@ -1859,16 +2244,31 @@
       submitBtn.disabled = !(name && answer);
     }
 
-    function showSuccess() {
+    function showEnhancedSuccess() {
       const successOverlay = document.getElementById('successOverlay');
-      const photoSaveMessage = document.getElementById('photoSaveMessage');
+      const successTitle = document.getElementById('successTitle');
+      const successText = document.getElementById('successText');
+      const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+      const endSessionBtn = document.getElementById('endSessionBtn');
+      const newResponseBtn = document.getElementById('newResponseBtn');
       
-      // Update message based on whether there was a photo
-      if (currentPhoto) {
-        photoSaveMessage.textContent = 'Your photo has been saved for future responses';
-        photoSaveMessage.style.display = 'block';
+      const progress = studentSession.getProgressInfo();
+      const questionsRemaining = progress.remaining;
+      
+      if (questionsRemaining > 0) {
+        successTitle.textContent = `Question ${progress.completed} Complete!`;
+        successText.innerHTML = `Great answer! Ready for question ${progress.completed + 1}?<br><small style="opacity: 0.7; margin-top: 10px; display: block;">${questionsRemaining} questions remaining</small>`;
+        
+        nextQuestionBtn.style.display = 'block';
+        endSessionBtn.style.display = 'block';
+        newResponseBtn.style.display = 'none';
       } else {
-        photoSaveMessage.style.display = 'none';
+        successTitle.textContent = '🎉 Session Complete!';
+        successText.innerHTML = `Congratulations! You've completed all 10 questions.<br><small style="opacity: 0.7; margin-top: 10px; display: block;">Thank you for participating!</small>`;
+        
+        nextQuestionBtn.style.display = 'none';
+        endSessionBtn.style.display = 'block';
+        newResponseBtn.style.display = 'block';
       }
       
       successOverlay.style.display = 'flex';
@@ -1879,51 +2279,110 @@
       if (isSubmitted) {
         // Reset for new response
         isSubmitted = false;
-        document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
         document.getElementById('successOverlay').style.display = 'none';
         
-        // Clear current photo (will auto-reload when name is typed again)
-        currentPhoto = null;
-        const trigger = document.getElementById('cameraIcon');
-        trigger.classList.remove('has-photo');
-        trigger.textContent = '📸';
-        trigger.title = 'Add photo';
+        // Don't clear name/photo if session is active
+        if (!studentSession.isSessionActive()) {
+          document.getElementById('studentName').value = '';
+          currentPhoto = null;
+          const trigger = document.getElementById('cameraIcon');
+          trigger.classList.remove('has-photo', 'session-loaded');
+          trigger.textContent = '📸';
+          trigger.title = 'Add photo';
+        }
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.textContent = 'SUBMIT';
+        submitBtn.classList.remove('submitting');
+        
+        handleInput();
+        return;
+      }
+      
+      if (confirm('Clear your response? Your session will remain active.')) {
+        document.getElementById('studentAnswer').value = '';
+        
+        // Only clear name/photo if no active session
+        if (!studentSession.isSessionActive()) {
+          document.getElementById('studentName').value = '';
+          currentPhoto = null;
+          const trigger = document.getElementById('cameraIcon');
+          trigger.classList.remove('has-photo', 'session-loaded');
+          trigger.textContent = '📸';
+          trigger.title = 'Add photo';
+        }
+        
+        handleInput();
+      }
+    }
+
+    // Session management functions
+    function nextQuestion() {
+      if (studentSession.isSessionActive()) {
+        // Clear answer for next question
+        document.getElementById('studentAnswer').value = '';
+        document.getElementById('successOverlay').style.display = 'none';
+        isSubmitted = false;
         
         // Reset submit button
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.textContent = 'SUBMIT';
         submitBtn.classList.remove('submitting');
         
-        handleInput(); // Update button states
-        return;
-      }
-      
-      if (confirm('Clear your response? Your saved photo will remain available for future use.')) {
-        document.getElementById('studentName').value = '';
-        document.getElementById('studentAnswer').value = '';
-        
-        // Clear current photo but don't delete from database
-        currentPhoto = null;
-        const trigger = document.getElementById('cameraIcon');
-        trigger.classList.remove('has-photo');
-        trigger.textContent = '📸';
-        trigger.title = 'Add photo';
-        
         handleInput();
+        
+        // Focus on answer area
+        setTimeout(() => {
+          document.getElementById('studentAnswer').focus();
+        }, 300);
+        
+        console.log('➡️ Ready for next question');
       }
     }
 
-    // Add function to clear photo specifically
-    function clearPhotoOnly() {
-      if (confirm('Remove your photo? You can add it back anytime.')) {
-        removePhoto();
+    function endCurrentSession() {
+      if (studentSession.isSessionActive()) {
+        const sessionInfo = studentSession.endSession();
+        if (sessionInfo) {
+          alert(`Session ended for ${sessionInfo.studentName}.\n\n${sessionInfo.completedCount} questions completed.\n\nThank you for participating!`);
+          
+          // Reset the form completely
+          document.getElementById('studentName').value = '';
+          document.getElementById('studentAnswer').value = '';
+          document.getElementById('successOverlay').style.display = 'none';
+          
+          currentPhoto = null;
+          isSubmitted = false;
+          
+          const submitBtn = document.getElementById('submitBtn');
+          submitBtn.textContent = 'SUBMIT';
+          submitBtn.classList.remove('submitting');
+          
+          handleInput();
+        }
+      }
+    }
+
+    function viewSessionProgress() {
+      if (studentSession.isSessionActive()) {
+        const progress = studentSession.getProgressInfo();
+        const sessionInfo = studentSession.getSessionInfo();
+        
+        alert(`Session Progress for ${sessionInfo.name}\n\n` +
+              `Completed: ${progress.completed}/10 questions\n` +
+              `Remaining: ${progress.remaining} questions\n` +
+              `Progress: ${Math.round(progress.percentage)}%\n\n` +
+              `Started: ${new Date(sessionInfo.startTime).toLocaleString()}`);
       }
     }
 
     // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Clean Student Interface initializing...');
+      console.log('🚀 INTUITY Enhanced Student Interface initializing...');
+      
+      // Initialize session manager first
+      studentSession = new StudentSessionManager();
       
       if (initSupabase()) {
         setTimeout(loadQuestion, 1000);
@@ -1938,14 +2397,13 @@
       
       nameInput.addEventListener('input', handleInput);
       nameInput.addEventListener('focus', () => {
-        handleInput(); // Update overlay state
-        if (nameInput.value.trim()) {
+        handleInput();
+        if (nameInput.value.trim() && !studentSession.isSessionActive()) {
           showNameSuggestions(nameInput.value.trim());
         }
       });
       nameInput.addEventListener('blur', () => {
-        handleInput(); // Update overlay state
-        // Delay hiding to allow clicking on suggestions
+        handleInput();
         setTimeout(() => hideNameSuggestions(), 150);
       });
 
@@ -1955,6 +2413,11 @@
       
       document.getElementById('submitBtn').addEventListener('click', submitResponse);
       document.getElementById('clearBtn').addEventListener('click', clearForm);
+
+      // Success overlay button listeners
+      document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
+      document.getElementById('endSessionBtn').addEventListener('click', endCurrentSession);
+      document.getElementById('newResponseBtn').addEventListener('click', clearForm);
 
       // Name suggestion click handlers
       document.addEventListener('click', (e) => {
@@ -2039,7 +2502,6 @@
         }
         
         if (e.key === 'Escape' && !isSubmitted) {
-          // Close any open modals
           hidePhotoOptions();
           hideNameSuggestions();
           document.getElementById('photoModal').classList.remove('show');
@@ -2047,7 +2509,7 @@
         }
       });
       
-      console.log('✅ Clean student interface ready - one clear action: SUBMIT!');
+      console.log('✅ Enhanced student interface ready with session management!');
     });
   </script>
 </body>
