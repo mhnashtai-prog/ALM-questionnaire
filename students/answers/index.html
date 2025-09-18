@@ -680,33 +680,7 @@
       transform: scale(1.1);
     }
 
-    /* Quick select notification */
-    .auto-load-notification {
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: rgba(16, 185, 129, 0.9);
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 500;
-      z-index: 1000;
-      opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .auto-load-notification.show {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* Photo modal styles (simplified) */
+    /* Photo Options Modal */
     .photo-options {
       position: fixed;
       top: 0;
@@ -781,6 +755,163 @@
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(255, 255, 255, 0.3);
       color: #fff;
+    }
+
+    .photo-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .photo-modal.show {
+      display: flex;
+    }
+
+    .photo-modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .photo-modal img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+    }
+
+    .photo-modal-controls {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .photo-modal-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .photo-modal-btn:hover {
+      background: rgba(255, 140, 60, 1);
+    }
+
+    .camera-preview {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: black;
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .camera-preview.show {
+      display: flex;
+    }
+
+    .camera-preview video {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 12px;
+    }
+
+    .camera-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .camera-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 25px;
+      padding: 15px 25px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      min-width: 100px;
+    }
+
+    .camera-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
+    }
+
+    .camera-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .camera-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .camera-btn.flip {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 50%;
+      min-width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .camera-btn.flip:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    /* Quick select notification */
+    .auto-load-notification {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: rgba(16, 185, 129, 0.9);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auto-load-notification.show {
+      opacity: 1;
+      transform: translateX(0);
     }
 
     @media (max-width: 768px) {
@@ -861,6 +992,11 @@
       .quick-select h3 {
         font-size: 13px;
         margin-bottom: 10px;
+      }
+
+      .photo-options-content {
+        margin: 20px;
+        padding: 25px;
       }
     }
   </style>
@@ -949,7 +1085,7 @@
     <span>Data loaded automatically!</span>
   </div>
 
-  <!-- Photo Options Modal (simplified) -->
+  <!-- Photo Options Modal -->
   <div class="photo-options" id="photoOptions">
     <div class="photo-options-content">
       <div class="photo-options-title">Add Photo</div>
@@ -967,10 +1103,30 @@
     </div>
   </div>
 
+  <div class="photo-modal" id="photoModal">
+    <div class="photo-modal-content">
+      <div class="photo-modal-controls">
+        <button class="photo-modal-btn" id="retakeBtn">📷 Change</button>
+        <button class="photo-modal-btn" id="removePhotoBtn">🗑️ Remove</button>
+        <button class="photo-modal-btn" id="closeModalBtn">✕ Keep</button>
+      </div>
+      <img id="photoModalImg" />
+    </div>
+  </div>
+
+  <div class="camera-preview" id="cameraPreview">
+    <video id="cameraVideo" autoplay muted playsinline></video>
+    <div class="camera-controls">
+      <button class="camera-btn flip" id="flipCameraBtn" title="Flip Camera">🔄</button>
+      <button class="camera-btn" id="captureBtn">Capture</button>
+      <button class="camera-btn secondary" id="cancelCameraBtn">Cancel</button>
+    </div>
+  </div>
+
   <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
   <script>
-    // Supabase Configuration - same as original
+    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
@@ -979,12 +1135,15 @@
     let intuityData;
     let currentQuestion = null;
     let currentPhoto = null;
+    let cameraStream = null;
     let isSubmitted = false;
     let isConnected = false;
     let isOnline = navigator.onLine;
+    let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
     let selectedStudentFromQuickSelect = null;
+    let currentSuggestionIndex = -1;
 
-    // Initialize Supabase (same as original)
+    // Initialize Supabase
     function initSupabase() {
       try {
         if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
@@ -1002,7 +1161,7 @@
       }
     }
 
-    // Test Supabase connection (same as original)
+    // Test Supabase connection
     async function testConnection() {
       try {
         const { data, error } = await supabase.from('questions').select('count').limit(1);
@@ -1021,13 +1180,13 @@
       }
     }
 
-    // Initialize data layer (same as original)
+    // Initialize data layer
     function initDataLayer() {
       intuityData = new INTUITYStudentDataLayer();
       console.log('✅ INTUITY Student Data Layer initialized');
     }
 
-    // Student Data Access Layer (same as original but truncated for space)
+    // Student Data Access Layer for Supabase
     class INTUITYStudentDataLayer {
       constructor() {
         this.isOnline = navigator.onLine;
@@ -1062,6 +1221,23 @@
         }
       }
 
+      async syncOfflineData() {
+        const offlineResponses = localStorage.getItem('offline_responses');
+        
+        try {
+          if (offlineResponses) {
+            const responses = JSON.parse(offlineResponses);
+            for (const response of responses) {
+              await this.submitResponse(response);
+            }
+            localStorage.removeItem('offline_responses');
+            console.log('✅ Offline responses synced');
+          }
+        } catch (error) {
+          console.error('❌ Error syncing offline data:', error);
+        }
+      }
+
       async getCurrentQuestion() {
         if (!this.isOnline || !isConnected) {
           return this.fallbackToLocalStorage('get', null, 'current_question');
@@ -1091,8 +1267,34 @@
         }
       }
 
+      async getQuestionById(questionId) {
+        if (!this.isOnline || !isConnected) {
+          const storedQuestions = localStorage.getItem('alm_questions');
+          if (storedQuestions) {
+            const questions = JSON.parse(storedQuestions);
+            return questions.find(q => q.id === questionId) || null;
+          }
+          return null;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('id', questionId)
+            .single();
+
+          if (error) throw error;
+
+          console.log('✅ Question retrieved by ID:', data);
+          return data;
+        } catch (error) {
+          console.error('❌ Error fetching question by ID:', error);
+          return null;
+        }
+      }
+
       async submitResponse(responseData) {
-        // Same implementation as original...
         if (!this.isOnline || !isConnected) {
           const offlineResponses = JSON.parse(localStorage.getItem('offline_responses') || '[]');
           const responseWithId = {
@@ -1141,6 +1343,43 @@
         }
       }
 
+      async uploadPhoto(photoBlob) {
+        if (!this.isOnline || !isConnected) {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(photoBlob);
+          });
+        }
+
+        try {
+          const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substring(2)}.jpg`;
+          
+          const { data, error } = await supabase.storage
+            .from('student-responses')
+            .upload(fileName, photoBlob, {
+              contentType: 'image/jpeg',
+              upsert: false
+            });
+
+          if (error) throw error;
+
+          const { data: urlData } = supabase.storage
+            .from('student-responses')
+            .getPublicUrl(fileName);
+
+          console.log('✅ Photo uploaded to Supabase Storage:', urlData.publicUrl);
+          return urlData.publicUrl;
+        } catch (error) {
+          console.error('❌ Error uploading photo:', error);
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(photoBlob);
+          });
+        }
+      }
+
       updateLocalStorageResponses(response) {
         try {
           const existingResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
@@ -1167,7 +1406,7 @@
       }
     }
 
-    // NEW: Enhanced student data functions
+    // Enhanced student data functions for Quick Select
     function getAllStudentData() {
       const students = new Map();
       
@@ -1238,7 +1477,7 @@
       }
     }
 
-    // NEW: Populate quick select grid
+    // Populate quick select grid
     function populateQuickSelect() {
       const studentGrid = document.getElementById('studentGrid');
       const quickSelect = document.getElementById('quickSelect');
@@ -1277,7 +1516,7 @@
       console.log(`👥 Showing ${recentStudents.length} returning students in quick select`);
     }
 
-    // NEW: Handle quick select
+    // Handle quick select
     function handleQuickSelect(studentName) {
       selectedStudentFromQuickSelect = studentName;
       
@@ -1304,7 +1543,7 @@
       console.log(`✅ Quick selected: ${studentName}`);
     }
 
-    // NEW: Update student card selection visual state
+    // Update student card selection visual state
     function updateStudentCardSelection(selectedName) {
       document.querySelectorAll('.student-card').forEach(card => {
         const cardName = card.dataset.studentName;
@@ -1316,7 +1555,7 @@
       });
     }
 
-    // NEW: Show auto-load notification
+    // Show auto-load notification
     function showAutoLoadNotification(message) {
       const notification = document.getElementById('autoLoadNotification');
       notification.querySelector('span:last-child').textContent = message;
@@ -1325,6 +1564,150 @@
       setTimeout(() => {
         notification.classList.remove('show');
       }, 3000);
+    }
+
+    // Name autocomplete functions
+    function getAllStudentNames() {
+      const names = new Map(); // Use Map to avoid duplicates and store metadata
+      
+      try {
+        // Get names from photo database
+        const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+        Object.values(studentPhotos).forEach(student => {
+          const key = student.name.toLowerCase();
+          names.set(key, {
+            name: student.name,
+            hasPhoto: true,
+            photo: student.photo,
+            responses: 0
+          });
+        });
+
+        // Get names from responses and count them
+        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        responses.forEach(response => {
+          const studentName = response.studentName || response.student_name;
+          if (studentName) {
+            const key = studentName.toLowerCase();
+            const existing = names.get(key);
+            if (existing) {
+              existing.responses++;
+            } else {
+              names.set(key, {
+                name: studentName,
+                hasPhoto: false,
+                photo: null,
+                responses: 1
+              });
+            }
+          }
+        });
+
+        // Convert to array and sort by response count, then alphabetically
+        return Array.from(names.values()).sort((a, b) => {
+          if (a.responses !== b.responses) {
+            return b.responses - a.responses; // More responses first
+          }
+          return a.name.localeCompare(b.name); // Then alphabetically
+        });
+      } catch (error) {
+        console.error('Error getting student names:', error);
+        return [];
+      }
+    }
+
+    function showNameSuggestions(query) {
+      const suggestions = document.getElementById('nameSuggestions');
+      const allNames = getAllStudentNames();
+      
+      if (!query || query.length < 1) {
+        suggestions.classList.remove('show');
+        return;
+      }
+
+      const filtered = allNames.filter(student => 
+        student.name.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5); // Limit to 5 suggestions
+
+      if (filtered.length === 0) {
+        suggestions.classList.remove('show');
+        return;
+      }
+
+      suggestions.innerHTML = filtered.map((student, index) => {
+        const photoHtml = student.hasPhoto 
+          ? `<img src="${student.photo}" alt="${student.name}" class="suggestion-photo">`
+          : `<div class="suggestion-photo" style="background: rgba(255,140,60,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: rgba(255,140,60,0.8);">👤</div>`;
+        
+        const countHtml = student.responses > 0 
+          ? `<span class="suggestion-count">${student.responses}</span>`
+          : '';
+
+        return `
+          <div class="name-suggestion" data-name="${student.name}" data-index="${index}">
+            ${photoHtml}
+            <span class="suggestion-name">${student.name}</span>
+            ${countHtml}
+          </div>
+        `;
+      }).join('');
+
+      suggestions.classList.add('show');
+      currentSuggestionIndex = -1;
+    }
+
+    function hideNameSuggestions() {
+      document.getElementById('nameSuggestions').classList.remove('show');
+      currentSuggestionIndex = -1;
+    }
+
+    function selectNameSuggestion(studentName) {
+      const nameInput = document.getElementById('studentName');
+      nameInput.value = studentName;
+      hideNameSuggestions();
+      
+      // Load photo if available
+      loadStudentPhoto(studentName);
+      
+      // Update form state
+      handleInput();
+      
+      // Focus on answer field
+      setTimeout(() => {
+        document.getElementById('studentAnswer').focus();
+      }, 100);
+    }
+
+    function navigateSuggestions(direction) {
+      const suggestions = document.querySelectorAll('.name-suggestion');
+      if (suggestions.length === 0) return;
+
+      // Remove current highlight
+      suggestions.forEach(s => s.classList.remove('highlighted'));
+
+      // Update index
+      if (direction === 'down') {
+        currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestions.length;
+      } else if (direction === 'up') {
+        currentSuggestionIndex = currentSuggestionIndex <= 0 
+          ? suggestions.length - 1 
+          : currentSuggestionIndex - 1;
+      }
+
+      // Highlight new selection
+      if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
+        suggestions[currentSuggestionIndex].classList.add('highlighted');
+      }
+    }
+
+    function selectCurrentSuggestion() {
+      const highlighted = document.querySelector('.name-suggestion.highlighted');
+      if (highlighted) {
+        const studentName = highlighted.dataset.name;
+        selectNameSuggestion(studentName);
+        return true;
+      }
+      return false;
     }
 
     // Enhanced photo functions
@@ -1356,10 +1739,12 @@
         const photoData = studentPhotos[studentName.toLowerCase().trim()];
         
         if (photoData && photoData.photo) {
+          // Convert data URL back to blob
           fetch(photoData.photo)
             .then(response => response.blob())
             .then(blob => {
-              setPhoto(blob, true);
+              setPhoto(blob, true); // Mark as auto-loaded
+              showPhotoLoadedNotification(photoData.name);
             });
           return true;
         }
@@ -1370,7 +1755,161 @@
       }
     }
 
-    // Enhanced photo setting
+    function showPhotoLoadedNotification(studentName) {
+      // Create subtle notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: rgba(16, 185, 129, 0.9);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-size: 12px;
+        z-index: 1000;
+        opacity: 0;
+        transition: all 0.3s ease;
+      `;
+      notification.textContent = `📸 Photo loaded for ${studentName}`;
+      
+      document.body.appendChild(notification);
+      
+      // Fade in
+      setTimeout(() => notification.style.opacity = '1', 100);
+      
+      // Fade out and remove
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+
+    function compressImage(file, maxWidth = 800, quality = 0.8) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+          
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(resolve, 'image/jpeg', quality);
+        };
+        
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    function handleCameraClick() {
+      if (currentPhoto) {
+        showPhotoModal();
+      } else {
+        showPhotoOptions();
+      }
+    }
+
+    function showPhotoOptions() {
+      document.getElementById('photoOptions').classList.add('show');
+    }
+
+    function hidePhotoOptions() {
+      document.getElementById('photoOptions').classList.remove('show');
+    }
+
+    async function startCamera() {
+      try {
+        // Stop any existing stream
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+        }
+
+        const constraints = { 
+          video: { 
+            facingMode: currentFacingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        };
+
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        const video = document.getElementById('cameraVideo');
+        video.srcObject = cameraStream;
+        
+        hidePhotoOptions();
+        document.getElementById('cameraPreview').classList.add('show');
+        
+        console.log(`📷 Camera started with ${currentFacingMode} facing mode`);
+        
+      } catch (error) {
+        console.error('Camera not available:', error);
+        hidePhotoOptions();
+        showCameraError();
+      }
+    }
+
+    async function flipCamera() {
+      // Toggle between front and rear camera
+      currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+      
+      // Restart camera with new facing mode
+      if (cameraStream) {
+        await startCamera();
+      }
+      
+      console.log(`🔄 Camera flipped to ${currentFacingMode} mode`);
+    }
+
+    function showCameraError() {
+      // Fallback to file upload if camera fails
+      const confirmResult = confirm('Camera not available. Choose photo from album instead?');
+      if (confirmResult) {
+        triggerFileUpload();
+      }
+    }
+
+    function triggerFileUpload() {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          compressImage(file).then(blob => {
+            setPhoto(blob);
+            hidePhotoOptions();
+          });
+        }
+      };
+      fileInput.click();
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+      
+      canvas.toBlob((blob) => {
+        setPhoto(blob);
+        stopCamera();
+      }, 'image/jpeg', 0.8);
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      document.getElementById('cameraPreview').classList.remove('show');
+    }
+
     function setPhoto(photoBlob, isAutoLoaded = false) {
       currentPhoto = photoBlob;
       
@@ -1389,32 +1928,48 @@
       console.log(`📸 Photo ${isAutoLoaded ? 'auto-loaded' : 'set'}`);
     }
 
-    // Basic photo handling (simplified for space)
-    function handleCameraClick() {
-      showPhotoOptions();
+    function showPhotoModal() {
+      if (!currentPhoto) return;
+      
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('photoModalImg');
+      
+      modalImg.src = URL.createObjectURL(currentPhoto);
+      modal.classList.add('show');
     }
 
-    function showPhotoOptions() {
-      document.getElementById('photoOptions').classList.add('show');
-    }
-
-    function hidePhotoOptions() {
-      document.getElementById('photoOptions').classList.remove('show');
-    }
-
-    function triggerFileUpload() {
-      const fileInput = document.getElementById('fileInput');
-      fileInput.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-          setPhoto(file);
-          hidePhotoOptions();
+    function removePhoto() {
+      const nameInput = document.getElementById('studentName');
+      const studentName = nameInput.value.trim();
+      
+      // Remove from current session
+      currentPhoto = null;
+      
+      const trigger = document.getElementById('cameraIcon');
+      trigger.classList.remove('has-photo');
+      trigger.textContent = '📸';
+      trigger.title = 'Add photo';
+      
+      document.getElementById('photoModal').classList.remove('show');
+      
+      // Also remove from saved photos if this student has one saved
+      if (studentName) {
+        try {
+          const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+          if (studentPhotos[studentName.toLowerCase().trim()]) {
+            delete studentPhotos[studentName.toLowerCase().trim()];
+            localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+            console.log(`🗑️ Photo removed for ${studentName} (from saved photos too)`);
+          }
+        } catch (error) {
+          console.error('Error removing saved photo:', error);
         }
-      };
-      fileInput.click();
+      }
+      
+      console.log('🗑️ Photo removed');
     }
 
-    // Load question (same as original)
+    // Load question from URL parameters or Supabase
     async function loadQuestion() {
       console.log('🔍 Loading question...');
       
@@ -1493,7 +2048,6 @@
       console.log('📝 Demo question displayed');
     }
 
-    // Enhanced input handling
     function handleInput() {
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
@@ -1515,6 +2069,11 @@
         questionOverlay.classList.remove('focused', 'typing');
       }
       
+      // Show name suggestions as user types
+      if (document.activeElement === nameInput) {
+        showNameSuggestions(name);
+      }
+      
       // Check if name was manually entered (not from quick select)
       if (name !== selectedStudentFromQuickSelect) {
         nameInput.classList.remove('auto-filled');
@@ -1522,8 +2081,9 @@
         selectedStudentFromQuickSelect = null;
       }
       
-      // Auto-load photo when typing name (with delay to avoid excessive calls)
+      // Check for existing photo when name is entered
       if (name.length >= 2 && !currentPhoto && !selectedStudentFromQuickSelect) {
+        // Small delay to avoid excessive lookups while typing
         clearTimeout(window.photoLookupTimeout);
         window.photoLookupTimeout = setTimeout(() => {
           if (loadStudentPhoto(name)) {
@@ -1547,7 +2107,6 @@
       }
     }
 
-    // Quality and scoring functions (same as original)
     function determineQuality(wordCount) {
       if (wordCount >= 25) return 'excellent';
       if (wordCount >= 10) return 'good';
@@ -1567,7 +2126,6 @@
       return Math.min(100, Math.round(score));
     }
 
-    // Submit response (same core logic as original)
     async function submitResponse() {
       if (isSubmitted) return;
       
@@ -1583,6 +2141,7 @@
         return;
       }
 
+      // Show submitting state
       submitBtn.textContent = 'SUBMITTING...';
       submitBtn.classList.add('submitting');
       submitBtn.disabled = true;
@@ -1622,19 +2181,23 @@
           saveStudentPhoto(studentName, currentPhoto);
         }
 
+        // Success - show success overlay
         showSuccess();
         isSubmitted = true;
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
         
+        // Always reset button state on error, then decide what to do
         resetSubmitButton();
         
+        // If offline, treat as success (data saved locally)
         if (!isOnline) {
           console.log('📱 Offline submission - showing success');
           showSuccess();
           isSubmitted = true;
         } else {
+          // Online but failed - show error and allow retry
           alert('Failed to submit response. Please try again.');
         }
       }
@@ -1645,6 +2208,7 @@
       submitBtn.textContent = 'SUBMIT';
       submitBtn.classList.remove('submitting');
       
+      // Re-enable button based on current form state
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
       const name = nameInput.value.trim();
@@ -1657,6 +2221,7 @@
       const successOverlay = document.getElementById('successOverlay');
       const photoSaveMessage = document.getElementById('photoSaveMessage');
       
+      // Update message based on whether there was a photo
       if (currentPhoto) {
         photoSaveMessage.textContent = 'Your photo has been saved for future responses';
         photoSaveMessage.style.display = 'block';
@@ -1670,6 +2235,7 @@
 
     function clearForm() {
       if (isSubmitted) {
+        // Reset for new response
         isSubmitted = false;
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
@@ -1680,21 +2246,22 @@
         document.getElementById('studentName').classList.remove('auto-filled');
         updateStudentCardSelection(null);
         
-        // Clear current photo but keep saved photos
+        // Clear current photo (will auto-reload when name is typed again)
         currentPhoto = null;
         const trigger = document.getElementById('cameraIcon');
         trigger.classList.remove('has-photo', 'auto-loaded');
         trigger.textContent = '📸';
         trigger.title = 'Add photo';
         
-        // Refresh quick select
-        populateQuickSelect();
-        
+        // Reset submit button
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.textContent = 'SUBMIT';
         submitBtn.classList.remove('submitting');
         
-        handleInput();
+        // Refresh quick select
+        populateQuickSelect();
+        
+        handleInput(); // Update button states
         return;
       }
       
@@ -1707,6 +2274,7 @@
         document.getElementById('studentName').classList.remove('auto-filled');
         updateStudentCardSelection(null);
         
+        // Clear current photo but don't delete from database
         currentPhoto = null;
         const trigger = document.getElementById('cameraIcon');
         trigger.classList.remove('has-photo', 'auto-loaded');
@@ -1717,7 +2285,7 @@
       }
     }
 
-    // Initialize the enhanced application
+    // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Enhanced Student Interface initializing...');
       
@@ -1731,13 +2299,22 @@
       // Populate quick select for returning students
       populateQuickSelect();
       
-      // Enhanced event listeners
+      // Event listeners
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
       
       nameInput.addEventListener('input', handleInput);
-      nameInput.addEventListener('focus', handleInput);
-      nameInput.addEventListener('blur', handleInput);
+      nameInput.addEventListener('focus', () => {
+        handleInput(); // Update overlay state
+        if (nameInput.value.trim()) {
+          showNameSuggestions(nameInput.value.trim());
+        }
+      });
+      nameInput.addEventListener('blur', () => {
+        handleInput(); // Update overlay state
+        // Delay hiding to allow clicking on suggestions
+        setTimeout(() => hideNameSuggestions(), 150);
+      });
 
       answerInput.addEventListener('input', handleInput);
       answerInput.addEventListener('focus', handleInput);
@@ -1752,16 +2329,40 @@
         if (studentCard) {
           const studentName = studentCard.dataset.studentName;
           handleQuickSelect(studentName);
+        } else if (e.target.closest('.name-suggestion')) {
+          const suggestion = e.target.closest('.name-suggestion');
+          const studentName = suggestion.dataset.name;
+          selectNameSuggestion(studentName);
+        } else if (!e.target.closest('.name-section')) {
+          hideNameSuggestions();
         }
       });
       
-      // Photo event listeners (simplified)
+      // Photo event listeners
       document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
+      
+      // Photo options event listeners
+      document.getElementById('takePictureBtn').addEventListener('click', startCamera);
       document.getElementById('chooseFromAlbumBtn').addEventListener('click', () => {
         hidePhotoOptions();
         triggerFileUpload();
       });
       document.getElementById('cancelPhotoBtn').addEventListener('click', hidePhotoOptions);
+      
+      // Camera event listeners
+      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+      document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
+      document.getElementById('flipCameraBtn').addEventListener('click', flipCamera);
+      
+      // Photo modal event listeners
+      document.getElementById('retakeBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+        showPhotoOptions();
+      });
+      document.getElementById('removePhotoBtn').addEventListener('click', removePhoto);
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+      });
       
       // Modal click outside to close
       document.getElementById('photoOptions').addEventListener('click', (e) => {
@@ -1770,8 +2371,38 @@
         }
       });
       
-      // Keyboard shortcuts
+      document.getElementById('photoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'photoModal') {
+          document.getElementById('photoModal').classList.remove('show');
+        }
+      });
+      
+      // Keyboard shortcuts and navigation
       document.addEventListener('keydown', (e) => {
+        // Handle name suggestion navigation
+        if (document.getElementById('nameSuggestions').classList.contains('show')) {
+          switch(e.key) {
+            case 'ArrowDown':
+              e.preventDefault();
+              navigateSuggestions('down');
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              navigateSuggestions('up');
+              break;
+            case 'Enter':
+              if (selectCurrentSuggestion()) {
+                e.preventDefault();
+              }
+              break;
+            case 'Escape':
+              e.preventDefault();
+              hideNameSuggestions();
+              break;
+          }
+          return;
+        }
+
         // Global shortcuts
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const submitBtn = document.getElementById('submitBtn');
@@ -1779,7 +2410,11 @@
         }
         
         if (e.key === 'Escape' && !isSubmitted) {
+          // Close any open modals
           hidePhotoOptions();
+          hideNameSuggestions();
+          document.getElementById('photoModal').classList.remove('show');
+          stopCamera();
         }
       });
       
