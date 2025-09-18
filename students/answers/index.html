@@ -1411,9 +1411,11 @@
       const studentAnswer = answerInput.value.trim();
       
       if (!studentName || !studentAnswer) {
+        console.log('❌ Cannot submit: missing name or answer');
         return;
       }
 
+      // Show submitting state
       submitBtn.textContent = 'SUBMITTING...';
       submitBtn.classList.add('submitting');
       submitBtn.disabled = true;
@@ -1448,21 +1450,40 @@
 
         console.log('✅ Response submitted successfully');
 
+        // Success - show success overlay
         showSuccess();
         isSubmitted = true;
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
         
+        // Always reset button state on error, then decide what to do
+        resetSubmitButton();
+        
+        // If offline, treat as success (data saved locally)
         if (!isOnline) {
+          console.log('📱 Offline submission - showing success');
           showSuccess();
           isSubmitted = true;
         } else {
-          submitBtn.textContent = 'SUBMIT';
-          submitBtn.classList.remove('submitting');
-          submitBtn.disabled = false;
+          // Online but failed - show error and allow retry
+          alert('Failed to submit response. Please try again.');
         }
       }
+    }
+
+    function resetSubmitButton() {
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.textContent = 'SUBMIT';
+      submitBtn.classList.remove('submitting');
+      
+      // Re-enable button based on current form state
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const name = nameInput.value.trim();
+      const answer = answerInput.value.trim();
+      
+      submitBtn.disabled = !(name && answer);
     }
 
     function showSuccess() {
@@ -1555,11 +1576,6 @@
       });
       
       console.log('✅ Clean student interface ready - one clear action: SUBMIT!');
-    });
-  </script>
-</body>
-</html>
-      console.log('✅ Enhanced student interface ready with photo options and camera flip!');
     });
   </script>
 </body>
