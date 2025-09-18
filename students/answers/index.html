@@ -240,7 +240,7 @@
       height: 5cm;
       position: relative;
       perspective: 1000px;
-      overflow: hidden;
+      overflow: visible; /* Changed from hidden to allow dropdown overflow */
     }
 
     .response-box {
@@ -298,22 +298,24 @@
       font-style: italic;
     }
 
-    /* Name autocomplete dropdown */
+    /* Enhanced Name Dropdown */
     .name-suggestions {
       position: absolute;
       top: 100%;
       left: 0;
       right: 60px; /* Leave space for camera icon */
-      background: #000000;
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 10px;
-      max-height: 150px;
+      background: rgba(0, 0, 0, 0.95);
+      border: 1px solid rgba(255, 140, 60, 0.4);
+      border-radius: 12px;
+      max-height: 240px; /* Increased height */
       overflow-y: auto;
-      z-index: 1000;
+      z-index: 2000; /* Increased z-index */
       opacity: 0;
       transform: translateY(-10px);
       pointer-events: none;
       transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
 
     .name-suggestions.show {
@@ -322,16 +324,30 @@
       pointer-events: all;
     }
 
+    .suggestions-header {
+      padding: 12px 15px 8px 15px;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255, 140, 60, 0.2);
+      background: rgba(255, 140, 60, 0.05);
+      position: sticky;
+      top: 0;
+    }
+
     .name-suggestion {
-      padding: 10px 15px;
+      padding: 12px 15px;
       color: rgba(255, 255, 255, 0.8);
       font-size: 14px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
     }
 
     .name-suggestion:last-child {
@@ -339,34 +355,95 @@
     }
 
     .name-suggestion:hover {
-      background: rgba(255, 140, 60, 0.1);
+      background: rgba(255, 140, 60, 0.15);
       color: #fff;
+      transform: translateX(2px);
     }
 
     .name-suggestion.highlighted {
-      background: rgba(255, 140, 60, 0.2);
+      background: rgba(255, 140, 60, 0.25);
       color: #fff;
+      transform: translateX(2px);
     }
 
     .suggestion-photo {
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
+      width: 32px; /* Increased size */
+      height: 32px;
+      border-radius: 6px;
       object-fit: cover;
       border: 1px solid rgba(255, 140, 60, 0.3);
       flex-shrink: 0;
     }
 
-    .suggestion-name {
+    .suggestion-photo-placeholder {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(255, 140, 60, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: rgba(255, 140, 60, 0.8);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      flex-shrink: 0;
+    }
+
+    .suggestion-info {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .suggestion-name {
+      font-weight: 500;
+      color: inherit;
+    }
+
+    .suggestion-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     .suggestion-count {
-      font-size: 11px;
-      color: rgba(255, 140, 60, 0.6);
+      font-size: 10px;
+      color: rgba(255, 140, 60, 0.7);
       background: rgba(255, 140, 60, 0.1);
       padding: 2px 6px;
       border-radius: 8px;
+      border: 1px solid rgba(255, 140, 60, 0.2);
+    }
+
+    .suggestion-photo-indicator {
+      font-size: 10px;
+      color: rgba(16, 185, 129, 0.7);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .new-student-option {
+      padding: 12px 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+      font-style: italic;
+    }
+
+    .new-student-option:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .camera-icon {
@@ -778,6 +855,25 @@
       color: white;
     }
 
+    /* Custom scrollbar for suggestions */
+    .name-suggestions::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .name-suggestions::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+    }
+
+    .name-suggestions::-webkit-scrollbar-thumb {
+      background: rgba(255, 140, 60, 0.3);
+      border-radius: 2px;
+    }
+
+    .name-suggestions::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 140, 60, 0.5);
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -827,6 +923,16 @@
       .photo-options-content {
         margin: 20px;
         padding: 25px;
+      }
+
+      .name-suggestions {
+        max-height: 200px;
+      }
+
+      .suggestion-photo,
+      .suggestion-photo-placeholder {
+        width: 28px;
+        height: 28px;
       }
     }
   </style>
@@ -956,6 +1062,10 @@
     let isConnected = false;
     let isOnline = navigator.onLine;
     let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
+
+    // Enhanced dropdown variables
+    let currentSuggestionIndex = -1;
+    let dropdownOpen = false;
 
     // Initialize Supabase
     function initSupabase() {
@@ -1220,9 +1330,7 @@
       }
     }
 
-    // Name autocomplete functions
-    let currentSuggestionIndex = -1;
-
+    // Enhanced name autocomplete functions
     function getAllStudentNames() {
       const names = new Map(); // Use Map to avoid duplicates and store metadata
       
@@ -1235,7 +1343,8 @@
             name: student.name,
             hasPhoto: true,
             photo: student.photo,
-            responses: 0
+            responses: 0,
+            lastSeen: student.saved
           });
         });
 
@@ -1248,23 +1357,36 @@
             const existing = names.get(key);
             if (existing) {
               existing.responses++;
+              existing.lastSeen = response.submittedAt || response.timestamp || existing.lastSeen;
             } else {
               names.set(key, {
                 name: studentName,
                 hasPhoto: false,
                 photo: null,
-                responses: 1
+                responses: 1,
+                lastSeen: response.submittedAt || response.timestamp || new Date().toISOString()
               });
             }
           }
         });
 
-        // Convert to array and sort by response count, then alphabetically
+        // Convert to array and sort by recent activity, then response count
         return Array.from(names.values()).sort((a, b) => {
-          if (a.responses !== b.responses) {
-            return b.responses - a.responses; // More responses first
+          const aDate = new Date(a.lastSeen || 0);
+          const bDate = new Date(b.lastSeen || 0);
+          
+          // Primary sort: most recent activity
+          if (aDate.getTime() !== bDate.getTime()) {
+            return bDate.getTime() - aDate.getTime();
           }
-          return a.name.localeCompare(b.name); // Then alphabetically
+          
+          // Secondary sort: more responses
+          if (a.responses !== b.responses) {
+            return b.responses - a.responses;
+          }
+          
+          // Tertiary sort: alphabetically
+          return a.name.localeCompare(b.name);
         });
       } catch (error) {
         console.error('Error getting student names:', error);
@@ -1272,48 +1394,96 @@
       }
     }
 
-    function showNameSuggestions(query) {
+    function showNameSuggestions(query = '') {
       const suggestions = document.getElementById('nameSuggestions');
       const allNames = getAllStudentNames();
       
-      if (!query || query.length < 1) {
-        suggestions.classList.remove('show');
+      // Show dropdown with all students when focused, or filtered when typing
+      let filtered = allNames;
+      if (query && query.length >= 1) {
+        filtered = allNames.filter(student => 
+          student.name.toLowerCase().includes(query.toLowerCase())
+        );
+      }
+      
+      // Limit to 8 suggestions to keep dropdown manageable
+      filtered = filtered.slice(0, 8);
+
+      if (filtered.length === 0 && (!query || query.length === 0)) {
+        // No students exist yet
+        suggestions.innerHTML = `
+          <div class="new-student-option">
+            👋 Welcome! You're the first student - just type your name above
+          </div>
+        `;
+        suggestions.classList.add('show');
+        dropdownOpen = true;
         return;
       }
 
-      const filtered = allNames.filter(student => 
-        student.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 5); // Limit to 5 suggestions
-
-      if (filtered.length === 0) {
-        suggestions.classList.remove('show');
+      if (filtered.length === 0 && query && query.length > 0) {
+        // No matches but user is typing
+        suggestions.innerHTML = `
+          <div class="new-student-option">
+            ✨ New student "${query}" - continue typing to add yourself
+          </div>
+        `;
+        suggestions.classList.add('show');
+        dropdownOpen = true;
         return;
       }
 
-      suggestions.innerHTML = filtered.map((student, index) => {
+      // Build suggestions HTML
+      let html = '';
+      
+      // Add header if showing all students
+      if (!query || query.length === 0) {
+        html += `<div class="suggestions-header">Recent Students</div>`;
+      }
+
+      html += filtered.map((student, index) => {
         const photoHtml = student.hasPhoto 
           ? `<img src="${student.photo}" alt="${student.name}" class="suggestion-photo">`
-          : `<div class="suggestion-photo" style="background: rgba(255,140,60,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: rgba(255,140,60,0.8);">👤</div>`;
+          : `<div class="suggestion-photo-placeholder">👤</div>`;
         
-        const countHtml = student.responses > 0 
-          ? `<span class="suggestion-count">${student.responses}</span>`
-          : '';
+        const metaItems = [];
+        if (student.responses > 0) {
+          metaItems.push(`<span class="suggestion-count">${student.responses} response${student.responses > 1 ? 's' : ''}</span>`);
+        }
+        if (student.hasPhoto) {
+          metaItems.push(`<span class="suggestion-photo-indicator">📸 Photo</span>`);
+        }
 
         return `
           <div class="name-suggestion" data-name="${student.name}" data-index="${index}">
             ${photoHtml}
-            <span class="suggestion-name">${student.name}</span>
-            ${countHtml}
+            <div class="suggestion-info">
+              <div class="suggestion-name">${student.name}</div>
+              ${metaItems.length > 0 ? `<div class="suggestion-meta">${metaItems.join('')}</div>` : ''}
+            </div>
           </div>
         `;
       }).join('');
 
+      // Add "new student" option if user is typing something not in the list
+      if (query && query.length > 0 && !filtered.some(s => s.name.toLowerCase() === query.toLowerCase())) {
+        html += `
+          <div class="new-student-option">
+            ✨ Continue as new student "${query}"
+          </div>
+        `;
+      }
+
+      suggestions.innerHTML = html;
       suggestions.classList.add('show');
+      dropdownOpen = true;
       currentSuggestionIndex = -1;
     }
 
     function hideNameSuggestions() {
-      document.getElementById('nameSuggestions').classList.remove('show');
+      const suggestions = document.getElementById('nameSuggestions');
+      suggestions.classList.remove('show');
+      dropdownOpen = false;
       currentSuggestionIndex = -1;
     }
 
@@ -1352,7 +1522,11 @@
 
       // Highlight new selection
       if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
-        suggestions[currentSuggestionIndex].classList.add('highlighted');
+        const highlighted = suggestions[currentSuggestionIndex];
+        highlighted.classList.add('highlighted');
+        
+        // Scroll into view if necessary
+        highlighted.scrollIntoView({ block: 'nearest' });
       }
     }
 
@@ -1365,6 +1539,7 @@
       }
       return false;
     }
+
     function saveStudentPhoto(studentName, photoBlob) {
       try {
         const reader = new FileReader();
@@ -1436,6 +1611,7 @@
         setTimeout(() => notification.remove(), 300);
       }, 2000);
     }
+
     function compressImage(file, maxWidth = 800, quality = 0.8) {
       return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1720,8 +1896,8 @@
         questionOverlay.classList.remove('focused', 'typing');
       }
       
-      // Show name suggestions as user types
-      if (document.activeElement === nameInput) {
+      // Show name suggestions when typing or when dropdown is open
+      if (document.activeElement === nameInput && dropdownOpen) {
         showNameSuggestions(name);
       }
       
@@ -1923,7 +2099,7 @@
 
     // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Clean Student Interface initializing...');
+      console.log('🚀 INTUITY Enhanced Student Interface initializing...');
       
       if (initSupabase()) {
         setTimeout(loadQuestion, 1000);
@@ -1937,16 +2113,17 @@
       const answerInput = document.getElementById('studentAnswer');
       
       nameInput.addEventListener('input', handleInput);
+      
+      // Enhanced focus handling for dropdown
       nameInput.addEventListener('focus', () => {
         handleInput(); // Update overlay state
-        if (nameInput.value.trim()) {
-          showNameSuggestions(nameInput.value.trim());
-        }
+        showNameSuggestions(nameInput.value.trim()); // Show dropdown immediately
       });
+      
       nameInput.addEventListener('blur', () => {
         handleInput(); // Update overlay state
         // Delay hiding to allow clicking on suggestions
-        setTimeout(() => hideNameSuggestions(), 150);
+        setTimeout(() => hideNameSuggestions(), 200);
       });
 
       answerInput.addEventListener('input', handleInput);
@@ -1956,12 +2133,17 @@
       document.getElementById('submitBtn').addEventListener('click', submitResponse);
       document.getElementById('clearBtn').addEventListener('click', clearForm);
 
-      // Name suggestion click handlers
+      // Enhanced name suggestion click handlers
       document.addEventListener('click', (e) => {
         if (e.target.closest('.name-suggestion')) {
+          e.preventDefault();
           const suggestion = e.target.closest('.name-suggestion');
           const studentName = suggestion.dataset.name;
           selectNameSuggestion(studentName);
+        } else if (e.target.closest('.new-student-option')) {
+          // Just hide dropdown for new student option
+          hideNameSuggestions();
+          nameInput.focus();
         } else if (!e.target.closest('.name-section')) {
           hideNameSuggestions();
         }
@@ -2006,10 +2188,10 @@
         }
       });
       
-      // Keyboard shortcuts and navigation
+      // Enhanced keyboard shortcuts and navigation
       document.addEventListener('keydown', (e) => {
         // Handle name suggestion navigation
-        if (document.getElementById('nameSuggestions').classList.contains('show')) {
+        if (dropdownOpen) {
           switch(e.key) {
             case 'ArrowDown':
               e.preventDefault();
@@ -2020,12 +2202,16 @@
               navigateSuggestions('up');
               break;
             case 'Enter':
-              if (selectCurrentSuggestion()) {
+              if (document.activeElement === nameInput && selectCurrentSuggestion()) {
                 e.preventDefault();
               }
               break;
             case 'Escape':
               e.preventDefault();
+              hideNameSuggestions();
+              break;
+            case 'Tab':
+              // Allow tab to move to next field but close dropdown
               hideNameSuggestions();
               break;
           }
@@ -2047,7 +2233,7 @@
         }
       });
       
-      console.log('✅ Clean student interface ready - one clear action: SUBMIT!');
+      console.log('✅ Enhanced student interface ready with improved dropdown!');
     });
   </script>
 </body>
