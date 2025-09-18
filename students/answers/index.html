@@ -430,6 +430,83 @@
       transform: none;
     }
 
+    /* Photo Options Modal */
+    .photo-options {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .photo-options.show {
+      display: flex;
+    }
+
+    .photo-options-content {
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      text-align: center;
+      max-width: 350px;
+      width: 90%;
+    }
+
+    .photo-options-title {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .photo-options-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .photo-option-btn {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 15px;
+      padding: 15px 20px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .photo-option-btn:hover {
+      background: rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.5);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .photo-option-btn.cancel {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .photo-option-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+
     .photo-modal {
       position: fixed;
       top: 0;
@@ -511,6 +588,9 @@
       margin-top: 20px;
       display: flex;
       gap: 15px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .camera-btn {
@@ -522,6 +602,8 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      font-size: 14px;
+      min-width: 100px;
     }
 
     .camera-btn:hover {
@@ -536,6 +618,24 @@
 
     .camera-btn.secondary:hover {
       background: rgba(255, 255, 255, 0.2);
+    }
+
+    .camera-btn.flip {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 50%;
+      min-width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .camera-btn.flip:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
     }
 
     @media (max-width: 768px) {
@@ -572,6 +672,11 @@
         width: 35px;
         height: 35px;
         font-size: 16px;
+      }
+
+      .photo-options-content {
+        margin: 20px;
+        padding: 25px;
       }
     }
   </style>
@@ -640,6 +745,24 @@
     </footer>
   </div>
 
+  <!-- Photo Options Modal -->
+  <div class="photo-options" id="photoOptions">
+    <div class="photo-options-content">
+      <div class="photo-options-title">Add Photo</div>
+      <div class="photo-options-buttons">
+        <button class="photo-option-btn" id="takePictureBtn">
+          📸 Take Picture
+        </button>
+        <button class="photo-option-btn" id="chooseFromAlbumBtn">
+          🖼️ Choose from Album
+        </button>
+        <button class="photo-option-btn cancel" id="cancelPhotoBtn">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-content">
       <div class="photo-modal-controls">
@@ -654,6 +777,7 @@
   <div class="camera-preview" id="cameraPreview">
     <video id="cameraVideo" autoplay muted playsinline></video>
     <div class="camera-controls">
+      <button class="camera-btn flip" id="flipCameraBtn" title="Flip Camera">🔄</button>
       <button class="camera-btn" id="captureBtn">Capture</button>
       <button class="camera-btn secondary" id="cancelCameraBtn">Cancel</button>
     </div>
@@ -662,7 +786,7 @@
   <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
   <script>
-    // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
+    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
@@ -675,6 +799,7 @@
     let isSubmitted = false;
     let isConnected = false;
     let isOnline = navigator.onLine;
+    let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
 
     // Initialize Supabase
     function initSupabase() {
@@ -963,29 +1088,82 @@
       if (currentPhoto) {
         showPhotoModal();
       } else {
-        startCamera();
+        showPhotoOptions();
       }
+    }
+
+    function showPhotoOptions() {
+      document.getElementById('photoOptions').classList.add('show');
+    }
+
+    function hidePhotoOptions() {
+      document.getElementById('photoOptions').classList.remove('show');
     }
 
     async function startCamera() {
       try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+        // Stop any existing stream
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+        }
+
+        const constraints = { 
           video: { 
-            facingMode: 'user',
+            facingMode: currentFacingMode,
             width: { ideal: 1280 },
             height: { ideal: 720 }
           } 
-        });
+        };
+
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
         
         const video = document.getElementById('cameraVideo');
         video.srcObject = cameraStream;
         
+        hidePhotoOptions();
         document.getElementById('cameraPreview').classList.add('show');
         
+        console.log(`📷 Camera started with ${currentFacingMode} facing mode`);
+        
       } catch (error) {
-        console.log('Camera not available, falling back to file upload');
+        console.error('Camera not available:', error);
+        hidePhotoOptions();
+        showCameraError();
+      }
+    }
+
+    async function flipCamera() {
+      // Toggle between front and rear camera
+      currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+      
+      // Restart camera with new facing mode
+      if (cameraStream) {
+        await startCamera();
+      }
+      
+      console.log(`🔄 Camera flipped to ${currentFacingMode} mode`);
+    }
+
+    function showCameraError() {
+      // Fallback to file upload if camera fails
+      const confirmResult = confirm('Camera not available. Choose photo from album instead?');
+      if (confirmResult) {
         triggerFileUpload();
       }
+    }
+
+    function triggerFileUpload() {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          compressImage(file).then(blob => {
+            setPhoto(blob);
+            hidePhotoOptions();
+          });
+        }
+      };
+      fileInput.click();
     }
 
     function capturePhoto() {
@@ -1009,17 +1187,6 @@
         cameraStream = null;
       }
       document.getElementById('cameraPreview').classList.remove('show');
-    }
-
-    function triggerFileUpload() {
-      const fileInput = document.getElementById('fileInput');
-      fileInput.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          compressImage(file).then(setPhoto);
-        }
-      };
-      fileInput.click();
     }
 
     async function setPhoto(photoBlob) {
@@ -1255,7 +1422,7 @@
 
     // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Minimalist Student Interface initializing...');
+      console.log('🚀 INTUITY Enhanced Student Interface initializing...');
       
       if (initSupabase()) {
         setTimeout(loadQuestion, 1000);
@@ -1272,11 +1439,24 @@
       
       // Photo event listeners
       document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
+      
+      // Photo options event listeners
+      document.getElementById('takePictureBtn').addEventListener('click', startCamera);
+      document.getElementById('chooseFromAlbumBtn').addEventListener('click', () => {
+        hidePhotoOptions();
+        triggerFileUpload();
+      });
+      document.getElementById('cancelPhotoBtn').addEventListener('click', hidePhotoOptions);
+      
+      // Camera event listeners
       document.getElementById('captureBtn').addEventListener('click', capturePhoto);
       document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
+      document.getElementById('flipCameraBtn').addEventListener('click', flipCamera);
+      
+      // Photo modal event listeners
       document.getElementById('retakeBtn').addEventListener('click', () => {
         document.getElementById('photoModal').classList.remove('show');
-        startCamera();
+        showPhotoOptions();
       });
       document.getElementById('removePhotoBtn').addEventListener('click', removePhoto);
       document.getElementById('closeModalBtn').addEventListener('click', () => {
@@ -1284,6 +1464,12 @@
       });
       
       // Modal click outside to close
+      document.getElementById('photoOptions').addEventListener('click', (e) => {
+        if (e.target.id === 'photoOptions') {
+          hidePhotoOptions();
+        }
+      });
+      
       document.getElementById('photoModal').addEventListener('click', (e) => {
         if (e.target.id === 'photoModal') {
           document.getElementById('photoModal').classList.remove('show');
@@ -1296,10 +1482,15 @@
           const submitBtn = document.getElementById('submitBtn');
           if (!submitBtn.disabled) submitResponse();
         }
-        if (e.key === 'Escape' && !isSubmitted) clearForm();
+        if (e.key === 'Escape' && !isSubmitted) {
+          // Close any open modals
+          hidePhotoOptions();
+          document.getElementById('photoModal').classList.remove('show');
+          stopCamera();
+        }
       });
       
-      console.log('✅ Minimalist student interface ready!');
+      console.log('✅ Enhanced student interface ready with photo options and camera flip!');
     });
   </script>
 </body>
