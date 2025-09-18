@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Response (Enhanced)</title>
+  <title>INTUITY - Student Response</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -171,7 +171,7 @@
 
     .header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 40px;
     }
 
     .header h1 {
@@ -225,152 +225,6 @@
     .question-overlay.typing {
       opacity: 0.15;
       transform: translateX(-50%) scale(0.9);
-    }
-
-    /* Minimal Quick Access - CLEAN */
-    .quick-access-hint {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: all 0.3s ease;
-    }
-
-    .quick-access-hint.show {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .quick-access-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(255, 140, 60, 0.1);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      color: rgba(255, 140, 60, 0.8);
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .quick-access-btn:hover {
-      background: rgba(255, 140, 60, 0.2);
-      border-color: rgba(255, 140, 60, 0.5);
-      color: #fff;
-      transform: scale(1.05);
-    }
-
-    .quick-access-btn.active {
-      background: rgba(255, 140, 60, 0.3);
-      border-color: rgba(255, 140, 60, 0.6);
-      color: #fff;
-    }
-
-    .quick-access-dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      margin-top: 8px;
-      background: rgba(0, 0, 0, 0.95);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 12px;
-      backdrop-filter: blur(15px);
-      min-width: 220px;
-      max-height: 280px;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(-10px);
-      pointer-events: none;
-      transition: all 0.3s ease;
-    }
-
-    .quick-access-dropdown.show {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
-
-    .dropdown-header {
-      padding: 12px 16px;
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .student-list {
-      max-height: 240px;
-      overflow-y: auto;
-    }
-
-    .student-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .student-item:last-child {
-      border-bottom: none;
-    }
-
-    .student-item:hover {
-      background: rgba(255, 140, 60, 0.1);
-    }
-
-    .student-item.selected {
-      background: rgba(255, 140, 60, 0.2);
-    }
-
-    .student-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      background: rgba(255, 140, 60, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: rgba(255, 140, 60, 0.8);
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-
-    .student-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .student-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .student-name {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .student-count {
-      color: rgba(255, 140, 60, 0.6);
-      font-size: 11px;
     }
 
     .main-content {
@@ -444,17 +298,12 @@
       font-style: italic;
     }
 
-    .name-input.auto-filled {
-      border-bottom-color: rgba(16, 185, 129, 0.6);
-      color: rgba(16, 185, 129, 0.9);
-    }
-
     /* Name autocomplete dropdown */
     .name-suggestions {
       position: absolute;
       top: 100%;
       left: 0;
-      right: 60px;
+      right: 60px; /* Leave space for camera icon */
       background: #000000;
       border: 1px solid rgba(255, 140, 60, 0.3);
       border-radius: 10px;
@@ -549,10 +398,6 @@
       background: rgba(16, 185, 129, 1);
     }
 
-    .camera-icon.auto-loaded {
-      animation: buttonPulse 0.6s ease;
-    }
-
     .answer-area {
       flex: 1;
       display: flex;
@@ -643,7 +488,7 @@
       transform: translateY(-2px);
     }
 
-    /* Submit Button */
+    /* Submit Button - The Star */
     .submit-section {
       margin-top: 40px;
       display: flex;
@@ -692,7 +537,7 @@
       transform: none;
     }
 
-    /* Clear button */
+    /* Clear button - subtle when needed */
     .clear-hint {
       position: fixed;
       top: 20px;
@@ -933,32 +778,6 @@
       color: white;
     }
 
-    /* Quick select notification */
-    .auto-load-notification {
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: rgba(16, 185, 129, 0.9);
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 500;
-      z-index: 1000;
-      opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .auto-load-notification.show {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -971,30 +790,6 @@
       .question-overlay {
         font-size: 20px;
         max-width: 90%;
-      }
-      
-      .student-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 8px;
-        max-height: 100px;
-      }
-
-      .student-card {
-        padding: 10px;
-        min-height: 45px;
-      }
-
-      .student-avatar {
-        width: 28px;
-        height: 28px;
-      }
-
-      .student-name {
-        font-size: 12px;
-      }
-
-      .student-count {
-        font-size: 10px;
       }
       
       .response-container {
@@ -1029,16 +824,6 @@
         margin-top: 30px;
       }
 
-      .quick-select {
-        padding: 12px;
-        margin-bottom: 15px;
-      }
-
-      .quick-select h3 {
-        font-size: 13px;
-        margin-bottom: 10px;
-      }
-
       .photo-options-content {
         margin: 20px;
         padding: 25px;
@@ -1068,19 +853,6 @@
       <p>Student Response<br>By Majid Nashtai</p>
     </header>
 
-    <!-- Floating Quick Access Button - MINIMAL -->
-    <div class="quick-access-hint" id="quickAccessHint">
-      <button class="quick-access-btn" id="quickAccessBtn" title="Quick access for returning students">
-        👥
-      </button>
-      <div class="quick-access-dropdown" id="quickAccessDropdown">
-        <div class="dropdown-header">Returning Students</div>
-        <div class="student-list" id="studentList">
-          <!-- Student items will be populated here -->
-        </div>
-      </div>
-    </div>
-
     <main class="main-content">
       <div class="response-container">
         <div class="response-box">
@@ -1090,7 +862,7 @@
                 type="text" 
                 class="name-input" 
                 id="studentName"
-                placeholder="Your name (or select above)..."
+                placeholder="Your name..."
                 maxlength="50"
                 autocomplete="off"
               />
@@ -1126,14 +898,8 @@
     </div>
   </div>
 
-  <!-- Clear button -->
+  <!-- Clear button - only visible when needed -->
   <div class="clear-hint" id="clearBtn" title="Clear form">✕</div>
-
-  <!-- Auto-load notification -->
-  <div class="auto-load-notification" id="autoLoadNotification">
-    <span>✓</span>
-    <span>Data loaded automatically!</span>
-  </div>
 
   <!-- Photo Options Modal -->
   <div class="photo-options" id="photoOptions">
@@ -1190,8 +956,6 @@
     let isConnected = false;
     let isOnline = navigator.onLine;
     let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
-    let selectedStudentFromQuickSelect = null;
-    let currentSuggestionIndex = -1;
 
     // Initialize Supabase
     function initSupabase() {
@@ -1456,167 +1220,9 @@
       }
     }
 
-    // Enhanced student data functions for Quick Select
-    function getAllStudentData() {
-      const students = new Map();
-      
-      try {
-        // Get student photos
-        const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
-        Object.values(studentPhotos).forEach(student => {
-          const key = student.name.toLowerCase();
-          students.set(key, {
-            name: student.name,
-            hasPhoto: true,
-            photo: student.photo,
-            responses: 0,
-            lastResponse: null,
-            lastSeen: new Date(student.saved)
-          });
-        });
-
-        // Get response data and count
-        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
-        responses.forEach(response => {
-          const studentName = response.studentName || response.student_name;
-          if (studentName) {
-            const key = studentName.toLowerCase();
-            const existing = students.get(key);
-            const responseDate = new Date(response.submitted_at || response.submittedAt || response.timestamp);
-            
-            if (existing) {
-              existing.responses++;
-              if (!existing.lastResponse || responseDate > new Date(existing.lastResponse)) {
-                existing.lastResponse = responseDate;
-                existing.lastSeen = responseDate;
-              }
-            } else {
-              students.set(key, {
-                name: studentName,
-                hasPhoto: false,
-                photo: null,
-                responses: 1,
-                lastResponse: responseDate,
-                lastSeen: responseDate
-              });
-            }
-          }
-        });
-
-        // Convert to array and sort by recent activity, then by response count
-        return Array.from(students.values()).sort((a, b) => {
-          // First by recency (last seen)
-          if (a.lastSeen && b.lastSeen) {
-            const timeDiff = b.lastSeen - a.lastSeen;
-            if (Math.abs(timeDiff) > 24 * 60 * 60 * 1000) { // More than 1 day difference
-              return timeDiff;
-            }
-          }
-          
-          // Then by response count
-          if (a.responses !== b.responses) {
-            return b.responses - a.responses;
-          }
-          
-          // Finally alphabetically
-          return a.name.localeCompare(b.name);
-        });
-      } catch (error) {
-        console.error('Error getting student data:', error);
-        return [];
-      }
-    }
-
-    // Populate quick select grid
-    function populateQuickSelect() {
-      const studentGrid = document.getElementById('studentGrid');
-      const quickSelect = document.getElementById('quickSelect');
-      const allStudents = getAllStudentData();
-      
-      // Show only students with at least 1 response or a photo
-      const returningStudents = allStudents.filter(student => student.responses > 0 || student.hasPhoto);
-      
-      if (returningStudents.length === 0) {
-        quickSelect.classList.remove('show');
-        return;
-      }
-
-      // Show top 8 most recent students
-      const recentStudents = returningStudents.slice(0, 8);
-      
-      studentGrid.innerHTML = recentStudents.map(student => {
-        const avatar = student.hasPhoto 
-          ? `<img src="${student.photo}" alt="${student.name}">`
-          : `<span>👤</span>`;
-          
-        const responseText = student.responses === 1 ? '1 response' : `${student.responses} responses`;
-        
-        return `
-          <div class="student-card" data-student-name="${student.name}">
-            <div class="student-avatar">${avatar}</div>
-            <div class="student-info">
-              <div class="student-name">${student.name}</div>
-              <div class="student-count">${responseText}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-      
-      quickSelect.classList.add('show');
-      console.log(`👥 Showing ${recentStudents.length} returning students in quick select`);
-    }
-
-    // Handle quick select
-    function handleQuickSelect(studentName) {
-      selectedStudentFromQuickSelect = studentName;
-      
-      // Fill in the name
-      const nameInput = document.getElementById('studentName');
-      nameInput.value = studentName;
-      nameInput.classList.add('auto-filled');
-      
-      // Load their photo
-      loadStudentPhoto(studentName);
-      
-      // Update UI
-      updateStudentCardSelection(studentName);
-      handleInput();
-      
-      // Show notification
-      showAutoLoadNotification(`Loaded data for ${studentName}`);
-      
-      // Focus on answer
-      setTimeout(() => {
-        document.getElementById('studentAnswer').focus();
-      }, 500);
-      
-      console.log(`✅ Quick selected: ${studentName}`);
-    }
-
-    // Update student card selection visual state
-    function updateStudentCardSelection(selectedName) {
-      document.querySelectorAll('.student-card').forEach(card => {
-        const cardName = card.dataset.studentName;
-        if (cardName === selectedName) {
-          card.classList.add('selected');
-        } else {
-          card.classList.remove('selected');
-        }
-      });
-    }
-
-    // Show auto-load notification
-    function showAutoLoadNotification(message) {
-      const notification = document.getElementById('autoLoadNotification');
-      notification.querySelector('span:last-child').textContent = message;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
-
     // Name autocomplete functions
+    let currentSuggestionIndex = -1;
+
     function getAllStudentNames() {
       const names = new Map(); // Use Map to avoid duplicates and store metadata
       
@@ -1759,8 +1365,6 @@
       }
       return false;
     }
-
-    // Enhanced photo functions
     function saveStudentPhoto(studentName, photoBlob) {
       try {
         const reader = new FileReader();
@@ -1773,9 +1377,6 @@
           };
           localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
           console.log(`📸 Photo saved for ${studentName}`);
-          
-          // Refresh quick select to show the new photo
-          setTimeout(populateQuickSelect, 100);
         };
         reader.readAsDataURL(photoBlob);
       } catch (error) {
@@ -1835,7 +1436,6 @@
         setTimeout(() => notification.remove(), 300);
       }, 2000);
     }
-
     function compressImage(file, maxWidth = 800, quality = 0.8) {
       return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1960,7 +1560,7 @@
       document.getElementById('cameraPreview').classList.remove('show');
     }
 
-    function setPhoto(photoBlob, isAutoLoaded = false) {
+    async function setPhoto(photoBlob, isAutoLoaded = false) {
       currentPhoto = photoBlob;
       
       const trigger = document.getElementById('cameraIcon');
@@ -1969,8 +1569,9 @@
       
       if (isAutoLoaded) {
         trigger.title = 'Photo auto-loaded - click to view or change';
-        trigger.classList.add('auto-loaded');
-        setTimeout(() => trigger.classList.remove('auto-loaded'), 600);
+        // Add subtle animation to indicate auto-load
+        trigger.style.animation = 'buttonPulse 0.5s ease';
+        setTimeout(() => trigger.style.animation = '', 500);
       } else {
         trigger.title = 'Click to view or change photo';
       }
@@ -2124,21 +1725,12 @@
         showNameSuggestions(name);
       }
       
-      // Check if name was manually entered (not from quick select)
-      if (name !== selectedStudentFromQuickSelect) {
-        nameInput.classList.remove('auto-filled');
-        updateStudentCardSelection(null); // Clear selection
-        selectedStudentFromQuickSelect = null;
-      }
-      
       // Check for existing photo when name is entered
-      if (name.length >= 2 && !currentPhoto && !selectedStudentFromQuickSelect) {
+      if (name.length >= 2 && !currentPhoto) {
         // Small delay to avoid excessive lookups while typing
         clearTimeout(window.photoLookupTimeout);
         window.photoLookupTimeout = setTimeout(() => {
-          if (loadStudentPhoto(name)) {
-            showAutoLoadNotification(`Photo loaded for ${name}`);
-          }
+          loadStudentPhoto(name);
         }, 500);
       }
       
@@ -2291,15 +1883,10 @@
         document.getElementById('studentAnswer').value = '';
         document.getElementById('successOverlay').style.display = 'none';
         
-        // Clear selection states
-        selectedStudentFromQuickSelect = null;
-        document.getElementById('studentName').classList.remove('auto-filled');
-        updateStudentCardSelection(null);
-        
         // Clear current photo (will auto-reload when name is typed again)
         currentPhoto = null;
         const trigger = document.getElementById('cameraIcon');
-        trigger.classList.remove('has-photo', 'auto-loaded');
+        trigger.classList.remove('has-photo');
         trigger.textContent = '📸';
         trigger.title = 'Add photo';
         
@@ -2307,9 +1894,6 @@
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.textContent = 'SUBMIT';
         submitBtn.classList.remove('submitting');
-        
-        // Refresh quick select
-        populateQuickSelect();
         
         handleInput(); // Update button states
         return;
@@ -2319,15 +1903,10 @@
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
         
-        // Clear selection states
-        selectedStudentFromQuickSelect = null;
-        document.getElementById('studentName').classList.remove('auto-filled');
-        updateStudentCardSelection(null);
-        
         // Clear current photo but don't delete from database
         currentPhoto = null;
         const trigger = document.getElementById('cameraIcon');
-        trigger.classList.remove('has-photo', 'auto-loaded');
+        trigger.classList.remove('has-photo');
         trigger.textContent = '📸';
         trigger.title = 'Add photo';
         
@@ -2335,9 +1914,16 @@
       }
     }
 
+    // Add function to clear photo specifically
+    function clearPhotoOnly() {
+      if (confirm('Remove your photo? You can add it back anytime.')) {
+        removePhoto();
+      }
+    }
+
     // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Enhanced Student Interface initializing...');
+      console.log('🚀 INTUITY Clean Student Interface initializing...');
       
       if (initSupabase()) {
         setTimeout(loadQuestion, 1000);
@@ -2345,9 +1931,6 @@
         initDataLayer();
         loadQuestion();
       }
-      
-      // Populate quick select for returning students
-      populateQuickSelect();
       
       // Event listeners
       const nameInput = document.getElementById('studentName');
@@ -2373,13 +1956,9 @@
       document.getElementById('submitBtn').addEventListener('click', submitResponse);
       document.getElementById('clearBtn').addEventListener('click', clearForm);
 
-      // Quick select event listeners
+      // Name suggestion click handlers
       document.addEventListener('click', (e) => {
-        const studentCard = e.target.closest('.student-card');
-        if (studentCard) {
-          const studentName = studentCard.dataset.studentName;
-          handleQuickSelect(studentName);
-        } else if (e.target.closest('.name-suggestion')) {
+        if (e.target.closest('.name-suggestion')) {
           const suggestion = e.target.closest('.name-suggestion');
           const studentName = suggestion.dataset.name;
           selectNameSuggestion(studentName);
@@ -2468,7 +2047,7 @@
         }
       });
       
-      console.log('✅ Enhanced student interface ready - quick select enabled for returning students!');
+      console.log('✅ Clean student interface ready - one clear action: SUBMIT!');
     });
   </script>
 </body>
