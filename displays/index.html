@@ -130,7 +130,6 @@
       padding: 40px 20px 20px;
     }
 
-    /* GENEROUS SPACING - Header */
     .header {
       text-align: center;
       margin-bottom: 60px;
@@ -152,7 +151,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* COMPACT QUESTION BOX */
     .question-display {
       width: 100%;
       height: 2.5cm;
@@ -190,7 +188,7 @@
       font-weight: 500;
     }
 
-    /* RESPONSE CONTAINER - Card flip structure */
+    /* SIMPLIFIED RESPONSE CONTAINER */
     .response-container {
       width: 100%;
       height: 6cm;
@@ -214,75 +212,72 @@
     .response-card.active {
       opacity: 1;
       transform: translateX(0);
-      pointer-events: all;
-    }
-
-    .response-card.prev {
-      opacity: 0;
-      transform: translateX(-30px);
-      pointer-events: none;
-    }
-
-    .response-card.next {
-      opacity: 0;
-      transform: translateX(30px);
-      pointer-events: none;
-    }
-
-    /* Card flip mechanics - IMPROVED */
-    .card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.4s ease;
-      transform-style: preserve-3d;
-      cursor: pointer;
-    }
-
-    .card-inner.flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      background: #000000;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
       pointer-events: auto;
     }
 
+    /* SIMPLIFIED CARD STRUCTURE - NO 3D FLIP, USE SIMPLE TOGGLE */
+    .card-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .card-container:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 140, 60, 0.3);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 25px;
+      border-radius: 20px;
+      transition: opacity 0.3s ease;
+    }
+
     .card-front {
+      opacity: 1;
+      z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 20px;
-      padding: 30px;
-      z-index: 2;
     }
 
     .card-back {
-      transform: rotateY(180deg);
-      padding: 25px;
+      opacity: 0;
+      z-index: 1;
       display: flex;
       flex-direction: column;
+    }
+
+    .card-container.flipped .card-front {
+      opacity: 0;
       z-index: 1;
     }
 
-    /* Front face styling - ID Card layout */
+    .card-container.flipped .card-back {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    /* Front face styling */
     .front-photo {
       width: 100px;
       height: 100px;
       border-radius: 12px;
       object-fit: cover;
       border: 2px solid rgba(255, 140, 60, 0.3);
-      transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      pointer-events: none;
     }
 
     .front-name {
@@ -291,7 +286,6 @@
       color: rgba(255, 140, 60, 0.9);
       margin-bottom: 6px;
       text-align: center;
-      pointer-events: none;
     }
 
     .front-preview {
@@ -300,17 +294,10 @@
       text-align: center;
       line-height: 1.3;
       font-weight: 300;
-      pointer-events: none;
       transition: all 0.3s ease;
     }
 
-    .card-inner:hover .front-photo {
-      border-color: rgba(255, 140, 60, 0.6);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-    }
-
-    .card-inner:hover .front-preview {
+    .card-container:hover .front-preview {
       color: rgba(255, 255, 255, 0.6);
     }
 
@@ -447,7 +434,6 @@
       transform: scale(1.1);
     }
 
-    /* EMPTY STATE */
     .no-responses {
       display: flex;
       flex-direction: column;
@@ -464,7 +450,6 @@
       opacity: 0.5;
     }
 
-    /* FOOTER - Generous spacing */
     .footer {
       margin-top: 60px;
       background: rgba(64, 64, 64, 0.2);
@@ -526,6 +511,45 @@
     .curve5 { --base-opacity: 0.35; --rotate: 6deg; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.15; --rotate: -15deg; animation: drift 15s ease-in-out infinite reverse; }
 
+    /* DEBUG */
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      color: rgba(255, 140, 60, 0.8);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: monospace;
+      z-index: 1000;
+      max-width: 300px;
+      display: none;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
+    .click-indicator {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .click-indicator.show {
+      opacity: 1;
+    }
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
@@ -580,26 +604,6 @@
         margin-top: 40px;
       }
     }
-
-    /* DEBUG INDICATOR */
-    .debug-info {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.8);
-      color: rgba(255, 140, 60, 0.8);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-family: monospace;
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .debug-info.show {
-      opacity: 1;
-    }
   </style>
 </head>
 <body>
@@ -617,7 +621,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses (Fixed)<br>By Majid Nashtai</p>
+      <p>Live Responses (Simple Fix)<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -657,24 +661,22 @@
     let currentQuestion = null;
     let responses = [];
     let currentIndex = 0;
-    let lastUpdateTime = 0;
-    let isNavigating = false; // PREVENT MULTIPLE NAVIGATIONS
-    let cardFlipTimeout = null; // MANAGE FLIP TIMING
+    let activeCardClickHandler = null;
 
-    // IMPROVED: Clear debug logging
     function debugLog(message, data = null) {
       const debugInfo = document.getElementById('debugInfo');
       const debugContent = document.getElementById('debugContent');
       const timestamp = new Date().toLocaleTimeString();
       
-      console.log(`[DISPLAY DEBUG] ${timestamp} - ${message}`, data || '');
+      console.log(`[DISPLAY] ${timestamp} - ${message}`, data || '');
       
-      debugContent.innerHTML = `${timestamp}: ${message}${data ? ' - ' + JSON.stringify(data, null, 2).substring(0, 100) : ''}`;
+      debugContent.innerHTML = `
+        <div><strong>${timestamp}:</strong> ${message}</div>
+        ${data ? '<div style="font-size: 10px; opacity: 0.7;">' + JSON.stringify(data, null, 2) + '</div>' : ''}
+      `;
       debugInfo.classList.add('show');
       
-      // Auto-hide after 3 seconds
-      clearTimeout(cardFlipTimeout);
-      cardFlipTimeout = setTimeout(() => {
+      setTimeout(() => {
         debugInfo.classList.remove('show');
       }, 3000);
     }
@@ -686,10 +688,9 @@
           currentQuestion = JSON.parse(questionData);
         }
 
-        // Try multiple sources for responses
         const responseSources = [
           'display_responses',
-          'alm_student_responses',
+          'alm_student_responses', 
           'intuity_responses',
           'student_responses',
           'intuity_student_responses'
@@ -702,7 +703,7 @@
               const parsed = JSON.parse(responsesData);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 responses = parsed;
-                debugLog(`✅ Loaded ${responses.length} responses from ${source}`);
+                debugLog(`Loaded ${responses.length} responses from ${source}`);
                 break;
               }
             } catch (e) {
@@ -711,15 +712,9 @@
           }
         }
 
-        debugLog('Data loaded successfully', { 
-          question: currentQuestion ? currentQuestion.text || currentQuestion.question_text : 'none', 
-          responses: responses.length 
-        });
-        
         return true;
       } catch (error) {
         console.error('Error loading data:', error);
-        debugLog('❌ Error loading data', error.message);
         return false;
       }
     }
@@ -743,20 +738,17 @@
       const card = document.createElement('div');
       card.className = 'response-card';
       card.id = `response-${index}`;
-      card.dataset.index = index; // IMPORTANT: Add data attribute for easier identification
 
       const studentName = response.studentName || response.student_name || 'Anonymous';
       const answer = response.answer || 'No response text';
       const wordCount = response.wordCount || response.word_count || 0;
       const timestamp = formatTimestamp(response.timestamp || response.created_at || response.submitted_at);
-      const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url || response.photo_url;
+      const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url;
 
-      // Create front face content
       const frontPhotoHtml = photoUrl ? 
         `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
         `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
       
-      // Create back face content
       let studentInfoHtml = '';
       if (photoUrl) {
         studentInfoHtml = `
@@ -774,13 +766,14 @@
       }
 
       card.innerHTML = `
-        <div class="card-inner" data-index="${index}" data-student="${escapeHtml(studentName)}">
-          <div class="card-face card-front">
+        <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
+          <div class="click-indicator">CLICKABLE</div>
+          <div class="card-front">
             ${frontPhotoHtml}
             <div class="front-name">${escapeHtml(studentName)}</div>
             <div class="front-preview">Click to read response</div>
           </div>
-          <div class="card-face card-back">
+          <div class="card-back">
             <div class="response-header">
               ${studentInfoHtml}
               <div class="response-position">Response ${index + 1} of ${responses.length}</div>
@@ -798,92 +791,66 @@
       return card;
     }
 
-    // IMPROVED: Single event listener with proper delegation
-    function setupCardClickHandler() {
-      const container = document.getElementById('responseContainer');
-      
-      // Remove existing listeners
-      const existingHandler = container.cardClickHandler;
-      if (existingHandler) {
-        container.removeEventListener('click', existingHandler);
+    function attachCardClickHandler() {
+      // Remove previous handler
+      if (activeCardClickHandler) {
+        document.removeEventListener('click', activeCardClickHandler);
       }
-      
+
       // Create new handler
-      const cardClickHandler = function(e) {
-        // Only handle clicks if we're not currently navigating
-        if (isNavigating) {
-          debugLog('🚫 Click blocked - currently navigating');
+      activeCardClickHandler = function(e) {
+        const cardContainer = e.target.closest('.card-container');
+        if (!cardContainer) return;
+
+        const responseCard = cardContainer.closest('.response-card');
+        if (!responseCard || !responseCard.classList.contains('active')) {
+          debugLog('Click ignored - card not active');
           return;
         }
-        
-        // Find the card-inner element
-        const cardInner = e.target.closest('.card-inner');
-        if (!cardInner) return;
-        
-        // Only handle clicks on the active card
-        const cardElement = cardInner.closest('.response-card');
-        if (!cardElement || !cardElement.classList.contains('active')) {
-          debugLog('🚫 Click ignored - card not active');
-          return;
-        }
-        
+
         e.preventDefault();
         e.stopPropagation();
-        
-        const studentName = cardInner.dataset.student || 'Unknown';
-        debugLog(`🎯 Card clicked for ${studentName}`, { 
-          index: cardInner.dataset.index,
-          isFlipped: cardInner.classList.contains('flipped')
-        });
-        
-        flipCard(cardInner);
-      };
-      
-      // Store reference and add listener
-      container.cardClickHandler = cardClickHandler;
-      container.addEventListener('click', cardClickHandler);
-      
-      debugLog('✅ Card click handler setup complete');
-    }
 
-    // IMPROVED: Better card flip handling
-    function flipCard(cardInner) {
-      if (!cardInner) {
-        debugLog('❌ flipCard called with null cardInner');
-        return;
-      }
-      
-      const isCurrentlyFlipped = cardInner.classList.contains('flipped');
-      const studentName = cardInner.dataset.student || 'Unknown';
-      
-      debugLog(`🔄 Flipping card for ${studentName}`, { 
-        from: isCurrentlyFlipped ? 'back' : 'front',
-        to: isCurrentlyFlipped ? 'front' : 'back'
-      });
-      
-      // Toggle flip state
-      cardInner.classList.toggle('flipped');
-      
-      // Update front preview text
-      const frontPreview = cardInner.querySelector('.front-preview');
-      if (frontPreview) {
-        if (cardInner.classList.contains('flipped')) {
-          frontPreview.textContent = 'Click to close';
-        } else {
-          frontPreview.textContent = 'Click to read response';
+        const studentName = cardContainer.dataset.student;
+        const isFlipped = cardContainer.classList.contains('flipped');
+        
+        debugLog(`Card clicked: ${studentName}`, { 
+          wasFlipped: isFlipped, 
+          willBeFlipped: !isFlipped 
+        });
+
+        // Show click indicator
+        const indicator = cardContainer.querySelector('.click-indicator');
+        if (indicator) {
+          indicator.classList.add('show');
+          setTimeout(() => indicator.classList.remove('show'), 500);
         }
-      }
-      
-      debugLog(`✅ Card flipped for ${studentName}`, { 
-        nowFlipped: cardInner.classList.contains('flipped')
-      });
+
+        // Toggle flip
+        cardContainer.classList.toggle('flipped');
+        
+        // Update preview text
+        const frontPreview = cardContainer.querySelector('.front-preview');
+        if (frontPreview) {
+          frontPreview.textContent = cardContainer.classList.contains('flipped') ? 
+            'Click to close' : 'Click to read response';
+        }
+
+        debugLog(`Card flipped: ${studentName}`, { 
+          nowFlipped: cardContainer.classList.contains('flipped')
+        });
+      };
+
+      // Attach new handler
+      document.addEventListener('click', activeCardClickHandler);
+      debugLog('Card click handler attached');
     }
 
     function displayResponses() {
       const container = document.getElementById('responseContainer');
       const noResponses = document.getElementById('noResponses');
       
-      debugLog('📋 Displaying responses', { count: responses.length });
+      debugLog('Displaying responses', { count: responses.length });
       
       if (responses.length === 0) {
         noResponses.style.display = 'flex';
@@ -900,7 +867,7 @@
         return timeB - timeA;
       });
 
-      // IMPROVED: Clear container completely before rebuilding
+      // Clear container
       container.innerHTML = '';
 
       // Create all cards
@@ -912,14 +879,14 @@
         container.appendChild(card);
       });
 
-      // IMPORTANT: Setup click handlers AFTER DOM is ready
+      // Attach click handlers
       setTimeout(() => {
-        setupCardClickHandler();
-        debugLog('✅ All cards created and handlers attached', { 
+        attachCardClickHandler();
+        debugLog('Cards created and handlers attached', { 
           totalCards: sortedResponses.length,
           activeIndex: currentIndex
         });
-      }, 50); // Small delay to ensure DOM is ready
+      }, 100);
 
       createNavigationDots();
       updateNavigationArrows();
@@ -931,53 +898,11 @@
 
       if (responses.length <= 1) return;
 
-      const maxDots = 12; // Limit visible dots to prevent clutter
-
-      if (responses.length <= maxDots) {
-        // Show all dots
-        for (let i = 0; i < responses.length; i++) {
-          const dot = document.createElement('div');
-          dot.className = `nav-dot ${i === currentIndex ? 'active' : ''}`;
-          dot.addEventListener('click', () => navigateToResponse(i));
-          dotsContainer.appendChild(dot);
-        }
-      } else {
-        // Show pagination with limited dots
-        const currentPage = Math.floor(currentIndex / maxDots);
-        const totalPages = Math.ceil(responses.length / maxDots);
-        
-        // Previous page indicator
-        if (currentPage > 0) {
-          const prevDot = document.createElement('div');
-          prevDot.textContent = '‹';
-          prevDot.className = 'nav-dot';
-          prevDot.style.width = 'auto';
-          prevDot.style.padding = '0 8px';
-          prevDot.addEventListener('click', () => navigateToResponse((currentPage - 1) * maxDots));
-          dotsContainer.appendChild(prevDot);
-        }
-
-        // Current page dots
-        const startIndex = currentPage * maxDots;
-        const endIndex = Math.min(startIndex + maxDots, responses.length);
-        
-        for (let i = startIndex; i < endIndex; i++) {
-          const dot = document.createElement('div');
-          dot.className = `nav-dot ${i === currentIndex ? 'active' : ''}`;
-          dot.addEventListener('click', () => navigateToResponse(i));
-          dotsContainer.appendChild(dot);
-        }
-
-        // Next page indicator
-        if (currentPage < totalPages - 1) {
-          const nextDot = document.createElement('div');
-          nextDot.textContent = '›';
-          nextDot.className = 'nav-dot';
-          nextDot.style.width = 'auto';
-          nextDot.style.padding = '0 8px';
-          nextDot.addEventListener('click', () => navigateToResponse((currentPage + 1) * maxDots));
-          dotsContainer.appendChild(nextDot);
-        }
+      for (let i = 0; i < responses.length && i < 12; i++) {
+        const dot = document.createElement('div');
+        dot.className = `nav-dot ${i === currentIndex ? 'active' : ''}`;
+        dot.addEventListener('click', () => navigateToResponse(i));
+        dotsContainer.appendChild(dot);
       }
     }
 
@@ -995,23 +920,15 @@
       nextArrow.classList.toggle('disabled', currentIndex === responses.length - 1);
     }
 
-    // IMPROVED: Better navigation with loading states
     function navigateToResponse(index) {
-      if (index < 0 || index >= responses.length || index === currentIndex || isNavigating) {
-        debugLog('🚫 Navigation blocked', { 
-          index, 
-          currentIndex, 
-          responsesLength: responses.length,
-          isNavigating 
-        });
+      if (index < 0 || index >= responses.length || index === currentIndex) {
         return;
       }
 
-      isNavigating = true; // LOCK navigation during transition
-      debugLog(`🧭 Navigating from ${currentIndex} to ${index}`);
+      debugLog(`Navigating from ${currentIndex} to ${index}`);
 
-      // Reset any flipped cards before navigation
-      document.querySelectorAll('.card-inner.flipped').forEach(card => {
+      // Reset any flipped cards
+      document.querySelectorAll('.card-container.flipped').forEach(card => {
         card.classList.remove('flipped');
         const frontPreview = card.querySelector('.front-preview');
         if (frontPreview) {
@@ -1023,34 +940,25 @@
       const currentCard = document.querySelector('.response-card.active');
       if (currentCard) {
         currentCard.classList.remove('active');
-        currentCard.classList.add(index > currentIndex ? 'prev' : 'next');
       }
 
-      const oldIndex = currentIndex;
       currentIndex = index;
 
-      // Show new card after a brief delay
+      // Show new card
       setTimeout(() => {
         document.querySelectorAll('.response-card').forEach((card, i) => {
-          card.className = 'response-card';
           if (i === currentIndex) {
             card.classList.add('active');
-          } else if (i < currentIndex) {
-            card.classList.add('prev');
           } else {
-            card.classList.add('next');
+            card.classList.remove('active');
           }
         });
 
         createNavigationDots();
         updateNavigationArrows();
         
-        // UNLOCK navigation after transition
-        setTimeout(() => {
-          isNavigating = false;
-          debugLog(`✅ Navigation complete: ${oldIndex} → ${currentIndex}`);
-        }, 200);
-      }, 100);
+        debugLog(`Navigation complete to index ${currentIndex}`);
+      }, 150);
     }
 
     function formatTimestamp(timestamp) {
@@ -1081,19 +989,12 @@
 
     function refreshData() {
       const refreshBtn = document.getElementById('refreshBtn');
-      
       refreshBtn.style.animation = 'spin 1s linear infinite';
-      debugLog('🔄 Refreshing data...');
 
-      lastUpdateTime = new Date();
-
-      const success = loadData();
-      if (success) {
+      if (loadData()) {
         displayQuestion();
         displayResponses();
-        debugLog('✅ Data refreshed successfully');
-      } else {
-        debugLog('❌ Data refresh failed');
+        debugLog('Data refreshed successfully');
       }
 
       setTimeout(() => {
@@ -1105,9 +1006,9 @@
       window.location.href = '../visualisation/';
     }
 
-    // IMPROVED: Keyboard navigation with better handling
+    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
-      if (responses.length === 0 || isNavigating) return;
+      if (responses.length === 0) return;
       
       switch(e.key) {
         case 'ArrowLeft':
@@ -1120,83 +1021,22 @@
           break;
         case ' ': // Spacebar
           e.preventDefault();
-          const activeCard = document.querySelector('.response-card.active .card-inner');
+          const activeCard = document.querySelector('.response-card.active .card-container');
           if (activeCard) {
-            flipCard(activeCard);
+            activeCard.click();
           }
           break;
         case 'Escape':
           e.preventDefault();
-          // Close any flipped cards
-          document.querySelectorAll('.card-inner.flipped').forEach(card => {
+          document.querySelectorAll('.card-container.flipped').forEach(card => {
             card.classList.remove('flipped');
             const frontPreview = card.querySelector('.front-preview');
             if (frontPreview) {
               frontPreview.textContent = 'Click to read response';
             }
           });
-          debugLog('🔑 All cards closed via Escape');
-          break;
-        case 'Home':
-          e.preventDefault();
-          navigateToResponse(0);
-          break;
-        case 'End':
-          e.preventDefault();
-          navigateToResponse(responses.length - 1);
           break;
       }
-    });
-
-    // IMPROVED: Touch/swipe navigation
-    let startX = null;
-    let startY = null;
-    let isSwipeGesture = false;
-
-    document.addEventListener('touchstart', (e) => {
-      if (isNavigating) return;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      isSwipeGesture = false;
-    });
-
-    document.addEventListener('touchmove', (e) => {
-      if (!startX || !startY) return;
-      
-      const diffX = Math.abs(e.touches[0].clientX - startX);
-      const diffY = Math.abs(e.touches[0].clientY - startY);
-      
-      // Determine if this is a horizontal swipe
-      if (diffX > diffY && diffX > 30) {
-        isSwipeGesture = true;
-      }
-    });
-
-    document.addEventListener('touchend', (e) => {
-      if (startX === null || !isSwipeGesture) {
-        startX = null;
-        startY = null;
-        return;
-      }
-      
-      const endX = e.changedTouches[0].clientX;
-      const diffX = startX - endX;
-      
-      if (Math.abs(diffX) > 50) { // Minimum swipe distance
-        e.preventDefault(); // Prevent card flip
-        
-        if (diffX > 0) {
-          // Swipe left - next response
-          navigateToResponse(currentIndex + 1);
-        } else {
-          // Swipe right - previous response
-          navigateToResponse(currentIndex - 1);
-        }
-      }
-      
-      startX = null;
-      startY = null;
-      isSwipeGesture = false;
     });
 
     function startAutoRefresh() {
@@ -1206,7 +1046,6 @@
         const newCount = responses.length;
         
         if (newCount !== oldCount) {
-          debugLog(`📱 Auto-refresh: ${oldCount} → ${newCount} responses`);
           displayQuestion();
           displayResponses();
         }
@@ -1214,7 +1053,7 @@
     }
 
     function init() {
-      debugLog('🚀 INTUITY Card Flip Display (Fixed) initializing...');
+      debugLog('INTUITY Simple Card Display initializing...');
       
       if (!loadData()) {
         // Demo data
@@ -1228,7 +1067,7 @@
             photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
           },
           {
-            studentName: 'Marcus Johnson',
+            studentName: 'Marcus Johnson', 
             answer: 'Artificial intelligence fascinates me, especially how it can help solve climate change through better predictions and resource management.',
             wordCount: 19,
             timestamp: new Date(Date.now() - 120000).toISOString(),
@@ -1242,7 +1081,7 @@
             photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
           }
         ];
-        debugLog('🎮 Using demo data', { responses: responses.length });
+        debugLog('Using demo data', { responses: responses.length });
       }
 
       displayQuestion();
@@ -1251,37 +1090,23 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      debugLog('✅ Card flip display ready!', { 
+      debugLog('INTUITY Simple Card Display ready!', { 
         responses: responses.length,
         currentIndex: currentIndex
       });
     }
 
-    // Initialize when DOM is loaded
+    // Initialize
     document.addEventListener('DOMContentLoaded', init);
 
-    // Listen for storage changes
+    // Storage listener
     window.addEventListener('storage', (e) => {
       if (e.key === 'display_responses' || e.key === 'display_question') {
-        debugLog('📡 Storage updated, refreshing display...');
         refreshData();
       }
     });
 
-    // Add keyframe for refresh button
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-  </script>
-</body>
-</html>
-
-    // Add keyframe for refresh button
+    // Add refresh animation
     const style = document.createElement('style');
     style.textContent = `
       @keyframes spin {
