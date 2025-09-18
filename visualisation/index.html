@@ -259,12 +259,50 @@
     }
 
     .response-counter {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
       padding: 15px 0;
       color: rgba(255, 140, 60, 0.8);
       font-size: 16px;
       font-weight: 500;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .delete-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.6);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn.visible {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: rgba(239, 68, 68, 0.8);
+      transform: scale(1.1);
+    }
+
+    .delete-btn:active {
+      transform: scale(0.95);
     }
 
     .footer {
@@ -370,6 +408,86 @@
       color: rgba(239, 68, 68, 0.9);
     }
 
+    /* Confirmation Dialog */
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .dialog-overlay.show {
+      display: flex;
+    }
+
+    .dialog-box {
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .dialog-title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .dialog-message {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .dialog-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .dialog-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 80px;
+    }
+
+    .dialog-btn.cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .dialog-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .dialog-btn.delete {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 1);
+    }
+
+    .dialog-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 40px 15px 15px;
@@ -395,6 +513,11 @@
       .response-counter {
         font-size: 14px;
         padding: 12px 0;
+      }
+
+      .dialog-box {
+        margin: 20px;
+        padding: 25px;
       }
     }
   </style>
@@ -427,8 +550,9 @@
               </select>
             </div>
             
-            <div class="response-counter" id="responseCounter">
-              0 Responses
+            <div class="response-counter">
+              <span id="responseCounter">0 Responses</span>
+              <button class="delete-btn" id="deleteBtn" title="Delete all responses for this question">🗑</button>
             </div>
           </div>
         </div>
@@ -440,6 +564,20 @@
       <a href="../index.html" class="nav-button">HOME</a>
       <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div class="dialog-overlay" id="confirmDialog">
+    <div class="dialog-box">
+      <div class="dialog-title">Delete Responses</div>
+      <div class="dialog-message" id="dialogMessage">
+        Are you sure you want to delete all responses for this question? This action cannot be undone.
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn cancel" onclick="closeConfirmDialog()">Cancel</button>
+        <button class="dialog-btn delete" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -580,6 +718,7 @@
       populateQuestionDropdown();
       updateResponseCount();
       updateDisplayButton();
+      updateDeleteButton();
     }
 
     // Populate question dropdown
@@ -639,6 +778,23 @@
       displayBtn.disabled = !currentSelectedQuestion;
     }
 
+    // Update delete button visibility
+    function updateDeleteButton() {
+      const deleteBtn = document.getElementById('deleteBtn');
+      
+      if (!currentSelectedQuestion) {
+        deleteBtn.classList.remove('visible');
+        return;
+      }
+
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      if (responses.length > 0) {
+        deleteBtn.classList.add('visible');
+      } else {
+        deleteBtn.classList.remove('visible');
+      }
+    }
+
     // Handle question selection
     function handleQuestionChange() {
       const selector = document.getElementById('questionSelector');
@@ -657,6 +813,77 @@
       
       updateResponseCount();
       updateDisplayButton();
+      updateDeleteButton();
+    }
+
+    // Show delete confirmation dialog
+    function showDeleteConfirmation() {
+      if (!currentSelectedQuestion) return;
+
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
+      
+      const message = document.getElementById('dialogMessage');
+      message.textContent = `Are you sure you want to delete all ${count} response${count !== 1 ? 's' : ''} for this question? This action cannot be undone.`;
+      
+      document.getElementById('confirmDialog').classList.add('show');
+    }
+
+    // Close confirmation dialog
+    function closeConfirmDialog() {
+      document.getElementById('confirmDialog').classList.remove('show');
+    }
+
+    // Confirm delete action
+    async function confirmDelete() {
+      if (!currentSelectedQuestion) {
+        closeConfirmDialog();
+        return;
+      }
+
+      try {
+        showNotification('Deleting responses...', 'info');
+        
+        if (isConnected) {
+          // Delete from Supabase
+          const { error } = await supabase
+            .from('student_responses')
+            .delete()
+            .eq('question_id', currentSelectedQuestion.id);
+
+          if (error) throw error;
+          
+          console.log('✅ Responses deleted from database');
+        }
+
+        // Delete from local arrays
+        const responsesToDelete = getResponsesForQuestion(currentSelectedQuestion);
+        responsesToDelete.forEach(response => {
+          const index = allResponses.indexOf(response);
+          if (index > -1) {
+            allResponses.splice(index, 1);
+          }
+        });
+
+        // Update localStorage
+        localStorage.setItem('alm_student_responses', JSON.stringify(allResponses));
+        localStorage.setItem('intuity_responses', JSON.stringify(allResponses));
+        localStorage.setItem('student_responses', JSON.stringify(allResponses));
+
+        // Clear display storage
+        localStorage.removeItem('display_responses');
+        
+        console.log('✅ Responses deleted from local storage');
+        
+        updateUI();
+        closeConfirmDialog();
+        showNotification('Responses deleted successfully', 'success');
+        
+      } catch (error) {
+        console.error('❌ Error deleting responses:', error);
+        showNotification('Error deleting responses', 'error');
+        closeConfirmDialog();
+      }
     }
 
     // Display responses
@@ -714,6 +941,21 @@
       // Event listeners
       document.getElementById('questionSelector').addEventListener('change', handleQuestionChange);
       document.getElementById('displayBtn').addEventListener('click', displayResponses);
+      document.getElementById('deleteBtn').addEventListener('click', showDeleteConfirmation);
+      
+      // Close dialog when clicking outside
+      document.getElementById('confirmDialog').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeConfirmDialog();
+        }
+      });
+
+      // Escape key closes dialog
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeConfirmDialog();
+        }
+      });
       
       console.log('✅ INTUITY Analytics Ready!');
     });
