@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Live Responses (Full Display)</title>
+  <title>INTUITY - Live Responses (Fixed)</title>
   
   <style>
     * {
@@ -132,7 +132,7 @@
 
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 60px;
     }
 
     .header h1 {
@@ -153,18 +153,17 @@
 
     .question-display {
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      height: 2.5cm;
+      background: #000000;
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      margin-bottom: 30px;
-      padding: 20px;
+      margin-bottom: 50px;
+      padding: 15px;
       text-align: center;
-      border: 1px solid rgba(255, 140, 60, 0.2);
-      backdrop-filter: blur(10px);
     }
 
     .question-content {
@@ -173,40 +172,40 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .question-text {
-      font-size: 20px;
+      font-size: 16px;
       color: #fff;
-      font-weight: 600;
-      line-height: 1.4;
-      max-width: 800px;
+      font-weight: 500;
+      line-height: 1.3;
     }
 
     .total-count {
-      font-size: 14px;
+      font-size: 12px;
       color: rgba(255, 140, 60, 0.8);
       font-weight: 500;
     }
 
-    /* FULL RESPONSE DISPLAY - POSTER STYLE */
+    /* FIXED RESPONSE CONTAINER - Increased height and better layout */
     .response-container {
       width: 100%;
-      min-height: 70vh;
+      height: 8cm; /* Increased from 6cm to 8cm */
       position: relative;
-      margin-bottom: 30px;
+      margin-bottom: 50px;
+      perspective: 1000px;
     }
 
     .response-card {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
       position: absolute;
       top: 0;
       left: 0;
       opacity: 0;
-      transform: translateX(50px);
-      transition: all 0.5s ease;
+      transform: translateX(30px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
       pointer-events: none;
     }
 
@@ -216,158 +215,184 @@
       pointer-events: auto;
     }
 
-    /* POSTER LAYOUT */
-    .response-poster {
+    /* FIXED CARD STRUCTURE */
+    .card-container {
+      position: relative;
       width: 100%;
-      min-height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      border-radius: 25px;
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      backdrop-filter: blur(15px);
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      transition: all 0.3s ease;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
       cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .response-poster:hover {
-      border-color: rgba(255, 140, 60, 0.5);
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(255, 140, 60, 0.1);
+    .card-container:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 140, 60, 0.3);
     }
 
-    /* STUDENT HEADER */
-    .student-header {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid rgba(255, 140, 60, 0.2);
-    }
-
-    .student-photo-large {
-      width: 80px;
-      height: 80px;
-      border-radius: 15px;
-      object-fit: cover;
-      border: 3px solid rgba(255, 140, 60, 0.4);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      flex-shrink: 0;
-    }
-
-    .student-info-large {
-      flex: 1;
-    }
-
-    .student-name-large {
-      font-size: 28px;
-      font-weight: 700;
-      color: rgba(255, 140, 60, 0.9);
-      margin-bottom: 8px;
-      text-shadow: 0 2px 10px rgba(255, 140, 60, 0.2);
-    }
-
-    .student-meta {
-      display: flex;
-      gap: 20px;
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .response-number {
-      background: rgba(255, 140, 60, 0.2);
-      color: rgba(255, 140, 60, 1);
-      padding: 4px 12px;
-      border-radius: 15px;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* MAIN RESPONSE CONTENT */
-    .response-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .response-text-large {
-      color: #fff;
-      font-size: 22px;
-      line-height: 1.7;
-      font-weight: 400;
-      text-align: justify;
-      margin-bottom: 30px;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      hyphens: auto;
-      word-break: break-word;
-    }
-
-    /* RESPONSE FOOTER */
-    .response-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .response-stats {
-      display: flex;
-      gap: 25px;
-      align-items: center;
-    }
-
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .stat-value {
-      color: rgba(255, 140, 60, 0.9);
-      font-weight: 600;
-    }
-
-    .timestamp-large {
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 13px;
-      font-style: italic;
-    }
-
-    /* INTERACTION HINTS */
-    .interaction-hints {
+    .card-front, .card-back {
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 15px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.4);
-      opacity: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
       transition: opacity 0.3s ease;
     }
 
-    .response-poster:hover .interaction-hints {
+    .card-front {
       opacity: 1;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 25px;
     }
 
-    .hint-item {
+    .card-back {
+      opacity: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px; /* Reduced padding to give more space for content */
+    }
+
+    .card-container.flipped .card-front {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .card-container.flipped .card-back {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    /* Front face styling */
+    .front-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .front-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: rgba(255, 140, 60, 0.9);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .front-preview {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+      line-height: 1.3;
+      font-weight: 300;
+      transition: all 0.3s ease;
+    }
+
+    .card-container:hover .front-preview {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* FIXED Back face styling */
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px; /* Reduced from 20px */
+      padding-bottom: 10px; /* Reduced from 12px */
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0; /* Prevent shrinking */
+    }
+
+    .student-info {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 12px;
+    }
+
+    .student-photo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      flex-shrink: 0;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 17px;
+    }
+
+    .response-position {
+      font-size: 12px;
+      color: rgba(255, 140, 60, 0.8);
+      font-weight: 500;
+    }
+
+    /* FIXED response text area - key improvements */
+    .response-text {
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5; /* Slightly reduced for better density */
+      font-size: 15px; /* Slightly reduced from 16px */
+      flex: 1; /* Take up remaining space */
+      overflow-y: auto; /* Enable scrolling */
+      margin-bottom: 15px; /* Reduced from 20px */
+      padding-right: 8px; /* Add padding for scrollbar */
+      /* Custom scrollbar styling */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 140, 60, 0.5) rgba(255, 255, 255, 0.1);
+    }
+
+    /* Webkit scrollbar styling for better appearance */
+    .response-text::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .response-text::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.05);
-      padding: 4px 8px;
-      border-radius: 8px;
-      backdrop-filter: blur(5px);
+      border-radius: 3px;
+    }
+
+    .response-text::-webkit-scrollbar-thumb {
+      background: rgba(255, 140, 60, 0.5);
+      border-radius: 3px;
+    }
+
+    .response-text::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 140, 60, 0.7);
+    }
+
+    .response-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      flex-shrink: 0; /* Prevent shrinking */
+    }
+
+    .word-count {
+      color: rgba(255, 140, 60, 0.8);
+    }
+
+    .photo-indicator {
+      color: rgba(16, 185, 129, 0.8);
+    }
+
+    .timestamp {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 11px;
     }
 
     /* NAVIGATION */
@@ -375,33 +400,31 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 30px;
-      margin-bottom: 30px;
+      gap: 20px;
+      margin-bottom: 50px;
       flex-wrap: wrap;
     }
 
     .nav-arrow {
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: rgba(255, 140, 60, 0.1);
-      border: 2px solid rgba(255, 140, 60, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255, 140, 60, 0.8);
-      font-size: 20px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
       user-select: none;
-      font-weight: bold;
     }
 
     .nav-arrow:hover {
-      background: rgba(255, 140, 60, 0.2);
-      border-color: rgba(255, 140, 60, 0.6);
-      color: #fff;
-      transform: scale(1.1);
+      background: rgba(255, 140, 60, 0.1);
+      border-color: rgba(255, 140, 60, 0.3);
+      color: rgba(255, 140, 60, 0.8);
     }
 
     .nav-arrow.disabled {
@@ -410,30 +433,17 @@
       pointer-events: none;
     }
 
-    .navigation-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .current-response {
-      font-size: 18px;
-      font-weight: 600;
-      color: rgba(255, 140, 60, 0.9);
-    }
-
     .navigation-dots {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .nav-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.2);
       cursor: pointer;
@@ -441,14 +451,13 @@
     }
 
     .nav-dot.active {
-      background: rgba(255, 140, 60, 0.9);
-      transform: scale(1.5);
-      box-shadow: 0 0 10px rgba(255, 140, 60, 0.4);
+      background: rgba(255, 140, 60, 0.8);
+      transform: scale(1.3);
     }
 
     .nav-dot:hover {
-      background: rgba(255, 140, 60, 0.6);
-      transform: scale(1.2);
+      background: rgba(255, 140, 60, 0.5);
+      transform: scale(1.1);
     }
 
     .no-responses {
@@ -456,28 +465,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 70vh;
+      height: 100%;
       color: rgba(255, 255, 255, 0.5);
       text-align: center;
     }
 
     .no-responses-icon {
-      font-size: 64px;
-      margin-bottom: 30px;
+      font-size: 48px;
+      margin-bottom: 20px;
       opacity: 0.5;
     }
 
-    .no-responses h3 {
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-
     .footer {
-      margin-top: 30px;
+      margin-top: 60px;
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
-      padding: 20px;
+      padding: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: space-around;
@@ -485,8 +489,8 @@
     }
 
     .nav-button {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
       border: none;
@@ -494,7 +498,7 @@
       align-items: center;
       justify-content: center;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 20px;
+      font-size: 18px;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
@@ -533,61 +537,99 @@
     .curve5 { --base-opacity: 0.35; --rotate: 6deg; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.15; --rotate: -15deg; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* Mobile Responsive */
+    /* DEBUG */
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      color: rgba(255, 140, 60, 0.8);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: monospace;
+      z-index: 1000;
+      max-width: 300px;
+      display: none;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
+    .click-indicator {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .click-indicator.show {
+      opacity: 1;
+    }
+
+    /* MOBILE RESPONSIVE - Adjusted for better mobile experience */
     @media (max-width: 768px) {
       .container {
-        padding: 20px 15px 15px;
+        padding: 30px 15px 15px;
       }
       
       .header {
-        margin-bottom: 30px;
+        margin-bottom: 40px;
       }
       
       .header h1 {
         font-size: 28px;
       }
       
+      .question-display {
+        height: 2cm;
+        margin-bottom: 30px;
+        padding: 12px;
+      }
+      
       .question-text {
-        font-size: 18px;
+        font-size: 14px;
       }
       
-      .response-poster {
-        padding: 25px;
-        gap: 20px;
+      /* Increased mobile height for better readability */
+      .response-container {
+        height: 7cm; /* Increased from 5cm */
+        margin-bottom: 30px;
       }
       
-      .student-header {
-        gap: 15px;
+      .card-front, .card-back {
+        padding: 18px; /* Slightly more padding than before */
       }
       
-      .student-photo-large {
+      .front-photo {
         width: 60px;
         height: 60px;
       }
       
-      .student-name-large {
-        font-size: 22px;
+      .front-name {
+        font-size: 16px;
       }
       
-      .response-text-large {
-        font-size: 18px;
-        line-height: 1.6;
+      .response-text {
+        font-size: 14px; /* Slightly smaller for mobile */
+        line-height: 1.4; /* Better mobile reading */
       }
       
       .navigation-container {
-        gap: 20px;
-        margin-bottom: 20px;
-      }
-      
-      .nav-arrow {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
+        margin-bottom: 30px;
       }
       
       .footer {
-        margin-top: 20px;
-        padding: 15px;
+        margin-top: 40px;
       }
     }
   </style>
@@ -607,7 +649,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses - Full Display<br>By Majid Nashtai</p>
+      <p>Live Responses (Response Display Fixed)<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -620,17 +662,14 @@
     <div class="response-container" id="responseContainer">
       <div class="no-responses" id="noResponses">
         <div class="no-responses-icon">💭</div>
-        <h3>No responses yet</h3>
-        <div>Responses will appear here as students submit them</div>
+        <div>No responses yet</div>
+        <div style="margin-top: 10px; font-size: 14px; opacity: 0.6;">Responses will appear here as students submit them</div>
       </div>
     </div>
 
     <div class="navigation-container">
       <div class="nav-arrow" id="prevArrow" onclick="navigateToResponse(currentIndex - 1)">‹</div>
-      <div class="navigation-info">
-        <div class="current-response" id="currentResponse">1 of 1</div>
-        <div class="navigation-dots" id="navigationDots"></div>
-      </div>
+      <div class="navigation-dots" id="navigationDots"></div>
       <div class="nav-arrow" id="nextArrow" onclick="navigateToResponse(currentIndex + 1)">›</div>
     </div>
 
@@ -642,10 +681,33 @@
     </footer>
   </div>
 
+  <div class="debug-info" id="debugInfo">
+    <div id="debugContent"></div>
+  </div>
+
   <script>
     let currentQuestion = null;
     let responses = [];
     let currentIndex = 0;
+    let activeCardClickHandler = null;
+
+    function debugLog(message, data = null) {
+      const debugInfo = document.getElementById('debugInfo');
+      const debugContent = document.getElementById('debugContent');
+      const timestamp = new Date().toLocaleTimeString();
+      
+      console.log(`[DISPLAY] ${timestamp} - ${message}`, data || '');
+      
+      debugContent.innerHTML = `
+        <div><strong>${timestamp}:</strong> ${message}</div>
+        ${data ? '<div style="font-size: 10px; opacity: 0.7;">' + JSON.stringify(data, null, 2) + '</div>' : ''}
+      `;
+      debugInfo.classList.add('show');
+      
+      setTimeout(() => {
+        debugInfo.classList.remove('show');
+      }, 3000);
+    }
 
     function loadData() {
       try {
@@ -669,7 +731,7 @@
               const parsed = JSON.parse(responsesData);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 responses = parsed;
-                console.log(`✅ Loaded ${responses.length} responses from ${source}`);
+                debugLog(`Loaded ${responses.length} responses from ${source}`);
                 break;
               }
             } catch (e) {
@@ -711,56 +773,45 @@
       const timestamp = formatTimestamp(response.timestamp || response.created_at || response.submitted_at);
       const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url;
 
-      // Calculate reading time (average 200 words per minute)
-      const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-
-      const photoHtml = photoUrl ? 
-        `<img src="${photoUrl}" alt="${escapeHtml(studentName)}" class="student-photo-large" onerror="this.style.display='none'">` :
-        `<div class="student-photo-large" style="background: linear-gradient(135deg, rgba(255,140,60,0.3), rgba(255,100,40,0.3)); display: flex; align-items: center; justify-content: center; font-size: 32px; color: rgba(255,140,60,0.8);">👤</div>`;
+      const frontPhotoHtml = photoUrl ? 
+        `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
+        `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
+      
+      let studentInfoHtml = '';
+      if (photoUrl) {
+        studentInfoHtml = `
+          <div class="student-info">
+            <img src="${photoUrl}" alt="Student photo" class="student-photo" onerror="this.style.display='none'">
+            <div class="student-name">${escapeHtml(studentName)}</div>
+          </div>
+        `;
+      } else {
+        studentInfoHtml = `
+          <div class="student-info">
+            <div class="student-name">${escapeHtml(studentName)}</div>
+          </div>
+        `;
+      }
 
       card.innerHTML = `
-        <div class="response-poster">
-          <div class="student-header">
-            ${photoHtml}
-            <div class="student-info-large">
-              <div class="student-name-large">${escapeHtml(studentName)}</div>
-              <div class="student-meta">
-                <div class="response-number">Response ${index + 1}</div>
-                <div>${timestamp}</div>
-                ${photoUrl ? '<div style="color: rgba(16, 185, 129, 0.8);">📸 Photo</div>' : ''}
-              </div>
+        <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
+          <div class="click-indicator">CLICKABLE</div>
+          <div class="card-front">
+            ${frontPhotoHtml}
+            <div class="front-name">${escapeHtml(studentName)}</div>
+            <div class="front-preview">Click to read response</div>
+          </div>
+          <div class="card-back">
+            <div class="response-header">
+              ${studentInfoHtml}
+              <div class="response-position">Response ${index + 1} of ${responses.length}</div>
             </div>
-          </div>
-          
-          <div class="response-content">
-            <div class="response-text-large">${escapeHtml(answer)}</div>
-          </div>
-          
-          <div class="response-footer">
-            <div class="response-stats">
-              <div class="stat-item">
-                <span>📝</span>
-                <span class="stat-value">${wordCount}</span>
-                <span>words</span>
-              </div>
-              <div class="stat-item">
-                <span>⏱</span>
-                <span class="stat-value">${readingTime}</span>
-                <span>min read</span>
-              </div>
-              <div class="stat-item">
-                <span>📊</span>
-                <span class="stat-value">${determineQuality(wordCount)}</span>
-                <span>quality</span>
-              </div>
+            <div class="response-text">${escapeHtml(answer)}</div>
+            <div class="response-meta">
+              <span class="word-count">${wordCount} words</span>
+              <span class="timestamp">${timestamp}</span>
+              ${photoUrl ? '<span class="photo-indicator">📸</span>' : ''}
             </div>
-            <div class="timestamp-large">Submitted ${timestamp}</div>
-          </div>
-          
-          <div class="interaction-hints">
-            <div class="hint-item"><span>←→</span> Navigate</div>
-            <div class="hint-item"><span>Space</span> Next</div>
-            <div class="hint-item"><span>R</span> Refresh</div>
           </div>
         </div>
       `;
@@ -768,22 +819,70 @@
       return card;
     }
 
-    function determineQuality(wordCount) {
-      if (wordCount >= 25) return 'Excellent';
-      if (wordCount >= 15) return 'Good';
-      if (wordCount >= 8) return 'Fair';
-      return 'Brief';
+    function attachCardClickHandler() {
+      // Remove previous handler
+      if (activeCardClickHandler) {
+        document.removeEventListener('click', activeCardClickHandler);
+      }
+
+      // Create new handler
+      activeCardClickHandler = function(e) {
+        const cardContainer = e.target.closest('.card-container');
+        if (!cardContainer) return;
+
+        const responseCard = cardContainer.closest('.response-card');
+        if (!responseCard || !responseCard.classList.contains('active')) {
+          debugLog('Click ignored - card not active');
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const studentName = cardContainer.dataset.student;
+        const isFlipped = cardContainer.classList.contains('flipped');
+        
+        debugLog(`Card clicked: ${studentName}`, { 
+          wasFlipped: isFlipped, 
+          willBeFlipped: !isFlipped 
+        });
+
+        // Show click indicator
+        const indicator = cardContainer.querySelector('.click-indicator');
+        if (indicator) {
+          indicator.classList.add('show');
+          setTimeout(() => indicator.classList.remove('show'), 500);
+        }
+
+        // Toggle flip
+        cardContainer.classList.toggle('flipped');
+        
+        // Update preview text
+        const frontPreview = cardContainer.querySelector('.front-preview');
+        if (frontPreview) {
+          frontPreview.textContent = cardContainer.classList.contains('flipped') ? 
+            'Click to close' : 'Click to read response';
+        }
+
+        debugLog(`Card flipped: ${studentName}`, { 
+          nowFlipped: cardContainer.classList.contains('flipped')
+        });
+      };
+
+      // Attach new handler
+      document.addEventListener('click', activeCardClickHandler);
+      debugLog('Card click handler attached');
     }
 
     function displayResponses() {
       const container = document.getElementById('responseContainer');
       const noResponses = document.getElementById('noResponses');
       
-      console.log('Displaying responses:', responses.length);
+      debugLog('Displaying responses', { count: responses.length });
       
       if (responses.length === 0) {
         noResponses.style.display = 'flex';
-        updateNavigation();
+        updateNavigationArrows();
         return;
       }
 
@@ -808,25 +907,17 @@
         container.appendChild(card);
       });
 
-      updateNavigation();
-    }
-
-    function updateNavigation() {
-      const prevArrow = document.getElementById('prevArrow');
-      const nextArrow = document.getElementById('nextArrow');
-      const currentResponseEl = document.getElementById('currentResponse');
-      
-      if (responses.length <= 1) {
-        prevArrow.classList.add('disabled');
-        nextArrow.classList.add('disabled');
-        currentResponseEl.textContent = responses.length === 0 ? '0 of 0' : '1 of 1';
-      } else {
-        prevArrow.classList.toggle('disabled', currentIndex === 0);
-        nextArrow.classList.toggle('disabled', currentIndex === responses.length - 1);
-        currentResponseEl.textContent = `${currentIndex + 1} of ${responses.length}`;
-      }
+      // Attach click handlers
+      setTimeout(() => {
+        attachCardClickHandler();
+        debugLog('Cards created and handlers attached', { 
+          totalCards: sortedResponses.length,
+          activeIndex: currentIndex
+        });
+      }, 100);
 
       createNavigationDots();
+      updateNavigationArrows();
     }
 
     function createNavigationDots() {
@@ -835,26 +926,26 @@
 
       if (responses.length <= 1) return;
 
-      // Show up to 10 dots
-      const maxDots = Math.min(responses.length, 10);
-      for (let i = 0; i < maxDots; i++) {
+      for (let i = 0; i < responses.length && i < 12; i++) {
         const dot = document.createElement('div');
         dot.className = `nav-dot ${i === currentIndex ? 'active' : ''}`;
         dot.addEventListener('click', () => navigateToResponse(i));
-        dot.title = `Response ${i + 1}`;
         dotsContainer.appendChild(dot);
       }
+    }
 
-      // Add "more" indicator if there are more responses
-      if (responses.length > 10) {
-        const moreDot = document.createElement('div');
-        moreDot.textContent = '…';
-        moreDot.style.color = 'rgba(255, 140, 60, 0.6)';
-        moreDot.style.fontSize = '14px';
-        moreDot.style.width = 'auto';
-        moreDot.style.padding = '0 5px';
-        dotsContainer.appendChild(moreDot);
+    function updateNavigationArrows() {
+      const prevArrow = document.getElementById('prevArrow');
+      const nextArrow = document.getElementById('nextArrow');
+      
+      if (responses.length <= 1) {
+        prevArrow.classList.add('disabled');
+        nextArrow.classList.add('disabled');
+        return;
       }
+      
+      prevArrow.classList.toggle('disabled', currentIndex === 0);
+      nextArrow.classList.toggle('disabled', currentIndex === responses.length - 1);
     }
 
     function navigateToResponse(index) {
@@ -862,7 +953,16 @@
         return;
       }
 
-      console.log(`Navigating from ${currentIndex} to ${index}`);
+      debugLog(`Navigating from ${currentIndex} to ${index}`);
+
+      // Reset any flipped cards
+      document.querySelectorAll('.card-container.flipped').forEach(card => {
+        card.classList.remove('flipped');
+        const frontPreview = card.querySelector('.front-preview');
+        if (frontPreview) {
+          frontPreview.textContent = 'Click to read response';
+        }
+      });
 
       // Hide current card
       const currentCard = document.querySelector('.response-card.active');
@@ -882,8 +982,11 @@
           }
         });
 
-        updateNavigation();
-      }, 100);
+        createNavigationDots();
+        updateNavigationArrows();
+        
+        debugLog(`Navigation complete to index ${currentIndex}`);
+      }, 150);
     }
 
     function formatTimestamp(timestamp) {
@@ -895,19 +998,12 @@
         const diffMs = now - date;
         const diffMins = Math.floor(diffMs / 60000);
         const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
 
         if (diffMins < 1) return 'Just now';
         if (diffMins < 60) return `${diffMins}m ago`;
         if (diffHours < 24) return `${diffHours}h ago`;
-        if (diffDays < 7) return `${diffDays}d ago`;
         
-        return date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit'
-        });
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       } catch (error) {
         return 'Unknown time';
       }
@@ -926,7 +1022,7 @@
       if (loadData()) {
         displayQuestion();
         displayResponses();
-        console.log('Data refreshed successfully');
+        debugLog('Data refreshed successfully');
       }
 
       setTimeout(() => {
@@ -944,53 +1040,31 @@
       
       switch(e.key) {
         case 'ArrowLeft':
-        case 'ArrowUp':
           e.preventDefault();
           navigateToResponse(currentIndex - 1);
           break;
         case 'ArrowRight':
-        case 'ArrowDown':
+          e.preventDefault();
+          navigateToResponse(currentIndex + 1);
+          break;
         case ' ': // Spacebar
           e.preventDefault();
-          navigateToResponse(currentIndex + 1);
+          const activeCard = document.querySelector('.response-card.active .card-container');
+          if (activeCard) {
+            activeCard.click();
+          }
           break;
-        case 'Home':
+        case 'Escape':
           e.preventDefault();
-          navigateToResponse(0);
-          break;
-        case 'End':
-          e.preventDefault();
-          navigateToResponse(responses.length - 1);
-          break;
-        case 'r':
-        case 'R':
-          e.preventDefault();
-          refreshData();
+          document.querySelectorAll('.card-container.flipped').forEach(card => {
+            card.classList.remove('flipped');
+            const frontPreview = card.querySelector('.front-preview');
+            if (frontPreview) {
+              frontPreview.textContent = 'Click to read response';
+            }
+          });
           break;
       }
-    });
-
-    // Touch/swipe navigation
-    let startX = null;
-    document.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-    });
-
-    document.addEventListener('touchend', (e) => {
-      if (startX === null) return;
-      
-      const endX = e.changedTouches[0].clientX;
-      const diffX = startX - endX;
-      
-      if (Math.abs(diffX) > 50) {
-        if (diffX > 0) {
-          navigateToResponse(currentIndex + 1);
-        } else {
-          navigateToResponse(currentIndex - 1);
-        }
-      }
-      
-      startX = null;
     });
 
     function startAutoRefresh() {
@@ -1007,35 +1081,35 @@
     }
 
     function init() {
-      console.log('🚀 INTUITY Full Response Display initializing...');
+      debugLog('INTUITY Response Display (Fixed) initializing...');
       
       if (!loadData()) {
-        // Demo data
+        // Enhanced demo data with longer responses to test scrolling
         currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
         responses = [
           {
             studentName: 'Emma Chen',
-            answer: 'I\'d love to learn more about sustainable architecture and how buildings can work with nature rather than against it. The concept of biomimicry in design fascinates me - imagine buildings that breathe like organisms, use photosynthesis for energy, or adapt to weather patterns like living creatures. I think this could revolutionize how we approach urban planning and environmental conservation.',
-            wordCount: 58,
+            answer: 'I\'d love to learn more about sustainable architecture and how buildings can work with nature rather than against it. The concept of biomimicry in construction fascinates me - how we can look at natural structures like termite mounds for ventilation systems, or how trees distribute weight to inform structural engineering. I\'m particularly interested in green building materials, renewable energy integration, and creating spaces that actually improve their local ecosystems. The intersection of design, environmental science, and social responsibility in architecture seems like such a rich field to explore. I believe our built environment has the power to either harm or heal our planet.',
+            wordCount: 95,
             timestamp: new Date().toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Marcus Johnson', 
-            answer: 'Artificial intelligence fascinates me, especially how it can help solve climate change through better predictions and resource management. I want to understand machine learning algorithms that can analyze massive environmental datasets to predict weather patterns, optimize energy usage, and help cities become more efficient. The intersection of AI and sustainability seems like where the future lies.',
-            wordCount: 52,
+            answer: 'Artificial intelligence fascinates me, especially how it can help solve climate change through better predictions and resource management. I want to understand machine learning algorithms, neural networks, and how AI can optimize everything from energy grids to transportation systems. The ethical implications are huge too - how do we ensure AI benefits everyone, not just tech companies? I\'m curious about natural language processing, computer vision, and robotics. But also the philosophical questions: what does intelligence really mean? Can machines truly understand, or just simulate understanding? The rapid pace of AI development both excites and concerns me. I think understanding these systems will be crucial for anyone in the 21st century.',
+            wordCount: 112,
             timestamp: new Date(Date.now() - 120000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Sophia Rodriguez',
-            answer: 'I want to understand quantum computing better - the way it processes information simultaneously instead of sequentially seems revolutionary. The potential applications in cryptography, drug discovery, and financial modeling are incredible. I\'m particularly interested in how quantum computers might help us solve complex optimization problems that are currently impossible for classical computers to handle efficiently.',
-            wordCount: 49,
+            answer: 'I want to understand quantum computing better - the way it processes information simultaneously instead of sequentially seems revolutionary. Quantum mechanics already blows my mind with concepts like superposition and entanglement, but applying these principles to computation opens up incredible possibilities. I\'m interested in quantum algorithms, error correction, and the potential applications in cryptography, drug discovery, and financial modeling. The idea that quantum computers could break current encryption methods while also creating unbreakable quantum encryption is paradoxically fascinating. I also wonder about the practical challenges - quantum systems are so fragile and require such extreme conditions. Will quantum computers ever be accessible to regular people, or will they remain specialized tools for researchers and large corporations?',
+            wordCount: 125,
             timestamp: new Date(Date.now() - 300000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
           }
         ];
-        console.log('Using demo data with', responses.length, 'responses');
+        debugLog('Using enhanced demo data for testing', { responses: responses.length });
       }
 
       displayQuestion();
@@ -1044,7 +1118,10 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      console.log('✅ INTUITY Full Response Display ready!');
+      debugLog('INTUITY Response Display (Fixed) ready!', { 
+        responses: responses.length,
+        currentIndex: currentIndex
+      });
     }
 
     // Initialize
