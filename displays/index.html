@@ -302,53 +302,87 @@
       color: rgba(255, 255, 255, 0.6);
     }
 
-    /* FIXED Back face styling */
+    /* POSTER-STYLE Back face styling */
     .response-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px; /* Reduced from 20px */
-      padding-bottom: 10px; /* Reduced from 12px */
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      flex-shrink: 0; /* Prevent shrinking */
-    }
-
-    .student-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .student-photo {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255, 140, 60, 0.3);
+      text-align: center;
+      margin-bottom: 20px;
       flex-shrink: 0;
     }
 
-    .student-name {
-      font-weight: 600;
+    .poster-title {
+      font-size: 14px;
+      font-weight: 700;
       color: rgba(255, 140, 60, 0.9);
-      font-size: 17px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(255, 140, 60, 0.3);
     }
 
-    .response-position {
-      font-size: 12px;
-      color: rgba(255, 140, 60, 0.8);
-      font-weight: 500;
+    .poster-photo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
     }
 
-    /* FIXED response text area - key improvements */
+    .poster-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 15px;
+      object-fit: cover;
+      border: 3px solid rgba(255, 140, 60, 0.4);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 140, 60, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .poster-photo:hover {
+      transform: scale(1.05);
+      border-color: rgba(255, 140, 60, 0.6);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 140, 60, 0.3);
+    }
+
+    .poster-photo-placeholder {
+      width: 120px;
+      height: 120px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.1) 100%);
+      border: 3px solid rgba(255, 140, 60, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: rgba(255, 140, 60, 0.7);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .student-name-poster {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      line-height: 1.1;
+    }
+
+    .response-message {
+      background: linear-gradient(135deg, rgba(255, 140, 60, 0.15) 0%, rgba(255, 100, 40, 0.1) 100%);
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
     .response-text {
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.5; /* Slightly reduced for better density */
-      font-size: 15px; /* Slightly reduced from 16px */
-      flex: 1; /* Take up remaining space */
-      overflow-y: auto; /* Enable scrolling */
-      margin-bottom: 15px; /* Reduced from 20px */
-      padding-right: 8px; /* Add padding for scrollbar */
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.4;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 400;
       /* Custom scrollbar styling */
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 140, 60, 0.5) rgba(255, 255, 255, 0.1);
@@ -377,9 +411,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 11px;
       color: rgba(255, 255, 255, 0.6);
-      flex-shrink: 0; /* Prevent shrinking */
+      flex-shrink: 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .poster-tagline {
+      text-align: center;
+      font-style: italic;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 12px;
+      margin-top: 10px;
+      opacity: 0.9;
     }
 
     .word-count {
@@ -576,7 +621,7 @@
       opacity: 1;
     }
 
-    /* MOBILE RESPONSIVE - Adjusted for better mobile experience */
+    /* MOBILE RESPONSIVE - Adjusted for poster layout */
     @media (max-width: 768px) {
       .container {
         padding: 30px 15px 15px;
@@ -600,7 +645,7 @@
         font-size: 14px;
       }
       
-      /* Increased mobile height for better readability */
+      /* Increased mobile height for better poster display */
       .response-container {
         height: 7cm; /* Increased from 5cm */
         margin-bottom: 30px;
@@ -618,10 +663,37 @@
       .front-name {
         font-size: 16px;
       }
+
+      /* Poster layout mobile adjustments */
+      .poster-title {
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+
+      .poster-photo, .poster-photo-placeholder {
+        width: 90px;
+        height: 90px;
+        font-size: 32px;
+      }
+
+      .student-name-poster {
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+
+      .response-message {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
       
       .response-text {
-        font-size: 14px; /* Slightly smaller for mobile */
+        font-size: 13px; /* Slightly smaller for mobile */
         line-height: 1.4; /* Better mobile reading */
+      }
+
+      .poster-tagline {
+        font-size: 11px;
+        margin-top: 8px;
       }
       
       .navigation-container {
@@ -649,7 +721,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses (Response Display Fixed)<br>By Majid Nashtai</p>
+      <p>Live Responses (Poster Style)<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -777,21 +849,20 @@
         `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
         `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
       
-      let studentInfoHtml = '';
-      if (photoUrl) {
-        studentInfoHtml = `
-          <div class="student-info">
-            <img src="${photoUrl}" alt="Student photo" class="student-photo" onerror="this.style.display='none'">
-            <div class="student-name">${escapeHtml(studentName)}</div>
-          </div>
-        `;
-      } else {
-        studentInfoHtml = `
-          <div class="student-info">
-            <div class="student-name">${escapeHtml(studentName)}</div>
-          </div>
-        `;
-      }
+      const posterPhotoHtml = photoUrl ? 
+        `<img src="${photoUrl}" alt="Student photo" class="poster-photo" onerror="this.style.display='none'">` :
+        `<div class="poster-photo-placeholder">👤</div>`;
+
+      // Create a motivational tagline based on the response
+      const taglines = [
+        '"Inspiring minds through thoughtful learning."',
+        '"Leading with curiosity, learning with purpose."',
+        '"Thoughtful insights for a brighter future."',
+        '"Where questions become discoveries."',
+        '"Empowering knowledge through reflection."',
+        '"Building tomorrow through today\'s learning."'
+      ];
+      const randomTagline = taglines[index % taglines.length];
 
       card.innerHTML = `
         <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
@@ -803,10 +874,16 @@
           </div>
           <div class="card-back">
             <div class="response-header">
-              ${studentInfoHtml}
-              <div class="response-position">Response ${index + 1} of ${responses.length}</div>
+              <div class="poster-title">Student Response</div>
+              <div class="poster-photo-container">
+                ${posterPhotoHtml}
+              </div>
+              <div class="student-name-poster">${escapeHtml(studentName)}</div>
             </div>
-            <div class="response-text">${escapeHtml(answer)}</div>
+            <div class="response-message">
+              <div class="response-text">${escapeHtml(answer)}</div>
+            </div>
+            <div class="poster-tagline">${randomTagline}</div>
             <div class="response-meta">
               <span class="word-count">${wordCount} words</span>
               <span class="timestamp">${timestamp}</span>
@@ -1081,7 +1158,7 @@
     }
 
     function init() {
-      debugLog('INTUITY Response Display (Fixed) initializing...');
+      debugLog('INTUITY Poster-Style Display initializing...');
       
       if (!loadData()) {
         // Enhanced demo data with longer responses to test scrolling
@@ -1118,7 +1195,7 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      debugLog('INTUITY Response Display (Fixed) ready!', { 
+      debugLog('INTUITY Poster-Style Display ready!', { 
         responses: responses.length,
         currentIndex: currentIndex
       });
