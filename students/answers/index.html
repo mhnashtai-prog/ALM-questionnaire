@@ -238,15 +238,15 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding-bottom: 80px; /* Reduced to prevent overlap with submit button */
+      padding-bottom: 40px; /* REDUCED: Pulled up to give more space to answer box */
       min-height: 0; /* Allow flexible height */
     }
 
     .response-container {
       width: 100%;
       height: auto; /* Changed from fixed 5cm to auto */
-      min-height: 180px; /* Minimum usable height */
-      max-height: 40vh; /* Responsive maximum */
+      min-height: 320px; /* INCREASED: Much larger minimum height for more writing space */
+      max-height: 55vh; /* INCREASED: Much more vertical space available */
       position: relative;
       perspective: 1000px;
       overflow: visible;
@@ -274,14 +274,14 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: 18px; /* REDUCED: Slightly less padding for more writing space */
     }
 
     .name-section {
       display: flex;
       align-items: center;
       gap: 15px;
-      margin-bottom: 20px;
+      margin-bottom: 15px; /* REDUCED: Less margin to give more space to answer area */
       position: relative;
     }
 
@@ -488,6 +488,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-height: 100px; /* ADDED: Ensure the answer area has substantial space */
     }
 
     .answer-input {
@@ -501,6 +502,8 @@
       resize: none;
       line-height: 1.6;
       padding: 0;
+      min-height: 120px; /* ADDED: Ensure minimum writing space */
+      width: 100%; /* ADDED: Full width utilization */
     }
 
     .answer-input::placeholder {
@@ -576,7 +579,7 @@
 
     /* Submit Button - The Star */
     .submit-section {
-      margin-top: 40px;
+      margin-top: 25px; /* REDUCED: Less gap, better use of space */
       display: flex;
       justify-content: center;
       padding: 0 20px;
@@ -908,12 +911,12 @@
       }
       
       .main-content {
-        padding-bottom: 60px; /* Reduced to prevent submit button overlap */
+        padding-bottom: 30px; /* REDUCED: Pulled up for more answer space */
       }
       
       .response-container {
-        min-height: 160px; /* Smaller minimum on mobile */
-        max-height: 35vh; /* Smaller max height */
+        min-height: 280px; /* INCREASED: Much larger even on mobile */
+        max-height: 50vh; /* INCREASED: More space on mobile too */
       }
       
       .content-area {
@@ -941,7 +944,7 @@
       }
 
       .submit-section {
-        margin-top: 20px; /* Reduced to prevent overlap */
+        margin-top: 15px; /* REDUCED: Less margin for more answer space */
       }
 
       .photo-options-content {
@@ -999,12 +1002,12 @@
       }
 
       .main-content {
-        padding-bottom: 50px; /* Minimal bottom padding */
+        padding-bottom: 25px; /* REDUCED: Even less bottom padding */
       }
 
       .response-container {
-        min-height: 140px; /* Very compact */
-        max-height: 30vh;
+        min-height: 240px; /* INCREASED: Still generous on small screens */
+        max-height: 45vh; /* INCREASED: More writing space */
       }
 
       .name-input, .answer-input {
@@ -1018,7 +1021,7 @@
       }
 
       .submit-section {
-        margin-top: 15px; /* Minimal margin */
+        margin-top: 12px; /* REDUCED: Minimal margin for maximum answer space */
       }
       
       .name-suggestions {
@@ -1051,8 +1054,8 @@
       }
       
       .response-container {
-        min-height: 120px;
-        max-height: 25vh;
+        min-height: 200px; /* INCREASED: Still usable writing space on tiny screens */
+        max-height: 40vh; /* INCREASED: Better than cramped */
       }
       
       .submit-btn {
