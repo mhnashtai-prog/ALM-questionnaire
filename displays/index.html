@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Live Responses (Fixed)</title>
+  <title>INTUITY - Live Responses (Poster Edition)</title>
   
   <style>
     * {
@@ -256,8 +256,12 @@
     .card-back {
       opacity: 0;
       z-index: 1;
+      /* POSTER STYLING */
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
     }
 
     .card-container.flipped .card-front {
@@ -301,72 +305,161 @@
       color: rgba(255, 255, 255, 0.6);
     }
 
-    /* Back face styling */
-    .response-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* POSTER STYLING FOR BACK FACE */
+    .poster-header {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      z-index: 10;
     }
 
-    .student-info {
+    .vote-badge {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .student-photo {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255, 140, 60, 0.3);
+    .stars {
+      color: #6c757d;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+
+    .vote-text {
+      background: #212529;
+      color: white;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      border-radius: 4px;
+    }
+
+    .poster-main {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 60px 20px 40px;
+    }
+
+    .poster-content {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    .choose-text {
+      font-size: 32px;
+      font-weight: 900;
+      color: #212529;
+      line-height: 0.9;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-name-large {
+      font-size: 36px;
+      font-weight: 900;
+      color: #212529;
+      line-height: 0.9;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .key-message {
+      background: #212529;
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 8px 0;
+      text-align: center;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .motto {
+      color: #495057;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .motto {
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .poster-photo-container {
+      width: 120px;
+      height: 160px;
+      position: relative;
       flex-shrink: 0;
     }
 
-    .student-name {
-      font-weight: 600;
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 17px;
+    .poster-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 3px solid #212529;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .response-position {
-      font-size: 12px;
-      color: rgba(255, 140, 60, 0.8);
-      font-weight: 500;
+    .poster-photo-placeholder {
+      width: 100%;
+      height: 100%;
+      background: rgba(108, 117, 125, 0.1);
+      border-radius: 8px;
+      border: 3px solid #212529;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #6c757d;
     }
 
-    .response-text {
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.6;
-      font-size: 16px;
-      flex: 1;
-      overflow-y: auto;
-      margin-bottom: 20px;
-    }
-
-    .response-meta {
+    .poster-footer {
+      position: absolute;
+      bottom: 12px;
+      left: 15px;
+      right: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-top: auto;
-    }
-
-    .word-count {
-      color: rgba(255, 140, 60, 0.8);
-    }
-
-    .photo-indicator {
-      color: rgba(16, 185, 129, 0.8);
-    }
-
-    .timestamp {
-      color: rgba(255, 255, 255, 0.5);
+      color: #212529;
       font-size: 11px;
+    }
+
+    .poster-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .poster-meta {
+      color: #6c757d;
+      font-size: 10px;
+    }
+
+    /* Grey accent overlay for visual interest */
+    .poster-accent {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 0%, rgba(108, 117, 125, 0.1) 50%, rgba(73, 80, 87, 0.15) 100%);
+      border-radius: 0 20px 20px 0;
     }
 
     /* NAVIGATION */
@@ -485,6 +578,25 @@
       transform: scale(1.1);
     }
 
+    .click-indicator {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .click-indicator.show {
+      opacity: 1;
+    }
+
     /* Animations */
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
@@ -531,25 +643,6 @@
       display: block;
     }
 
-    .click-indicator {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(16, 185, 129, 0.8);
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 600;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 10;
-    }
-
-    .click-indicator.show {
-      opacity: 1;
-    }
-
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
@@ -592,16 +685,38 @@
         font-size: 16px;
       }
       
-      .response-text {
-        font-size: 15px;
-      }
-      
       .navigation-container {
         margin-bottom: 30px;
       }
       
       .footer {
         margin-top: 40px;
+      }
+
+      .poster-main {
+        padding: 40px 15px 35px;
+      }
+
+      .choose-text {
+        font-size: 24px;
+      }
+
+      .student-name-large {
+        font-size: 28px;
+      }
+
+      .key-message {
+        font-size: 14px;
+        padding: 6px 0;
+      }
+
+      .poster-photo-container {
+        width: 80px;
+        height: 120px;
+      }
+
+      .motto {
+        font-size: 11px;
       }
     }
   </style>
@@ -621,7 +736,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses (Simple Fix)<br>By Majid Nashtai</p>
+      <p>Live Responses (Poster Edition)<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -668,7 +783,7 @@
       const debugContent = document.getElementById('debugContent');
       const timestamp = new Date().toLocaleTimeString();
       
-      console.log(`[DISPLAY] ${timestamp} - ${message}`, data || '');
+      console.log(`[POSTER DISPLAY] ${timestamp} - ${message}`, data || '');
       
       debugContent.innerHTML = `
         <div><strong>${timestamp}:</strong> ${message}</div>
@@ -679,6 +794,33 @@
       setTimeout(() => {
         debugInfo.classList.remove('show');
       }, 3000);
+    }
+
+    function extractKeyIdea(responseText) {
+      // Simple algorithm to extract a key phrase from the response
+      const words = responseText.split(' ');
+      if (words.length <= 4) return responseText;
+      
+      // Look for meaningful phrases - educational contexts
+      const keyPhrases = [
+        'learn', 'understand', 'explore', 'discover', 'study', 'research', 'practice',
+        'improve', 'develop', 'master', 'solve', 'create', 'design', 'analyze'
+      ];
+      
+      for (let phrase of keyPhrases) {
+        const index = words.findIndex(word => word.toLowerCase().includes(phrase));
+        if (index !== -1 && index + 2 < words.length) {
+          return words.slice(index, Math.min(index + 4, words.length)).join(' ');
+        }
+      }
+      
+      // Fallback: return first few meaningful words
+      const meaningfulWords = words.filter(word => 
+        word.length > 3 && 
+        !['the', 'and', 'but', 'for', 'are', 'was', 'were', 'been', 'have', 'has', 'had', 'will', 'would', 'could', 'should'].includes(word.toLowerCase())
+      );
+      
+      return meaningfulWords.slice(0, 3).join(' ') || words.slice(0, 4).join(' ');
     }
 
     function loadData() {
@@ -744,45 +886,60 @@
       const wordCount = response.wordCount || response.word_count || 0;
       const timestamp = formatTimestamp(response.timestamp || response.created_at || response.submitted_at);
       const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url;
+      
+      const keyIdea = extractKeyIdea(answer);
 
       const frontPhotoHtml = photoUrl ? 
         `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
         `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
       
-      let studentInfoHtml = '';
-      if (photoUrl) {
-        studentInfoHtml = `
-          <div class="student-info">
-            <img src="${photoUrl}" alt="Student photo" class="student-photo" onerror="this.style.display='none'">
-            <div class="student-name">${escapeHtml(studentName)}</div>
-          </div>
-        `;
-      } else {
-        studentInfoHtml = `
-          <div class="student-info">
-            <div class="student-name">${escapeHtml(studentName)}</div>
-          </div>
-        `;
-      }
+      const posterPhotoHtml = photoUrl ?
+        `<img src="${photoUrl}" alt="Student photo" class="poster-photo" onerror="this.replaceWith(this.nextElementSibling)">
+         <div class="poster-photo-placeholder" style="display: none;">👤</div>` :
+        `<div class="poster-photo-placeholder">👤</div>`;
 
       card.innerHTML = `
         <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
-          <div class="click-indicator">CLICKABLE</div>
+          <div class="click-indicator">CLICK FOR POSTER</div>
           <div class="card-front">
             ${frontPhotoHtml}
             <div class="front-name">${escapeHtml(studentName)}</div>
-            <div class="front-preview">Click to read response</div>
+            <div class="front-preview">Click to see poster</div>
           </div>
           <div class="card-back">
-            <div class="response-header">
-              ${studentInfoHtml}
-              <div class="response-position">Response ${index + 1} of ${responses.length}</div>
+            <div class="poster-accent"></div>
+            
+            <div class="poster-header">
+              <div class="vote-badge">
+                <div class="stars">★★★★★</div>
+                <div class="vote-text">STAR IDEA</div>
+              </div>
             </div>
-            <div class="response-text">${escapeHtml(answer)}</div>
-            <div class="response-meta">
-              <span class="word-count">${wordCount} words</span>
-              <span class="timestamp">${timestamp}</span>
-              ${photoUrl ? '<span class="photo-indicator">📸</span>' : ''}
+
+            <div class="poster-main">
+              <div class="poster-content">
+                <div class="choose-text">CHOOSE</div>
+                <div class="student-name-large">${escapeHtml(studentName.toUpperCase())}</div>
+                <div class="key-message">${escapeHtml(keyIdea.toUpperCase())}</div>
+                <div class="motto">
+                  ${escapeHtml(answer.length > 120 ? answer.substring(0, 120) + '...' : answer)}
+                </div>
+              </div>
+              
+              <div class="poster-photo-container">
+                ${posterPhotoHtml}
+              </div>
+            </div>
+
+            <div class="poster-footer">
+              <div class="poster-info">
+                <span>🎓</span>
+                <span>FOR LEARNING</span>
+              </div>
+              <div class="poster-meta">
+                <div>RESPONSE DAY</div>
+                <div>${new Date().toLocaleDateString()}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -814,7 +971,7 @@
         const studentName = cardContainer.dataset.student;
         const isFlipped = cardContainer.classList.contains('flipped');
         
-        debugLog(`Card clicked: ${studentName}`, { 
+        debugLog(`Poster card clicked: ${studentName}`, { 
           wasFlipped: isFlipped, 
           willBeFlipped: !isFlipped 
         });
@@ -833,24 +990,24 @@
         const frontPreview = cardContainer.querySelector('.front-preview');
         if (frontPreview) {
           frontPreview.textContent = cardContainer.classList.contains('flipped') ? 
-            'Click to close' : 'Click to read response';
+            'Click to close poster' : 'Click to see poster';
         }
 
-        debugLog(`Card flipped: ${studentName}`, { 
-          nowFlipped: cardContainer.classList.contains('flipped')
+        debugLog(`Poster toggled: ${studentName}`, { 
+          nowShowingPoster: cardContainer.classList.contains('flipped')
         });
       };
 
       // Attach new handler
       document.addEventListener('click', activeCardClickHandler);
-      debugLog('Card click handler attached');
+      debugLog('Poster card click handler attached');
     }
 
     function displayResponses() {
       const container = document.getElementById('responseContainer');
       const noResponses = document.getElementById('noResponses');
       
-      debugLog('Displaying responses', { count: responses.length });
+      debugLog('Displaying poster responses', { count: responses.length });
       
       if (responses.length === 0) {
         noResponses.style.display = 'flex';
@@ -882,7 +1039,7 @@
       // Attach click handlers
       setTimeout(() => {
         attachCardClickHandler();
-        debugLog('Cards created and handlers attached', { 
+        debugLog('Poster cards created and handlers attached', { 
           totalCards: sortedResponses.length,
           activeIndex: currentIndex
         });
@@ -932,7 +1089,7 @@
         card.classList.remove('flipped');
         const frontPreview = card.querySelector('.front-preview');
         if (frontPreview) {
-          frontPreview.textContent = 'Click to read response';
+          frontPreview.textContent = 'Click to see poster';
         }
       });
 
@@ -994,7 +1151,7 @@
       if (loadData()) {
         displayQuestion();
         displayResponses();
-        debugLog('Data refreshed successfully');
+        debugLog('Poster data refreshed successfully');
       }
 
       setTimeout(() => {
@@ -1032,7 +1189,7 @@
             card.classList.remove('flipped');
             const frontPreview = card.querySelector('.front-preview');
             if (frontPreview) {
-              frontPreview.textContent = 'Click to read response';
+              frontPreview.textContent = 'Click to see poster';
             }
           });
           break;
@@ -1053,35 +1210,42 @@
     }
 
     function init() {
-      debugLog('INTUITY Simple Card Display initializing...');
+      debugLog('INTUITY Poster Display initializing...');
       
       if (!loadData()) {
-        // Demo data
-        currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
+        // Demo data with educational focus
+        currentQuestion = { questionText: 'What would you like to learn or improve this semester?' };
         responses = [
           {
             studentName: 'Emma Chen',
-            answer: 'I\'d love to learn more about sustainable architecture and how buildings can work with nature rather than against it.',
-            wordCount: 20,
+            answer: 'I want to learn sustainable architecture and understand how buildings can work with nature rather than against it. Green design fascinates me!',
+            wordCount: 23,
             timestamp: new Date().toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Marcus Johnson', 
-            answer: 'Artificial intelligence fascinates me, especially how it can help solve climate change through better predictions and resource management.',
-            wordCount: 19,
+            answer: 'I\'d love to master artificial intelligence and machine learning to help solve climate change through better predictions and resource management.',
+            wordCount: 21,
             timestamp: new Date(Date.now() - 120000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Sophia Rodriguez',
-            answer: 'I want to understand quantum computing better - the way it processes information simultaneously instead of sequentially seems revolutionary.',
-            wordCount: 19,
+            answer: 'I want to study quantum computing and understand how quantum processors can solve problems that classical computers cannot handle efficiently.',
+            wordCount: 21,
             timestamp: new Date(Date.now() - 300000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
+          },
+          {
+            studentName: 'Alex Kim',
+            answer: 'I hope to develop better communication skills and practice public speaking to become more confident in presentations and group discussions.',
+            wordCount: 20,
+            timestamp: new Date(Date.now() - 480000).toISOString(),
+            photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
           }
         ];
-        debugLog('Using demo data', { responses: responses.length });
+        debugLog('Using educational demo data', { responses: responses.length });
       }
 
       displayQuestion();
@@ -1090,7 +1254,7 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      debugLog('INTUITY Simple Card Display ready!', { 
+      debugLog('INTUITY Poster Display ready!', { 
         responses: responses.length,
         currentIndex: currentIndex
       });
