@@ -195,10 +195,10 @@
       letter-spacing: 0.5px;
     }
 
-    /* FIXED: Question overlay - now highly visible with mobile safety */
+    /* FIXED: Question overlay - now highly visible with proper spacing */
     .question-overlay {
       position: absolute;
-      top: 18%; /* Reduced from 22% to prevent header overlap */
+      top: 27%; /* FIXED: Moved down 50% lower from previous 18% position */
       left: 50%;
       transform: translateX(-50%);
       max-width: 85%;
@@ -902,7 +902,7 @@
         font-size: 20px; /* Reduced from 24px to fit better */
         max-width: 90%;
         padding: 15px 20px; /* Reduced padding for mobile */
-        top: 15%; /* Moved up further to prevent overlap */
+        top: 22%; /* FIXED: Moved down proportionally from 15% */
         max-height: 20vh; /* Smaller max height on mobile */
         line-height: 1.2; /* Tighter line spacing */
       }
@@ -990,7 +990,7 @@
       .question-overlay {
         font-size: 18px; /* Smaller but still readable */
         padding: 12px 16px;
-        top: 12%; /* Higher up to prevent overlap */
+        top: 18%; /* FIXED: Moved down proportionally from 12% */
         max-height: 18vh; /* Very constrained on tiny screens */
       }
       
@@ -1042,7 +1042,7 @@
       .question-overlay {
         font-size: 16px;
         padding: 10px 12px;
-        top: 10%;
+        top: 15%; /* FIXED: Moved down proportionally from 10% */
         max-height: 15vh;
       }
       
