@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Live Responses with Speech Bubbles</title>
+  <title>INTUITY - Live Responses (Neumorphic Edition)</title>
   
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
     * {
       margin: 0;
       padding: 0;
@@ -16,7 +18,7 @@
       min-height: 100vh;
       width: 100vw;
       overflow-x: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
       position: relative;
       background: #000000;
     }
@@ -152,7 +154,7 @@
     }
 
     .question-display {
-      width: 100%;
+      width: 50%;
       height: 2.5cm;
       background: #000000;
       border-radius: 20px;
@@ -161,7 +163,7 @@
       justify-content: center;
       position: relative;
       overflow: hidden;
-      margin-bottom: 50px;
+      margin: 0 auto 50px auto;
       padding: 15px;
       text-align: center;
     }
@@ -188,12 +190,12 @@
       font-weight: 500;
     }
 
-    /* RESPONSE CONTAINER */
+    /* RESPONSE CONTAINER - UNCHANGED */
     .response-container {
-      width: 100%;
-      height: 9cm;
+      width: 50%;
+      height: 6cm;
       position: relative;
-      margin-bottom: 50px;
+      margin: 0 auto 50px auto;
       perspective: 1000px;
     }
 
@@ -215,7 +217,7 @@
       pointer-events: auto;
     }
 
-    /* CARD STRUCTURE */
+    /* CARD STRUCTURE - UNCHANGED */
     .card-container {
       position: relative;
       width: 100%;
@@ -238,6 +240,7 @@
       left: 0;
       width: 100%;
       height: 100%;
+      padding: 25px;
       border-radius: 20px;
       transition: opacity 0.3s ease;
     }
@@ -250,17 +253,21 @@
       align-items: center;
       justify-content: center;
       gap: 20px;
-      padding: 25px;
     }
 
+    /* NEUMORPHIC BLUE STYLING FOR BACK FACE */
     .card-back {
       opacity: 0;
       z-index: 1;
+      background: #5a7a95;
       display: flex;
       flex-direction: column;
-      padding: 15px;
-      align-items: center;
-      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        8px 8px 20px rgba(71, 94, 117, 0.4),
+        -8px -8px 20px rgba(89, 122, 155, 0.6);
+      animation: gentleFloat 8s ease-in-out infinite;
     }
 
     .card-container.flipped .card-front {
@@ -273,7 +280,7 @@
       z-index: 2;
     }
 
-    /* Front face styling */
+    /* Front face styling - UNCHANGED */
     .front-photo {
       width: 100px;
       height: 100px;
@@ -304,165 +311,142 @@
       color: rgba(255, 255, 255, 0.6);
     }
 
-    /* SPEECH BUBBLE STYLING for Back face */
-    .speech-bubble-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    /* NEUMORPHIC BLUE BACK FACE CONTENT */
+    .neumorphic-content {
       height: 100%;
-      width: 100%;
-      padding: 10px;
-    }
-
-    .student-info-header {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 15px;
-      flex-shrink: 0;
-    }
-
-    .bubble-photo {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255, 140, 60, 0.4);
-      margin-bottom: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .bubble-photo-placeholder {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.1) 100%);
-      border: 2px solid rgba(255, 140, 60, 0.4);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 24px;
-      color: rgba(255, 140, 60, 0.7);
-      margin-bottom: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .bubble-student-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: rgba(255, 140, 60, 0.9);
-      text-align: center;
-      margin-bottom: 5px;
-    }
-
-    /* THE SPEECH BUBBLE */
-    .speech-bubble {
+      gap: 25px;
       position: relative;
-      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-      border: 3px solid rgba(255, 140, 60, 0.6);
+      z-index: 2;
+    }
+
+    .neu-photo {
+      width: 120px;
+      height: 120px;
       border-radius: 20px;
-      padding: 20px 25px;
-      max-width: 90%;
-      min-width: 70%;
-      flex: 1;
+      object-fit: cover;
+      box-shadow: 
+        inset 3px 3px 8px rgba(71, 94, 117, 0.4),
+        inset -3px -3px 8px rgba(89, 122, 155, 0.6),
+        6px 6px 15px rgba(47, 62, 78, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .neu-photo-placeholder {
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 48px;
+      color: rgba(255, 255, 255, 0.3);
       box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(255, 140, 60, 0.2),
-        inset 0 1px 3px rgba(255, 255, 255, 0.8);
-      margin-bottom: 10px;
-      overflow: hidden;
+        inset 3px 3px 8px rgba(71, 94, 117, 0.4),
+        inset -3px -3px 8px rgba(89, 122, 155, 0.6);
+      background: rgba(255, 255, 255, 0.05);
     }
 
-    /* Speech bubble tail pointing up to the student */
-    .speech-bubble::before {
-      content: '';
-      position: absolute;
-      top: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 15px solid rgba(255, 140, 60, 0.6);
-    }
-
-    .speech-bubble::after {
-      content: '';
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-bottom: 12px solid #ffffff;
-    }
-
-    .bubble-text {
-      color: #2d3748;
-      line-height: 2.1;
-      font-size: 21px;
+    .neu-name {
+      font-size: 24px;
+      font-weight: 600;
+      color: #ffffff;
       text-align: center;
-      font-weight: 500;
-      max-height: 100%;
-      overflow-y: auto;
-      word-wrap: break-word;
-      hyphens: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 140, 60, 0.5) rgba(0, 0, 0, 0.1);
-      transform: scaleX(1.3);
+      text-shadow: 
+        2px 2px 6px rgba(71, 94, 117, 0.4),
+        -1px -1px 3px rgba(89, 122, 155, 0.6);
+      letter-spacing: -0.02em;
     }
 
-    /* Custom scrollbar for webkit browsers */
-    .bubble-text::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .bubble-text::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.05);
-      border-radius: 3px;
-    }
-
-    .bubble-text::-webkit-scrollbar-thumb {
-      background: rgba(255, 140, 60, 0.5);
-      border-radius: 3px;
-    }
-
-    .bubble-text::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 140, 60, 0.7);
-    }
-
-    .response-meta-bubble {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.6);
-      flex-shrink: 0;
-      width: 100%;
+    .neu-response {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      padding: 20px;
       max-width: 90%;
+      box-shadow: 
+        inset 2px 2px 6px rgba(71, 94, 117, 0.3),
+        inset -2px -2px 6px rgba(89, 122, 155, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .word-count {
-      color: rgba(255, 140, 60, 0.8);
+    .neu-response-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5;
+      text-align: center;
+      font-weight: 400;
+      text-shadow: 
+        1px 1px 3px rgba(71, 94, 117, 0.3);
     }
 
-    .photo-indicator {
-      color: rgba(16, 185, 129, 0.8);
+    /* Decorative elements for neumorphic cards */
+    .neu-decoration {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+      box-shadow: 
+        2px 2px 6px rgba(71, 94, 117, 0.3),
+        -2px -2px 6px rgba(89, 122, 155, 0.4);
+      animation: drift 12s ease-in-out infinite;
+      pointer-events: none;
     }
 
-    .timestamp {
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 11px;
+    .neu-decoration:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+      opacity: 0.3;
     }
 
-    /* NAVIGATION */
+    .neu-decoration:nth-child(2) {
+      bottom: 15%;
+      right: 8%;
+      animation-delay: 4s;
+      transform: scale(0.7);
+      opacity: 0.25;
+    }
+
+    /* Floating animation */
+    @keyframes gentleFloat {
+      0%, 100% {
+        transform: translateY(0px);
+        box-shadow: 
+          8px 8px 20px rgba(71, 94, 117, 0.4),
+          -8px -8px 20px rgba(89, 122, 155, 0.6);
+      }
+      50% {
+        transform: translateY(-6px);
+        box-shadow: 
+          12px 14px 25px rgba(71, 94, 117, 0.5),
+          -12px -10px 22px rgba(89, 122, 155, 0.7);
+      }
+    }
+
+    @keyframes drift {
+      0%, 100% {
+        transform: translate(0, 0) scale(var(--scale, 1));
+        opacity: 0.3;
+      }
+      25% {
+        transform: translate(15px, -10px) scale(var(--scale, 1));
+        opacity: 0.5;
+      }
+      50% {
+        transform: translate(-8px, 8px) scale(var(--scale, 1));
+        opacity: 0.4;
+      }
+      75% {
+        transform: translate(12px, 4px) scale(var(--scale, 1));
+        opacity: 0.45;
+      }
+    }
+
+    /* NAVIGATION - UNCHANGED */
     .navigation-container {
       display: flex;
       justify-content: center;
@@ -578,52 +562,6 @@
       transform: scale(1.1);
     }
 
-    /* Animations */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
-      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
-      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
-      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
-    }
-
-    @keyframes drift {
-      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
-      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
-      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
-      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
-    }
-
-    .curve1 { --base-opacity: 0.4; --rotate: 8deg; animation: float 8s ease-in-out infinite; }
-    .curve2 { --base-opacity: 0.3; --rotate: -5deg; animation: float 10s ease-in-out infinite reverse; }
-    .curve3 { --base-opacity: 0.25; --rotate: 12deg; animation: drift 6s ease-in-out infinite; }
-    .curve4 { --base-opacity: 0.2; --rotate: -10deg; animation: pulse 12s ease-in-out infinite; }
-    .curve5 { --base-opacity: 0.35; --rotate: 6deg; animation: float 9s ease-in-out infinite reverse; }
-    .curve6 { --base-opacity: 0.15; --rotate: -15deg; animation: drift 15s ease-in-out infinite reverse; }
-
-    /* DEBUG */
-    .debug-info {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.9);
-      color: rgba(255, 140, 60, 0.8);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-family: monospace;
-      z-index: 1000;
-      max-width: 300px;
-      display: none;
-    }
-
-    .debug-info.show {
-      display: block;
-    }
-
     .click-indicator {
       position: absolute;
       top: 10px;
@@ -643,7 +581,46 @@
       opacity: 1;
     }
 
-    /* MOBILE RESPONSIVE */
+    /* Animations for background curves - UNCHANGED */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
+    }
+
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.15; --rotate: -15deg; animation: drift 15s ease-in-out infinite reverse; }
+
+    /* DEBUG - UNCHANGED */
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      color: rgba(255, 140, 60, 0.8);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: monospace;
+      z-index: 1000;
+      max-width: 300px;
+      display: none;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
         padding: 30px 15px 15px;
@@ -658,6 +635,7 @@
       }
       
       .question-display {
+        width: 100%;
         height: 2cm;
         margin-bottom: 30px;
         padding: 12px;
@@ -668,12 +646,13 @@
       }
       
       .response-container {
-        height: 8cm;
+        width: 100%;
+        height: 5cm;
         margin-bottom: 30px;
       }
       
       .card-front, .card-back {
-        padding: 15px;
+        padding: 20px;
       }
       
       .front-photo {
@@ -684,44 +663,6 @@
       .front-name {
         font-size: 16px;
       }
-
-      /* Mobile speech bubble adjustments */
-      .bubble-photo, .bubble-photo-placeholder {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
-        margin-bottom: 6px;
-      }
-
-      .bubble-student-name {
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
-
-      .speech-bubble {
-        padding: 15px 18px;
-        min-width: 85%;
-        max-width: 95%;
-      }
-
-      .speech-bubble::before {
-        border-left: 12px solid transparent;
-        border-right: 12px solid transparent;
-        border-bottom: 12px solid rgba(255, 140, 60, 0.6);
-        top: -12px;
-      }
-
-      .speech-bubble::after {
-        border-left: 9px solid transparent;
-        border-right: 9px solid transparent;
-        border-bottom: 9px solid #ffffff;
-        top: -9px;
-      }
-      
-      .bubble-text {
-        font-size: 18px;
-        line-height: 2.0;
-      }
       
       .navigation-container {
         margin-bottom: 30px;
@@ -729,6 +670,23 @@
       
       .footer {
         margin-top: 40px;
+      }
+
+      .neu-photo, .neu-photo-placeholder {
+        width: 80px;
+        height: 80px;
+      }
+
+      .neu-name {
+        font-size: 20px;
+      }
+
+      .neu-response {
+        padding: 15px;
+      }
+
+      .neu-response-text {
+        font-size: 12px;
       }
     }
   </style>
@@ -748,7 +706,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses (Speech Bubbles)<br>By Majid Nashtai</p>
+      <p>Live Responses (Neumorphic Edition)<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -795,7 +753,7 @@
       const debugContent = document.getElementById('debugContent');
       const timestamp = new Date().toLocaleTimeString();
       
-      console.log(`[DISPLAY] ${timestamp} - ${message}`, data || '');
+      console.log(`[NEUMORPHIC DISPLAY] ${timestamp} - ${message}`, data || '');
       
       debugContent.innerHTML = `
         <div><strong>${timestamp}:</strong> ${message}</div>
@@ -871,36 +829,33 @@
       const wordCount = response.wordCount || response.word_count || 0;
       const timestamp = formatTimestamp(response.timestamp || response.created_at || response.submitted_at);
       const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url;
-
+      
       const frontPhotoHtml = photoUrl ? 
         `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
         `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
       
-      const bubblePhotoHtml = photoUrl ? 
-        `<img src="${photoUrl}" alt="Student photo" class="bubble-photo" onerror="this.style.display='none'">` :
-        `<div class="bubble-photo-placeholder">👤</div>`;
+      const neuPhotoHtml = photoUrl ?
+        `<img src="${photoUrl}" alt="Student photo" class="neu-photo" onerror="this.replaceWith(this.nextElementSibling)">
+         <div class="neu-photo-placeholder" style="display: none;">👤</div>` :
+        `<div class="neu-photo-placeholder">👤</div>`;
 
       card.innerHTML = `
         <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
-          <div class="click-indicator">CLICKABLE</div>
+          <div class="click-indicator">CLICK FOR RESPONSE</div>
           <div class="card-front">
             ${frontPhotoHtml}
             <div class="front-name">${escapeHtml(studentName)}</div>
-            <div class="front-preview">Click to read response</div>
+            <div class="front-preview">Click to see response</div>
           </div>
           <div class="card-back">
-            <div class="speech-bubble-container">
-              <div class="student-info-header">
-                ${bubblePhotoHtml}
-                <div class="bubble-student-name">${escapeHtml(studentName)}</div>
-              </div>
-              <div class="speech-bubble">
-                <div class="bubble-text">${escapeHtml(answer)}</div>
-              </div>
-              <div class="response-meta-bubble">
-                <span class="word-count">${wordCount} words</span>
-                <span class="timestamp">${timestamp}</span>
-                ${photoUrl ? '<span class="photo-indicator">📸</span>' : ''}
+            <div class="neu-decoration"></div>
+            <div class="neu-decoration"></div>
+            
+            <div class="neumorphic-content">
+              ${neuPhotoHtml}
+              <div class="neu-name">${escapeHtml(studentName)}</div>
+              <div class="neu-response">
+                <div class="neu-response-text">${escapeHtml(answer)}</div>
               </div>
             </div>
           </div>
@@ -933,7 +888,7 @@
         const studentName = cardContainer.dataset.student;
         const isFlipped = cardContainer.classList.contains('flipped');
         
-        debugLog(`Card clicked: ${studentName}`, { 
+        debugLog(`Neumorphic card clicked: ${studentName}`, { 
           wasFlipped: isFlipped, 
           willBeFlipped: !isFlipped 
         });
@@ -952,24 +907,24 @@
         const frontPreview = cardContainer.querySelector('.front-preview');
         if (frontPreview) {
           frontPreview.textContent = cardContainer.classList.contains('flipped') ? 
-            'Click to close' : 'Click to read response';
+            'Click to close response' : 'Click to see response';
         }
 
-        debugLog(`Card flipped: ${studentName}`, { 
-          nowFlipped: cardContainer.classList.contains('flipped')
+        debugLog(`Neumorphic card toggled: ${studentName}`, { 
+          nowShowingResponse: cardContainer.classList.contains('flipped')
         });
       };
 
       // Attach new handler
       document.addEventListener('click', activeCardClickHandler);
-      debugLog('Card click handler attached');
+      debugLog('Neumorphic card click handler attached');
     }
 
     function displayResponses() {
       const container = document.getElementById('responseContainer');
       const noResponses = document.getElementById('noResponses');
       
-      debugLog('Displaying responses', { count: responses.length });
+      debugLog('Displaying neumorphic responses', { count: responses.length });
       
       if (responses.length === 0) {
         noResponses.style.display = 'flex';
@@ -1001,7 +956,7 @@
       // Attach click handlers
       setTimeout(() => {
         attachCardClickHandler();
-        debugLog('Cards created and handlers attached', { 
+        debugLog('Neumorphic cards created and handlers attached', { 
           totalCards: sortedResponses.length,
           activeIndex: currentIndex
         });
@@ -1051,7 +1006,7 @@
         card.classList.remove('flipped');
         const frontPreview = card.querySelector('.front-preview');
         if (frontPreview) {
-          frontPreview.textContent = 'Click to read response';
+          frontPreview.textContent = 'Click to see response';
         }
       });
 
@@ -1113,7 +1068,7 @@
       if (loadData()) {
         displayQuestion();
         displayResponses();
-        debugLog('Data refreshed successfully');
+        debugLog('Neumorphic data refreshed successfully');
       }
 
       setTimeout(() => {
@@ -1151,7 +1106,7 @@
             card.classList.remove('flipped');
             const frontPreview = card.querySelector('.front-preview');
             if (frontPreview) {
-              frontPreview.textContent = 'Click to read response';
+              frontPreview.textContent = 'Click to see response';
             }
           });
           break;
@@ -1172,35 +1127,42 @@
     }
 
     function init() {
-      debugLog('INTUITY Speech Bubble Display initializing...');
+      debugLog('INTUITY Neumorphic Display initializing...');
       
       if (!loadData()) {
-        // Enhanced demo data with longer responses to test speech bubbles
-        currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
+        // Demo data with educational focus
+        currentQuestion = { questionText: 'What would you like to learn or improve this semester?' };
         responses = [
           {
             studentName: 'Emma Chen',
-            answer: 'I\'d love to learn more about sustainable architecture and how buildings can work with nature rather than against it. The concept of biomimicry in construction fascinates me - how we can look at natural structures like termite mounds for ventilation systems, or how trees distribute weight to inform structural engineering. I\'m particularly interested in green building materials, renewable energy integration, and creating spaces that actually improve their local ecosystems. The intersection of design, environmental science, and social responsibility in architecture seems like such a rich field to explore. I believe our built environment has the power to either harm or heal our planet.',
-            wordCount: 95,
+            answer: 'I want to learn sustainable architecture and understand how buildings can work with nature rather than against it. Green design fascinates me and I think it could help solve many environmental challenges we face today.',
+            wordCount: 32,
             timestamp: new Date().toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Marcus Johnson', 
-            answer: 'Artificial intelligence fascinates me, especially how it can help solve climate change through better predictions and resource management. I want to understand machine learning algorithms, neural networks, and how AI can optimize everything from energy grids to transportation systems. The ethical implications are huge too - how do we ensure AI benefits everyone, not just tech companies? I\'m curious about natural language processing, computer vision, and robotics. But also the philosophical questions: what does intelligence really mean? Can machines truly understand, or just simulate understanding? The rapid pace of AI development both excites and concerns me. I think understanding these systems will be crucial for anyone in the 21st century.',
-            wordCount: 112,
+            answer: 'I\'d love to master artificial intelligence and machine learning to help solve climate change through better predictions and resource management. The combination of AI and environmental science could be revolutionary.',
+            wordCount: 28,
             timestamp: new Date(Date.now() - 120000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Sophia Rodriguez',
-            answer: 'I want to understand quantum computing better - the way it processes information simultaneously instead of sequentially seems revolutionary. Quantum mechanics already blows my mind with concepts like superposition and entanglement, but applying these principles to computation opens up incredible possibilities. I\'m interested in quantum algorithms, error correction, and the potential applications in cryptography, drug discovery, and financial modeling. The idea that quantum computers could break current encryption methods while also creating unbreakable quantum encryption is paradoxically fascinating. I also wonder about the practical challenges - quantum systems are so fragile and require such extreme conditions. Will quantum computers ever be accessible to regular people, or will they remain specialized tools for researchers and large corporations?',
-            wordCount: 125,
+            answer: 'I want to study quantum computing and understand how quantum processors can solve problems that classical computers cannot handle efficiently. The possibilities for scientific research are endless.',
+            wordCount: 26,
             timestamp: new Date(Date.now() - 300000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
+          },
+          {
+            studentName: 'Alex Kim',
+            answer: 'I hope to develop better communication skills and practice public speaking to become more confident in presentations and group discussions. Clear communication is essential for leadership.',
+            wordCount: 24,
+            timestamp: new Date(Date.now() - 480000).toISOString(),
+            photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
           }
         ];
-        debugLog('Using enhanced demo data for speech bubble testing', { responses: responses.length });
+        debugLog('Using educational demo data', { responses: responses.length });
       }
 
       displayQuestion();
@@ -1209,7 +1171,7 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      debugLog('INTUITY Speech Bubble Display ready!', { 
+      debugLog('INTUITY Neumorphic Display ready!', { 
         responses: responses.length,
         currentIndex: currentIndex
       });
