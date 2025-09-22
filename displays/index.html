@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Live Responses (Poster Edition)</title>
+  <title>INTUITY - Live Responses (Full Display)</title>
   
   <style>
     * {
@@ -132,7 +132,7 @@
 
     .header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
     }
 
     .header h1 {
@@ -152,18 +152,19 @@
     }
 
     .question-display {
-      width: 50%;
-      height: 2.5cm;
-      background: #000000;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      margin: 0 auto 50px auto;
-      padding: 15px;
+      margin-bottom: 30px;
+      padding: 20px;
       text-align: center;
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      backdrop-filter: blur(10px);
     }
 
     .question-content {
@@ -172,40 +173,40 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
 
     .question-text {
-      font-size: 16px;
+      font-size: 20px;
       color: #fff;
-      font-weight: 500;
-      line-height: 1.3;
+      font-weight: 600;
+      line-height: 1.4;
+      max-width: 800px;
     }
 
     .total-count {
-      font-size: 12px;
+      font-size: 14px;
       color: rgba(255, 140, 60, 0.8);
       font-weight: 500;
     }
 
-    /* SIMPLIFIED RESPONSE CONTAINER */
+    /* FULL RESPONSE DISPLAY - POSTER STYLE */
     .response-container {
-      width: 50%;
-      height: 6cm;
+      width: 100%;
+      min-height: 70vh;
       position: relative;
-      margin: 0 auto 50px auto;
-      perspective: 1000px;
+      margin-bottom: 30px;
     }
 
     .response-card {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       position: absolute;
       top: 0;
       left: 0;
       opacity: 0;
-      transform: translateX(30px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: translateX(50px);
+      transition: all 0.5s ease;
       pointer-events: none;
     }
 
@@ -215,259 +216,158 @@
       pointer-events: auto;
     }
 
-    /* SIMPLIFIED CARD STRUCTURE - NO 3D FLIP, USE SIMPLE TOGGLE */
-    .card-container {
-      position: relative;
+    /* POSTER LAYOUT */
+    .response-poster {
       width: 100%;
-      height: 100%;
-      background: #000000;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      min-height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 25px;
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      transition: all 0.3s ease;
       cursor: pointer;
-      transition: all 0.3s ease;
     }
 
-    .card-container:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 140, 60, 0.3);
+    .response-poster:hover {
+      border-color: rgba(255, 140, 60, 0.5);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(255, 140, 60, 0.1);
     }
 
-    .card-front, .card-back {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      padding: 25px;
-      border-radius: 20px;
-      transition: opacity 0.3s ease;
-    }
-
-    .card-front {
-      opacity: 1;
-      z-index: 2;
+    /* STUDENT HEADER */
+    .student-header {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(255, 140, 60, 0.2);
     }
 
-    .card-back {
-      opacity: 0;
-      z-index: 1;
-      /* POSTER STYLING */
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-container.flipped .card-front {
-      opacity: 0;
-      z-index: 1;
-    }
-
-    .card-container.flipped .card-back {
-      opacity: 1;
-      z-index: 2;
-    }
-
-    /* Front face styling */
-    .front-photo {
-      width: 100px;
-      height: 100px;
-      border-radius: 12px;
+    .student-photo-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 15px;
       object-fit: cover;
-      border: 2px solid rgba(255, 140, 60, 0.3);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .front-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: rgba(255, 140, 60, 0.9);
-      margin-bottom: 6px;
-      text-align: center;
-    }
-
-    .front-preview {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.4);
-      text-align: center;
-      line-height: 1.3;
-      font-weight: 300;
-      transition: all 0.3s ease;
-    }
-
-    .card-container:hover .front-preview {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    /* POSTER STYLING FOR BACK FACE */
-    .poster-header {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
-      z-index: 10;
-    }
-
-    .vote-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .stars {
-      color: #6c757d;
-      font-size: 14px;
-      letter-spacing: 2px;
-    }
-
-    .vote-text {
-      background: #212529;
-      color: white;
-      padding: 4px 12px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      border-radius: 4px;
-    }
-
-    .poster-main {
-      display: flex;
-      align-items: flex-start;
-      height: 100%;
-      padding: 60px 20px 40px;
-      gap: 20px;
-    }
-
-    .poster-content {
-      flex: 1;
-      padding-right: 15px;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .choose-text {
-      font-size: 32px;
-      font-weight: 900;
-      color: #212529;
-      line-height: 0.9;
-      margin-bottom: 8px;
-      letter-spacing: -1px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .student-name-large {
-      font-size: 36px;
-      font-weight: 900;
-      color: #212529;
-      line-height: 0.9;
-      margin-bottom: 12px;
-      letter-spacing: -1px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .key-message {
-      background: #212529;
-      color: white;
-      font-size: 18px;
-      font-weight: 800;
-      padding: 8px 0;
-      text-align: center;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 15px;
-      border-radius: 4px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .motto {
-      color: #495057;
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.5;
-      opacity: 0.9;
-      overflow-wrap: break-word;
-      text-align: left;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .motto {
-      color: white;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.4;
-      opacity: 0.9;
-    }
-
-    .poster-photo-container {
-      width: 120px;
-      height: 160px;
-      position: relative;
+      border: 3px solid rgba(255, 140, 60, 0.4);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       flex-shrink: 0;
     }
 
-    .poster-photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 3px solid #212529;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    .student-info-large {
+      flex: 1;
     }
 
-    .poster-photo-placeholder {
-      width: 100%;
-      height: 100%;
-      background: rgba(108, 117, 125, 0.1);
-      border-radius: 8px;
-      border: 3px solid #212529;
+    .student-name-large {
+      font-size: 28px;
+      font-weight: 700;
+      color: rgba(255, 140, 60, 0.9);
+      margin-bottom: 8px;
+      text-shadow: 0 2px 10px rgba(255, 140, 60, 0.2);
+    }
+
+    .student-meta {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      color: #6c757d;
+      gap: 20px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
     }
 
-    .poster-footer {
-      position: absolute;
-      bottom: 12px;
-      left: 15px;
-      right: 15px;
+    .response-number {
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* MAIN RESPONSE CONTENT */
+    .response-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .response-text-large {
+      color: #fff;
+      font-size: 22px;
+      line-height: 1.7;
+      font-weight: 400;
+      text-align: justify;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      hyphens: auto;
+      word-break: break-word;
+    }
+
+    /* RESPONSE FOOTER */
+    .response-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #212529;
-      font-size: 11px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
-    .poster-info {
+    .response-stats {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .stat-item {
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
     }
 
-    .poster-meta {
-      color: #6c757d;
-      font-size: 10px;
+    .stat-value {
+      color: rgba(255, 140, 60, 0.9);
+      font-weight: 600;
     }
 
-    /* Grey accent overlay for visual interest */
-    .poster-accent {
+    .timestamp-large {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* INTERACTION HINTS */
+    .interaction-hints {
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 30%;
-      height: 100%;
-      background: linear-gradient(135deg, transparent 0%, rgba(108, 117, 125, 0.1) 50%, rgba(73, 80, 87, 0.15) 100%);
-      border-radius: 0 20px 20px 0;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .response-poster:hover .interaction-hints {
+      opacity: 1;
+    }
+
+    .hint-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 8px;
+      border-radius: 8px;
+      backdrop-filter: blur(5px);
     }
 
     /* NAVIGATION */
@@ -475,31 +375,33 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 50px;
+      gap: 30px;
+      margin-bottom: 30px;
       flex-wrap: wrap;
     }
 
     .nav-arrow {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 140, 60, 0.1);
+      border: 2px solid rgba(255, 140, 60, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 16px;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 20px;
       cursor: pointer;
       transition: all 0.3s ease;
       user-select: none;
+      font-weight: bold;
     }
 
     .nav-arrow:hover {
-      background: rgba(255, 140, 60, 0.1);
-      border-color: rgba(255, 140, 60, 0.3);
-      color: rgba(255, 140, 60, 0.8);
+      background: rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.6);
+      color: #fff;
+      transform: scale(1.1);
     }
 
     .nav-arrow.disabled {
@@ -508,17 +410,30 @@
       pointer-events: none;
     }
 
+    .navigation-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .current-response {
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(255, 140, 60, 0.9);
+    }
+
     .navigation-dots {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .nav-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.2);
       cursor: pointer;
@@ -526,13 +441,14 @@
     }
 
     .nav-dot.active {
-      background: rgba(255, 140, 60, 0.8);
-      transform: scale(1.3);
+      background: rgba(255, 140, 60, 0.9);
+      transform: scale(1.5);
+      box-shadow: 0 0 10px rgba(255, 140, 60, 0.4);
     }
 
     .nav-dot:hover {
-      background: rgba(255, 140, 60, 0.5);
-      transform: scale(1.1);
+      background: rgba(255, 140, 60, 0.6);
+      transform: scale(1.2);
     }
 
     .no-responses {
@@ -540,23 +456,28 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%;
+      height: 70vh;
       color: rgba(255, 255, 255, 0.5);
       text-align: center;
     }
 
     .no-responses-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
+      font-size: 64px;
+      margin-bottom: 30px;
       opacity: 0.5;
     }
 
+    .no-responses h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
     .footer {
-      margin-top: 60px;
+      margin-top: 30px;
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
-      padding: 15px;
+      padding: 20px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: space-around;
@@ -564,8 +485,8 @@
     }
 
     .nav-button {
-      width: 45px;
-      height: 45px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
       border: none;
@@ -573,7 +494,7 @@
       align-items: center;
       justify-content: center;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
@@ -584,25 +505,6 @@
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
       transform: scale(1.1);
-    }
-
-    .click-indicator {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(16, 185, 129, 0.8);
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 600;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 10;
-    }
-
-    .click-indicator.show {
-      opacity: 1;
     }
 
     /* Animations */
@@ -631,108 +533,61 @@
     .curve5 { --base-opacity: 0.35; --rotate: 6deg; animation: float 9s ease-in-out infinite reverse; }
     .curve6 { --base-opacity: 0.15; --rotate: -15deg; animation: drift 15s ease-in-out infinite reverse; }
 
-    /* DEBUG */
-    .debug-info {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.9);
-      color: rgba(255, 140, 60, 0.8);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-family: monospace;
-      z-index: 1000;
-      max-width: 300px;
-      display: none;
-    }
-
-    .debug-info.show {
-      display: block;
-    }
-
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
-        padding: 30px 15px 15px;
+        padding: 20px 15px 15px;
       }
       
       .header {
-        margin-bottom: 40px;
+        margin-bottom: 30px;
       }
       
       .header h1 {
         font-size: 28px;
       }
       
-      .question-display {
-        width: 100%;
-        height: 2cm;
-        margin-bottom: 30px;
-        padding: 12px;
-      }
-      
       .question-text {
-        font-size: 14px;
+        font-size: 18px;
       }
       
-      .response-container {
-        width: 100%;
-        height: 5cm;
-        margin-bottom: 30px;
+      .response-poster {
+        padding: 25px;
+        gap: 20px;
       }
       
-      .card-front, .card-back {
-        padding: 20px;
+      .student-header {
+        gap: 15px;
       }
       
-      .front-photo {
+      .student-photo-large {
         width: 60px;
         height: 60px;
       }
       
-      .front-name {
-        font-size: 16px;
+      .student-name-large {
+        font-size: 22px;
+      }
+      
+      .response-text-large {
+        font-size: 18px;
+        line-height: 1.6;
       }
       
       .navigation-container {
-        margin-bottom: 30px;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .nav-arrow {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
       }
       
       .footer {
-        margin-top: 40px;
-      }
-
-      .poster-main {
-        padding: 40px 15px 35px;
-        align-items: flex-start;
-        gap: 15px;
-      }
-
-      .choose-text {
-        font-size: 24px;
-      }
-
-      .student-name-large {
-        font-size: 28px;
-      }
-
-      .key-message {
-        font-size: 14px;
-        padding: 6px 0;
-      }
-
-      .poster-photo-container {
-        width: 80px;
-        height: 120px;
-      }
-
-      .motto {
-        font-size: 12px;
-      }
-
-      .poster-content {
-        padding-right: 10px;
+        margin-top: 20px;
+        padding: 15px;
       }
     }
   </style>
@@ -752,7 +607,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses (Poster Edition)<br>By Majid Nashtai</p>
+      <p>Live Responses - Full Display<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -765,14 +620,17 @@
     <div class="response-container" id="responseContainer">
       <div class="no-responses" id="noResponses">
         <div class="no-responses-icon">💭</div>
-        <div>No responses yet</div>
-        <div style="margin-top: 10px; font-size: 14px; opacity: 0.6;">Responses will appear here as students submit them</div>
+        <h3>No responses yet</h3>
+        <div>Responses will appear here as students submit them</div>
       </div>
     </div>
 
     <div class="navigation-container">
       <div class="nav-arrow" id="prevArrow" onclick="navigateToResponse(currentIndex - 1)">‹</div>
-      <div class="navigation-dots" id="navigationDots"></div>
+      <div class="navigation-info">
+        <div class="current-response" id="currentResponse">1 of 1</div>
+        <div class="navigation-dots" id="navigationDots"></div>
+      </div>
       <div class="nav-arrow" id="nextArrow" onclick="navigateToResponse(currentIndex + 1)">›</div>
     </div>
 
@@ -784,60 +642,10 @@
     </footer>
   </div>
 
-  <div class="debug-info" id="debugInfo">
-    <div id="debugContent"></div>
-  </div>
-
   <script>
     let currentQuestion = null;
     let responses = [];
     let currentIndex = 0;
-    let activeCardClickHandler = null;
-
-    function debugLog(message, data = null) {
-      const debugInfo = document.getElementById('debugInfo');
-      const debugContent = document.getElementById('debugContent');
-      const timestamp = new Date().toLocaleTimeString();
-      
-      console.log(`[POSTER DISPLAY] ${timestamp} - ${message}`, data || '');
-      
-      debugContent.innerHTML = `
-        <div><strong>${timestamp}:</strong> ${message}</div>
-        ${data ? '<div style="font-size: 10px; opacity: 0.7;">' + JSON.stringify(data, null, 2) + '</div>' : ''}
-      `;
-      debugInfo.classList.add('show');
-      
-      setTimeout(() => {
-        debugInfo.classList.remove('show');
-      }, 3000);
-    }
-
-    function extractKeyIdea(responseText) {
-      // Simple algorithm to extract a key phrase from the response
-      const words = responseText.split(' ');
-      if (words.length <= 4) return responseText;
-      
-      // Look for meaningful phrases - educational contexts
-      const keyPhrases = [
-        'learn', 'understand', 'explore', 'discover', 'study', 'research', 'practice',
-        'improve', 'develop', 'master', 'solve', 'create', 'design', 'analyze'
-      ];
-      
-      for (let phrase of keyPhrases) {
-        const index = words.findIndex(word => word.toLowerCase().includes(phrase));
-        if (index !== -1 && index + 2 < words.length) {
-          return words.slice(index, Math.min(index + 4, words.length)).join(' ');
-        }
-      }
-      
-      // Fallback: return first few meaningful words
-      const meaningfulWords = words.filter(word => 
-        word.length > 3 && 
-        !['the', 'and', 'but', 'for', 'are', 'was', 'were', 'been', 'have', 'has', 'had', 'will', 'would', 'could', 'should'].includes(word.toLowerCase())
-      );
-      
-      return meaningfulWords.slice(0, 3).join(' ') || words.slice(0, 4).join(' ');
-    }
 
     function loadData() {
       try {
@@ -861,7 +669,7 @@
               const parsed = JSON.parse(responsesData);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 responses = parsed;
-                debugLog(`Loaded ${responses.length} responses from ${source}`);
+                console.log(`✅ Loaded ${responses.length} responses from ${source}`);
                 break;
               }
             } catch (e) {
@@ -902,61 +710,57 @@
       const wordCount = response.wordCount || response.word_count || 0;
       const timestamp = formatTimestamp(response.timestamp || response.created_at || response.submitted_at);
       const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url;
-      
-      const keyIdea = extractKeyIdea(answer);
 
-      const frontPhotoHtml = photoUrl ? 
-        `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
-        `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
-      
-      const posterPhotoHtml = photoUrl ?
-        `<img src="${photoUrl}" alt="Student photo" class="poster-photo" onerror="this.replaceWith(this.nextElementSibling)">
-         <div class="poster-photo-placeholder" style="display: none;">👤</div>` :
-        `<div class="poster-photo-placeholder">👤</div>`;
+      // Calculate reading time (average 200 words per minute)
+      const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+      const photoHtml = photoUrl ? 
+        `<img src="${photoUrl}" alt="${escapeHtml(studentName)}" class="student-photo-large" onerror="this.style.display='none'">` :
+        `<div class="student-photo-large" style="background: linear-gradient(135deg, rgba(255,140,60,0.3), rgba(255,100,40,0.3)); display: flex; align-items: center; justify-content: center; font-size: 32px; color: rgba(255,140,60,0.8);">👤</div>`;
 
       card.innerHTML = `
-        <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
-          <div class="click-indicator">CLICK FOR POSTER</div>
-          <div class="card-front">
-            ${frontPhotoHtml}
-            <div class="front-name">${escapeHtml(studentName)}</div>
-            <div class="front-preview">Click to see poster</div>
+        <div class="response-poster">
+          <div class="student-header">
+            ${photoHtml}
+            <div class="student-info-large">
+              <div class="student-name-large">${escapeHtml(studentName)}</div>
+              <div class="student-meta">
+                <div class="response-number">Response ${index + 1}</div>
+                <div>${timestamp}</div>
+                ${photoUrl ? '<div style="color: rgba(16, 185, 129, 0.8);">📸 Photo</div>' : ''}
+              </div>
+            </div>
           </div>
-          <div class="card-back">
-            <div class="poster-accent"></div>
-            
-            <div class="poster-header">
-              <div class="vote-badge">
-                <div class="stars">★★★★★</div>
-                <div class="vote-text">STAR IDEA</div>
+          
+          <div class="response-content">
+            <div class="response-text-large">${escapeHtml(answer)}</div>
+          </div>
+          
+          <div class="response-footer">
+            <div class="response-stats">
+              <div class="stat-item">
+                <span>📝</span>
+                <span class="stat-value">${wordCount}</span>
+                <span>words</span>
+              </div>
+              <div class="stat-item">
+                <span>⏱</span>
+                <span class="stat-value">${readingTime}</span>
+                <span>min read</span>
+              </div>
+              <div class="stat-item">
+                <span>📊</span>
+                <span class="stat-value">${determineQuality(wordCount)}</span>
+                <span>quality</span>
               </div>
             </div>
-
-            <div class="poster-main">
-              <div class="poster-content">
-                <div class="choose-text">CHOOSE</div>
-                <div class="student-name-large">${escapeHtml(studentName.toUpperCase())}</div>
-                <div class="key-message">${escapeHtml(keyIdea.toUpperCase())}</div>
-                <div class="motto">
-                  ${escapeHtml(answer)}
-                </div>
-              </div>
-              
-              <div class="poster-photo-container">
-                ${posterPhotoHtml}
-              </div>
-            </div>
-
-            <div class="poster-footer">
-              <div class="poster-info">
-                <span>🎓</span>
-                <span>FOR LEARNING</span>
-              </div>
-              <div class="poster-meta">
-                <div>RESPONSE DAY</div>
-                <div>${new Date().toLocaleDateString()}</div>
-              </div>
-            </div>
+            <div class="timestamp-large">Submitted ${timestamp}</div>
+          </div>
+          
+          <div class="interaction-hints">
+            <div class="hint-item"><span>←→</span> Navigate</div>
+            <div class="hint-item"><span>Space</span> Next</div>
+            <div class="hint-item"><span>R</span> Refresh</div>
           </div>
         </div>
       `;
@@ -964,70 +768,22 @@
       return card;
     }
 
-    function attachCardClickHandler() {
-      // Remove previous handler
-      if (activeCardClickHandler) {
-        document.removeEventListener('click', activeCardClickHandler);
-      }
-
-      // Create new handler
-      activeCardClickHandler = function(e) {
-        const cardContainer = e.target.closest('.card-container');
-        if (!cardContainer) return;
-
-        const responseCard = cardContainer.closest('.response-card');
-        if (!responseCard || !responseCard.classList.contains('active')) {
-          debugLog('Click ignored - card not active');
-          return;
-        }
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        const studentName = cardContainer.dataset.student;
-        const isFlipped = cardContainer.classList.contains('flipped');
-        
-        debugLog(`Poster card clicked: ${studentName}`, { 
-          wasFlipped: isFlipped, 
-          willBeFlipped: !isFlipped 
-        });
-
-        // Show click indicator
-        const indicator = cardContainer.querySelector('.click-indicator');
-        if (indicator) {
-          indicator.classList.add('show');
-          setTimeout(() => indicator.classList.remove('show'), 500);
-        }
-
-        // Toggle flip
-        cardContainer.classList.toggle('flipped');
-        
-        // Update preview text
-        const frontPreview = cardContainer.querySelector('.front-preview');
-        if (frontPreview) {
-          frontPreview.textContent = cardContainer.classList.contains('flipped') ? 
-            'Click to close poster' : 'Click to see poster';
-        }
-
-        debugLog(`Poster toggled: ${studentName}`, { 
-          nowShowingPoster: cardContainer.classList.contains('flipped')
-        });
-      };
-
-      // Attach new handler
-      document.addEventListener('click', activeCardClickHandler);
-      debugLog('Poster card click handler attached');
+    function determineQuality(wordCount) {
+      if (wordCount >= 25) return 'Excellent';
+      if (wordCount >= 15) return 'Good';
+      if (wordCount >= 8) return 'Fair';
+      return 'Brief';
     }
 
     function displayResponses() {
       const container = document.getElementById('responseContainer');
       const noResponses = document.getElementById('noResponses');
       
-      debugLog('Displaying poster responses', { count: responses.length });
+      console.log('Displaying responses:', responses.length);
       
       if (responses.length === 0) {
         noResponses.style.display = 'flex';
-        updateNavigationArrows();
+        updateNavigation();
         return;
       }
 
@@ -1052,17 +808,25 @@
         container.appendChild(card);
       });
 
-      // Attach click handlers
-      setTimeout(() => {
-        attachCardClickHandler();
-        debugLog('Poster cards created and handlers attached', { 
-          totalCards: sortedResponses.length,
-          activeIndex: currentIndex
-        });
-      }, 100);
+      updateNavigation();
+    }
+
+    function updateNavigation() {
+      const prevArrow = document.getElementById('prevArrow');
+      const nextArrow = document.getElementById('nextArrow');
+      const currentResponseEl = document.getElementById('currentResponse');
+      
+      if (responses.length <= 1) {
+        prevArrow.classList.add('disabled');
+        nextArrow.classList.add('disabled');
+        currentResponseEl.textContent = responses.length === 0 ? '0 of 0' : '1 of 1';
+      } else {
+        prevArrow.classList.toggle('disabled', currentIndex === 0);
+        nextArrow.classList.toggle('disabled', currentIndex === responses.length - 1);
+        currentResponseEl.textContent = `${currentIndex + 1} of ${responses.length}`;
+      }
 
       createNavigationDots();
-      updateNavigationArrows();
     }
 
     function createNavigationDots() {
@@ -1071,26 +835,26 @@
 
       if (responses.length <= 1) return;
 
-      for (let i = 0; i < responses.length && i < 12; i++) {
+      // Show up to 10 dots
+      const maxDots = Math.min(responses.length, 10);
+      for (let i = 0; i < maxDots; i++) {
         const dot = document.createElement('div');
         dot.className = `nav-dot ${i === currentIndex ? 'active' : ''}`;
         dot.addEventListener('click', () => navigateToResponse(i));
+        dot.title = `Response ${i + 1}`;
         dotsContainer.appendChild(dot);
       }
-    }
 
-    function updateNavigationArrows() {
-      const prevArrow = document.getElementById('prevArrow');
-      const nextArrow = document.getElementById('nextArrow');
-      
-      if (responses.length <= 1) {
-        prevArrow.classList.add('disabled');
-        nextArrow.classList.add('disabled');
-        return;
+      // Add "more" indicator if there are more responses
+      if (responses.length > 10) {
+        const moreDot = document.createElement('div');
+        moreDot.textContent = '…';
+        moreDot.style.color = 'rgba(255, 140, 60, 0.6)';
+        moreDot.style.fontSize = '14px';
+        moreDot.style.width = 'auto';
+        moreDot.style.padding = '0 5px';
+        dotsContainer.appendChild(moreDot);
       }
-      
-      prevArrow.classList.toggle('disabled', currentIndex === 0);
-      nextArrow.classList.toggle('disabled', currentIndex === responses.length - 1);
     }
 
     function navigateToResponse(index) {
@@ -1098,16 +862,7 @@
         return;
       }
 
-      debugLog(`Navigating from ${currentIndex} to ${index}`);
-
-      // Reset any flipped cards
-      document.querySelectorAll('.card-container.flipped').forEach(card => {
-        card.classList.remove('flipped');
-        const frontPreview = card.querySelector('.front-preview');
-        if (frontPreview) {
-          frontPreview.textContent = 'Click to see poster';
-        }
-      });
+      console.log(`Navigating from ${currentIndex} to ${index}`);
 
       // Hide current card
       const currentCard = document.querySelector('.response-card.active');
@@ -1127,11 +882,8 @@
           }
         });
 
-        createNavigationDots();
-        updateNavigationArrows();
-        
-        debugLog(`Navigation complete to index ${currentIndex}`);
-      }, 150);
+        updateNavigation();
+      }, 100);
     }
 
     function formatTimestamp(timestamp) {
@@ -1143,12 +895,19 @@
         const diffMs = now - date;
         const diffMins = Math.floor(diffMs / 60000);
         const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
 
         if (diffMins < 1) return 'Just now';
         if (diffMins < 60) return `${diffMins}m ago`;
         if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
         
-        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
+        });
       } catch (error) {
         return 'Unknown time';
       }
@@ -1167,7 +926,7 @@
       if (loadData()) {
         displayQuestion();
         displayResponses();
-        debugLog('Poster data refreshed successfully');
+        console.log('Data refreshed successfully');
       }
 
       setTimeout(() => {
@@ -1185,31 +944,53 @@
       
       switch(e.key) {
         case 'ArrowLeft':
+        case 'ArrowUp':
           e.preventDefault();
           navigateToResponse(currentIndex - 1);
           break;
         case 'ArrowRight':
+        case 'ArrowDown':
+        case ' ': // Spacebar
           e.preventDefault();
           navigateToResponse(currentIndex + 1);
           break;
-        case ' ': // Spacebar
+        case 'Home':
           e.preventDefault();
-          const activeCard = document.querySelector('.response-card.active .card-container');
-          if (activeCard) {
-            activeCard.click();
-          }
+          navigateToResponse(0);
           break;
-        case 'Escape':
+        case 'End':
           e.preventDefault();
-          document.querySelectorAll('.card-container.flipped').forEach(card => {
-            card.classList.remove('flipped');
-            const frontPreview = card.querySelector('.front-preview');
-            if (frontPreview) {
-              frontPreview.textContent = 'Click to see poster';
-            }
-          });
+          navigateToResponse(responses.length - 1);
+          break;
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          refreshData();
           break;
       }
+    });
+
+    // Touch/swipe navigation
+    let startX = null;
+    document.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      if (startX === null) return;
+      
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          navigateToResponse(currentIndex + 1);
+        } else {
+          navigateToResponse(currentIndex - 1);
+        }
+      }
+      
+      startX = null;
     });
 
     function startAutoRefresh() {
@@ -1226,42 +1007,35 @@
     }
 
     function init() {
-      debugLog('INTUITY Poster Display initializing...');
+      console.log('🚀 INTUITY Full Response Display initializing...');
       
       if (!loadData()) {
-        // Demo data with educational focus
-        currentQuestion = { questionText: 'What would you like to learn or improve this semester?' };
+        // Demo data
+        currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
         responses = [
           {
             studentName: 'Emma Chen',
-            answer: 'I want to learn sustainable architecture and understand how buildings can work with nature rather than against it. Green design fascinates me!',
-            wordCount: 23,
+            answer: 'I\'d love to learn more about sustainable architecture and how buildings can work with nature rather than against it. The concept of biomimicry in design fascinates me - imagine buildings that breathe like organisms, use photosynthesis for energy, or adapt to weather patterns like living creatures. I think this could revolutionize how we approach urban planning and environmental conservation.',
+            wordCount: 58,
             timestamp: new Date().toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Marcus Johnson', 
-            answer: 'I\'d love to master artificial intelligence and machine learning to help solve climate change through better predictions and resource management.',
-            wordCount: 21,
+            answer: 'Artificial intelligence fascinates me, especially how it can help solve climate change through better predictions and resource management. I want to understand machine learning algorithms that can analyze massive environmental datasets to predict weather patterns, optimize energy usage, and help cities become more efficient. The intersection of AI and sustainability seems like where the future lies.',
+            wordCount: 52,
             timestamp: new Date(Date.now() - 120000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
           },
           {
             studentName: 'Sophia Rodriguez',
-            answer: 'I want to study quantum computing and understand how quantum processors can solve problems that classical computers cannot handle efficiently.',
-            wordCount: 21,
+            answer: 'I want to understand quantum computing better - the way it processes information simultaneously instead of sequentially seems revolutionary. The potential applications in cryptography, drug discovery, and financial modeling are incredible. I\'m particularly interested in how quantum computers might help us solve complex optimization problems that are currently impossible for classical computers to handle efficiently.',
+            wordCount: 49,
             timestamp: new Date(Date.now() - 300000).toISOString(),
             photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
-          },
-          {
-            studentName: 'Alex Kim',
-            answer: 'I hope to develop better communication skills and practice public speaking to become more confident in presentations and group discussions.',
-            wordCount: 20,
-            timestamp: new Date(Date.now() - 480000).toISOString(),
-            photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
           }
         ];
-        debugLog('Using educational demo data', { responses: responses.length });
+        console.log('Using demo data with', responses.length, 'responses');
       }
 
       displayQuestion();
@@ -1270,10 +1044,7 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      debugLog('INTUITY Poster Display ready!', { 
-        responses: responses.length,
-        currentIndex: currentIndex
-      });
+      console.log('✅ INTUITY Full Response Display ready!');
     }
 
     // Initialize
