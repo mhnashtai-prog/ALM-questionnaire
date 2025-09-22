@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INTUITY - Live Responses (Fixed)</title>
+  <title>INTUITY - Live Responses with Speech Bubbles</title>
   
   <style>
     * {
@@ -188,10 +188,10 @@
       font-weight: 500;
     }
 
-    /* FIXED RESPONSE CONTAINER - Increased height for better text readability */
+    /* RESPONSE CONTAINER */
     .response-container {
       width: 100%;
-      height: 9cm; /* Increased from 8cm to accommodate larger text */
+      height: 9cm;
       position: relative;
       margin-bottom: 50px;
       perspective: 1000px;
@@ -215,7 +215,7 @@
       pointer-events: auto;
     }
 
-    /* FIXED CARD STRUCTURE */
+    /* CARD STRUCTURE */
     .card-container {
       position: relative;
       width: 100%;
@@ -258,7 +258,9 @@
       z-index: 1;
       display: flex;
       flex-direction: column;
-      padding: 20px; /* Reduced padding to give more space for content */
+      padding: 15px;
+      align-items: center;
+      justify-content: center;
     }
 
     .card-container.flipped .card-front {
@@ -302,129 +304,148 @@
       color: rgba(255, 255, 255, 0.6);
     }
 
-    /* POSTER-STYLE Back face styling */
-    .response-header {
-      text-align: center;
-      margin-bottom: 20px;
+    /* SPEECH BUBBLE STYLING for Back face */
+    .speech-bubble-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      padding: 10px;
+    }
+
+    .student-info-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
       flex-shrink: 0;
     }
 
-    .poster-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: rgba(255, 140, 60, 0.9);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 15px;
-      text-shadow: 0 0 10px rgba(255, 140, 60, 0.3);
-    }
-
-    .poster-photo-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .poster-photo {
-      width: 120px;
-      height: 120px;
-      border-radius: 15px;
+    .bubble-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       object-fit: cover;
-      border: 3px solid rgba(255, 140, 60, 0.4);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 140, 60, 0.2);
-      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 140, 60, 0.4);
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    .poster-photo:hover {
-      transform: scale(1.05);
-      border-color: rgba(255, 140, 60, 0.6);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 140, 60, 0.3);
-    }
-
-    .poster-photo-placeholder {
-      width: 120px;
-      height: 120px;
-      border-radius: 15px;
+    .bubble-photo-placeholder {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       background: linear-gradient(135deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.1) 100%);
-      border: 3px solid rgba(255, 140, 60, 0.4);
+      border: 2px solid rgba(255, 140, 60, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
-      color: rgba(255, 140, 60, 0.7);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
-
-    .student-name-poster {
       font-size: 24px;
-      font-weight: 800;
-      color: #ffffff;
-      text-align: center;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-      line-height: 1.1;
+      color: rgba(255, 140, 60, 0.7);
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    .response-message {
-      background: linear-gradient(135deg, rgba(255, 140, 60, 0.15) 0%, rgba(255, 100, 40, 0.1) 100%);
-      border: 2px solid rgba(255, 140, 60, 0.3);
-      border-radius: 12px;
-      padding: 20px; /* Increased from 15px for better spacing */
-      margin-bottom: 15px;
+    .bubble-student-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255, 140, 60, 0.9);
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    /* THE SPEECH BUBBLE */
+    .speech-bubble {
+      position: relative;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      border: 3px solid rgba(255, 140, 60, 0.6);
+      border-radius: 20px;
+      padding: 20px 25px;
+      max-width: 90%;
+      min-width: 70%;
       flex: 1;
-      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 140, 60, 0.2),
+        inset 0 1px 3px rgba(255, 255, 255, 0.8);
+      margin-bottom: 10px;
+      overflow: hidden;
     }
 
-    .response-text {
-      color: rgba(255, 255, 255, 0.95);
-      line-height: 1.5;
-      font-size: 18px; /* Increased from 14px for much better readability */
+    /* Speech bubble tail pointing up to the student */
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid rgba(255, 140, 60, 0.6);
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 12px solid #ffffff;
+    }
+
+    .bubble-text {
+      color: #2d3748;
+      line-height: 1.6;
+      font-size: 16px;
       text-align: center;
-      font-weight: 500; /* Slightly bolder for better visibility */
-      /* Custom scrollbar styling */
+      font-weight: 500;
+      max-height: 100%;
+      overflow-y: auto;
+      word-wrap: break-word;
+      hyphens: auto;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 140, 60, 0.5) rgba(255, 255, 255, 0.1);
+      scrollbar-color: rgba(255, 140, 60, 0.5) rgba(0, 0, 0, 0.1);
     }
 
-    /* Webkit scrollbar styling for better appearance */
-    .response-text::-webkit-scrollbar {
+    /* Custom scrollbar for webkit browsers */
+    .bubble-text::-webkit-scrollbar {
       width: 6px;
     }
 
-    .response-text::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
+    .bubble-text::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
       border-radius: 3px;
     }
 
-    .response-text::-webkit-scrollbar-thumb {
+    .bubble-text::-webkit-scrollbar-thumb {
       background: rgba(255, 140, 60, 0.5);
       border-radius: 3px;
     }
 
-    .response-text::-webkit-scrollbar-thumb:hover {
+    .bubble-text::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 140, 60, 0.7);
     }
 
-    .response-meta {
+    .response-meta-bubble {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 11px;
       color: rgba(255, 255, 255, 0.6);
       flex-shrink: 0;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .poster-tagline {
-      text-align: center;
-      font-style: italic;
-      color: rgba(255, 140, 60, 0.8);
-      font-size: 12px;
-      margin-top: 10px;
-      opacity: 0.9;
+      width: 100%;
+      max-width: 90%;
     }
 
     .word-count {
@@ -621,7 +642,7 @@
       opacity: 1;
     }
 
-    /* MOBILE RESPONSIVE - Adjusted for poster layout */
+    /* MOBILE RESPONSIVE */
     @media (max-width: 768px) {
       .container {
         padding: 30px 15px 15px;
@@ -645,14 +666,13 @@
         font-size: 14px;
       }
       
-      /* Increased mobile height for better poster display with larger text */
       .response-container {
-        height: 8cm; /* Increased from 7cm to accommodate larger mobile text */
+        height: 8cm;
         margin-bottom: 30px;
       }
       
       .card-front, .card-back {
-        padding: 18px; /* Slightly more padding than before */
+        padding: 15px;
       }
       
       .front-photo {
@@ -664,37 +684,42 @@
         font-size: 16px;
       }
 
-      /* Poster layout mobile adjustments */
-      .poster-title {
-        font-size: 12px;
-        margin-bottom: 12px;
+      /* Mobile speech bubble adjustments */
+      .bubble-photo, .bubble-photo-placeholder {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        margin-bottom: 6px;
       }
 
-      .poster-photo, .poster-photo-placeholder {
-        width: 90px;
-        height: 90px;
-        font-size: 32px;
+      .bubble-student-name {
+        font-size: 14px;
+        margin-bottom: 8px;
       }
 
-      .student-name-poster {
-        font-size: 20px;
-        margin-bottom: 12px;
+      .speech-bubble {
+        padding: 15px 18px;
+        min-width: 85%;
+        max-width: 95%;
       }
 
-      .response-message {
-        padding: 12px;
-        margin-bottom: 12px;
+      .speech-bubble::before {
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-bottom: 12px solid rgba(255, 140, 60, 0.6);
+        top: -12px;
+      }
+
+      .speech-bubble::after {
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+        border-bottom: 9px solid #ffffff;
+        top: -9px;
       }
       
-      .response-text {
-        font-size: 16px; /* Increased from 13px for better mobile readability */
-        line-height: 1.5; /* Better mobile reading */
-        font-weight: 500; /* Bolder for better visibility */
-      }
-
-      .poster-tagline {
-        font-size: 11px;
-        margin-top: 8px;
+      .bubble-text {
+        font-size: 14px;
+        line-height: 1.5;
       }
       
       .navigation-container {
@@ -722,7 +747,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Live Responses (Poster Style)<br>By Majid Nashtai</p>
+      <p>Live Responses (Speech Bubbles)<br>By Majid Nashtai</p>
     </header>
 
     <div class="question-display">
@@ -850,20 +875,9 @@
         `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
         `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
       
-      const posterPhotoHtml = photoUrl ? 
-        `<img src="${photoUrl}" alt="Student photo" class="poster-photo" onerror="this.style.display='none'">` :
-        `<div class="poster-photo-placeholder">👤</div>`;
-
-      // Create a motivational tagline based on the response
-      const taglines = [
-        '"Inspiring minds through thoughtful learning."',
-        '"Leading with curiosity, learning with purpose."',
-        '"Thoughtful insights for a brighter future."',
-        '"Where questions become discoveries."',
-        '"Empowering knowledge through reflection."',
-        '"Building tomorrow through today\'s learning."'
-      ];
-      const randomTagline = taglines[index % taglines.length];
+      const bubblePhotoHtml = photoUrl ? 
+        `<img src="${photoUrl}" alt="Student photo" class="bubble-photo" onerror="this.style.display='none'">` :
+        `<div class="bubble-photo-placeholder">👤</div>`;
 
       card.innerHTML = `
         <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
@@ -874,21 +888,19 @@
             <div class="front-preview">Click to read response</div>
           </div>
           <div class="card-back">
-            <div class="response-header">
-              <div class="poster-title">Student Response</div>
-              <div class="poster-photo-container">
-                ${posterPhotoHtml}
+            <div class="speech-bubble-container">
+              <div class="student-info-header">
+                ${bubblePhotoHtml}
+                <div class="bubble-student-name">${escapeHtml(studentName)}</div>
               </div>
-              <div class="student-name-poster">${escapeHtml(studentName)}</div>
-            </div>
-            <div class="response-message">
-              <div class="response-text">${escapeHtml(answer)}</div>
-            </div>
-            <div class="poster-tagline">${randomTagline}</div>
-            <div class="response-meta">
-              <span class="word-count">${wordCount} words</span>
-              <span class="timestamp">${timestamp}</span>
-              ${photoUrl ? '<span class="photo-indicator">📸</span>' : ''}
+              <div class="speech-bubble">
+                <div class="bubble-text">${escapeHtml(answer)}</div>
+              </div>
+              <div class="response-meta-bubble">
+                <span class="word-count">${wordCount} words</span>
+                <span class="timestamp">${timestamp}</span>
+                ${photoUrl ? '<span class="photo-indicator">📸</span>' : ''}
+              </div>
             </div>
           </div>
         </div>
@@ -1159,10 +1171,10 @@
     }
 
     function init() {
-      debugLog('INTUITY Poster-Style Display initializing...');
+      debugLog('INTUITY Speech Bubble Display initializing...');
       
       if (!loadData()) {
-        // Enhanced demo data with longer responses to test scrolling
+        // Enhanced demo data with longer responses to test speech bubbles
         currentQuestion = { questionText: 'Demo Question: What would you like to learn today?' };
         responses = [
           {
@@ -1187,7 +1199,7 @@
             photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
           }
         ];
-        debugLog('Using enhanced demo data for testing', { responses: responses.length });
+        debugLog('Using enhanced demo data for speech bubble testing', { responses: responses.length });
       }
 
       displayQuestion();
@@ -1196,7 +1208,7 @@
 
       document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-      debugLog('INTUITY Poster-Style Display ready!', { 
+      debugLog('INTUITY Speech Bubble Display ready!', { 
         responses: responses.length,
         currentIndex: currentIndex
       });
