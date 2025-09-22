@@ -315,17 +315,34 @@
     .neumorphic-content {
       height: 100%;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      justify-content: center;
-      gap: 25px;
+      justify-content: flex-start;
+      gap: 20px;
       position: relative;
       z-index: 2;
+      padding: 10px;
+    }
+
+    .neu-photo-section {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .neu-text-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      min-width: 0;
     }
 
     .neu-photo {
-      width: 120px;
-      height: 120px;
+      width: 96px;
+      height: 96px;
       border-radius: 20px;
       object-fit: cover;
       box-shadow: 
@@ -336,13 +353,13 @@
     }
 
     .neu-photo-placeholder {
-      width: 120px;
-      height: 120px;
+      width: 96px;
+      height: 96px;
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 38px;
       color: rgba(255, 255, 255, 0.3);
       box-shadow: 
         inset 3px 3px 8px rgba(71, 94, 117, 0.4),
@@ -351,7 +368,7 @@
     }
 
     .neu-name {
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 600;
       color: #ffffff;
       text-align: center;
@@ -359,45 +376,46 @@
         2px 2px 6px rgba(71, 94, 117, 0.4),
         -1px -1px 3px rgba(89, 122, 155, 0.6);
       letter-spacing: -0.02em;
+      margin: 0;
     }
 
     .neu-response {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.12);
       border-radius: 15px;
       padding: 20px;
-      max-width: 90%;
-      max-height: 120px;
+      width: 100%;
+      max-height: 140px;
       overflow-y: auto;
       overflow-x: hidden;
       box-shadow: 
         inset 2px 2px 6px rgba(71, 94, 117, 0.3),
         inset -2px -2px 6px rgba(89, 122, 155, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       /* Enable smooth scrolling on all devices */
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
       /* Custom scrollbar styling */
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+      scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
     }
 
     /* Custom scrollbar for webkit browsers */
     .neu-response::-webkit-scrollbar {
-      width: 4px;
+      width: 5px;
     }
 
     .neu-response::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .neu-response::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 3px;
     }
 
     .neu-response::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.6);
     }
 
     /* Subtle scroll indicator */
@@ -410,7 +428,7 @@
       height: 0;
       border-left: 3px solid transparent;
       border-right: 3px solid transparent;
-      border-top: 4px solid rgba(255, 255, 255, 0.4);
+      border-top: 4px solid rgba(255, 255, 255, 0.5);
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
@@ -422,12 +440,13 @@
 
     .neu-response-text {
       font-size: 18px;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.6;
       text-align: left;
       font-weight: 400;
       text-shadow: 
-        1px 1px 3px rgba(71, 94, 117, 0.3);
+        1px 1px 3px rgba(71, 94, 117, 0.4),
+        0 0 8px rgba(255, 255, 255, 0.1);
       margin: 0;
       padding: 0;
       word-wrap: break-word;
@@ -904,10 +923,14 @@
             <div class="neu-decoration"></div>
             
             <div class="neumorphic-content">
-              ${neuPhotoHtml}
-              <div class="neu-name">${escapeHtml(studentName)}</div>
-              <div class="neu-response" data-response-id="${index}">
-                <div class="neu-response-text">${escapeHtml(answer)}</div>
+              <div class="neu-photo-section">
+                ${neuPhotoHtml}
+                <div class="neu-name">${escapeHtml(studentName)}</div>
+              </div>
+              <div class="neu-text-section">
+                <div class="neu-response" data-response-id="${index}">
+                  <div class="neu-response-text">${escapeHtml(answer)}</div>
+                </div>
               </div>
             </div>
           </div>
