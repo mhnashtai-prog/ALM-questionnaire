@@ -339,14 +339,18 @@
 
     .poster-main {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       height: 100%;
       padding: 60px 20px 40px;
+      gap: 20px;
     }
 
     .poster-content {
       flex: 1;
-      padding-right: 20px;
+      padding-right: 15px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .choose-text {
@@ -385,10 +389,14 @@
 
     .motto {
       color: #495057;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.4;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
       opacity: 0.9;
+      overflow-wrap: break-word;
+      text-align: left;
+      flex: 1;
+      overflow-y: auto;
     }
 
     .motto {
@@ -697,6 +705,8 @@
 
       .poster-main {
         padding: 40px 15px 35px;
+        align-items: flex-start;
+        gap: 15px;
       }
 
       .choose-text {
@@ -718,7 +728,11 @@
       }
 
       .motto {
-        font-size: 11px;
+        font-size: 12px;
+      }
+
+      .poster-content {
+        padding-right: 10px;
       }
     }
   </style>
@@ -924,7 +938,7 @@
                 <div class="student-name-large">${escapeHtml(studentName.toUpperCase())}</div>
                 <div class="key-message">${escapeHtml(keyIdea.toUpperCase())}</div>
                 <div class="motto">
-                  ${escapeHtml(answer.length > 120 ? answer.substring(0, 120) + '...' : answer)}
+                  ${escapeHtml(answer)}
                 </div>
               </div>
               
