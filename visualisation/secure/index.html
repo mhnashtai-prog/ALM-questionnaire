@@ -535,6 +535,18 @@
       transform: none;
     }
 
+    .nav-button#migrationBtn {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+    }
+
+    .nav-button#migrationBtn:hover {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 1);
+      transform: translateY(-2px);
+    }
+
     .notification {
       position: fixed;
       top: 20px;
@@ -651,6 +663,10 @@
     .dialog-btn.delete:hover {
       background: rgba(239, 68, 68, 0.3);
       color: #fff;
+    }
+
+    .dialog-box input[type="checkbox"] {
+      accent-color: rgba(255, 140, 60, 0.8);
     }
 
     /* Mobile responsive design */
@@ -1417,6 +1433,377 @@
       document.getElementById('logoutButton').addEventListener('click', logout);
       
       console.log('✅ Real Secure Analytics Ready!');
+    });
+
+    // ===== MIGRATION FUNCTIONALITY =====
+
+    // Migration storage keys
+    const MIGRATION_STORAGE_KEYS = {
+      responses: 'intuity_student_responses',
+      questions: 'intuity_questions',
+      legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses'],
+      legacyQuestions: ['alm_questions', 'current_question', 'display_question']
+    };
+
+    // Migration state
+    let migrationInProgress = false;
+
+    // Add migration button to the footer
+    function addMigrationButton() {
+      const footer = document.querySelector('.footer');
+      if (!footer || document.getElementById('migrationBtn')) return;
+      
+      const migrationBtn = document.createElement('button');
+      migrationBtn.className = 'nav-button';
+      migrationBtn.id = 'migrationBtn';
+      migrationBtn.innerHTML = '📦 MIGRATE';
+      migrationBtn.title = 'Migrate data from regular analytics';
+      migrationBtn.addEventListener('click', showMigrationDialog);
+      
+      // Insert before the HOME button
+      const homeBtn = footer.querySelector('button[onclick*="index.html"]');
+      if (homeBtn) {
+        footer.insertBefore(migrationBtn, homeBtn);
+      } else {
+        footer.appendChild(migrationBtn);
+      }
+    }
+
+    // Migration dialog HTML
+    function createMigrationDialog() {
+      const dialogHTML = `
+        <div class="dialog-overlay" id="migrationDialog">
+          <div class="dialog-box" style="max-width: 500px;">
+            <div class="dialog-title">📦 Data Migration</div>
+            <div class="dialog-message">
+              <p style="margin-bottom: 15px;">Import questions and responses from the regular analytics system to your secure teacher account.</p>
+              <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Questions found:</span>
+                  <span id="migrationQuestionsFound">Scanning...</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Responses found:</span>
+                  <span id="migrationResponsesFound">Scanning...</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Status:</span>
+                  <span id="migrationStatus">Ready</span>
+                </div>
+              </div>
+              <div style="margin-bottom: 15px;">
+                <label style="display: flex; align-items: center; color: rgba(255,255,255,0.8); margin-bottom: 8px;">
+                  <input type="checkbox" id="migrationIncludeResponses" checked style="margin-right: 8px;">
+                  Include student responses
+                </label>
+                <label style="display: flex; align-items: center; color: rgba(255,255,255,0.8);">
+                  <input type="checkbox" id="migrationMarkOriginal" checked style="margin-right: 8px;">
+                  Mark original data as migrated
+                </label>
+              </div>
+            </div>
+            <div class="dialog-buttons">
+              <button class="dialog-btn cancel" onclick="closeMigrationDialog()">Cancel</button>
+              <button class="dialog-btn" id="scanMigrationBtn" onclick="scanForMigrationData()" 
+                      style="background: rgba(255,140,60,0.2); color: rgba(255,140,60,1);">Scan Data</button>
+              <button class="dialog-btn" id="startMigrationBtn" onclick="startDataMigration()" 
+                      style="background: rgba(16,185,129,0.2); color: rgba(16,185,129,1); display: none;">Start Migration</button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', dialogHTML);
+    }
+
+    // Show migration dialog
+    function showMigrationDialog() {
+      if (!document.getElementById('migrationDialog')) {
+        createMigrationDialog();
+      }
+      
+      // Reset UI
+      document.getElementById('migrationQuestionsFound').textContent = 'Scanning...';
+      document.getElementById('migrationResponsesFound').textContent = 'Scanning...';
+      document.getElementById('migrationStatus').textContent = 'Ready';
+      document.getElementById('startMigrationBtn').style.display = 'none';
+      document.getElementById('scanMigrationBtn').style.display = 'inline-block';
+      
+      document.getElementById('migrationDialog').classList.add('show');
+      
+      // Auto-scan on open
+      setTimeout(scanForMigrationData, 500);
+    }
+
+    // Close migration dialog
+    function closeMigrationDialog() {
+      const dialog = document.getElementById('migrationDialog');
+      if (dialog) {
+        dialog.classList.remove('show');
+      }
+    }
+
+    // Scan for migration data
+    async function scanForMigrationData() {
+      try {
+        document.getElementById('migrationStatus').textContent = 'Scanning...';
+        document.getElementById('scanMigrationBtn').disabled = true;
+        
+        let foundQuestions = [];
+        let foundResponses = [];
+        
+        // Scan questions
+        const questionSources = [MIGRATION_STORAGE_KEYS.questions, ...MIGRATION_STORAGE_KEYS.legacyQuestions];
+        
+        for (const key of questionSources) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(q => {
+                  if (q && (q.text || q.question_text) && !foundQuestions.find(existing => existing.id === q.id)) {
+                    // Skip if already migrated to this teacher
+                    if (!q.migrated_to_teacher || q.migrated_to_teacher !== currentTeacher.code) {
+                      foundQuestions.push(q);
+                    }
+                  }
+                });
+              } else if (parsed && (parsed.text || parsed.question_text)) {
+                if (!foundQuestions.find(existing => existing.id === parsed.id)) {
+                  if (!parsed.migrated_to_teacher || parsed.migrated_to_teacher !== currentTeacher.code) {
+                    foundQuestions.push(parsed);
+                  }
+                }
+              }
+            } catch (e) {
+              console.warn('Error parsing questions from', key, e);
+            }
+          }
+        }
+        
+        // Scan responses
+        const responseSources = [MIGRATION_STORAGE_KEYS.responses, ...MIGRATION_STORAGE_KEYS.legacyResponses];
+        
+        for (const key of responseSources) {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(r => {
+                  if (r && r.answer && (r.student_name || r.studentName)) {
+                    const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}`;
+                    if (!foundResponses.find(existing => {
+                      const existingKey = `${existing.student_name || existing.studentName}-${existing.answer.substring(0,50)}`;
+                      return existingKey === uniqueKey;
+                    })) {
+                      foundResponses.push(r);
+                    }
+                  }
+                });
+              }
+            } catch (e) {
+              console.warn('Error parsing responses from', key, e);
+            }
+          }
+        }
+        
+        // Update UI
+        document.getElementById('migrationQuestionsFound').textContent = foundQuestions.length;
+        document.getElementById('migrationResponsesFound').textContent = foundResponses.length;
+        
+        if (foundQuestions.length > 0 || foundResponses.length > 0) {
+          document.getElementById('migrationStatus').textContent = 'Ready to migrate';
+          document.getElementById('startMigrationBtn').style.display = 'inline-block';
+          document.getElementById('scanMigrationBtn').style.display = 'none';
+          
+          // Store found data for migration
+          window.migrationData = { questions: foundQuestions, responses: foundResponses };
+        } else {
+          document.getElementById('migrationStatus').textContent = 'No data found';
+        }
+        
+      } catch (error) {
+        console.error('Migration scan error:', error);
+        document.getElementById('migrationStatus').textContent = 'Scan failed';
+        showNotification('Migration scan failed', 'error');
+      } finally {
+        document.getElementById('scanMigrationBtn').disabled = false;
+      }
+    }
+
+    // Start data migration
+    async function startDataMigration() {
+      if (migrationInProgress || !window.migrationData) return;
+      
+      try {
+        migrationInProgress = true;
+        document.getElementById('startMigrationBtn').disabled = true;
+        document.getElementById('migrationStatus').textContent = 'Migrating...';
+        
+        const { questions: foundQuestions, responses: foundResponses } = window.migrationData;
+        const includeResponses = document.getElementById('migrationIncludeResponses').checked;
+        const markOriginal = document.getElementById('migrationMarkOriginal').checked;
+        
+        let migratedQuestions = 0;
+        let migratedResponses = 0;
+        
+        // Get existing teacher data
+        const existingQuestions = JSON.parse(localStorage.getItem(getTeacherStorageKey('questions')) || '[]');
+        const existingResponses = JSON.parse(localStorage.getItem(getTeacherStorageKey('responses')) || '[]');
+        const migratedQuestionsList = [];
+        
+        // Migrate questions
+        for (const question of foundQuestions) {
+          // Check if already exists
+          if (existingQuestions.find(q => q.id === question.id)) {
+            continue;
+          }
+          
+          const teacherQuestion = {
+            ...question,
+            created_by: currentTeacher.code,
+            migrated: true,
+            migrated_at: new Date().toISOString(),
+            original_source: 'regular_analytics'
+          };
+          
+          // Ensure required fields
+          if (!teacherQuestion.id) {
+            teacherQuestion.id = 'migrated_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          }
+          if (!teacherQuestion.created_at) {
+            teacherQuestion.created_at = new Date().toISOString();
+          }
+          
+          existingQuestions.push(teacherQuestion);
+          migratedQuestionsList.push(teacherQuestion);
+          migratedQuestions++;
+        }
+        
+        // Save migrated questions
+        localStorage.setItem(getTeacherStorageKey('questions'), JSON.stringify(existingQuestions));
+        
+        // Migrate responses if enabled
+        if (includeResponses) {
+          for (const response of foundResponses) {
+            // Find matching question
+            const matchingQuestion = migratedQuestionsList.find(q => {
+              const questionId = q.id;
+              const questionText = q.text || q.question_text || '';
+              const responseQuestionId = response.question_id || response.questionId;
+              const responseQuestionText = response.questionText || response.question_text || '';
+              
+              return (
+                (questionId && responseQuestionId && questionId === responseQuestionId) ||
+                (questionText && responseQuestionText && questionText === responseQuestionText) ||
+                (questionId === 'demo' && (!responseQuestionId || responseQuestionId === 'demo'))
+              );
+            });
+            
+            if (!matchingQuestion) continue;
+            
+            // Check if already exists
+            const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}`;
+            if (existingResponses.find(r => {
+              const existingKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}`;
+              return existingKey === uniqueKey;
+            })) {
+              continue;
+            }
+            
+            const teacherResponse = {
+              ...response,
+              question_id: matchingQuestion.id,
+              migrated: true,
+              migrated_at: new Date().toISOString(),
+              original_source: 'regular_analytics'
+            };
+            
+            // Ensure required fields
+            if (!teacherResponse.id) {
+              teacherResponse.id = 'migrated_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+            if (!teacherResponse.submitted_at && !teacherResponse.submittedAt) {
+              teacherResponse.submitted_at = new Date().toISOString();
+            }
+            
+            existingResponses.push(teacherResponse);
+            migratedResponses++;
+          }
+          
+          // Save migrated responses
+          localStorage.setItem(getTeacherStorageKey('responses'), JSON.stringify(existingResponses));
+        }
+        
+        // Mark original data as migrated if enabled
+        if (markOriginal) {
+          const questionSources = [MIGRATION_STORAGE_KEYS.questions, ...MIGRATION_STORAGE_KEYS.legacyQuestions];
+          
+          for (const key of questionSources) {
+            const stored = localStorage.getItem(key);
+            if (stored) {
+              try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                  let updated = false;
+                  parsed.forEach(q => {
+                    if (foundQuestions.find(fq => fq.id === q.id)) {
+                      q.migrated_to_teacher = currentTeacher.code;
+                      q.migrated_at = new Date().toISOString();
+                      updated = true;
+                    }
+                  });
+                  if (updated) {
+                    localStorage.setItem(key, JSON.stringify(parsed));
+                  }
+                }
+              } catch (e) {
+                console.warn('Error updating', key, e);
+              }
+            }
+          }
+        }
+        
+        // Update UI and reload data
+        document.getElementById('migrationStatus').textContent = `Complete: ${migratedQuestions} questions, ${migratedResponses} responses`;
+        
+        // Reload teacher data
+        await loadTeacherData();
+        
+        showNotification(`Migration complete: ${migratedQuestions} questions, ${migratedResponses} responses`, 'success');
+        
+        setTimeout(() => {
+          closeMigrationDialog();
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Migration error:', error);
+        document.getElementById('migrationStatus').textContent = 'Migration failed';
+        showNotification('Migration failed: ' + error.message, 'error');
+      } finally {
+        migrationInProgress = false;
+        document.getElementById('startMigrationBtn').disabled = false;
+      }
+    }
+
+    // Add migration functionality on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add migration button after the interface is ready
+      setTimeout(() => {
+        if (document.querySelector('.footer') && !document.getElementById('migrationBtn')) {
+          addMigrationButton();
+          console.log('✅ Migration functionality added to secure analytics');
+        }
+      }, 1000);
+      
+      // Handle escape key for migration dialog
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('migrationDialog')?.classList.contains('show')) {
+          closeMigrationDialog();
+        }
+      });
     });
   </script>
 </body>
