@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Analytics (Fixed)</title>
+  <title>INTUITY - Analytics (Mobile Fixed)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -17,6 +17,7 @@
 
     body {
       height: 100vh;
+      height: 100dvh; /* Use dynamic viewport height for mobile */
       width: 100vw;
       overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -154,19 +155,22 @@
     .curve5 { --base-opacity: 0.8; --rotate: 15deg; }
     .curve6 { --base-opacity: 0.2; --rotate: 80deg; }
 
+    /* FIXED: Better container layout for mobile */
     .container {
       position: relative;
       z-index: 10;
       height: 100vh;
+      height: 100dvh; /* Dynamic viewport height */
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 60px 20px 20px;
+      padding: 40px 20px 0; /* Removed bottom padding */
+      min-height: 0; /* Allow flex shrinking */
     }
 
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 25px;
+      flex-shrink: 0; /* Don't shrink header */
     }
 
     .header h1 {
@@ -185,20 +189,24 @@
       letter-spacing: 0.5px;
     }
 
+    /* FIXED: Main content now flexible and scrollable if needed */
     .main-content {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 140px;
+      min-height: 0; /* Allow shrinking */
+      overflow-y: auto; /* Allow scrolling if needed */
+      padding: 10px 0; /* Small padding */
     }
 
     .analytics-container {
       width: 100%;
-      height: 5cm;
+      height: auto; /* Remove fixed height */
+      min-height: 160px; /* Minimum usable height */
       position: relative;
       perspective: 1000px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .analytics-box {
@@ -225,6 +233,7 @@
       flex-direction: column;
       padding: 20px;
       justify-content: space-between;
+      min-height: 140px; /* Ensure minimum usable space */
     }
 
     .dropdown-section {
@@ -268,6 +277,7 @@
       font-size: 16px;
       font-weight: 500;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0; /* Don't shrink counter */
     }
 
     .delete-btn {
@@ -305,16 +315,19 @@
       transform: scale(0.95);
     }
 
+    /* FIXED: Footer now properly positioned and always visible */
     .footer {
-      margin-top: 40px;
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
-      padding: 15px;
+      padding: 15px; /* Slightly reduced padding */
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: space-around;
       align-items: center;
+      flex-shrink: 0; /* Don't shrink footer */
+      margin-top: 15px; /* Reduced margin */
+      position: relative; /* Ensure it stays in flow */
     }
 
     .nav-button {
@@ -509,21 +522,31 @@
       opacity: 1;
     }
 
+    /* FIXED: Much better mobile responsive design */
     @media (max-width: 768px) {
       .container {
-        padding: 40px 15px 15px;
+        padding: 25px 15px 0; /* Reduced top padding, no bottom */
+      }
+      
+      .header {
+        margin-bottom: 20px; /* Reduced margin */
       }
       
       .header h1 {
-        font-size: 28px;
+        font-size: 26px; /* Smaller title */
+      }
+      
+      .main-content {
+        padding: 5px 0; /* Minimal padding */
       }
       
       .analytics-container {
-        height: 4cm;
+        min-height: 140px; /* Smaller minimum height */
       }
       
       .content-area {
-        padding: 15px;
+        padding: 15px; /* Reduced padding */
+        min-height: 120px; /* Smaller minimum */
       }
       
       .question-dropdown {
@@ -536,9 +559,139 @@
         padding: 12px 0;
       }
 
+      .nav-button {
+        padding: 10px 16px; /* Smaller buttons */
+        font-size: 12px;
+        min-width: 70px;
+      }
+
+      .footer {
+        padding: 10px; /* Reduced padding */
+        margin-top: 10px; /* Reduced margin */
+      }
+
       .dialog-box {
         margin: 20px;
         padding: 25px;
+      }
+
+      .notification {
+        right: 10px;
+        top: 10px;
+        font-size: 12px;
+        padding: 12px 16px;
+      }
+    }
+
+    /* FIXED: Extra small screens - aggressive space optimization */
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px 10px 0; /* Even less padding */
+      }
+      
+      .header {
+        margin-bottom: 15px;
+      }
+      
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .main-content {
+        padding: 5px 0;
+      }
+
+      .analytics-container {
+        min-height: 120px;
+      }
+
+      .content-area {
+        padding: 12px;
+        min-height: 100px;
+      }
+
+      .question-dropdown {
+        font-size: 14px;
+        padding: 10px 0;
+      }
+
+      .response-counter {
+        font-size: 12px;
+        padding: 10px 0;
+      }
+
+      .nav-button {
+        padding: 8px 12px;
+        font-size: 11px;
+        min-width: 60px;
+      }
+
+      .footer {
+        padding: 8px;
+        margin-top: 8px;
+      }
+      
+      .dialog-box {
+        margin: 15px;
+        padding: 20px;
+      }
+
+      .notification {
+        font-size: 11px;
+        padding: 10px 12px;
+      }
+    }
+
+    /* FIXED: Landscape orientation optimization */
+    @media (max-height: 600px) and (orientation: landscape) {
+      .container {
+        padding: 15px 10px 0;
+      }
+      
+      .header {
+        margin-bottom: 10px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+      }
+      
+      .header p {
+        font-size: 11px;
+      }
+      
+      .main-content {
+        padding: 5px 0;
+      }
+      
+      .analytics-container {
+        min-height: 100px;
+      }
+      
+      .content-area {
+        padding: 10px;
+        min-height: 80px;
+      }
+      
+      .question-dropdown {
+        font-size: 13px;
+        padding: 8px 0;
+      }
+      
+      .response-counter {
+        font-size: 11px;
+        padding: 8px 0;
+      }
+      
+      .footer {
+        padding: 6px;
+        margin-top: 5px;
+      }
+      
+      .nav-button {
+        padding: 6px 10px;
+        font-size: 10px;
+        min-width: 50px;
       }
     }
   </style>
@@ -558,7 +711,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Analytics (Fixed)<br>By Majid Nashtai</p>
+      <p>Analytics (Mobile Fixed)<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
@@ -619,7 +772,7 @@
 
     // Storage keys - matching the fixed student interface
     const STORAGE_KEYS = {
-      responses: 'intuity_student_responses', // Primary key
+      responses: 'intuity_student_responses',
       questions: 'intuity_questions',
       legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses'],
       legacyQuestions: ['alm_questions', 'current_question', 'display_question']
@@ -637,7 +790,6 @@
       debugContent.innerHTML += `<div><strong>${timestamp}:</strong> ${message}${data ? '<br><pre>' + JSON.stringify(data, null, 2).substring(0, 200) + '</pre>' : ''}</div><hr>`;
       debugPanel.classList.add('show');
       
-      // Keep only last 10 entries
       const entries = debugContent.children;
       while (entries.length > 20) {
         entries[0].remove();
@@ -651,14 +803,12 @@
     function loadAllStorageData() {
       debugLog('Loading all storage data...');
       
-      // Initialize arrays if not already done
       if (!Array.isArray(allQuestions)) allQuestions = [];
       if (!Array.isArray(allResponses)) allResponses = [];
       
       try {
-        // Load questions from all possible sources
         const questionSources = [STORAGE_KEYS.questions, ...STORAGE_KEYS.legacyQuestions];
-        const foundQuestions = new Map(); // Use Map to avoid duplicates
+        const foundQuestions = new Map();
         
         for (const key of questionSources) {
           const stored = localStorage.getItem(key);
@@ -682,19 +832,17 @@
           }
         }
 
-        // Merge with existing questions (avoid duplicates)
         foundQuestions.forEach(question => {
           const existingIndex = allQuestions.findIndex(q => q.id === question.id);
           if (existingIndex >= 0) {
-            allQuestions[existingIndex] = question; // Update existing
+            allQuestions[existingIndex] = question;
           } else {
-            allQuestions.push(question); // Add new
+            allQuestions.push(question);
           }
         });
 
-        // Load responses from all possible sources  
         const responseSources = [STORAGE_KEYS.responses, ...STORAGE_KEYS.legacyResponses];
-        const foundResponses = new Map(); // Use Map to avoid duplicates
+        const foundResponses = new Map();
         
         for (const key of responseSources) {
           const stored = localStorage.getItem(key);
@@ -704,7 +852,6 @@
               if (Array.isArray(parsed)) {
                 parsed.forEach(r => {
                   if (r && r.answer && (r.student_name || r.studentName)) {
-                    // Create unique key for deduplication
                     const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
                     foundResponses.set(uniqueKey, r);
                   }
@@ -717,7 +864,6 @@
           }
         }
 
-        // Merge with existing responses (avoid duplicates)
         foundResponses.forEach(response => {
           const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}-${response.submitted_at || response.submittedAt || response.timestamp}`;
           const existingIndex = allResponses.findIndex(r => {
@@ -726,13 +872,12 @@
           });
           
           if (existingIndex >= 0) {
-            allResponses[existingIndex] = response; // Update existing
+            allResponses[existingIndex] = response;
           } else {
-            allResponses.push(response); // Add new
+            allResponses.push(response);
           }
         });
 
-        // If no questions found, create a demo question
         if (allQuestions.length === 0) {
           allQuestions.push({
             id: 'demo',
@@ -759,7 +904,6 @@
       }
     }
 
-    // Initialize Supabase
     function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -774,7 +918,6 @@
       }
     }
 
-    // Test Supabase connection
     async function testConnection() {
       try {
         const { data, error } = await supabase.from('questions').select('count').limit(1);
@@ -784,32 +927,27 @@
         isConnected = true;
         debugLog('Supabase connection successful');
         
-        // Load from Supabase first, then merge with local data
         await loadSupabaseData();
         
       } catch (error) {
         debugLog('Supabase connection failed', error.message);
         isConnected = false;
-        // Load only local data
         loadAllStorageData();
         updateUI();
         showNotification('Using offline data only', 'info');
       }
     }
 
-    // Load data from Supabase (and merge with local)
     async function loadSupabaseData() {
       try {
         debugLog('Loading data from Supabase...');
         
-        // Load questions from Supabase
         const { data: supabaseQuestions, error: questionsError } = await supabase
           .from('questions')
           .select('*')
           .order('created_at', { ascending: false });
 
         if (!questionsError && supabaseQuestions) {
-          // Merge with local questions
           supabaseQuestions.forEach(question => {
             const existingIndex = allQuestions.findIndex(q => q.id === question.id);
             if (existingIndex >= 0) {
@@ -821,14 +959,12 @@
           debugLog(`Merged ${supabaseQuestions.length} questions from Supabase`);
         }
 
-        // Load responses from Supabase
         const { data: supabaseResponses, error: responsesError } = await supabase
           .from('student_responses')
           .select('*')
           .order('submitted_at', { ascending: false });
 
         if (!responsesError && supabaseResponses) {
-          // Merge with local responses
           supabaseResponses.forEach(response => {
             const existingIndex = allResponses.findIndex(r => r.id === response.id);
             if (existingIndex >= 0) {
@@ -840,7 +976,6 @@
           debugLog(`Merged ${supabaseResponses.length} responses from Supabase`);
         }
 
-        // Now also load and merge local storage data
         const localData = loadAllStorageData();
         
         updateUI();
@@ -848,14 +983,12 @@
         
       } catch (error) {
         debugLog('Error loading Supabase data', error.message);
-        // Fall back to local data only
         loadAllStorageData();
         updateUI();
         showNotification('Database error, using local data', 'error');
       }
     }
 
-    // Simplified response matching
     function getResponsesForQuestion(question) {
       if (!question) return [];
       
@@ -866,13 +999,9 @@
         const responseQuestionId = response.question_id || response.questionId;
         const responseQuestionText = response.questionText || response.question_text || '';
         
-        // Try multiple matching strategies
         return (
-          // Direct ID match
           (questionId && responseQuestionId && questionId === responseQuestionId) ||
-          // Text match (exact)
           (questionText && responseQuestionText && questionText === responseQuestionText) ||
-          // Demo question handling
           (questionId === 'demo' && (!responseQuestionId || responseQuestionId === 'demo'))
         );
       });
@@ -888,7 +1017,6 @@
       return matchedResponses;
     }
 
-    // Update UI
     function updateUI() {
       populateQuestionDropdown();
       updateResponseCount();
@@ -896,7 +1024,6 @@
       updateDeleteButton();
     }
 
-    // Populate question dropdown
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionSelector');
       
@@ -914,7 +1041,6 @@
         const questionText = question.text || question.question_text || 'Untitled Question';
         const shortText = questionText.length > 60 ? questionText.substring(0, 60) + '...' : questionText;
         
-        // Add response count to dropdown
         const responses = getResponsesForQuestion(question);
         const responseCount = responses.length;
         option.textContent = `${shortText} (${responseCount} responses)`;
@@ -925,7 +1051,6 @@
       debugLog('Question dropdown populated', { count: allQuestions.length });
     }
 
-    // Update response count
     function updateResponseCount() {
       const counter = document.getElementById('responseCounter');
       
@@ -939,13 +1064,11 @@
       counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
     }
 
-    // Update display button
     function updateDisplayButton() {
       const displayBtn = document.getElementById('displayBtn');
       displayBtn.disabled = !currentSelectedQuestion;
     }
 
-    // Update delete button visibility
     function updateDeleteButton() {
       const deleteBtn = document.getElementById('deleteBtn');
       
@@ -956,7 +1079,6 @@
       }
     }
 
-    // Handle question selection
     function handleQuestionChange() {
       const selector = document.getElementById('questionSelector');
       const selectedValue = selector.value;
@@ -974,7 +1096,6 @@
       updateDeleteButton();
     }
 
-    // Display responses function
     function displayResponses() {
       if (!currentSelectedQuestion) {
         alert('Please select a question first.');
@@ -987,7 +1108,6 @@
       
       showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
       
-      // Store data for display page with multiple keys for compatibility
       const questionData = JSON.stringify(currentSelectedQuestion);
       const responseData = JSON.stringify(matchedResponses);
       
@@ -995,7 +1115,6 @@
       localStorage.setItem('display_responses', responseData);
       localStorage.setItem('current_question', questionData);
       
-      // Also update primary storage keys
       localStorage.setItem(STORAGE_KEYS.responses, JSON.stringify(allResponses));
       localStorage.setItem(STORAGE_KEYS.questions, JSON.stringify(allQuestions));
       
@@ -1004,7 +1123,6 @@
         responses: matchedResponses.length 
       });
       
-      // Open display page
       try {
         window.open('../displays/', '_blank');
       } catch (error) {
@@ -1012,7 +1130,6 @@
       }
     }
 
-    // Delete functions (simplified)
     function showDeleteConfirmation() {
       if (!currentSelectedQuestion) return;
 
@@ -1047,7 +1164,6 @@
       try {
         showNotification('Deleting question...', 'info');
         
-        // Delete from Supabase if connected
         if (isConnected) {
           try {
             const { error: responseError } = await supabase
@@ -1067,10 +1183,8 @@
           }
         }
 
-        // Delete from local arrays
         const responsesToDelete = getResponsesForQuestion(questionToDelete);
         
-        // Remove responses
         responsesToDelete.forEach(response => {
           const index = allResponses.findIndex(r => r === response);
           if (index > -1) {
@@ -1078,21 +1192,17 @@
           }
         });
 
-        // Remove question
         const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
         if (questionIndex > -1) {
           allQuestions.splice(questionIndex, 1);
         }
 
-        // Update all storage keys
         const questionData = JSON.stringify(allQuestions);
         const responseData = JSON.stringify(allResponses);
         
-        // Update primary keys
         localStorage.setItem(STORAGE_KEYS.questions, questionData);
         localStorage.setItem(STORAGE_KEYS.responses, responseData);
         
-        // Update legacy keys for compatibility
         STORAGE_KEYS.legacyQuestions.forEach(key => {
           try {
             localStorage.setItem(key, questionData);
@@ -1116,7 +1226,6 @@
           remainingResponses: allResponses.length
         });
         
-        // Reset UI
         currentSelectedQuestion = null;
         document.getElementById('questionSelector').value = '';
         updateUI();
@@ -1130,7 +1239,6 @@
       }
     }
 
-    // Show notification
     function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
@@ -1156,40 +1264,33 @@
       }, 3000);
     }
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      debugLog('INTUITY Analytics (Fixed) Loading...');
+      debugLog('INTUITY Analytics (Mobile Fixed) Loading...');
       
-      // Enable debug mode
       debugMode = window.location.search.includes('debug') || localStorage.getItem('debug_mode') === 'true';
       
       initSupabase();
       
-      // Event listeners
       document.getElementById('questionSelector').addEventListener('change', handleQuestionChange);
       document.getElementById('displayBtn').addEventListener('click', displayResponses);
       document.getElementById('deleteBtn').addEventListener('click', showDeleteConfirmation);
       
-      // Close dialog when clicking outside
       document.getElementById('confirmDialog').addEventListener('click', function(e) {
         if (e.target === this) {
           closeConfirmDialog();
         }
       });
 
-      // Keyboard shortcuts
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
           closeConfirmDialog();
         }
-        // Toggle debug mode with Ctrl+D
         if (e.ctrlKey && e.key === 'd') {
           e.preventDefault();
           debugMode = !debugMode;
           if (debugMode) {
             localStorage.setItem('debug_mode', 'true');
             debugLog('Debug mode enabled via keyboard');
-            // Show current data summary
             setTimeout(() => {
               debugLog('Current data summary', {
                 questions: allQuestions.length,
@@ -1205,7 +1306,7 @@
         }
       });
       
-      debugLog('INTUITY Analytics (Fixed) Ready!');
+      debugLog('INTUITY Analytics (Mobile Fixed) Ready!');
     });
   </script>
 </body>
