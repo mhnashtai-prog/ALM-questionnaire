@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Secure Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(8deg);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
+      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
+      opacity: 0.4;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-5deg);
+      border: 1px solid rgba(255, 100, 40, 0.2);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
+      opacity: 0.3;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(12deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
+      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
+      opacity: 0.25;
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-10deg);
+      border: 1px solid rgba(255, 120, 50, 0.15);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
+      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
+      opacity: 0.2;
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(6deg);
+      border: 1px solid rgba(255, 140, 60, 0.25);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
+      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
+      opacity: 0.35;
+      animation: float 9s ease-in-out infinite reverse;
+    }
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(-15deg);
+      border: 1px solid rgba(255, 160, 80, 0.1);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.03) 0%, transparent 100%);
+      opacity: 0.15;
+      animation: drift 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
+    }
+
+    .curve1 { --base-opacity: 0.9; --rotate: 30deg; }
+    .curve2 { --base-opacity: 0.7; --rotate: -20deg; }
+    .curve3 { --base-opacity: 0.5; --rotate: 60deg; }
+    .curve4 { --base-opacity: 0.3; --rotate: -45deg; }
+    .curve5 { --base-opacity: 0.8; --rotate: 15deg; }
+    .curve6 { --base-opacity: 0.2; --rotate: 80deg; }
+
+    /* Authentication Redirect Screen */
+    .auth-redirect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .auth-redirect.hidden {
+      display: none;
+    }
+
+    .auth-message {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(239, 68, 68, 0.5);
+      border-radius: 25px;
+      padding: 40px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .auth-title {
+      color: rgba(239, 68, 68, 0.9);
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    .auth-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    .auth-redirect-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 15px;
+      padding: 18px 30px;
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .auth-redirect-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.3);
+    }
+
+    .logout-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 25px;
+      padding: 8px 16px;
+      color: rgba(239, 68, 68, 0.8);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .logout-button.show {
+      display: block;
+    }
+
+    .logout-button:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 1);
+      transform: scale(1.05);
+    }
+
+    /* Main Interface (hidden until authenticated) */
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      height: 100dvh;
+      display: none;
+      flex-direction: column;
+      padding: 40px 20px 0;
+      min-height: 0;
+    }
+
+    .container.authenticated {
+      display: flex;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .teacher-badge {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      padding: 8px 16px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .teacher-badge .teacher-code {
+      color: rgba(16, 185, 129, 0.9);
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .teacher-badge .teacher-name-display {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    .stats-overview {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: rgba(255, 140, 60, 0.9);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 5px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .analytics-container {
+      width: 100%;
+      height: auto;
+      min-height: 160px;
+      position: relative;
+      perspective: 1000px;
+      overflow: visible;
+    }
+
+    .analytics-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .analytics-box:hover {
+      transform: translateY(-2px);
+    }
+
+    .content-area {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      justify-content: space-between;
+      min-height: 140px;
+    }
+
+    .dropdown-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .question-dropdown {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      font-family: inherit;
+      outline: none;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .question-dropdown:focus {
+      border-bottom-color: rgba(255, 140, 60, 0.6);
+    }
+
+    .question-dropdown option {
+      background: rgba(26, 35, 50, 0.95);
+      color: #fff;
+      padding: 10px;
+    }
+
+    .response-counter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 16px;
+      font-weight: 500;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .delete-btn {
+      width: 37px;
+      height: 37px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.6);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn.visible {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: rgba(239, 68, 68, 0.8);
+      transform: scale(1.1);
+    }
+
+    .delete-btn:active {
+      transform: scale(0.95);
+    }
+
+    .footer {
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: 15px;
+      position: relative;
+    }
+
+    .nav-button {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
+    }
+
+    .nav-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .nav-button.primary {
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 1);
+    }
+
+    .nav-button.primary:hover {
+      background: rgba(255, 140, 60, 0.3);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .nav-button.primary:disabled {
+      opacity: 0.4;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      transform: none;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(100%);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: rgba(16, 185, 129, 0.9);
+    }
+
+    .notification.info {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      color: rgba(255, 140, 60, 0.9);
+    }
+
+    .notification.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: rgba(239, 68, 68, 0.9);
+    }
+
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .dialog-overlay.show {
+      display: flex;
+    }
+
+    .dialog-box {
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .dialog-title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .dialog-message {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .dialog-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .dialog-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 80px;
+    }
+
+    .dialog-btn.cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .dialog-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .dialog-btn.delete {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 1);
+    }
+
+    .dialog-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+
+    /* Mobile responsive design */
+    @media (max-width: 768px) {
+      .auth-message {
+        margin: 20px;
+        padding: 30px;
+      }
+
+      .auth-title {
+        font-size: 26px;
+      }
+
+      .auth-subtitle {
+        font-size: 14px;
+      }
+
+      .container {
+        padding: 25px 15px 0;
+      }
+      
+      .header {
+        margin-bottom: 20px;
+      }
+      
+      .header h1 {
+        font-size: 26px;
+      }
+
+      .stats-overview {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .stat-number {
+        font-size: 24px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+      }
+      
+      .main-content {
+        padding: 5px 0;
+      }
+      
+      .analytics-container {
+        min-height: 140px;
+      }
+      
+      .content-area {
+        padding: 15px;
+        min-height: 120px;
+      }
+      
+      .question-dropdown {
+        font-size: 16px;
+        padding: 12px 0;
+      }
+      
+      .response-counter {
+        font-size: 14px;
+        padding: 12px 0;
+      }
+
+      .nav-button {
+        padding: 10px 16px;
+        font-size: 12px;
+        min-width: 70px;
+      }
+
+      .footer {
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-message {
+        margin: 15px;
+        padding: 25px;
+      }
+
+      .auth-title {
+        font-size: 22px;
+      }
+
+      .container {
+        padding: 20px 10px 0;
+      }
+      
+      .header {
+        margin-bottom: 15px;
+      }
+      
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .stat-number {
+        font-size: 20px;
+      }
+
+      .main-content {
+        padding: 5px 0;
+      }
+
+      .analytics-container {
+        min-height: 120px;
+      }
+
+      .content-area {
+        padding: 12px;
+        min-height: 100px;
+      }
+
+      .question-dropdown {
+        font-size: 14px;
+        padding: 10px 0;
+      }
+
+      .response-counter {
+        font-size: 12px;
+        padding: 10px 0;
+      }
+
+      .nav-button {
+        padding: 8px 12px;
+        font-size: 11px;
+        min-width: 60px;
+      }
+
+      .footer {
+        padding: 8px;
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
+    </div>
+  </div>
+
+  <!-- Authentication Redirect Screen -->
+  <div class="auth-redirect" id="authRedirect">
+    <div class="auth-message">
+      <div class="auth-title">🔒 Access Denied</div>
+      <div class="auth-subtitle">
+        You need to be authenticated as a teacher to access analytics.<br>
+        Please login through the secure teacher interface first.
+      </div>
+      <button class="auth-redirect-btn" onclick="redirectToLogin()">
+        Go to Teacher Login
+      </button>
+    </div>
+  </div>
+
+  <!-- Logout Button -->
+  <button class="logout-button" id="logoutButton">🚪 Logout</button>
+
+  <!-- Main Interface (hidden until authenticated) -->
+  <div class="container" id="mainContainer">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Secure Analytics Dashboard<br>By Majid Nashtai</p>
+      <div class="teacher-badge">
+        <span class="teacher-code" id="currentTeacherCode"></span>
+        <span class="teacher-name-display" id="currentTeacherName"></span>
+      </div>
+    </header>
+
+    <!-- Statistics Overview -->
+    <section class="stats-overview">
+      <div class="stat-item">
+        <span class="stat-number" id="totalQuestions">0</span>
+        <div class="stat-label">Your Questions</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="totalResponses">0</span>
+        <div class="stat-label">Total Responses</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="uniqueStudents">0</span>
+        <div class="stat-label">Unique Students</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="averageScore">0</span>
+        <div class="stat-label">Avg Score</div>
+      </div>
+    </section>
+
+    <main class="main-content">
+      <div class="analytics-container">
+        <div class="analytics-box">
+          <div class="content-area">
+            <div class="dropdown-section">
+              <select class="question-dropdown" id="questionSelector">
+                <option value="">Loading your questions...</option>
+              </select>
+            </div>
+            
+            <div class="response-counter">
+              <span id="responseCounter">0 Responses</span>
+              <button class="delete-btn" id="deleteBtn" title="Delete this question and all its responses">🗑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <button class="nav-button primary" id="displayBtn" disabled>DISPLAY</button>
+      <button class="nav-button" onclick="redirectToCreate()">CREATE</button>
+      <button class="nav-button" onclick="window.location.href='../../index.html'">HOME</button>
+    </footer>
+  </div>
+
+  <div class="dialog-overlay" id="confirmDialog">
+    <div class="dialog-box">
+      <div class="dialog-title">Delete Question</div>
+      <div class="dialog-message" id="dialogMessage">
+        Are you sure you want to delete all responses for this question? This action cannot be undone.
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn cancel" onclick="closeConfirmDialog()">Cancel</button>
+        <button class="dialog-btn delete" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Teacher Database (matching the secure teacher interface)
+    const TEACHER_DATABASE = {
+      'MATHS101': {
+        name: 'Dr. Sarah Johnson',
+        password: 'calc2024',
+        subject: 'Mathematics',
+        permissions: ['create', 'republish', 'analytics', 'delete']
+      },
+      'ENG202': {
+        name: 'Prof. Michael Chen',
+        password: 'lang2024',
+        subject: 'English Language',
+        permissions: ['create', 'republish', 'analytics']
+      },
+      'SCI303': {
+        name: 'Dr. Maria Rodriguez',
+        password: 'lab2024',
+        subject: 'Science',
+        permissions: ['create', 'republish', 'analytics', 'delete']
+      },
+      'HIST404': {
+        name: 'Prof. James Wilson',
+        password: 'time2024',
+        subject: 'History',
+        permissions: ['create', 'analytics']
+      },
+      'ART505': {
+        name: 'Ms. Emily Davis',
+        password: 'paint2024',
+        subject: 'Art & Design',
+        permissions: ['create', 'republish', 'analytics']
+      }
+    };
+
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+
+    let supabase;
+    let currentTeacher = null;
+    let teacherQuestions = [];
+    let teacherResponses = [];
+    let currentSelectedQuestion = null;
+    let isConnected = false;
+
+    function checkAuthentication() {
+      // Check URL parameter first
+      const urlParams = new URLSearchParams(window.location.search);
+      const teacherCode = urlParams.get('teacher');
+      
+      if (teacherCode) {
+        const stored = localStorage.getItem('analytics_teacher');
+        if (stored) {
+          try {
+            const teacherData = JSON.parse(stored);
+            const teacher = TEACHER_DATABASE[teacherData.code];
+            
+            if (teacher && teacherData.code === teacherCode && teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) {
+              currentTeacher = { ...teacher, code: teacherData.code };
+              return true;
+            }
+          } catch (error) {
+            console.error('Error parsing teacher data:', error);
+          }
+        }
+      }
+      
+      // Fallback to general authentication
+      const stored = localStorage.getItem('authenticated_teacher');
+      if (stored) {
+        try {
+          const teacherData = JSON.parse(stored);
+          const teacher = TEACHER_DATABASE[teacherData.code];
+          
+          if (teacher && teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) {
+            currentTeacher = { ...teacher, code: teacherData.code };
+            return true;
+          }
+        } catch (error) {
+          console.error('Error parsing general teacher data:', error);
+        }
+      }
+      
+      return false;
+    }
+
+    function showMainInterface() {
+      document.getElementById('authRedirect').classList.add('hidden');
+      document.getElementById('mainContainer').classList.add('authenticated');
+      document.getElementById('logoutButton').classList.add('show');
+      
+      // Update teacher display
+      document.getElementById('currentTeacherCode').textContent = currentTeacher.code;
+      document.getElementById('currentTeacherName').textContent = currentTeacher.name;
+      
+      console.log('✅ Analytics access granted for:', currentTeacher.name);
+      initializeAnalytics();
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('authenticated_teacher');
+        localStorage.removeItem('analytics_teacher');
+        redirectToLogin();
+      }
+    }
+
+    function redirectToLogin() {
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'secure'
+      pathParts.pop(); // remove 'visualisation'
+      pathParts.push('teachers', 'secure', '');
+      const loginURL = baseURL + pathParts.join('/');
+      window.location.href = loginURL;
+    }
+
+    function redirectToCreate() {
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'secure'
+      pathParts.pop(); // remove 'visualisation'
+      pathParts.push('teachers', 'secure', '');
+      const createURL = baseURL + pathParts.join('/');
+      window.location.href = createURL;
+    }
+
+    function getTeacherStorageKey(key) {
+      return `${currentTeacher.code}_${key}`;
+    }
+
+    async function initSupabase() {
+      try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        if (error) throw error;
+        
+        isConnected = true;
+        console.log('✅ Connected to Supabase');
+        return true;
+      } catch (error) {
+        console.error('❌ Supabase connection failed:', error);
+        isConnected = false;
+        return false;
+      }
+    }
+
+    async function loadTeacherData() {
+      try {
+        teacherQuestions = [];
+        teacherResponses = [];
+        
+        if (isConnected) {
+          // Load teacher's questions from Supabase
+          const { data: questions, error: qError } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('created_by', currentTeacher.code)
+            .order('created_at', { ascending: false });
+
+          if (!qError && questions) {
+            teacherQuestions = questions;
+          }
+
+          // Load responses for teacher's questions
+          if (teacherQuestions.length > 0) {
+            const questionIds = teacherQuestions.map(q => q.id);
+            const { data: responses, error: rError } = await supabase
+              .from('student_responses')
+              .select('*')
+              .in('question_id', questionIds)
+              .order('submitted_at', { ascending: false });
+
+            if (!rError && responses) {
+              teacherResponses = responses;
+            }
+          }
+        }
+        
+        // Also load from local storage
+        const localQuestions = JSON.parse(localStorage.getItem(getTeacherStorageKey('questions')) || '[]');
+        const localResponses = JSON.parse(localStorage.getItem(getTeacherStorageKey('responses')) || '[]');
+        
+        // Merge with local data (avoid duplicates)
+        localQuestions.forEach(localQ => {
+          if (!teacherQuestions.find(q => q.id === localQ.id)) {
+            teacherQuestions.push(localQ);
+          }
+        });
+
+        localResponses.forEach(localR => {
+          if (!teacherResponses.find(r => r.id === localR.id)) {
+            teacherResponses.push(localR);
+          }
+        });
+        
+        teacherQuestions.sort((a, b) => new Date(b.created_at || b.published_at || 0) - new Date(a.created_at || a.published_at || 0));
+        
+        updateUI();
+        updateStatistics();
+        
+        console.log(`✅ Loaded ${teacherQuestions.length} questions and ${teacherResponses.length} responses for ${currentTeacher.code}`);
+        
+      } catch (error) {
+        console.error('❌ Error loading teacher data:', error);
+        showNotification('Error loading your data', 'error');
+      }
+    }
+
+    function getResponsesForQuestion(question) {
+      if (!question) return [];
+      
+      const questionId = question.id;
+      const questionText = question.text || question.question_text || '';
+      
+      const matchedResponses = teacherResponses.filter(response => {
+        const responseQuestionId = response.question_id || response.questionId;
+        const responseQuestionText = response.questionText || response.question_text || '';
+        
+        return (
+          (questionId && responseQuestionId && questionId === responseQuestionId) ||
+          (questionText && responseQuestionText && questionText === responseQuestionText)
+        );
+      });
+      
+      return matchedResponses;
+    }
+
+    function updateStatistics() {
+      const totalQuestions = teacherQuestions.length;
+      const totalResponses = teacherResponses.length;
+      
+      // Calculate unique students
+      const uniqueStudentNames = new Set();
+      teacherResponses.forEach(response => {
+        const studentName = response.student_name || response.studentName;
+        if (studentName) {
+          uniqueStudentNames.add(studentName.toLowerCase().trim());
+        }
+      });
+      const uniqueStudents = uniqueStudentNames.size;
+      
+      // Calculate average score
+      const scoresWithValues = teacherResponses
+        .map(r => r.score)
+        .filter(score => score !== null && score !== undefined && !isNaN(score));
+      
+      const averageScore = scoresWithValues.length > 0 
+        ? Math.round(scoresWithValues.reduce((sum, score) => sum + score, 0) / scoresWithValues.length)
+        : 0;
+      
+      // Update display
+      document.getElementById('totalQuestions').textContent = totalQuestions;
+      document.getElementById('totalResponses').textContent = totalResponses;
+      document.getElementById('uniqueStudents').textContent = uniqueStudents;
+      document.getElementById('averageScore').textContent = averageScore;
+    }
+
+    function updateUI() {
+      populateQuestionDropdown();
+      updateResponseCount();
+      updateDisplayButton();
+      updateDeleteButton();
+    }
+
+    function populateQuestionDropdown() {
+      const selector = document.getElementById('questionSelector');
+      
+      if (teacherQuestions.length === 0) {
+        selector.innerHTML = '<option value="">No questions created yet</option>';
+        return;
+      }
+
+      selector.innerHTML = '<option value="">Select a question to view responses...</option>';
+
+      teacherQuestions.forEach((question) => {
+        const option = document.createElement('option');
+        option.value = question.id || 'demo';
+        
+        const questionText = question.text || question.question_text || 'Untitled Question';
+        const shortText = questionText.length > 60 ? questionText.substring(0, 60) + '...' : questionText;
+        
+        const responses = getResponsesForQuestion(question);
+        const responseCount = responses.length;
+        option.textContent = `${shortText} (${responseCount} responses)`;
+        
+        selector.appendChild(option);
+      });
+
+      console.log('✅ Question dropdown populated for teacher');
+    }
+
+    function updateResponseCount() {
+      const counter = document.getElementById('responseCounter');
+      
+      if (!currentSelectedQuestion) {
+        counter.textContent = '0 Responses';
+        return;
+      }
+
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
+      counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+    }
+
+    function updateDisplayButton() {
+      const displayBtn = document.getElementById('displayBtn');
+      displayBtn.disabled = !currentSelectedQuestion;
+    }
+
+    function updateDeleteButton() {
+      const deleteBtn = document.getElementById('deleteBtn');
+      
+      if (currentSelectedQuestion && currentTeacher.permissions.includes('delete')) {
+        deleteBtn.classList.add('visible');
+      } else {
+        deleteBtn.classList.remove('visible');
+      }
+    }
+
+    function handleQuestionChange() {
+      const selector = document.getElementById('questionSelector');
+      const selectedValue = selector.value;
+      
+      if (!selectedValue) {
+        currentSelectedQuestion = null;
+      } else {
+        currentSelectedQuestion = teacherQuestions.find(q => q.id === selectedValue);
+      }
+
+      console.log('Selected question changed:', currentSelectedQuestion);
+      
+      updateResponseCount();
+      updateDisplayButton();
+      updateDeleteButton();
+    }
+
+    function displayResponses() {
+      if (!currentSelectedQuestion) {
+        alert('Please select a question first.');
+        return;
+      }
+      
+      console.log('Displaying responses for question:', currentSelectedQuestion);
+      
+      const matchedResponses = getResponsesForQuestion(currentSelectedQuestion);
+      
+      showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
+      
+      // Store data for display page
+      const questionData = JSON.stringify(currentSelectedQuestion);
+      const responseData = JSON.stringify(matchedResponses);
+      
+      localStorage.setItem('display_question', questionData);
+      localStorage.setItem('display_responses', responseData);
+      localStorage.setItem('current_question', questionData);
+      
+      console.log('Stored display data:', { 
+        question: currentSelectedQuestion.id, 
+        responses: matchedResponses.length 
+      });
+      
+      try {
+        window.open('../displays/', '_blank');
+      } catch (error) {
+        window.location.href = '../displays/';
+      }
+    }
+
+    function showDeleteConfirmation() {
+      if (!currentSelectedQuestion || !currentTeacher.permissions.includes('delete')) return;
+
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
+      
+      const message = document.getElementById('dialogMessage');
+      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
+      const shortQuestion = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
+      
+      if (count > 0) {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} associated response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
+      } else {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}"? This action cannot be undone.`;
+      }
+      
+      document.getElementById('confirmDialog').classList.add('show');
+    }
+
+    function closeConfirmDialog() {
+      document.getElementById('confirmDialog').classList.remove('show');
+    }
+
+    async function confirmDelete() {
+      if (!currentSelectedQuestion || !currentTeacher.permissions.includes('delete')) {
+        closeConfirmDialog();
+        return;
+      }
+
+      const questionToDelete = currentSelectedQuestion;
+
+      try {
+        showNotification('Deleting question...', 'info');
+        
+        if (isConnected) {
+          try {
+            const { error: responseError } = await supabase
+              .from('student_responses')
+              .delete()
+              .eq('question_id', questionToDelete.id);
+
+            const { error: questionError } = await supabase
+              .from('questions')
+              .delete()
+              .eq('id', questionToDelete.id);
+
+            if (questionError) console.log('Supabase delete warning:', questionError);
+            console.log('Deleted from Supabase');
+          } catch (supabaseError) {
+            console.log('Supabase delete failed, continuing with local delete:', supabaseError.message);
+          }
+        }
+
+        // Remove from local arrays
+        const responsesToDelete = getResponsesForQuestion(questionToDelete);
+        
+        responsesToDelete.forEach(response => {
+          const index = teacherResponses.findIndex(r => r === response);
+          if (index > -1) {
+            teacherResponses.splice(index, 1);
+          }
+        });
+
+        const questionIndex = teacherQuestions.findIndex(q => q === questionToDelete);
+        if (questionIndex > -1) {
+          teacherQuestions.splice(questionIndex, 1);
+        }
+
+        // Update local storage
+        localStorage.setItem(getTeacherStorageKey('questions'), JSON.stringify(teacherQuestions));
+        localStorage.setItem(getTeacherStorageKey('responses'), JSON.stringify(teacherResponses));
+        
+        console.log('Question and responses deleted:', { 
+          question: questionToDelete.id,
+          responsesDeleted: responsesToDelete.length,
+          remainingQuestions: teacherQuestions.length,
+          remainingResponses: teacherResponses.length
+        });
+        
+        currentSelectedQuestion = null;
+        document.getElementById('questionSelector').value = '';
+        updateUI();
+        updateStatistics();
+        closeConfirmDialog();
+        showNotification('Question deleted successfully', 'success');
+        
+      } catch (error) {
+        console.error('Error deleting question:', error);
+        showNotification('Error deleting question', 'error');
+        closeConfirmDialog();
+      }
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      
+      const icons = {
+        success: '✓',
+        error: '⚠',
+        info: 'ℹ'
+      };
+      
+      notification.innerHTML = `
+        <span>${icons[type] || 'ℹ'}</span>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.classList.add('show'), 100);
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    async function initializeAnalytics() {
+      await initSupabase();
+      await loadTeacherData();
+      
+      document.getElementById('questionSelector').addEventListener('change', handleQuestionChange);
+      document.getElementById('displayBtn').addEventListener('click', displayResponses);
+      document.getElementById('deleteBtn').addEventListener('click', showDeleteConfirmation);
+      
+      document.getElementById('confirmDialog').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeConfirmDialog();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeConfirmDialog();
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 INTUITY Secure Analytics Loading...');
+      
+      // Check authentication
+      if (!checkAuthentication()) {
+        console.log('❌ Authentication failed - redirecting to login');
+        document.getElementById('authRedirect').classList.remove('hidden');
+        return;
+      }
+
+      if (!currentTeacher.permissions.includes('analytics')) {
+        alert('You do not have permission to access analytics.');
+        redirectToLogin();
+        return;
+      }
+      
+      showMainInterface();
+      
+      // Logout handler
+      document.getElementById('logoutButton').addEventListener('click', logout);
+      
+      console.log('✅ Secure Analytics Ready!');
+    });
+  </script>
+</body>
+</html>
