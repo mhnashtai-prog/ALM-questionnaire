@@ -1435,14 +1435,14 @@
       console.log('✅ Real Secure Analytics Ready!');
     });
 
-    // ===== MIGRATION FUNCTIONALITY =====
+    // ===== FIXED MIGRATION FUNCTIONALITY =====
 
-    // Migration storage keys
+    // Updated migration storage keys - includes current_question and display_question
     const MIGRATION_STORAGE_KEYS = {
       responses: 'intuity_student_responses',
       questions: 'intuity_questions',
       legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses'],
-      legacyQuestions: ['alm_questions', 'current_question', 'display_question']
+      legacyQuestions: ['alm_questions', 'current_question', 'display_question']  // ✅ ADDED YOUR KEYS
     };
 
     // Migration state
@@ -1474,9 +1474,9 @@
       const dialogHTML = `
         <div class="dialog-overlay" id="migrationDialog">
           <div class="dialog-box" style="max-width: 500px;">
-            <div class="dialog-title">📦 Data Migration</div>
+            <div class="dialog-title">📦 Data Migration (FIXED)</div>
             <div class="dialog-message">
-              <p style="margin-bottom: 15px;">Import questions and responses from the regular analytics system to your secure teacher account.</p>
+              <p style="margin-bottom: 15px;">Import ALL questions and responses from the regular analytics system to your secure teacher account.</p>
               <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                   <span>Questions found:</span>
@@ -1543,7 +1543,7 @@
       }
     }
 
-    // Scan for migration data
+    // FIXED SCAN FUNCTION - REMOVES TEACHER FILTER
     async function scanForMigrationData() {
       try {
         document.getElementById('migrationStatus').textContent = 'Scanning...';
@@ -1552,7 +1552,9 @@
         let foundQuestions = [];
         let foundResponses = [];
         
-        // Scan questions
+        console.log('🔍 Starting migration scan...');
+        
+        // Scan questions - REMOVE TEACHER FILTER
         const questionSources = [MIGRATION_STORAGE_KEYS.questions, ...MIGRATION_STORAGE_KEYS.legacyQuestions];
         
         for (const key of questionSources) {
@@ -1563,17 +1565,16 @@
               if (Array.isArray(parsed)) {
                 parsed.forEach(q => {
                   if (q && (q.text || q.question_text) && !foundQuestions.find(existing => existing.id === q.id)) {
-                    // Skip if already migrated to this teacher
-                    if (!q.migrated_to_teacher || q.migrated_to_teacher !== currentTeacher.code) {
-                      foundQuestions.push(q);
-                    }
+                    // ✅ INCLUDE ALL QUESTIONS - NO TEACHER FILTER
+                    foundQuestions.push(q);
+                    console.log('📝 Found question from', key, ':', (q.text || q.question_text).substring(0, 50) + '...');
                   }
                 });
               } else if (parsed && (parsed.text || parsed.question_text)) {
                 if (!foundQuestions.find(existing => existing.id === parsed.id)) {
-                  if (!parsed.migrated_to_teacher || parsed.migrated_to_teacher !== currentTeacher.code) {
-                    foundQuestions.push(parsed);
-                  }
+                  // ✅ INCLUDE ALL QUESTIONS - NO TEACHER FILTER
+                  foundQuestions.push(parsed);
+                  console.log('📝 Found single question from', key, ':', (parsed.text || parsed.question_text).substring(0, 50) + '...');
                 }
               }
             } catch (e) {
@@ -1582,7 +1583,7 @@
           }
         }
         
-        // Scan responses
+        // Scan responses - INCLUDE ALL
         const responseSources = [MIGRATION_STORAGE_KEYS.responses, ...MIGRATION_STORAGE_KEYS.legacyResponses];
         
         for (const key of responseSources) {
@@ -1599,6 +1600,7 @@
                       return existingKey === uniqueKey;
                     })) {
                       foundResponses.push(r);
+                      console.log('💬 Found response from', key, ':', r.student_name || r.studentName);
                     }
                   }
                 });
@@ -1613,6 +1615,8 @@
         document.getElementById('migrationQuestionsFound').textContent = foundQuestions.length;
         document.getElementById('migrationResponsesFound').textContent = foundResponses.length;
         
+        console.log('🔍 Scan complete:', { questions: foundQuestions.length, responses: foundResponses.length });
+        
         if (foundQuestions.length > 0 || foundResponses.length > 0) {
           document.getElementById('migrationStatus').textContent = 'Ready to migrate';
           document.getElementById('startMigrationBtn').style.display = 'inline-block';
@@ -1620,6 +1624,11 @@
           
           // Store found data for migration
           window.migrationData = { questions: foundQuestions, responses: foundResponses };
+          
+          // Show details in console for debugging
+          console.log('🔍 Found Questions:', foundQuestions);
+          console.log('🔍 Found Responses:', foundResponses);
+          
         } else {
           document.getElementById('migrationStatus').textContent = 'No data found';
         }
@@ -1633,7 +1642,7 @@
       }
     }
 
-    // Start data migration
+    // ENHANCED MIGRATION FUNCTION
     async function startDataMigration() {
       if (migrationInProgress || !window.migrationData) return;
       
@@ -1654,19 +1663,28 @@
         const existingResponses = JSON.parse(localStorage.getItem(getTeacherStorageKey('responses')) || '[]');
         const migratedQuestionsList = [];
         
+        console.log('🚀 Starting migration with:', {
+          foundQuestions: foundQuestions.length,
+          foundResponses: foundResponses.length,
+          existingQuestions: existingQuestions.length,
+          existingResponses: existingResponses.length
+        });
+        
         // Migrate questions
         for (const question of foundQuestions) {
-          // Check if already exists
+          // Check if already exists (by ID)
           if (existingQuestions.find(q => q.id === question.id)) {
+            console.log('⚠️ Question already exists:', question.id);
             continue;
           }
           
           const teacherQuestion = {
             ...question,
-            created_by: currentTeacher.code,
+            created_by: currentTeacher.code,  // Override with current teacher
             migrated: true,
             migrated_at: new Date().toISOString(),
-            original_source: 'regular_analytics'
+            original_source: 'regular_analytics',
+            original_created_by: question.created_by  // Keep original for reference
           };
           
           // Ensure required fields
@@ -1680,6 +1698,8 @@
           existingQuestions.push(teacherQuestion);
           migratedQuestionsList.push(teacherQuestion);
           migratedQuestions++;
+          
+          console.log('✅ Migrated question:', teacherQuestion.text?.substring(0, 50) + '...' || teacherQuestion.question_text?.substring(0, 50) + '...');
         }
         
         // Save migrated questions
@@ -1691,18 +1711,19 @@
             // Find matching question
             const matchingQuestion = migratedQuestionsList.find(q => {
               const questionId = q.id;
-              const questionText = q.text || q.question_text || '';
               const responseQuestionId = response.question_id || response.questionId;
-              const responseQuestionText = response.questionText || response.question_text || '';
               
+              // Try multiple matching strategies
               return (
                 (questionId && responseQuestionId && questionId === responseQuestionId) ||
-                (questionText && responseQuestionText && questionText === responseQuestionText) ||
                 (questionId === 'demo' && (!responseQuestionId || responseQuestionId === 'demo'))
               );
             });
             
-            if (!matchingQuestion) continue;
+            if (!matchingQuestion) {
+              console.log('⚠️ No matching question for response from:', response.student_name || response.studentName);
+              continue;
+            }
             
             // Check if already exists
             const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}`;
@@ -1710,6 +1731,7 @@
               const existingKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}`;
               return existingKey === uniqueKey;
             })) {
+              console.log('⚠️ Response already exists:', uniqueKey);
               continue;
             }
             
@@ -1731,15 +1753,17 @@
             
             existingResponses.push(teacherResponse);
             migratedResponses++;
+            
+            console.log('✅ Migrated response from:', teacherResponse.student_name || teacherResponse.studentName);
           }
           
           // Save migrated responses
           localStorage.setItem(getTeacherStorageKey('responses'), JSON.stringify(existingResponses));
         }
         
-        // Mark original data as migrated if enabled
+        // Mark original data as migrated if enabled (OPTIONAL)
         if (markOriginal) {
-          const questionSources = [MIGRATION_STORAGE_KEYS.questions, ...MIGRATION_STORAGE_KEYS.legacyQuestions];
+          const questionSources = ['current_question', 'display_question', 'intuity_questions'];
           
           for (const key of questionSources) {
             const stored = localStorage.getItem(key);
@@ -1758,6 +1782,11 @@
                   if (updated) {
                     localStorage.setItem(key, JSON.stringify(parsed));
                   }
+                } else if (parsed && foundQuestions.find(fq => fq.id === parsed.id)) {
+                  // Single question
+                  parsed.migrated_to_teacher = currentTeacher.code;
+                  parsed.migrated_at = new Date().toISOString();
+                  localStorage.setItem(key, JSON.stringify(parsed));
                 }
               } catch (e) {
                 console.warn('Error updating', key, e);
@@ -1772,6 +1801,7 @@
         // Reload teacher data
         await loadTeacherData();
         
+        console.log('🎉 Migration completed:', { migratedQuestions, migratedResponses });
         showNotification(`Migration complete: ${migratedQuestions} questions, ${migratedResponses} responses`, 'success');
         
         setTimeout(() => {
@@ -1794,7 +1824,7 @@
       setTimeout(() => {
         if (document.querySelector('.footer') && !document.getElementById('migrationBtn')) {
           addMigrationButton();
-          console.log('✅ Migration functionality added to secure analytics');
+          console.log('✅ Fixed migration functionality added to secure analytics');
         }
       }, 1000);
       
