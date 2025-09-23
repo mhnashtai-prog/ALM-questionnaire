@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Secure Teacher Access</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
+      -webkit-text-size-adjust: 100%;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(8deg);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
+      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
+      opacity: 0.4;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-5deg);
+      border: 1px solid rgba(255, 100, 40, 0.2);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
+      opacity: 0.3;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(12deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
+      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
+      opacity: 0.25;
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-10deg);
+      border: 1px solid rgba(255, 120, 50, 0.15);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
+      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
+      opacity: 0.2;
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(6deg);
+      border: 1px solid rgba(255, 140, 60, 0.25);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
+      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
+      opacity: 0.35;
+      animation: float 9s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
+    }
+
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
+
+    /* Authentication Screen */
+    .auth-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .auth-screen.hidden {
+      display: none;
+    }
+
+    .auth-container {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 25px;
+      padding: 40px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .auth-title {
+      color: #fff;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+    }
+
+    .auth-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .auth-input-group {
+      text-align: left;
+    }
+
+    .auth-label {
+      display: block;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .auth-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 15px 20px;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .auth-input:focus {
+      border-color: rgba(255, 140, 60, 0.6);
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
+    }
+
+    .auth-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .teacher-code-input {
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 18px;
+    }
+
+    .password-input {
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+
+    .auth-button {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 15px;
+      padding: 18px 30px;
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+
+    .auth-button:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.3);
+    }
+
+    .auth-button:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .auth-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      padding: 12px;
+      color: rgba(239, 68, 68, 0.9);
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .auth-error.show {
+      display: block;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .teacher-info {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .teacher-info.show {
+      display: block;
+    }
+
+    .teacher-name {
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .teacher-permissions {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .logout-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 25px;
+      padding: 8px 16px;
+      color: rgba(239, 68, 68, 0.8);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .logout-button.show {
+      display: block;
+    }
+
+    .logout-button:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 1);
+      transform: scale(1.05);
+    }
+
+    /* Main Interface (hidden until authenticated) */
+    .main-interface {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      height: 100dvh;
+      display: none; /* Hidden until authenticated */
+      flex-direction: column;
+      padding: 40px 20px 0;
+      min-height: 0;
+    }
+
+    .main-interface.authenticated {
+      display: flex;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 38px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .teacher-badge {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      padding: 8px 16px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .teacher-badge .teacher-code {
+      color: rgba(16, 185, 129, 0.9);
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .teacher-badge .teacher-name-display {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    /* Question Selection Section */
+    .question-selection {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .question-selection:hover {
+      border-color: rgba(255, 140, 60, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .selection-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .selection-title {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mode-toggle {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: none;
+      border-radius: 18px;
+      padding: 8px 16px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .mode-btn.active {
+      background: rgba(255, 140, 60, 0.8);
+      color: #000;
+      font-weight: 600;
+    }
+
+    .selection-dropdown {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 15px;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .selection-dropdown:focus {
+      border-color: rgba(255, 140, 60, 0.6);
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .selection-dropdown option {
+      background: rgba(26, 35, 50, 0.95);
+      color: #fff;
+      padding: 10px;
+    }
+
+    .republish-info {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 10px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      display: none;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .republish-info.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .republish-info .info-icon {
+      display: inline-block;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .question-container {
+      width: 100%;
+      height: auto;
+      min-height: 180px;
+      position: relative;
+      perspective: 1000px;
+      overflow: visible;
+    }
+
+    .question-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .question-box:hover {
+      transform: translateY(-2px);
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .question-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      line-height: 1.6;
+      padding: 0;
+      text-align: center;
+      min-height: 100px;
+    }
+
+    .question-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+
+    .question-input:focus {
+      color: #fff;
+    }
+
+    .question-input:disabled {
+      color: rgba(255, 255, 255, 0.8);
+      cursor: not-allowed;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .action-buttons.show {
+      opacity: 1;
+    }
+
+    .action-btn {
+      background: rgba(255, 140, 60, 0.6);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: #000;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 100px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 140, 60, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .action-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 140, 60, 0.9);
+      display: none;
+    }
+
+    .action-btn.secondary.show {
+      display: block;
+    }
+
+    .action-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 140, 60, 1);
+    }
+
+    .action-btn.republish {
+      background: rgba(16, 185, 129, 0.6);
+      color: #000;
+    }
+
+    .action-btn.republish:hover {
+      background: rgba(16, 185, 129, 0.8);
+    }
+
+    .footer {
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: 15px;
+      position: relative;
+    }
+
+    .nav-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
+    }
+
+    .success-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid rgba(16, 185, 129, 0.5);
+      border-radius: 16px;
+      padding: 35px;
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.3s ease;
+      min-width: 320px;
+    }
+
+    .success-icon {
+      font-size: 56px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .qr-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .qr-modal-content {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 20px;
+      padding: 35px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      max-width: 420px;
+      margin: 20px;
+    }
+
+    .qr-modal h3 {
+      margin-bottom: 25px;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .qr-display {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 25px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 18px;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      overflow: hidden;
+    }
+
+    .qr-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .close-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      color: #000;
+      font-weight: 600;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
+    }
+
+    /* Mobile responsive design */
+    @media (max-width: 768px) {
+      .auth-container {
+        margin: 20px;
+        padding: 30px;
+      }
+
+      .auth-title {
+        font-size: 26px;
+      }
+
+      .auth-subtitle {
+        font-size: 14px;
+      }
+
+      .main-interface {
+        padding: 20px 15px 0;
+      }
+      
+      .header {
+        margin-bottom: 15px;
+      }
+      
+      .header h1 {
+        font-size: 28px;
+      }
+      
+      .header p {
+        font-size: 14px;
+      }
+      
+      .question-selection {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      
+      .selection-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      
+      .mode-toggle {
+        align-self: center;
+      }
+      
+      .main-content {
+        padding: 5px 0;
+      }
+      
+      .question-container {
+        min-height: 140px;
+      }
+      
+      .content-area {
+        padding: 15px;
+      }
+      
+      .question-input {
+        font-size: 16px;
+        min-height: 80px;
+      }
+      
+      .action-buttons {
+        gap: 12px;
+        padding-top: 15px;
+      }
+      
+      .action-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: 80px;
+      }
+
+      .nav-button {
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+      }
+
+      .footer {
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        margin: 15px;
+        padding: 25px;
+      }
+
+      .auth-title {
+        font-size: 22px;
+      }
+
+      .main-interface {
+        padding: 15px 10px 0;
+      }
+      
+      .header {
+        margin-bottom: 10px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .question-selection {
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+
+      .main-content {
+        padding: 5px 0;
+      }
+
+      .question-container {
+        min-height: 120px;
+      }
+
+      .content-area {
+        padding: 12px;
+      }
+
+      .question-input {
+        font-size: 15px;
+        min-height: 70px;
+      }
+
+      .action-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        min-width: 70px;
+      }
+
+      .nav-button {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+      }
+
+      .footer {
+        padding: 8px;
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+    </div>
+  </div>
+
+  <!-- Authentication Screen -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-container">
+      <div class="auth-title">INTUITY</div>
+      <div class="auth-subtitle">Secure Teacher Access<br>Enter your credentials to continue</div>
+      
+      <div class="auth-error" id="authError">
+        <strong>Access Denied:</strong> Invalid teacher code or password.
+      </div>
+      
+      <div class="teacher-info" id="teacherInfo">
+        <div class="teacher-name" id="teacherNameDisplay"></div>
+        <div class="teacher-permissions" id="teacherPermissions"></div>
+      </div>
+      
+      <form class="auth-form" id="authForm">
+        <div class="auth-input-group">
+          <label class="auth-label" for="teacherCode">Teacher Code</label>
+          <input 
+            type="text" 
+            id="teacherCode" 
+            class="auth-input teacher-code-input" 
+            placeholder="Enter Code" 
+            maxlength="8"
+            autocomplete="off"
+            required
+          />
+        </div>
+        
+        <div class="auth-input-group">
+          <label class="auth-label" for="teacherPassword">Password</label>
+          <input 
+            type="password" 
+            id="teacherPassword" 
+            class="auth-input password-input" 
+            placeholder="Enter Password" 
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        
+        <button type="submit" class="auth-button" id="authButton">
+          Authenticate
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Logout Button -->
+  <button class="logout-button" id="logoutButton">🚪 Logout</button>
+
+  <!-- Main Interface (hidden until authenticated) -->
+  <div class="main-interface" id="mainInterface">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Secure Teacher Interface<br>By Majid Nashtai</p>
+      <div class="teacher-badge">
+        <span class="teacher-code" id="currentTeacherCode"></span>
+        <span class="teacher-name-display" id="currentTeacherName"></span>
+      </div>
+    </header>
+
+    <!-- Question Selection Section -->
+    <section class="question-selection">
+      <div class="selection-header">
+        <div class="selection-title">📋 Question Management</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="newModeBtn">New Question</button>
+          <button class="mode-btn" id="republishModeBtn">Republish</button>
+        </div>
+      </div>
+      
+      <select class="selection-dropdown" id="questionSelector" disabled>
+        <option value="">Loading your questions...</option>
+      </select>
+      
+      <div class="republish-info" id="republishInfo">
+        <span class="info-icon">ℹ️</span>
+        <strong>Republishing:</strong> This will make the selected question available to students again. 
+        New responses will be added to the existing question. Perfect for absent students!
+      </div>
+    </section>
+
+    <main class="main-content">
+      <div class="question-container">
+        <div class="question-box">
+          <div class="content-area">
+            <textarea 
+              class="question-input" 
+              id="questionInput"
+              placeholder="What would you like to ask your students?"
+            ></textarea>
+            
+            <div class="action-buttons" id="actionButtons">
+              <button class="action-btn" id="publishBtn" disabled>Publish</button>
+              <button class="action-btn republish" id="republishBtn" disabled style="display: none;">Republish</button>
+              <button class="action-btn secondary" id="qrBtn">QR Code</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <a href="../../index.html" class="nav-button" title="Home">⌂</a>
+      <button class="nav-button" id="nextQuestionBtn" title="Clear">✨</button>
+      <button class="nav-button" id="analyticsBtn" title="Your Analytics">📊</button>
+    </footer>
+  </div>
+
+  <div class="success-notification" id="successNotification">
+    <span class="success-icon">✨</span>
+    <div id="successMessage">Question Published!</div>
+    <div style="font-size: 16px; margin-top: 12px; opacity: 0.8;" id="successSubMessage">
+      Students can now access your question.
+    </div>
+  </div>
+
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-content">
+      <h3>Student QR Code</h3>
+      <div id="qrDisplay" class="qr-display">
+        <div>Generating QR Code...</div>
+      </div>
+      <button class="close-btn" onclick="closeQRModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+
+    // Teacher Database (in real implementation, this would be server-side)
+    const TEACHER_DATABASE = {
+      'MATHS101': {
+        name: 'Dr. Sarah Johnson',
+        password: 'calc2024',
+        subject: 'Mathematics',
+        permissions: ['create', 'republish', 'analytics', 'delete']
+      },
+      'ENG202': {
+        name: 'Prof. Michael Chen',
+        password: 'lang2024',
+        subject: 'English Language',
+        permissions: ['create', 'republish', 'analytics']
+      },
+      'SCI303': {
+        name: 'Dr. Maria Rodriguez',
+        password: 'lab2024',
+        subject: 'Science',
+        permissions: ['create', 'republish', 'analytics', 'delete']
+      },
+      'HIST404': {
+        name: 'Prof. James Wilson',
+        password: 'time2024',
+        subject: 'History',
+        permissions: ['create', 'analytics']
+      },
+      'ART505': {
+        name: 'Ms. Emily Davis',
+        password: 'paint2024',
+        subject: 'Art & Design',
+        permissions: ['create', 'republish', 'analytics']
+      }
+    };
+
+    let supabase;
+    let currentTeacher = null;
+    let currentQuestion = null;
+    let teacherQuestions = [];
+    let isConnected = false;
+    let isPublished = false;
+    let currentMode = 'new';
+    let selectedQuestion = null;
+
+    // Authentication Functions
+    function checkAuthentication() {
+      const stored = localStorage.getItem('authenticated_teacher');
+      if (stored) {
+        try {
+          const teacherData = JSON.parse(stored);
+          const teacher = TEACHER_DATABASE[teacherData.code];
+          
+          if (teacher && teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) { // 8 hour session
+            currentTeacher = { ...teacher, code: teacherData.code };
+            showMainInterface();
+            return true;
+          } else {
+            localStorage.removeItem('authenticated_teacher');
+          }
+        } catch (error) {
+          localStorage.removeItem('authenticated_teacher');
+        }
+      }
+      return false;
+    }
+
+    function authenticateTeacher(code, password) {
+      const teacher = TEACHER_DATABASE[code.toUpperCase()];
+      
+      if (teacher && teacher.password === password) {
+        currentTeacher = { ...teacher, code: code.toUpperCase() };
+        
+        // Store authentication (8 hour session)
+        localStorage.setItem('authenticated_teacher', JSON.stringify({
+          code: code.toUpperCase(),
+          timestamp: Date.now()
+        }));
+        
+        return true;
+      }
+      return false;
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('authenticated_teacher');
+        currentTeacher = null;
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('mainInterface').classList.remove('authenticated');
+        document.getElementById('logoutButton').classList.remove('show');
+        
+        // Clear form
+        document.getElementById('authForm').reset();
+        document.getElementById('authError').classList.remove('show');
+        document.getElementById('teacherInfo').classList.remove('show');
+      }
+    }
+
+    function showMainInterface() {
+      document.getElementById('authScreen').classList.add('hidden');
+      document.getElementById('mainInterface').classList.add('authenticated');
+      document.getElementById('logoutButton').classList.add('show');
+      
+      // Update teacher display
+      document.getElementById('currentTeacherCode').textContent = currentTeacher.code;
+      document.getElementById('currentTeacherName').textContent = currentTeacher.name;
+      
+      console.log('✅ Authenticated as:', currentTeacher.name);
+      initializeTeacherInterface();
+    }
+
+    function showAuthError(message = 'Invalid teacher code or password.') {
+      const errorElement = document.getElementById('authError');
+      errorElement.querySelector('strong').nextSibling.textContent = ` ${message}`;
+      errorElement.classList.add('show');
+      
+      setTimeout(() => {
+        errorElement.classList.remove('show');
+      }, 5000);
+    }
+
+    function getTeacherStorageKey(key) {
+      return `${currentTeacher.code}_${key}`;
+    }
+
+    async function initSupabase() {
+      try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        if (error) throw error;
+        
+        isConnected = true;
+        console.log('✅ Connected to Supabase');
+        return true;
+      } catch (error) {
+        console.error('❌ Supabase connection failed:', error);
+        isConnected = false;
+        return false;
+      }
+    }
+
+    async function loadTeacherQuestions() {
+      try {
+        teacherQuestions = [];
+        
+        if (isConnected) {
+          // Load from Supabase - filter by teacher
+          const { data, error } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('created_by', currentTeacher.code)
+            .order('created_at', { ascending: false });
+
+          if (!error && data) {
+            teacherQuestions = data;
+          }
+        }
+        
+        // Also load from local storage
+        const localKey = getTeacherStorageKey('questions');
+        const localQuestions = JSON.parse(localStorage.getItem(localKey) || '[]');
+        
+        // Merge with local questions (avoid duplicates)
+        localQuestions.forEach(localQ => {
+          if (!teacherQuestions.find(q => q.id === localQ.id)) {
+            teacherQuestions.push(localQ);
+          }
+        });
+        
+        teacherQuestions.sort((a, b) => new Date(b.created_at || b.published_at || 0) - new Date(a.created_at || a.published_at || 0));
+        
+        populateQuestionDropdown();
+        console.log(`✅ Loaded ${teacherQuestions.length} questions for ${currentTeacher.code}`);
+        
+      } catch (error) {
+        console.error('❌ Error loading teacher questions:', error);
+      }
+    }
+
+    function populateQuestionDropdown() {
+      const selector = document.getElementById('questionSelector');
+      
+      if (teacherQuestions.length === 0) {
+        selector.innerHTML = '<option value="">No questions yet - create your first one!</option>';
+        return;
+      }
+
+      selector.innerHTML = '<option value="">Select a previous question...</option>';
+
+      teacherQuestions.forEach((question) => {
+        const option = document.createElement('option');
+        option.value = question.id;
+        
+        const questionText = question.text || question.question_text || 'Untitled Question';
+        const shortText = questionText.length > 60 ? questionText.substring(0, 60) + '...' : questionText;
+        
+        const date = new Date(question.created_at || question.published_at || 0);
+        const dateStr = date.toLocaleDateString();
+        
+        option.textContent = `${shortText} (${dateStr})`;
+        selector.appendChild(option);
+      });
+
+      console.log('✅ Question dropdown populated for teacher');
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      const newModeBtn = document.getElementById('newModeBtn');
+      const republishModeBtn = document.getElementById('republishModeBtn');
+      const questionSelector = document.getElementById('questionSelector');
+      const questionInput = document.getElementById('questionInput');
+      const publishBtn = document.getElementById('publishBtn');
+      const republishBtn = document.getElementById('republishBtn');
+      const republishInfo = document.getElementById('republishInfo');
+      const actionButtons = document.getElementById('actionButtons');
+
+      if (mode === 'new') {
+        newModeBtn.classList.add('active');
+        republishModeBtn.classList.remove('active');
+        questionSelector.disabled = true;
+        questionInput.disabled = false;
+        questionInput.placeholder = "What would you like to ask your students?";
+        publishBtn.style.display = 'block';
+        republishBtn.style.display = 'none';
+        republishInfo.classList.remove('show');
+        
+        questionSelector.value = '';
+        selectedQuestion = null;
+        
+        if (questionInput.value && selectedQuestion) {
+          questionInput.value = '';
+        }
+        
+      } else if (mode === 'republish') {
+        if (!currentTeacher.permissions.includes('republish')) {
+          showAuthError('You do not have permission to republish questions.');
+          return;
+        }
+        
+        newModeBtn.classList.remove('active');
+        republishModeBtn.classList.add('active');
+        questionSelector.disabled = false;
+        questionInput.disabled = true;
+        questionInput.placeholder = "Select a question above to republish...";
+        publishBtn.style.display = 'none';
+        republishBtn.style.display = 'block';
+        republishInfo.classList.add('show');
+        
+        questionInput.value = '';
+        selectedQuestion = null;
+      }
+
+      updateButtonStates();
+      actionButtons.classList.remove('show');
+      isPublished = false;
+    }
+
+    function handleQuestionSelection() {
+      const selector = document.getElementById('questionSelector');
+      const questionInput = document.getElementById('questionInput');
+      const selectedValue = selector.value;
+
+      if (!selectedValue || currentMode !== 'republish') {
+        selectedQuestion = null;
+        questionInput.value = '';
+        updateButtonStates();
+        return;
+      }
+
+      selectedQuestion = teacherQuestions.find(q => q.id === selectedValue);
+      if (selectedQuestion) {
+        const questionText = selectedQuestion.text || selectedQuestion.question_text || '';
+        questionInput.value = questionText;
+        updateButtonStates();
+        console.log('✅ Selected question for republishing:', selectedQuestion);
+      }
+    }
+
+    function handleQuestionInput() {
+      if (currentMode === 'republish') return;
+      updateButtonStates();
+    }
+
+    function updateButtonStates() {
+      const questionInput = document.getElementById('questionInput');
+      const publishBtn = document.getElementById('publishBtn');
+      const republishBtn = document.getElementById('republishBtn');
+      const qrBtn = document.getElementById('qrBtn');
+      const actionButtons = document.getElementById('actionButtons');
+
+      const text = questionInput.value.trim();
+      
+      if (currentMode === 'new') {
+        if (text.length > 0 && !isPublished && currentTeacher.permissions.includes('create')) {
+          publishBtn.disabled = false;
+          actionButtons.classList.add('show');
+        } else if (!isPublished) {
+          publishBtn.disabled = true;
+          if (!qrBtn.classList.contains('show')) {
+            actionButtons.classList.remove('show');
+          }
+        }
+      } else if (currentMode === 'republish') {
+        if (selectedQuestion && !isPublished && currentTeacher.permissions.includes('republish')) {
+          republishBtn.disabled = false;
+          actionButtons.classList.add('show');
+        } else if (!isPublished) {
+          republishBtn.disabled = true;
+          if (!qrBtn.classList.contains('show')) {
+            actionButtons.classList.remove('show');
+          }
+        }
+      }
+    }
+
+    async function publishQuestion() {
+      if (currentMode !== 'new' || !currentTeacher.permissions.includes('create')) return;
+      
+      const questionText = document.getElementById('questionInput').value.trim();
+      if (!questionText) return;
+
+      const publishBtn = document.getElementById('publishBtn');
+      const qrBtn = document.getElementById('qrBtn');
+      
+      publishBtn.innerHTML = '⏳';
+      publishBtn.disabled = true;
+
+      try {
+        const questionData = {
+          text: questionText,
+          question_type: 'open-ended',
+          is_published: true,
+          published_at: new Date().toISOString(),
+          created_by: currentTeacher.code,
+          metadata: {
+            createdBy: currentTeacher.code,
+            teacherName: currentTeacher.name,
+            subject: currentTeacher.subject,
+            source: 'secure_teacher_interface'
+          }
+        };
+
+        if (isConnected) {
+          // Unpublish other questions first
+          await supabase
+            .from('questions')
+            .update({ is_published: false })
+            .eq('is_published', true);
+
+          const { data, error } = await supabase
+            .from('questions')
+            .insert([questionData])
+            .select();
+
+          if (error) throw error;
+          currentQuestion = data[0];
+        } else {
+          currentQuestion = {
+            id: Date.now(),
+            ...questionData
+          };
+        }
+
+        // Save to teacher's local storage
+        const localKey = getTeacherStorageKey('questions');
+        const existingQuestions = JSON.parse(localStorage.getItem(localKey) || '[]');
+        existingQuestions.unshift(currentQuestion);
+        localStorage.setItem(localKey, JSON.stringify(existingQuestions));
+
+        // Also save as current question for global access
+        localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+
+        console.log('✅ New question published by', currentTeacher.code);
+        
+        isPublished = true;
+        publishBtn.innerHTML = '✓ Published';
+        qrBtn.classList.add('show');
+        
+        showSuccessNotification('Question Published!', 'Students can now access your new question.');
+        
+        await loadTeacherQuestions();
+
+      } catch (error) {
+        console.error('❌ Error publishing question:', error);
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = false;
+      }
+    }
+
+    async function republishQuestion() {
+      if (currentMode !== 'republish' || !selectedQuestion || !currentTeacher.permissions.includes('republish')) return;
+
+      const republishBtn = document.getElementById('republishBtn');
+      const qrBtn = document.getElementById('qrBtn');
+      
+      republishBtn.innerHTML = '⏳';
+      republishBtn.disabled = true;
+
+      try {
+        if (isConnected) {
+          await supabase
+            .from('questions')
+            .update({ is_published: false })
+            .eq('is_published', true);
+
+          const { data, error } = await supabase
+            .from('questions')
+            .update({ 
+              is_published: true,
+              published_at: new Date().toISOString()
+            })
+            .eq('id', selectedQuestion.id)
+            .select();
+
+          if (error) throw error;
+          currentQuestion = data[0];
+        } else {
+          currentQuestion = {
+            ...selectedQuestion,
+            is_published: true,
+            published_at: new Date().toISOString()
+          };
+        }
+
+        // Update global current question
+        localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+
+        console.log('✅ Question republished by', currentTeacher.code);
+        
+        isPublished = true;
+        republishBtn.innerHTML = '✓ Republished';
+        qrBtn.classList.add('show');
+        
+        const shortText = selectedQuestion.text?.substring(0, 40) + '...' || 'Question';
+        showSuccessNotification('Question Republished!', `"${shortText}" is now available to students again.`);
+
+      } catch (error) {
+        console.error('❌ Error republishing question:', error);
+        republishBtn.innerHTML = 'Republish';
+        republishBtn.disabled = false;
+      }
+    }
+
+    function showSuccessNotification(title, message) {
+      const notification = document.getElementById('successNotification');
+      const titleEl = document.getElementById('successMessage');
+      const messageEl = document.getElementById('successSubMessage');
+      
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    function nextQuestion() {
+      if (confirm('Start fresh? This will clear the current session.')) {
+        document.getElementById('questionInput').value = '';
+        document.getElementById('questionSelector').value = '';
+        
+        const publishBtn = document.getElementById('publishBtn');
+        const republishBtn = document.getElementById('republishBtn');
+        const qrBtn = document.getElementById('qrBtn');
+        const actionButtons = document.getElementById('actionButtons');
+        
+        publishBtn.innerHTML = 'Publish';
+        republishBtn.innerHTML = 'Republish';
+        publishBtn.disabled = true;
+        republishBtn.disabled = true;
+        qrBtn.classList.remove('show');
+        actionButtons.classList.remove('show');
+        
+        isPublished = false;
+        currentQuestion = null;
+        selectedQuestion = null;
+        
+        switchMode('new');
+        document.getElementById('questionInput').focus();
+      }
+    }
+
+    function openTeacherAnalytics() {
+      if (!currentTeacher.permissions.includes('analytics')) {
+        alert('You do not have permission to access analytics.');
+        return;
+      }
+      
+      // Store teacher context for analytics page
+      localStorage.setItem('analytics_teacher', JSON.stringify({
+        code: currentTeacher.code,
+        name: currentTeacher.name,
+        timestamp: Date.now()
+      }));
+      
+      try {
+        window.open('../analytics/?teacher=' + currentTeacher.code, '_blank');
+      } catch (error) {
+        window.location.href = '../analytics/?teacher=' + currentTeacher.code;
+      }
+    }
+
+    function generateQR() {
+      if (!currentQuestion) return;
+      
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
+      
+      modal.style.display = 'flex';
+      display.innerHTML = '<div>Generating QR Code...</div>';
+      
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop();
+      pathParts.pop();
+      pathParts.pop();
+      pathParts.push('students', 'answers', '');
+      const studentURL = baseURL + pathParts.join('/');
+      
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      const img = new Image();
+      img.onload = () => {
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code for Students">`;
+      };
+      
+      img.onerror = () => {
+        display.innerHTML = `
+          <div style="color: #ef4444; padding: 20px;">
+            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
+            <div style="font-size: 16px;"><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 14px; margin-top: 8px;">Check your internet connection</div>
+          </div>
+        `;
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').style.display = 'none';
+    }
+
+    async function initializeTeacherInterface() {
+      await initSupabase();
+      await loadTeacherQuestions();
+      
+      const questionInput = document.getElementById('questionInput');
+      questionInput.addEventListener('input', handleQuestionInput);
+      
+      document.getElementById('newModeBtn').addEventListener('click', () => switchMode('new'));
+      document.getElementById('republishModeBtn').addEventListener('click', () => switchMode('republish'));
+      
+      document.getElementById('questionSelector').addEventListener('change', handleQuestionSelection);
+      
+      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
+      document.getElementById('republishBtn').addEventListener('click', republishQuestion);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
+      document.getElementById('analyticsBtn').addEventListener('click', openTeacherAnalytics);
+      
+      switchMode('new');
+      questionInput.focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 INTUITY Secure Teacher Interface initializing...');
+      
+      // Check if already authenticated
+      if (checkAuthentication()) {
+        return; // Already authenticated and interface shown
+      }
+      
+      // Authentication form handler
+      document.getElementById('authForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const code = document.getElementById('teacherCode').value.trim().toUpperCase();
+        const password = document.getElementById('teacherPassword').value.trim();
+        
+        if (!code || !password) {
+          showAuthError('Please enter both teacher code and password.');
+          return;
+        }
+        
+        const authButton = document.getElementById('authButton');
+        authButton.disabled = true;
+        authButton.textContent = 'Authenticating...';
+        
+        setTimeout(() => {
+          if (authenticateTeacher(code, password)) {
+            showMainInterface();
+          } else {
+            showAuthError();
+          }
+          
+          authButton.disabled = false;
+          authButton.textContent = 'Authenticate';
+        }, 1000); // Simulate network delay
+      });
+      
+      // Logout handler
+      document.getElementById('logoutButton').addEventListener('click', logout);
+      
+      // Teacher code input formatting
+      document.getElementById('teacherCode').addEventListener('input', (e) => {
+        const code = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        e.target.value = code;
+        
+        // Show teacher info if code matches
+        const teacher = TEACHER_DATABASE[code];
+        const teacherInfo = document.getElementById('teacherInfo');
+        const teacherNameDisplay = document.getElementById('teacherNameDisplay');
+        const teacherPermissions = document.getElementById('teacherPermissions');
+        
+        if (teacher) {
+          teacherNameDisplay.textContent = teacher.name;
+          teacherPermissions.textContent = `Subject: ${teacher.subject} • Permissions: ${teacher.permissions.join(', ')}`;
+          teacherInfo.classList.add('show');
+        } else {
+          teacherInfo.classList.remove('show');
+        }
+      });
+      
+      // QR Modal handlers
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQRModal();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          if (currentMode === 'new' && !document.getElementById('publishBtn').disabled) {
+            publishQuestion();
+          } else if (currentMode === 'republish' && !document.getElementById('republishBtn').disabled) {
+            republishQuestion();
+          }
+        }
+        if (e.key === 'Escape') {
+          closeQRModal();
+        }
+      });
+
+      console.log('✅ Secure Teacher Interface ready!');
+    });
+  </script>
+</body>
+</html>
