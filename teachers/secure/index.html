@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Secure Teacher Access</title>
+  <title>INTUITY - Teacher Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -193,6 +193,34 @@
       line-height: 1.4;
     }
 
+    .auth-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 4px;
+      margin-bottom: 30px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .auth-tab.active {
+      background: rgba(255, 140, 60, 0.8);
+      color: #000;
+    }
+
     .auth-form {
       display: flex;
       flex-direction: column;
@@ -236,17 +264,10 @@
       color: rgba(255, 255, 255, 0.4);
     }
 
-    .teacher-code-input {
-      text-align: center;
-      font-weight: 600;
+    .auth-input.short {
       text-transform: uppercase;
-      letter-spacing: 3px;
-      font-size: 18px;
-    }
-
-    .password-input {
-      font-family: monospace;
       letter-spacing: 2px;
+      font-weight: 600;
     }
 
     .auth-button {
@@ -294,36 +315,71 @@
       animation: shake 0.5s ease-in-out;
     }
 
+    .auth-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 10px;
+      padding: 12px;
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .auth-success.show {
+      display: block;
+    }
+
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-5px); }
       75% { transform: translateX(5px); }
     }
 
-    .teacher-info {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+    .migration-notice {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
       border-radius: 10px;
       padding: 15px;
       margin-bottom: 20px;
       display: none;
     }
 
-    .teacher-info.show {
+    .migration-notice.show {
       display: block;
     }
 
-    .teacher-name {
-      color: rgba(16, 185, 129, 0.9);
-      font-size: 18px;
+    .migration-title {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
-    .teacher-permissions {
-      color: rgba(255, 255, 255, 0.7);
+    .migration-text {
+      color: rgba(255, 255, 255, 0.8);
       font-size: 14px;
       line-height: 1.4;
+      margin-bottom: 15px;
+    }
+
+    .migration-button {
+      background: rgba(16, 185, 129, 0.8);
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      color: #000;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .migration-button:hover {
+      background: rgba(16, 185, 129, 1);
+      transform: translateY(-1px);
     }
 
     .logout-button {
@@ -361,7 +417,7 @@
       z-index: 10;
       height: 100vh;
       height: 100dvh;
-      display: none; /* Hidden until authenticated */
+      display: none;
       flex-direction: column;
       padding: 40px 20px 0;
       min-height: 0;
@@ -976,45 +1032,118 @@
   <div class="auth-screen" id="authScreen">
     <div class="auth-container">
       <div class="auth-title">INTUITY</div>
-      <div class="auth-subtitle">Secure Teacher Access<br>Enter your credentials to continue</div>
+      <div class="auth-subtitle">Teacher Portal<br>Login or create your account</div>
+      
+      <!-- Login/Signup Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab">Login</button>
+        <button class="auth-tab" id="signupTab">Sign Up</button>
+      </div>
       
       <div class="auth-error" id="authError">
-        <strong>Access Denied:</strong> Invalid teacher code or password.
+        <strong>Error:</strong> <span id="errorMessage">Something went wrong.</span>
       </div>
       
-      <div class="teacher-info" id="teacherInfo">
-        <div class="teacher-name" id="teacherNameDisplay"></div>
-        <div class="teacher-permissions" id="teacherPermissions"></div>
+      <div class="auth-success" id="authSuccess">
+        <strong>Success:</strong> <span id="successMessage">Account created successfully!</span>
+      </div>
+
+      <!-- Data Migration Notice -->
+      <div class="migration-notice" id="migrationNotice">
+        <div class="migration-title">🔄 Existing Data Found!</div>
+        <div class="migration-text">
+          We found questions and responses from your previous INTUITY usage. 
+          Would you like to import them to your new secure account?
+        </div>
+        <button class="migration-button" id="migrateBtn">Import My Data</button>
       </div>
       
-      <form class="auth-form" id="authForm">
+      <!-- Login Form -->
+      <form class="auth-form" id="loginForm">
         <div class="auth-input-group">
-          <label class="auth-label" for="teacherCode">Teacher Code</label>
+          <label class="auth-label" for="loginCode">Teacher Code</label>
           <input 
             type="text" 
-            id="teacherCode" 
-            class="auth-input teacher-code-input" 
-            placeholder="Enter Code" 
-            maxlength="8"
-            autocomplete="off"
+            id="loginCode" 
+            class="auth-input short" 
+            placeholder="Your unique code" 
+            maxlength="12"
+            autocomplete="username"
             required
           />
         </div>
         
         <div class="auth-input-group">
-          <label class="auth-label" for="teacherPassword">Password</label>
+          <label class="auth-label" for="loginPassword">Password</label>
           <input 
             type="password" 
-            id="teacherPassword" 
-            class="auth-input password-input" 
-            placeholder="Enter Password" 
+            id="loginPassword" 
+            class="auth-input" 
+            placeholder="Enter your password" 
             autocomplete="current-password"
             required
           />
         </div>
         
-        <button type="submit" class="auth-button" id="authButton">
-          Authenticate
+        <button type="submit" class="auth-button" id="loginButton">
+          Login
+        </button>
+      </form>
+      
+      <!-- Signup Form -->
+      <form class="auth-form" id="signupForm" style="display: none;">
+        <div class="auth-input-group">
+          <label class="auth-label" for="signupName">Your Name</label>
+          <input 
+            type="text" 
+            id="signupName" 
+            class="auth-input" 
+            placeholder="e.g., Dr. Sarah Johnson" 
+            maxlength="50"
+            required
+          />
+        </div>
+        
+        <div class="auth-input-group">
+          <label class="auth-label" for="signupSubject">Subject</label>
+          <input 
+            type="text" 
+            id="signupSubject" 
+            class="auth-input" 
+            placeholder="e.g., Mathematics, English" 
+            maxlength="30"
+            required
+          />
+        </div>
+        
+        <div class="auth-input-group">
+          <label class="auth-label" for="signupCode">Teacher Code</label>
+          <input 
+            type="text" 
+            id="signupCode" 
+            class="auth-input short" 
+            placeholder="Create unique code" 
+            maxlength="12"
+            autocomplete="username"
+            required
+          />
+        </div>
+        
+        <div class="auth-input-group">
+          <label class="auth-label" for="signupPassword">Password</label>
+          <input 
+            type="password" 
+            id="signupPassword" 
+            class="auth-input" 
+            placeholder="Create secure password" 
+            autocomplete="new-password"
+            minlength="6"
+            required
+          />
+        </div>
+        
+        <button type="submit" class="auth-button" id="signupButton">
+          Create Account
         </button>
       </form>
     </div>
@@ -1104,40 +1233,6 @@
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Teacher Database (in real implementation, this would be server-side)
-    const TEACHER_DATABASE = {
-      'MATHS101': {
-        name: 'Dr. Sarah Johnson',
-        password: 'calc2024',
-        subject: 'Mathematics',
-        permissions: ['create', 'republish', 'analytics', 'delete']
-      },
-      'ENG202': {
-        name: 'Prof. Michael Chen',
-        password: 'lang2024',
-        subject: 'English Language',
-        permissions: ['create', 'republish', 'analytics']
-      },
-      'SCI303': {
-        name: 'Dr. Maria Rodriguez',
-        password: 'lab2024',
-        subject: 'Science',
-        permissions: ['create', 'republish', 'analytics', 'delete']
-      },
-      'HIST404': {
-        name: 'Prof. James Wilson',
-        password: 'time2024',
-        subject: 'History',
-        permissions: ['create', 'analytics']
-      },
-      'ART505': {
-        name: 'Ms. Emily Davis',
-        password: 'paint2024',
-        subject: 'Art & Design',
-        permissions: ['create', 'republish', 'analytics']
-      }
-    };
-
     let supabase;
     let currentTeacher = null;
     let currentQuestion = null;
@@ -1146,6 +1241,7 @@
     let isPublished = false;
     let currentMode = 'new';
     let selectedQuestion = null;
+    let currentTab = 'login';
 
     // Authentication Functions
     function checkAuthentication() {
@@ -1153,12 +1249,16 @@
       if (stored) {
         try {
           const teacherData = JSON.parse(stored);
-          const teacher = TEACHER_DATABASE[teacherData.code];
           
-          if (teacher && teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) { // 8 hour session
-            currentTeacher = { ...teacher, code: teacherData.code };
-            showMainInterface();
-            return true;
+          if (teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) { // 8 hour session
+            const teachers = getTeachers();
+            const teacher = teachers[teacherData.code];
+            
+            if (teacher) {
+              currentTeacher = { ...teacher, code: teacherData.code };
+              showMainInterface();
+              return true;
+            }
           } else {
             localStorage.removeItem('authenticated_teacher');
           }
@@ -1169,8 +1269,29 @@
       return false;
     }
 
+    function getTeachers() {
+      try {
+        return JSON.parse(localStorage.getItem('intuity_teachers') || '{}');
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveTeacher(code, teacherData) {
+      try {
+        const teachers = getTeachers();
+        teachers[code.toUpperCase()] = teacherData;
+        localStorage.setItem('intuity_teachers', JSON.stringify(teachers));
+        return true;
+      } catch (error) {
+        console.error('Error saving teacher:', error);
+        return false;
+      }
+    }
+
     function authenticateTeacher(code, password) {
-      const teacher = TEACHER_DATABASE[code.toUpperCase()];
+      const teachers = getTeachers();
+      const teacher = teachers[code.toUpperCase()];
       
       if (teacher && teacher.password === password) {
         currentTeacher = { ...teacher, code: code.toUpperCase() };
@@ -1186,6 +1307,34 @@
       return false;
     }
 
+    function createTeacher(name, subject, code, password) {
+      const teachers = getTeachers();
+      
+      // Check if code already exists
+      if (teachers[code.toUpperCase()]) {
+        return { success: false, error: 'Teacher code already exists. Please choose a different code.' };
+      }
+      
+      // Validate code format
+      if (!/^[A-Z0-9]{3,12}$/.test(code.toUpperCase())) {
+        return { success: false, error: 'Teacher code must be 3-12 characters, letters and numbers only.' };
+      }
+      
+      const teacherData = {
+        name: name.trim(),
+        subject: subject.trim(),
+        password: password.trim(),
+        permissions: ['create', 'republish', 'analytics', 'delete'],
+        created: new Date().toISOString()
+      };
+      
+      if (saveTeacher(code, teacherData)) {
+        return { success: true, teacher: { ...teacherData, code: code.toUpperCase() } };
+      } else {
+        return { success: false, error: 'Failed to create account. Please try again.' };
+      }
+    }
+
     function logout() {
       if (confirm('Are you sure you want to logout?')) {
         localStorage.removeItem('authenticated_teacher');
@@ -1194,10 +1343,10 @@
         document.getElementById('mainInterface').classList.remove('authenticated');
         document.getElementById('logoutButton').classList.remove('show');
         
-        // Clear form
-        document.getElementById('authForm').reset();
-        document.getElementById('authError').classList.remove('show');
-        document.getElementById('teacherInfo').classList.remove('show');
+        // Clear forms
+        document.getElementById('loginForm').reset();
+        document.getElementById('signupForm').reset();
+        hideMessage();
       }
     }
 
@@ -1214,14 +1363,192 @@
       initializeTeacherInterface();
     }
 
-    function showAuthError(message = 'Invalid teacher code or password.') {
+    function showError(message) {
       const errorElement = document.getElementById('authError');
-      errorElement.querySelector('strong').nextSibling.textContent = ` ${message}`;
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message;
       errorElement.classList.add('show');
       
       setTimeout(() => {
         errorElement.classList.remove('show');
       }, 5000);
+    }
+
+    function showSuccess(message) {
+      const successElement = document.getElementById('authSuccess');
+      const successMessage = document.getElementById('successMessage');
+      successMessage.textContent = message;
+      successElement.classList.add('show');
+      
+      setTimeout(() => {
+        successElement.classList.remove('show');
+      }, 3000);
+    }
+
+    function hideMessage() {
+      document.getElementById('authError').classList.remove('show');
+      document.getElementById('authSuccess').classList.remove('show');
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const loginTab = document.getElementById('loginTab');
+      const signupTab = document.getElementById('signupTab');
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        signupTab.classList.remove('active');
+        loginForm.style.display = 'flex';
+        signupForm.style.display = 'none';
+      } else {
+        loginTab.classList.remove('active');
+        signupTab.classList.add('active');
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'flex';
+      }
+      
+      hideMessage();
+    }
+
+    // Data Migration Functions
+    function checkForExistingData() {
+      const legacyKeys = [
+        'alm_questions', 'current_question', 'display_question',
+        'alm_student_responses', 'student_responses', 'display_responses'
+      ];
+      
+      let hasData = false;
+      for (const key of legacyKeys) {
+        const data = localStorage.getItem(key);
+        if (data && data !== '[]' && data !== '{}') {
+          try {
+            const parsed = JSON.parse(data);
+            if ((Array.isArray(parsed) && parsed.length > 0) || 
+                (typeof parsed === 'object' && Object.keys(parsed).length > 0)) {
+              hasData = true;
+              break;
+            }
+          } catch (e) {
+            // Invalid JSON, skip
+          }
+        }
+      }
+      
+      if (hasData) {
+        document.getElementById('migrationNotice').classList.add('show');
+      }
+    }
+
+    function migrateExistingData() {
+      if (!currentTeacher) {
+        showError('Please login first before migrating data.');
+        return;
+      }
+      
+      try {
+        const teacherCode = currentTeacher.code;
+        let migratedQuestions = 0;
+        let migratedResponses = 0;
+        
+        // Migrate questions
+        const questionSources = ['alm_questions', 'current_question', 'display_question'];
+        const allQuestions = [];
+        
+        questionSources.forEach(key => {
+          const data = localStorage.getItem(key);
+          if (data) {
+            try {
+              const parsed = JSON.parse(data);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(q => {
+                  if (q && (q.text || q.question_text) && !allQuestions.find(existing => existing.id === q.id)) {
+                    allQuestions.push({
+                      ...q,
+                      created_by: teacherCode,
+                      migrated: true,
+                      migrated_at: new Date().toISOString()
+                    });
+                  }
+                });
+              } else if (parsed && (parsed.text || parsed.question_text)) {
+                if (!allQuestions.find(existing => existing.id === parsed.id)) {
+                  allQuestions.push({
+                    ...parsed,
+                    created_by: teacherCode,
+                    migrated: true,
+                    migrated_at: new Date().toISOString()
+                  });
+                }
+              }
+            } catch (e) {
+              console.warn(`Could not parse ${key}:`, e);
+            }
+          }
+        });
+        
+        // Migrate responses
+        const responseSources = ['alm_student_responses', 'student_responses', 'display_responses'];
+        const allResponses = [];
+        
+        responseSources.forEach(key => {
+          const data = localStorage.getItem(key);
+          if (data) {
+            try {
+              const parsed = JSON.parse(data);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(r => {
+                  if (r && r.answer && (r.student_name || r.studentName)) {
+                    const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
+                    if (!allResponses.find(existing => {
+                      const existingKey = `${existing.student_name || existing.studentName}-${existing.answer.substring(0,50)}-${existing.submitted_at || existing.submittedAt || existing.timestamp}`;
+                      return existingKey === uniqueKey;
+                    })) {
+                      allResponses.push({
+                        ...r,
+                        migrated: true,
+                        migrated_at: new Date().toISOString()
+                      });
+                    }
+                  }
+                });
+              }
+            } catch (e) {
+              console.warn(`Could not parse ${key}:`, e);
+            }
+          }
+        });
+        
+        // Save migrated data to teacher-specific keys
+        if (allQuestions.length > 0) {
+          const teacherKey = `${teacherCode}_questions`;
+          localStorage.setItem(teacherKey, JSON.stringify(allQuestions));
+          migratedQuestions = allQuestions.length;
+        }
+        
+        if (allResponses.length > 0) {
+          const teacherKey = `${teacherCode}_responses`;
+          localStorage.setItem(teacherKey, JSON.stringify(allResponses));
+          migratedResponses = allResponses.length;
+        }
+        
+        // Hide migration notice
+        document.getElementById('migrationNotice').classList.remove('show');
+        
+        showSuccess(`Successfully imported ${migratedQuestions} questions and ${migratedResponses} responses!`);
+        
+        // Refresh the interface to show migrated data
+        setTimeout(() => {
+          if (document.getElementById('mainInterface').classList.contains('authenticated')) {
+            loadTeacherQuestions();
+          }
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Migration error:', error);
+        showError('Failed to migrate data. Please try again.');
+      }
     }
 
     function getTeacherStorageKey(key) {
@@ -1304,7 +1631,9 @@
         const date = new Date(question.created_at || question.published_at || 0);
         const dateStr = date.toLocaleDateString();
         
-        option.textContent = `${shortText} (${dateStr})`;
+        const migrated = question.migrated ? ' [Imported]' : '';
+        option.textContent = `${shortText} (${dateStr})${migrated}`;
+        
         selector.appendChild(option);
       });
 
@@ -1340,11 +1669,6 @@
         }
         
       } else if (mode === 'republish') {
-        if (!currentTeacher.permissions.includes('republish')) {
-          showAuthError('You do not have permission to republish questions.');
-          return;
-        }
-        
         newModeBtn.classList.remove('active');
         republishModeBtn.classList.add('active');
         questionSelector.disabled = false;
@@ -1399,7 +1723,7 @@
       const text = questionInput.value.trim();
       
       if (currentMode === 'new') {
-        if (text.length > 0 && !isPublished && currentTeacher.permissions.includes('create')) {
+        if (text.length > 0 && !isPublished) {
           publishBtn.disabled = false;
           actionButtons.classList.add('show');
         } else if (!isPublished) {
@@ -1409,7 +1733,7 @@
           }
         }
       } else if (currentMode === 'republish') {
-        if (selectedQuestion && !isPublished && currentTeacher.permissions.includes('republish')) {
+        if (selectedQuestion && !isPublished) {
           republishBtn.disabled = false;
           actionButtons.classList.add('show');
         } else if (!isPublished) {
@@ -1422,7 +1746,7 @@
     }
 
     async function publishQuestion() {
-      if (currentMode !== 'new' || !currentTeacher.permissions.includes('create')) return;
+      if (currentMode !== 'new') return;
       
       const questionText = document.getElementById('questionInput').value.trim();
       if (!questionText) return;
@@ -1496,7 +1820,7 @@
     }
 
     async function republishQuestion() {
-      if (currentMode !== 'republish' || !selectedQuestion || !currentTeacher.permissions.includes('republish')) return;
+      if (currentMode !== 'republish' || !selectedQuestion) return;
 
       const republishBtn = document.getElementById('republishBtn');
       const qrBtn = document.getElementById('qrBtn');
@@ -1591,11 +1915,6 @@
     }
 
     function openTeacherAnalytics() {
-      if (!currentTeacher.permissions.includes('analytics')) {
-        alert('You do not have permission to access analytics.');
-        return;
-      }
-      
       // Store teacher context for analytics page
       localStorage.setItem('analytics_teacher', JSON.stringify({
         code: currentTeacher.code,
@@ -1604,9 +1923,9 @@
       }));
       
       try {
-        window.open('../visualisation/secure/?teacher=' + currentTeacher.code, '_blank');
+        window.open('../../visualisation/secure/?teacher=' + currentTeacher.code, '_blank');
       } catch (error) {
-        window.location.href = '../visualisation/secure/?teacher=' + currentTeacher.code;
+        window.location.href = '../../visualisation/secure/?teacher=' + currentTeacher.code;
       }
     }
 
@@ -1674,63 +1993,99 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Secure Teacher Interface initializing...');
+      console.log('🚀 INTUITY Real Secure Teacher Interface initializing...');
       
       // Check if already authenticated
       if (checkAuthentication()) {
         return; // Already authenticated and interface shown
       }
       
-      // Authentication form handler
-      document.getElementById('authForm').addEventListener('submit', (e) => {
+      // Check for existing data to offer migration
+      checkForExistingData();
+      
+      // Tab switching
+      document.getElementById('loginTab').addEventListener('click', () => switchTab('login'));
+      document.getElementById('signupTab').addEventListener('click', () => switchTab('signup'));
+      
+      // Login form handler
+      document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const code = document.getElementById('teacherCode').value.trim().toUpperCase();
-        const password = document.getElementById('teacherPassword').value.trim();
+        const code = document.getElementById('loginCode').value.trim().toUpperCase();
+        const password = document.getElementById('loginPassword').value.trim();
         
         if (!code || !password) {
-          showAuthError('Please enter both teacher code and password.');
+          showError('Please enter both teacher code and password.');
           return;
         }
         
-        const authButton = document.getElementById('authButton');
-        authButton.disabled = true;
-        authButton.textContent = 'Authenticating...';
+        const loginButton = document.getElementById('loginButton');
+        loginButton.disabled = true;
+        loginButton.textContent = 'Logging in...';
         
         setTimeout(() => {
           if (authenticateTeacher(code, password)) {
             showMainInterface();
           } else {
-            showAuthError();
+            showError('Invalid teacher code or password.');
           }
           
-          authButton.disabled = false;
-          authButton.textContent = 'Authenticate';
-        }, 1000); // Simulate network delay
+          loginButton.disabled = false;
+          loginButton.textContent = 'Login';
+        }, 800);
       });
+      
+      // Signup form handler
+      document.getElementById('signupForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('signupName').value.trim();
+        const subject = document.getElementById('signupSubject').value.trim();
+        const code = document.getElementById('signupCode').value.trim().toUpperCase();
+        const password = document.getElementById('signupPassword').value.trim();
+        
+        if (!name || !subject || !code || !password) {
+          showError('Please fill in all fields.');
+          return;
+        }
+        
+        if (password.length < 6) {
+          showError('Password must be at least 6 characters.');
+          return;
+        }
+        
+        const signupButton = document.getElementById('signupButton');
+        signupButton.disabled = true;
+        signupButton.textContent = 'Creating...';
+        
+        setTimeout(() => {
+          const result = createTeacher(name, subject, code, password);
+          
+          if (result.success) {
+            showSuccess('Account created successfully! You can now login.');
+            document.getElementById('signupForm').reset();
+            setTimeout(() => switchTab('login'), 2000);
+          } else {
+            showError(result.error);
+          }
+          
+          signupButton.disabled = false;
+          signupButton.textContent = 'Create Account';
+        }, 1000);
+      });
+      
+      // Code input formatting
+      ['loginCode', 'signupCode'].forEach(inputId => {
+        document.getElementById(inputId).addEventListener('input', (e) => {
+          e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+      });
+      
+      // Migration button
+      document.getElementById('migrateBtn').addEventListener('click', migrateExistingData);
       
       // Logout handler
       document.getElementById('logoutButton').addEventListener('click', logout);
-      
-      // Teacher code input formatting
-      document.getElementById('teacherCode').addEventListener('input', (e) => {
-        const code = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        e.target.value = code;
-        
-        // Show teacher info if code matches
-        const teacher = TEACHER_DATABASE[code];
-        const teacherInfo = document.getElementById('teacherInfo');
-        const teacherNameDisplay = document.getElementById('teacherNameDisplay');
-        const teacherPermissions = document.getElementById('teacherPermissions');
-        
-        if (teacher) {
-          teacherNameDisplay.textContent = teacher.name;
-          teacherPermissions.textContent = `Subject: ${teacher.subject} • Permissions: ${teacher.permissions.join(', ')}`;
-          teacherInfo.classList.add('show');
-        } else {
-          teacherInfo.classList.remove('show');
-        }
-      });
       
       // QR Modal handlers
       document.getElementById('qrModal').addEventListener('click', (e) => {
@@ -1752,7 +2107,7 @@
         }
       });
 
-      console.log('✅ Secure Teacher Interface ready!');
+      console.log('✅ Real Secure Teacher Interface ready!');
     });
   </script>
 </body>
