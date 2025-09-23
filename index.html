@@ -214,6 +214,7 @@
       gap: 12px;
       font-weight: 500;
       cursor: pointer;
+      position: relative;
     }
 
     .nav-option:hover {
@@ -227,9 +228,40 @@
       transform: translateY(0);
     }
 
+    .nav-option.secure {
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .nav-option.secure:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+    }
+
+    .nav-option.secure::after {
+      content: "🔒";
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
     .nav-icon {
       font-size: 18px;
       opacity: 0.8;
+    }
+
+    .secure-badge {
+      font-size: 11px;
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+      padding: 2px 6px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-left: 8px;
     }
 
     .footer {
@@ -259,6 +291,7 @@
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
       text-decoration: none;
+      position: relative;
     }
 
     .nav-button:hover {
@@ -269,6 +302,22 @@
 
     .nav-button:active {
       transform: scale(0.95);
+    }
+
+    .nav-button.secure::after {
+      content: "🔒";
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      font-size: 10px;
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @keyframes float {
@@ -327,6 +376,11 @@
       .nav-icon {
         font-size: 16px;
       }
+
+      .secure-badge {
+        font-size: 10px;
+        padding: 1px 4px;
+      }
     }
   </style>
 </head>
@@ -353,14 +407,16 @@
         <div class="navigation-box">
           <div class="content-area">
             
-            <a href="teachers/questions/" class="nav-option">
+            <a href="teachers/secure/" class="nav-option secure">
               <span class="nav-icon">✏️</span>
-              <span>Create Questions</span>
+              <span>Teacher Portal</span>
+              <span class="secure-badge">Secure</span>
             </a>
             
-            <a href="visualisation/" class="nav-option">
+            <a href="analytics/" class="nav-option secure">
               <span class="nav-icon">📊</span>
-              <span>Analytics</span>
+              <span>Analytics Dashboard</span>
+              <span class="secure-badge">Secure</span>
             </a>
             
           </div>
@@ -369,8 +425,8 @@
     </main>
 
     <footer class="footer">
-      <a href="teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
-      <a href="visualisation/" class="nav-button" title="Analytics">📊</a>
+      <a href="teachers/secure/" class="nav-button secure" title="Secure Teacher Portal">✏️</a>
+      <a href="analytics/" class="nav-button secure" title="Secure Analytics">📊</a>
     </footer>
   </div>
 
@@ -389,7 +445,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Landing Page Loading...');
+      console.log('🚀 INTUITY Secure Landing Page Loading...');
       
       enhanceNavOptions();
       
@@ -403,7 +459,7 @@
         navContainer.style.transform = 'translateY(0)';
       }, 500);
       
-      console.log('✅ INTUITY Landing Page Ready!');
+      console.log('✅ INTUITY Secure Landing Page Ready!');
     });
   </script>
 </body>
