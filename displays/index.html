@@ -153,8 +153,9 @@
       letter-spacing: 0.5px;
     }
 
+    /* CLASSROOM OPTIMIZED - 30% wider for better presentation visibility */
     .question-display {
-      width: 50%;
+      width: 65%; /* INCREASED from 50% to 65% (30% increase) */
       height: 2.5cm;
       background: #000000;
       border-radius: 20px;
@@ -190,9 +191,9 @@
       font-weight: 500;
     }
 
-    /* RESPONSE CONTAINER - UNCHANGED */
+    /* CLASSROOM OPTIMIZED - 30% wider response container */
     .response-container {
-      width: 50%;
+      width: 65%; /* INCREASED from 50% to 65% (30% increase) */
       height: 6cm;
       position: relative;
       margin: 0 auto 50px auto;
@@ -691,7 +692,7 @@
       display: block;
     }
 
-    /* Mobile Responsive */
+    /* Mobile Responsive - Keep mobile width at 100% for usability */
     @media (max-width: 768px) {
       .container {
         padding: 30px 15px 15px;
@@ -706,7 +707,7 @@
       }
       
       .question-display {
-        width: 100%;
+        width: 100%; /* Full width on mobile for better readability */
         height: 2cm;
         margin-bottom: 30px;
         padding: 12px;
@@ -717,7 +718,7 @@
       }
       
       .response-container {
-        width: 100%;
+        width: 100%; /* Full width on mobile for better usability */
         height: 5cm;
         margin-bottom: 30px;
       }
@@ -758,6 +759,81 @@
 
       .neu-response-text {
         font-size: 12px;
+      }
+    }
+
+    /* CLASSROOM PRESENTATION OPTIMIZATIONS for large screens */
+    @media (min-width: 1024px) {
+      .container {
+        padding: 60px 40px 30px;
+        max-width: 1600px;
+        margin: 0 auto;
+      }
+      
+      .header h1 {
+        font-size: 42px;
+        margin-bottom: 15px;
+      }
+      
+      .header p {
+        font-size: 18px;
+      }
+      
+      .question-display {
+        width: 75%; /* Even wider on large screens for maximum classroom impact */
+        height: 3.5cm; /* Taller for better visibility */
+        padding: 25px;
+        margin-bottom: 60px;
+      }
+      
+      .question-text {
+        font-size: 22px;
+      }
+      
+      .total-count {
+        font-size: 16px;
+      }
+      
+      .response-container {
+        width: 75%; /* Matching wider width for large displays */
+        height: 8cm; /* Taller for better classroom viewing */
+        margin-bottom: 60px;
+      }
+      
+      .card-front, .card-back {
+        padding: 35px;
+      }
+      
+      .front-photo {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .front-name {
+        font-size: 28px;
+      }
+      
+      .front-preview {
+        font-size: 16px;
+      }
+      
+      .neu-photo, .neu-photo-placeholder {
+        width: 110px;
+        height: 110px;
+      }
+      
+      .neu-name {
+        font-size: 24px;
+      }
+      
+      .neu-response {
+        padding: 25px;
+        max-height: 180px;
+      }
+      
+      .neu-response-text {
+        font-size: 20px;
+        line-height: 1.7;
       }
     }
   </style>
