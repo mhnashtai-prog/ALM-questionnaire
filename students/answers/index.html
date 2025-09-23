@@ -170,17 +170,17 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 60px 20px 20px;
+      padding: 40px 20px 20px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .header h1 {
-      font-size: 38px; /* Increased from 32px */
+      font-size: 38px;
       font-weight: 800;
       color: #fff;
       margin-bottom: 8px;
@@ -189,48 +189,48 @@
     }
 
     .header p {
-      font-size: 16px; /* Increased from 14px */
+      font-size: 16px;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
       letter-spacing: 0.5px;
     }
 
-    /* FIXED: Question overlay - now highly visible with proper spacing */
+    /* FIXED: Question overlay with better mobile positioning */
     .question-overlay {
       position: absolute;
-      top: 27%; /* FIXED: Moved down 50% lower from previous 18% position */
+      top: 20%;
       left: 50%;
       transform: translateX(-50%);
       max-width: 85%;
       text-align: center;
       z-index: 5;
-      opacity: 1.0; /* FIXED: Always fully visible */
-      font-size: 30px; /* Increased from 26px */
-      font-weight: 600; /* Increased from 400 */
+      opacity: 1.0;
+      font-size: 26px;
+      font-weight: 600;
       color: #ffffff;
-      line-height: 1.3; /* Reduced for mobile spacing */
+      line-height: 1.3;
       pointer-events: none;
       text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8),
                    0 0 40px rgba(0, 0, 0, 0.6);
-      background: rgba(0, 0, 0, 0.85); /* FIXED: Strong background */
-      padding: 25px 35px; /* Increased padding */
+      background: rgba(0, 0, 0, 0.85);
+      padding: 20px 25px;
       border-radius: 15px;
       backdrop-filter: blur(8px);
-      border: 2px solid rgba(255, 140, 60, 0.6); /* FIXED: Visible border */
+      border: 2px solid rgba(255, 140, 60, 0.6);
       transition: all 0.5s ease;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); /* Added shadow */
-      max-height: 25vh; /* Prevent overflow on small screens */
-      overflow: hidden; /* Handle long questions gracefully */
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      max-height: 22vh;
+      overflow: hidden;
     }
 
     .question-overlay.focused {
-      opacity: 0.95; /* FIXED: Still highly visible when focused */
-      transform: translateX(-50%) scale(0.98); /* Minimal scale change */
+      opacity: 0.95;
+      transform: translateX(-50%) scale(0.98);
     }
 
     .question-overlay.typing {
-      opacity: 0.9; /* FIXED: Still very visible when typing */
-      transform: translateX(-50%) scale(0.96); /* Minimal scale change */
+      opacity: 0.9;
+      transform: translateX(-50%) scale(0.96);
     }
 
     .main-content {
@@ -238,15 +238,18 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding-bottom: 40px; /* REDUCED: Pulled up to give more space to answer box */
-      min-height: 0; /* Allow flexible height */
+      min-height: 0;
+      /* FIXED: Ensure proper flex behavior */
+      overflow: hidden;
     }
 
+    /* FIXED: Better response container sizing */
     .response-container {
       width: 100%;
-      height: auto; /* Changed from fixed 5cm to auto */
-      min-height: 320px; /* INCREASED: Much larger minimum height for more writing space */
-      max-height: 55vh; /* INCREASED: Much more vertical space available */
+      height: auto;
+      /* FIXED: Use flexible height instead of fixed min-height */
+      min-height: 200px;
+      max-height: 40vh;
       position: relative;
       perspective: 1000px;
       overflow: visible;
@@ -274,15 +277,16 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 18px; /* REDUCED: Slightly less padding for more writing space */
+      padding: 18px;
     }
 
     .name-section {
       display: flex;
       align-items: center;
       gap: 15px;
-      margin-bottom: 15px; /* REDUCED: Less margin to give more space to answer area */
+      margin-bottom: 12px;
       position: relative;
+      flex-shrink: 0;
     }
 
     .name-input {
@@ -290,20 +294,20 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 20px; /* Increased from 16px */
+      font-size: 20px;
       font-family: inherit;
       outline: none;
-      padding: 10px 0; /* Increased padding */
-      border-bottom: 2px solid rgba(255, 255, 255, 0.3); /* Thicker border */
+      padding: 10px 0;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
       transition: all 0.3s ease;
     }
 
     .name-input:focus {
-      border-bottom-color: rgba(255, 140, 60, 0.8); /* Stronger color */
+      border-bottom-color: rgba(255, 140, 60, 0.8);
     }
 
     .name-input::placeholder {
-      color: rgba(255, 255, 255, 0.5); /* More visible placeholder */
+      color: rgba(255, 255, 255, 0.5);
       font-style: italic;
     }
 
@@ -316,7 +320,7 @@
       background: rgba(0, 0, 0, 0.95);
       border: 1px solid rgba(255, 140, 60, 0.4);
       border-radius: 12px;
-      max-height: 240px;
+      max-height: 160px;
       overflow-y: auto;
       z-index: 2000;
       opacity: 0;
@@ -336,7 +340,7 @@
     .suggestions-header {
       padding: 12px 15px 8px 15px;
       color: rgba(255, 140, 60, 0.8);
-      font-size: 14px; /* Increased from 12px */
+      font-size: 14px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -347,9 +351,9 @@
     }
 
     .name-suggestion {
-      padding: 14px 15px; /* Increased padding */
+      padding: 12px 15px;
       color: rgba(255, 255, 255, 0.8);
-      font-size: 16px; /* Increased from 14px */
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -376,8 +380,8 @@
     }
 
     .suggestion-photo {
-      width: 36px; /* Increased from 32px */
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 6px;
       object-fit: cover;
       border: 1px solid rgba(255, 140, 60, 0.3);
@@ -385,14 +389,14 @@
     }
 
     .suggestion-photo-placeholder {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 6px;
       background: rgba(255, 140, 60, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px; /* Increased from 14px */
+      font-size: 14px;
       color: rgba(255, 140, 60, 0.8);
       border: 1px solid rgba(255, 140, 60, 0.3);
       flex-shrink: 0;
@@ -414,32 +418,32 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px; /* Increased from 11px */
+      font-size: 12px;
       color: rgba(255, 255, 255, 0.5);
     }
 
     .suggestion-count {
-      font-size: 12px; /* Increased from 10px */
+      font-size: 11px;
       color: rgba(255, 140, 60, 0.7);
       background: rgba(255, 140, 60, 0.1);
-      padding: 3px 8px; /* Increased padding */
+      padding: 2px 6px;
       border-radius: 8px;
       border: 1px solid rgba(255, 140, 60, 0.2);
     }
 
     .suggestion-photo-indicator {
-      font-size: 12px; /* Increased from 10px */
+      font-size: 11px;
       color: rgba(16, 185, 129, 0.7);
       background: rgba(16, 185, 129, 0.1);
-      padding: 3px 8px; /* Increased padding */
+      padding: 2px 6px;
       border-radius: 8px;
       border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
     .new-student-option {
-      padding: 14px 15px; /* Increased padding */
+      padding: 12px 15px;
       color: rgba(255, 255, 255, 0.6);
-      font-size: 15px; /* Increased from 13px */
+      font-size: 14px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -456,7 +460,7 @@
     }
 
     .camera-icon {
-      width: 45px; /* Increased from 40px */
+      width: 45px;
       height: 45px;
       border-radius: 8px;
       background: rgba(255, 140, 60, 0.8);
@@ -465,7 +469,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 20px; /* Increased from 18px */
+      font-size: 20px;
       color: #000;
       flex-shrink: 0;
     }
@@ -488,7 +492,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      min-height: 100px; /* ADDED: Ensure the answer area has substantial space */
+      min-height: 80px;
     }
 
     .answer-input {
@@ -496,18 +500,18 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 20px; /* Increased from 16px */
+      font-size: 18px;
       font-family: inherit;
       outline: none;
       resize: none;
       line-height: 1.6;
       padding: 0;
-      min-height: 120px; /* ADDED: Ensure minimum writing space */
-      width: 100%; /* ADDED: Full width utilization */
+      min-height: 80px;
+      width: 100%;
     }
 
     .answer-input::placeholder {
-      color: rgba(255, 255, 255, 0.5); /* More visible placeholder */
+      color: rgba(255, 255, 255, 0.5);
       font-style: italic;
     }
 
@@ -536,13 +540,13 @@
     }
 
     .success-icon {
-      font-size: 56px; /* Increased from 48px */
+      font-size: 48px;
       color: rgba(16, 185, 129, 0.9);
       margin-bottom: 20px;
     }
 
     .success-title {
-      font-size: 28px; /* Increased from 24px */
+      font-size: 24px;
       font-weight: 600;
       color: rgba(16, 185, 129, 0.9);
       margin-bottom: 15px;
@@ -550,7 +554,7 @@
 
     .success-text {
       color: rgba(255, 255, 255, 0.8);
-      font-size: 18px; /* Increased from 16px */
+      font-size: 16px;
     }
 
     .success-actions {
@@ -561,9 +565,9 @@
       background: rgba(255, 140, 60, 0.2);
       border: 1px solid rgba(255, 140, 60, 0.5);
       border-radius: 15px;
-      padding: 14px 28px; /* Increased padding */
+      padding: 12px 24px;
       color: rgba(255, 140, 60, 1);
-      font-size: 16px; /* Increased from 14px */
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -577,27 +581,31 @@
       transform: translateY(-2px);
     }
 
-    /* Submit Button - The Star */
+    /* FIXED: Submit Button - Always visible */
     .submit-section {
-      margin-top: 25px; /* REDUCED: Less gap, better use of space */
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       padding: 0 20px;
+      flex-shrink: 0;
+      /* FIXED: Ensure always at bottom of viewport */
+      position: relative;
+      z-index: 15;
     }
 
     .submit-btn {
       background: rgba(255, 140, 60, 0.9);
       border: none;
       border-radius: 20px;
-      padding: 20px 45px; /* Increased padding */
+      padding: 18px 40px;
       color: #000;
-      font-size: 20px; /* Increased from 18px */
+      font-size: 18px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 1px;
-      min-width: 180px; /* Increased from 160px */
+      min-width: 160px;
       position: relative;
       overflow: hidden;
     }
@@ -626,13 +634,13 @@
       transform: none;
     }
 
-    /* Clear button - subtle when needed */
+    /* Clear button */
     .clear-hint {
       position: fixed;
       top: 20px;
       right: 20px;
-      width: 40px; /* Increased from 35px */
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -640,7 +648,7 @@
       align-items: center;
       justify-content: center;
       color: rgba(255, 255, 255, 0.4);
-      font-size: 16px; /* Increased from 14px */
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
       opacity: 0;
@@ -690,7 +698,7 @@
 
     .photo-options-title {
       color: #fff;
-      font-size: 22px; /* Increased from 20px */
+      font-size: 20px;
       font-weight: 600;
       margin-bottom: 25px;
     }
@@ -705,9 +713,9 @@
       background: rgba(255, 140, 60, 0.1);
       border: 1px solid rgba(255, 140, 60, 0.3);
       border-radius: 15px;
-      padding: 16px 20px; /* Increased padding */
+      padding: 16px 20px;
       color: rgba(255, 140, 60, 0.9);
-      font-size: 18px; /* Increased from 16px */
+      font-size: 16px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -778,12 +786,12 @@
       background: rgba(255, 140, 60, 0.8);
       border: none;
       border-radius: 8px;
-      padding: 10px; /* Increased padding */
+      padding: 10px;
       color: #000;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
-      font-size: 14px; /* Added font size */
+      font-size: 14px;
     }
 
     .photo-modal-btn:hover {
@@ -827,13 +835,13 @@
       background: rgba(255, 140, 60, 0.8);
       border: none;
       border-radius: 25px;
-      padding: 16px 28px; /* Increased padding */
+      padding: 14px 24px;
       color: #000;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 16px; /* Increased from 14px */
-      min-width: 110px; /* Increased from 100px */
+      font-size: 14px;
+      min-width: 100px;
     }
 
     .camera-btn:hover {
@@ -853,14 +861,14 @@
     .camera-btn.flip {
       background: rgba(255, 255, 255, 0.08);
       color: rgba(255, 255, 255, 0.8);
-      padding: 12px; /* Increased padding */
+      padding: 12px;
       border-radius: 50%;
-      min-width: 50px; /* Increased from 45px */
-      height: 50px;
+      min-width: 45px;
+      height: 45px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px; /* Increased from 18px */
+      font-size: 18px;
     }
 
     .camera-btn.flip:hover {
@@ -868,164 +876,168 @@
       color: white;
     }
 
-    /* Custom scrollbar for suggestions */
+    /* Custom scrollbar */
     .name-suggestions::-webkit-scrollbar {
-      width: 6px; /* Increased from 4px */
+      width: 4px;
     }
 
     .name-suggestions::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 3px; /* Increased from 2px */
+      border-radius: 2px;
     }
 
     .name-suggestions::-webkit-scrollbar-thumb {
       background: rgba(255, 140, 60, 0.3);
-      border-radius: 3px; /* Increased from 2px */
+      border-radius: 2px;
     }
 
     .name-suggestions::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 140, 60, 0.5);
     }
 
-    /* Responsive Design - Better strategy with overlap prevention */
+    /* FIXED: Mobile Responsive Design with guaranteed submit button visibility */
     @media (max-width: 768px) {
       .container {
-        padding: 30px 15px 15px; /* Reduced top padding */
+        /* FIXED: Reduce top padding to save space */
+        padding: 25px 15px 15px;
       }
       
       .header {
-        margin-bottom: 20px; /* Reduced to save space */
+        /* FIXED: Reduce header space */
+        margin-bottom: 15px;
       }
       
       .header h1 {
-        font-size: 30px; /* Reduced from 34px to prevent overlap */
+        font-size: 28px;
+      }
+      
+      .header p {
+        font-size: 14px;
       }
       
       .question-overlay {
-        font-size: 20px; /* Reduced from 24px to fit better */
+        font-size: 20px;
         max-width: 90%;
-        padding: 15px 20px; /* Reduced padding for mobile */
-        top: 22%; /* FIXED: Moved down proportionally from 15% */
-        max-height: 20vh; /* Smaller max height on mobile */
-        line-height: 1.2; /* Tighter line spacing */
+        padding: 15px 20px;
+        /* FIXED: Move question higher up to save space */
+        top: 18%;
+        max-height: 18vh;
+        line-height: 1.2;
       }
       
-      .main-content {
-        padding-bottom: 30px; /* REDUCED: Pulled up for more answer space */
-      }
-      
+      /* FIXED: Much smaller response container on mobile */
       .response-container {
-        min-height: 280px; /* INCREASED: Much larger even on mobile */
-        max-height: 50vh; /* INCREASED: More space on mobile too */
+        min-height: 160px;
+        max-height: 32vh;
       }
       
       .content-area {
-        padding: 12px; /* Reduced padding */
+        padding: 12px;
       }
       
       .name-input {
-        font-size: 18px; /* Maintain readability */
+        font-size: 16px;
       }
       
       .answer-input {
-        font-size: 18px; /* Maintain readability */
+        font-size: 16px;
+        min-height: 60px;
       }
       
       .camera-icon {
-        width: 38px; /* Smaller to fit better */
+        width: 38px;
         height: 38px;
         font-size: 16px;
       }
 
       .submit-btn {
-        padding: 16px 30px; /* Smaller but still usable */
-        font-size: 18px; /* Maintain readability */
-        min-width: 150px;
+        padding: 16px 30px;
+        font-size: 16px;
+        min-width: 140px;
       }
 
+      /* FIXED: Minimal submit section margin */
       .submit-section {
-        margin-top: 15px; /* REDUCED: Less margin for more answer space */
-      }
-
-      .photo-options-content {
-        margin: 15px; /* Reduced margins */
-        padding: 20px; /* Smaller padding */
-        max-width: 320px; /* Ensure it fits on small screens */
+        margin-top: 15px;
       }
 
       .name-suggestions {
-        max-height: 180px; /* Smaller dropdown on mobile */
-        right: 50px; /* Adjust to account for smaller camera icon */
+        max-height: 120px;
+        right: 50px;
       }
 
       .suggestion-photo,
       .suggestion-photo-placeholder {
-        width: 28px; /* Smaller but still clear */
+        width: 28px;
         height: 28px;
       }
 
       .name-suggestion {
-        font-size: 15px; /* Maintain readability */
-        padding: 10px 12px; /* Reduced padding */
+        font-size: 14px;
+        padding: 10px 12px;
       }
       
-      /* Ensure no overflow on mobile */
-      .curved-overlay {
-        overflow: hidden;
+      .photo-options-content {
+        margin: 15px;
+        padding: 20px;
+        max-width: 300px;
       }
       
-      /* Adjust background curves for mobile */
+      /* Reduce background distraction */
       .curve1, .curve2, .curve3, .curve4, .curve5, .curve6 {
-        opacity: 0.3; /* Reduce distraction on small screens */
+        opacity: 0.2;
       }
     }
 
-    /* Extra small screens - prevent all overlapping */
+    /* FIXED: Extra small screens - aggressive space saving */
     @media (max-width: 480px) {
       .container {
-        padding: 20px 10px 10px; /* Minimal padding */
+        padding: 20px 10px 10px;
       }
       
       .header {
-        margin-bottom: 15px;
-      }
-      
-      .question-overlay {
-        font-size: 18px; /* Smaller but still readable */
-        padding: 12px 16px;
-        top: 18%; /* FIXED: Moved down proportionally from 12% */
-        max-height: 18vh; /* Very constrained on tiny screens */
+        margin-bottom: 10px;
       }
       
       .header h1 {
-        font-size: 26px; /* Smaller for tiny screens */
+        font-size: 24px;
+      }
+      
+      .question-overlay {
+        font-size: 18px;
+        padding: 12px 16px;
+        /* FIXED: Move even higher */
+        top: 16%;
+        max-height: 16vh;
       }
 
-      .main-content {
-        padding-bottom: 25px; /* REDUCED: Even less bottom padding */
-      }
-
+      /* FIXED: Even smaller response container */
       .response-container {
-        min-height: 240px; /* INCREASED: Still generous on small screens */
-        max-height: 45vh; /* INCREASED: More writing space */
+        min-height: 140px;
+        max-height: 28vh;
       }
 
       .name-input, .answer-input {
-        font-size: 16px; /* Slightly smaller but still readable */
+        font-size: 15px;
+      }
+
+      .answer-input {
+        min-height: 50px;
       }
 
       .submit-btn {
-        font-size: 16px;
+        font-size: 14px;
         padding: 14px 24px;
-        min-width: 130px;
+        min-width: 120px;
       }
 
+      /* FIXED: Minimal margins everywhere */
       .submit-section {
-        margin-top: 12px; /* REDUCED: Minimal margin for maximum answer space */
+        margin-top: 10px;
       }
       
       .name-suggestions {
-        max-height: 150px; /* Very compact dropdown */
+        max-height: 100px;
       }
       
       .photo-options-content {
@@ -1034,34 +1046,79 @@
         max-width: 280px;
       }
       
-      /* Hide some background elements to reduce clutter */
+      /* Hide some decorative elements */
       .curve4, .curve6 {
         display: none;
       }
     }
 
-    /* Very small screens - emergency fallbacks */
-    @media (max-width: 320px) {
+    /* FIXED: Ultra-small screens */
+    @media (max-width: 360px) {
       .question-overlay {
         font-size: 16px;
-        padding: 10px 12px;
-        top: 15%; /* FIXED: Moved down proportionally from 10% */
-        max-height: 15vh;
+        padding: 10px 14px;
+        top: 14%;
+        max-height: 14vh;
       }
       
       .header h1 {
         font-size: 22px;
       }
       
+      /* FIXED: Absolute minimum response container */
       .response-container {
-        min-height: 200px; /* INCREASED: Still usable writing space on tiny screens */
-        max-height: 40vh; /* INCREASED: Better than cramped */
+        min-height: 120px;
+        max-height: 25vh;
       }
       
       .submit-btn {
-        font-size: 14px;
+        font-size: 13px;
         padding: 12px 20px;
-        min-width: 110px;
+        min-width: 100px;
+      }
+      
+      .submit-section {
+        margin-top: 8px;
+      }
+    }
+
+    /* FIXED: Landscape orientation on small screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+      .container {
+        padding: 15px 10px 8px;
+      }
+      
+      .header {
+        margin-bottom: 8px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+      }
+      
+      .header p {
+        font-size: 12px;
+      }
+      
+      .question-overlay {
+        font-size: 14px;
+        padding: 8px 12px;
+        top: 12%;
+        max-height: 12vh;
+      }
+      
+      .response-container {
+        min-height: 100px;
+        max-height: 35vh;
+      }
+      
+      .submit-btn {
+        padding: 10px 18px;
+        font-size: 12px;
+      }
+      
+      .submit-section {
+        margin-top: 5px;
       }
     }
   </style>
@@ -1133,7 +1190,7 @@
     </div>
   </div>
 
-  <!-- Clear button - only visible when needed -->
+  <!-- Clear button -->
   <div class="clear-hint" id="clearBtn" title="Clear form">✕</div>
 
   <!-- Photo Options Modal -->
@@ -1190,7 +1247,7 @@
     let isSubmitted = false;
     let isConnected = false;
     let isOnline = navigator.onLine;
-    let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
+    let currentFacingMode = 'user';
 
     // Enhanced dropdown variables
     let currentSuggestionIndex = -1;
@@ -1462,10 +1519,9 @@
 
     // Enhanced name autocomplete functions
     function getAllStudentNames() {
-      const names = new Map(); // Use Map to avoid duplicates and store metadata
+      const names = new Map();
       
       try {
-        // Get names from photo database
         const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
         Object.values(studentPhotos).forEach(student => {
           const key = student.name.toLowerCase();
@@ -1478,7 +1534,6 @@
           });
         });
 
-        // Get names from responses and count them
         const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
         responses.forEach(response => {
           const studentName = response.studentName || response.student_name;
@@ -1500,22 +1555,18 @@
           }
         });
 
-        // Convert to array and sort by recent activity, then response count
         return Array.from(names.values()).sort((a, b) => {
           const aDate = new Date(a.lastSeen || 0);
           const bDate = new Date(b.lastSeen || 0);
           
-          // Primary sort: most recent activity
           if (aDate.getTime() !== bDate.getTime()) {
             return bDate.getTime() - aDate.getTime();
           }
           
-          // Secondary sort: more responses
           if (a.responses !== b.responses) {
             return b.responses - a.responses;
           }
           
-          // Tertiary sort: alphabetically
           return a.name.localeCompare(b.name);
         });
       } catch (error) {
@@ -1528,7 +1579,6 @@
       const suggestions = document.getElementById('nameSuggestions');
       const allNames = getAllStudentNames();
       
-      // Show dropdown with all students when focused, or filtered when typing
       let filtered = allNames;
       if (query && query.length >= 1) {
         filtered = allNames.filter(student => 
@@ -1536,11 +1586,9 @@
         );
       }
       
-      // Limit to 8 suggestions to keep dropdown manageable
-      filtered = filtered.slice(0, 8);
+      filtered = filtered.slice(0, 6); // Reduced for mobile
 
       if (filtered.length === 0 && (!query || query.length === 0)) {
-        // No students exist yet
         suggestions.innerHTML = `
           <div class="new-student-option">
             👋 Welcome! You're the first student - just type your name above
@@ -1552,7 +1600,6 @@
       }
 
       if (filtered.length === 0 && query && query.length > 0) {
-        // No matches but user is typing
         suggestions.innerHTML = `
           <div class="new-student-option">
             ✨ New student "${query}" - continue typing to add yourself
@@ -1563,10 +1610,8 @@
         return;
       }
 
-      // Build suggestions HTML
       let html = '';
       
-      // Add header if showing all students
       if (!query || query.length === 0) {
         html += `<div class="suggestions-header">Recent Students</div>`;
       }
@@ -1581,7 +1626,7 @@
           metaItems.push(`<span class="suggestion-count">${student.responses} response${student.responses > 1 ? 's' : ''}</span>`);
         }
         if (student.hasPhoto) {
-          metaItems.push(`<span class="suggestion-photo-indicator">📸 Photo</span>`);
+          metaItems.push(`<span class="suggestion-photo-indicator">📸</span>`);
         }
 
         return `
@@ -1595,7 +1640,6 @@
         `;
       }).join('');
 
-      // Add "new student" option if user is typing something not in the list
       if (query && query.length > 0 && !filtered.some(s => s.name.toLowerCase() === query.toLowerCase())) {
         html += `
           <div class="new-student-option">
@@ -1622,13 +1666,9 @@
       nameInput.value = studentName;
       hideNameSuggestions();
       
-      // Load photo if available
       loadStudentPhoto(studentName);
-      
-      // Update form state
       handleInput();
       
-      // Focus on answer field
       setTimeout(() => {
         document.getElementById('studentAnswer').focus();
       }, 100);
@@ -1638,10 +1678,8 @@
       const suggestions = document.querySelectorAll('.name-suggestion');
       if (suggestions.length === 0) return;
 
-      // Remove current highlight
       suggestions.forEach(s => s.classList.remove('highlighted'));
 
-      // Update index
       if (direction === 'down') {
         currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestions.length;
       } else if (direction === 'up') {
@@ -1650,12 +1688,9 @@
           : currentSuggestionIndex - 1;
       }
 
-      // Highlight new selection
       if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
         const highlighted = suggestions[currentSuggestionIndex];
         highlighted.classList.add('highlighted');
-        
-        // Scroll into view if necessary
         highlighted.scrollIntoView({ block: 'nearest' });
       }
     }
@@ -1703,11 +1738,10 @@
         const photoData = studentPhotos[studentName.toLowerCase().trim()];
         
         if (photoData && photoData.photo) {
-          // Convert data URL back to blob
           fetch(photoData.photo)
             .then(response => response.blob())
             .then(blob => {
-              setPhoto(blob, true); // Mark as auto-loaded
+              setPhoto(blob, true);
               showPhotoLoadedNotification(photoData.name);
             });
           return true;
@@ -1720,7 +1754,6 @@
     }
 
     function showPhotoLoadedNotification(studentName) {
-      // Create subtle notification
       const notification = document.createElement('div');
       notification.style.cssText = `
         position: fixed;
@@ -1729,9 +1762,9 @@
         background: rgba(16, 185, 129, 0.1);
         border: 1px solid rgba(16, 185, 129, 0.3);
         color: rgba(16, 185, 129, 0.9);
-        padding: 10px 15px;
-        border-radius: 10px;
-        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 11px;
         z-index: 1000;
         opacity: 0;
         transition: all 0.3s ease;
@@ -1740,14 +1773,11 @@
       
       document.body.appendChild(notification);
       
-      // Fade in
       setTimeout(() => notification.style.opacity = '1', 100);
-      
-      // Fade out and remove
       setTimeout(() => {
         notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 300);
-      }, 2000);
+      }, 1800);
     }
 
     function compressImage(file, maxWidth = 800, quality = 0.8) {
@@ -1787,7 +1817,6 @@
 
     async function startCamera() {
       try {
-        // Stop any existing stream
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
         }
@@ -1818,19 +1847,14 @@
     }
 
     async function flipCamera() {
-      // Toggle between front and rear camera
       currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-      
-      // Restart camera with new facing mode
       if (cameraStream) {
         await startCamera();
       }
-      
       console.log(`🔄 Camera flipped to ${currentFacingMode} mode`);
     }
 
     function showCameraError() {
-      // Fallback to file upload if camera fails
       const confirmResult = confirm('Camera not available. Choose photo from album instead?');
       if (confirmResult) {
         triggerFileUpload();
@@ -1883,7 +1907,6 @@
       
       if (isAutoLoaded) {
         trigger.title = 'Photo auto-loaded - click to view or change';
-        // Add subtle animation to indicate auto-load
         trigger.style.animation = 'buttonPulse 0.5s ease';
         setTimeout(() => trigger.style.animation = '', 500);
       } else {
@@ -1907,7 +1930,6 @@
       const nameInput = document.getElementById('studentName');
       const studentName = nameInput.value.trim();
       
-      // Remove from current session
       currentPhoto = null;
       
       const trigger = document.getElementById('cameraIcon');
@@ -1917,7 +1939,6 @@
       
       document.getElementById('photoModal').classList.remove('show');
       
-      // Also remove from saved photos if this student has one saved
       if (studentName) {
         try {
           const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
@@ -1934,7 +1955,7 @@
       console.log('🗑️ Photo removed');
     }
 
-    // Load question from URL parameters or Supabase
+    // Load question
     async function loadQuestion() {
       console.log('🔍 Loading question...');
       
@@ -2023,7 +2044,6 @@
       const name = nameInput.value.trim();
       const answer = answerInput.value.trim();
       
-      // Dynamic question overlay visibility
       if (name || answer) {
         questionOverlay.classList.add('typing');
         questionOverlay.classList.remove('focused');
@@ -2034,28 +2054,23 @@
         questionOverlay.classList.remove('focused', 'typing');
       }
       
-      // Show name suggestions when typing or when dropdown is open
       if (document.activeElement === nameInput && dropdownOpen) {
         showNameSuggestions(name);
       }
       
-      // Check for existing photo when name is entered
       if (name.length >= 2 && !currentPhoto) {
-        // Small delay to avoid excessive lookups while typing
         clearTimeout(window.photoLookupTimeout);
         window.photoLookupTimeout = setTimeout(() => {
           loadStudentPhoto(name);
         }, 500);
       }
       
-      // Enable/disable submit button
       if (name && answer) {
         submitBtn.disabled = false;
       } else {
         submitBtn.disabled = true;
       }
 
-      // Show/hide clear button
       if (name || answer || currentPhoto) {
         clearBtn.classList.add('visible');
       } else {
@@ -2097,7 +2112,6 @@
         return;
       }
 
-      // Show submitting state
       submitBtn.textContent = 'SUBMITTING...';
       submitBtn.classList.add('submitting');
       submitBtn.disabled = true;
@@ -2132,7 +2146,6 @@
 
         console.log('✅ Response submitted successfully');
 
-        // Save student photo for future use (with error handling)
         if (currentPhoto && studentName) {
           try {
             saveStudentPhoto(studentName, currentPhoto);
@@ -2141,26 +2154,19 @@
           }
         }
 
-        // FIXED: Reset button state BEFORE showing success
         resetSubmitButton();
-        
-        // Success - show success overlay
         showSuccess();
         isSubmitted = true;
         
       } catch (error) {
         console.error('❌ Error submitting response:', error);
-        
-        // Always reset button state on error, then decide what to do
         resetSubmitButton();
         
-        // If offline, treat as success (data saved locally)
         if (!isOnline) {
           console.log('📱 Offline submission - showing success');
           showSuccess();
           isSubmitted = true;
         } else {
-          // Online but failed - show error and allow retry
           alert('Failed to submit response. Please try again.');
         }
       }
@@ -2171,7 +2177,6 @@
       submitBtn.textContent = 'SUBMIT';
       submitBtn.classList.remove('submitting');
       
-      // Re-enable button based on current form state
       const nameInput = document.getElementById('studentName');
       const answerInput = document.getElementById('studentAnswer');
       const name = nameInput.value.trim();
@@ -2184,7 +2189,6 @@
       const successOverlay = document.getElementById('successOverlay');
       const photoSaveMessage = document.getElementById('photoSaveMessage');
       
-      // Update message based on whether there was a photo
       if (currentPhoto) {
         photoSaveMessage.textContent = 'Your photo has been saved for future responses';
         photoSaveMessage.style.display = 'block';
@@ -2198,25 +2202,22 @@
 
     function clearForm() {
       if (isSubmitted) {
-        // Reset for new response
         isSubmitted = false;
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
         document.getElementById('successOverlay').style.display = 'none';
         
-        // Clear current photo (will auto-reload when name is typed again)
         currentPhoto = null;
         const trigger = document.getElementById('cameraIcon');
         trigger.classList.remove('has-photo');
         trigger.textContent = '📸';
         trigger.title = 'Add photo';
         
-        // Reset submit button
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.textContent = 'SUBMIT';
         submitBtn.classList.remove('submitting');
         
-        handleInput(); // Update button states
+        handleInput();
         return;
       }
       
@@ -2224,7 +2225,6 @@
         document.getElementById('studentName').value = '';
         document.getElementById('studentAnswer').value = '';
         
-        // Clear current photo but don't delete from database
         currentPhoto = null;
         const trigger = document.getElementById('cameraIcon');
         trigger.classList.remove('has-photo');
@@ -2235,16 +2235,9 @@
       }
     }
 
-    // Add function to clear photo specifically
-    function clearPhotoOnly() {
-      if (confirm('Remove your photo? You can add it back anytime.')) {
-        removePhoto();
-      }
-    }
-
     // Initialize the application
     document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Enhanced Student Interface initializing...');
+      console.log('🚀 INTUITY Fixed Mobile Interface initializing...');
       
       if (initSupabase()) {
         setTimeout(loadQuestion, 1000);
@@ -2259,15 +2252,13 @@
       
       nameInput.addEventListener('input', handleInput);
       
-      // Enhanced focus handling for dropdown
       nameInput.addEventListener('focus', () => {
-        handleInput(); // Update overlay state
-        showNameSuggestions(nameInput.value.trim()); // Show dropdown immediately
+        handleInput();
+        showNameSuggestions(nameInput.value.trim());
       });
       
       nameInput.addEventListener('blur', () => {
-        handleInput(); // Update overlay state
-        // Delay hiding to allow clicking on suggestions
+        handleInput();
         setTimeout(() => hideNameSuggestions(), 200);
       });
 
@@ -2278,7 +2269,6 @@
       document.getElementById('submitBtn').addEventListener('click', submitResponse);
       document.getElementById('clearBtn').addEventListener('click', clearForm);
 
-      // Enhanced name suggestion click handlers
       document.addEventListener('click', (e) => {
         if (e.target.closest('.name-suggestion')) {
           e.preventDefault();
@@ -2286,7 +2276,6 @@
           const studentName = suggestion.dataset.name;
           selectNameSuggestion(studentName);
         } else if (e.target.closest('.new-student-option')) {
-          // Just hide dropdown for new student option
           hideNameSuggestions();
           nameInput.focus();
         } else if (!e.target.closest('.name-section')) {
@@ -2297,7 +2286,6 @@
       // Photo event listeners
       document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
       
-      // Photo options event listeners
       document.getElementById('takePictureBtn').addEventListener('click', startCamera);
       document.getElementById('chooseFromAlbumBtn').addEventListener('click', () => {
         hidePhotoOptions();
@@ -2305,12 +2293,10 @@
       });
       document.getElementById('cancelPhotoBtn').addEventListener('click', hidePhotoOptions);
       
-      // Camera event listeners
       document.getElementById('captureBtn').addEventListener('click', capturePhoto);
       document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
       document.getElementById('flipCameraBtn').addEventListener('click', flipCamera);
       
-      // Photo modal event listeners
       document.getElementById('retakeBtn').addEventListener('click', () => {
         document.getElementById('photoModal').classList.remove('show');
         showPhotoOptions();
@@ -2320,7 +2306,6 @@
         document.getElementById('photoModal').classList.remove('show');
       });
       
-      // Modal click outside to close
       document.getElementById('photoOptions').addEventListener('click', (e) => {
         if (e.target.id === 'photoOptions') {
           hidePhotoOptions();
@@ -2333,9 +2318,7 @@
         }
       });
       
-      // Enhanced keyboard shortcuts and navigation
       document.addEventListener('keydown', (e) => {
-        // Handle name suggestion navigation
         if (dropdownOpen) {
           switch(e.key) {
             case 'ArrowDown':
@@ -2356,21 +2339,18 @@
               hideNameSuggestions();
               break;
             case 'Tab':
-              // Allow tab to move to next field but close dropdown
               hideNameSuggestions();
               break;
           }
           return;
         }
 
-        // Global shortcuts
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           const submitBtn = document.getElementById('submitBtn');
           if (!submitBtn.disabled) submitResponse();
         }
         
         if (e.key === 'Escape' && !isSubmitted) {
-          // Close any open modals
           hidePhotoOptions();
           hideNameSuggestions();
           document.getElementById('photoModal').classList.remove('show');
@@ -2378,7 +2358,7 @@
         }
       });
       
-      console.log('✅ Enhanced student interface ready with improved dropdown!');
+      console.log('✅ Fixed mobile interface ready - submit button now always visible!');
     });
   </script>
 </body>
