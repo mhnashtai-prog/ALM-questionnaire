@@ -1348,33 +1348,75 @@
         }
       }
 
+      // FIXED: Enhanced getCurrentQuestion method that prioritizes current_question
       async getCurrentQuestion() {
-        if (!this.isOnline || !isConnected) {
-          return this.fallbackToLocalStorage('get', null, 'current_question');
-        }
-
+        console.log('🔍 Getting current question...');
+        
+        // PRIORITY #1: Always check current_question first (where teacher saves)
         try {
-          const { data, error } = await supabase
-            .from('questions')
-            .select('*')
-            .eq('is_published', true)
-            .order('published_at', { ascending: false })
-            .limit(1);
-
-          if (error) throw error;
-
-          const currentQuestion = data[0] || null;
-          
-          if (currentQuestion) {
-            localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-            console.log('✅ Current question retrieved from Supabase:', currentQuestion);
+          const currentQuestionData = localStorage.getItem('current_question');
+          if (currentQuestionData && currentQuestionData !== 'null') {
+            const parsed = JSON.parse(currentQuestionData);
+            if (parsed && (parsed.text || parsed.question_text) && parsed.id !== 'demo') {
+              console.log('✅ Found real question in current_question:', parsed.text?.substring(0, 50));
+              return parsed;
+            }
           }
-          
-          return currentQuestion;
         } catch (error) {
-          console.error('❌ Error fetching current question:', error);
-          return this.fallbackToLocalStorage('get', null, 'current_question');
+          console.log('Error parsing current_question:', error.message);
         }
+
+        // PRIORITY #2: Try Supabase if online
+        if (this.isOnline && isConnected) {
+          try {
+            const { data, error } = await supabase
+              .from('questions')
+              .select('*')
+              .eq('is_published', true)
+              .order('published_at', { ascending: false })
+              .limit(1);
+
+            if (!error && data && data.length > 0) {
+              const question = data[0];
+              // Save to localStorage for future offline access
+              localStorage.setItem('current_question', JSON.stringify(question));
+              console.log('✅ Current question from Supabase:', question.text?.substring(0, 50));
+              return question;
+            }
+          } catch (error) {
+            console.log('Supabase query failed:', error.message);
+          }
+        }
+
+        // PRIORITY #3: Check other storage locations (but skip display_question if it's demo)
+        const fallbackKeys = ['alm_questions', 'intuity_questions'];
+        
+        for (const key of fallbackKeys) {
+          try {
+            const data = localStorage.getItem(key);
+            if (data && data !== 'null' && data !== '[]') {
+              const parsed = JSON.parse(data);
+              
+              if (Array.isArray(parsed)) {
+                const validQuestions = parsed.filter(q => 
+                  q && (q.text || q.question_text) && 
+                  !q.text?.toLowerCase().includes('demo') && 
+                  q.id !== 'demo'
+                );
+                
+                if (validQuestions.length > 0) {
+                  console.log(`✅ Found question in ${key}`);
+                  return validQuestions[0];
+                }
+              }
+            }
+          } catch (error) {
+            console.log(`Error checking ${key}:`, error.message);
+          }
+        }
+
+        console.log('❌ No real question found');
+        return null;
       }
 
       async getQuestionById(questionId) {
@@ -1955,11 +1997,32 @@
       console.log('🗑️ Photo removed');
     }
 
-    // Load question
+    // FIXED: Clean up any conflicting storage
+    function cleanupConflictingStorage() {
+      try {
+        // Remove the demo question from display_question if it exists
+        const displayQuestion = localStorage.getItem('display_question');
+        if (displayQuestion) {
+          const parsed = JSON.parse(displayQuestion);
+          if (parsed && (parsed.id === 'demo' || parsed.text?.toLowerCase().includes('demo'))) {
+            localStorage.removeItem('display_question');
+            console.log('🧹 Removed conflicting demo question from display_question');
+          }
+        }
+      } catch (error) {
+        console.log('Error cleaning up storage:', error.message);
+      }
+    }
+
+    // FIXED: Enhanced loadQuestion function that prioritizes current_question
     async function loadQuestion() {
       console.log('🔍 Loading question...');
       
+      const questionOverlay = document.getElementById('questionOverlay');
+      questionOverlay.textContent = 'Loading question...';
+      
       try {
+        // Check URL parameters first
         const urlParams = new URLSearchParams(window.location.search);
         const questionId = urlParams.get('q');
         const questionText = urlParams.get('t');
@@ -1968,70 +2031,88 @@
           currentQuestion = {
             id: questionId,
             text: decodeURIComponent(questionText),
+            question_text: decodeURIComponent(questionText),
             source: 'url',
             isReal: true
           };
-          console.log('✅ Loaded question from URL:', currentQuestion);
-          return displayQuestion();
+          console.log('✅ Loaded question from URL');
+          displayQuestion();
+          return;
         }
         
-        if (questionId && !questionText) {
-          const question = await intuityData.getQuestionById(questionId);
-          if (question) {
+        // Get the current question (this will now prioritize current_question storage)
+        const question = await intuityData.getCurrentQuestion();
+        
+        if (question && (question.text || question.question_text)) {
+          // Make sure it's not a demo question
+          const questionText = question.text || question.question_text;
+          if (!questionText.toLowerCase().includes('demo') && question.id !== 'demo') {
             currentQuestion = {
               ...question,
-              source: 'supabase',
+              source: 'storage',
               isReal: true
             };
-            console.log('✅ Loaded question from Supabase by ID:', currentQuestion);
-            return displayQuestion();
+            console.log('✅ Loaded real question:', questionText.substring(0, 50));
+            displayQuestion();
+            return;
           }
         }
         
-        const question = await intuityData.getCurrentQuestion();
-        if (question) {
-          currentQuestion = {
-            ...question,
-            source: 'supabase',
-            isReal: true
-          };
-          console.log('✅ Loaded current question from Supabase:', currentQuestion);
-          return displayQuestion();
-        }
-        
-        console.log('❌ No question found');
-        showDemoQuestion();
+        // If we get here, show waiting message instead of demo
+        showWaitingMessage();
         
       } catch (error) {
-        console.error('❌ Error loading question:', error);
-        showDemoQuestion();
+        console.error('❌ Error in loadQuestion:', error);
+        showWaitingMessage();
       }
     }
 
+    // FIXED: Enhanced displayQuestion function
     function displayQuestion() {
       const questionOverlay = document.getElementById('questionOverlay');
       
-      if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
-        const questionText = currentQuestion.text || currentQuestion.question_text;
-        questionOverlay.textContent = questionText;
-        console.log('✅ Question displayed successfully');
+      if (!currentQuestion) {
+        showWaitingMessage();
+        return;
+      }
+      
+      const questionText = currentQuestion.text || currentQuestion.question_text;
+      
+      if (questionText && questionText.trim()) {
+        // Remove any "Demo:" prefix if present
+        const cleanText = questionText.replace(/^Demo:\s*/i, '').trim();
+        questionOverlay.textContent = cleanText;
+        
+        // Add visual indicator for question source (for debugging)
+        if (currentQuestion.source) {
+          questionOverlay.title = `Source: ${currentQuestion.source}`;
+        }
+        
+        console.log('✅ Question displayed:', cleanText.substring(0, 50));
       } else {
-        showDemoQuestion();
+        showWaitingMessage();
       }
     }
 
-    function showDemoQuestion() {
+    // FIXED: Replace showDemoQuestion with showWaitingMessage
+    function showWaitingMessage() {
       const questionOverlay = document.getElementById('questionOverlay');
-      questionOverlay.textContent = 'Demo: What would you like to learn today?';
+      questionOverlay.textContent = 'Waiting for teacher to publish a question...';
       
       currentQuestion = {
-        id: 'demo',
-        text: 'Demo: What would you like to learn today?',
-        source: 'demo',
+        id: 'waiting',
+        text: 'Waiting for question',
+        source: 'none',
         isReal: false
       };
       
-      console.log('📝 Demo question displayed');
+      console.log('⏳ Waiting for question message displayed');
+      
+      // Check for new questions every 15 seconds
+      setTimeout(() => {
+        console.log('🔄 Checking for new question...');
+        loadQuestion();
+      }, 15000);
     }
 
     function handleInput() {
@@ -2235,16 +2316,69 @@
       }
     }
 
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Fixed Mobile Interface initializing...');
+    // Enhanced debugging function to check storage state
+    function debugStorage() {
+      console.log('🔍 DEBUG: Checking all storage locations...');
       
+      const keysToCheck = [
+        'current_question',
+        'alm_questions', 
+        'display_question',
+        'intuity_questions',
+        'alm_student_responses'
+      ];
+      
+      keysToCheck.forEach(key => {
+        const value = localStorage.getItem(key);
+        if (value && value !== 'null' && value !== '{}' && value !== '[]') {
+          try {
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed)) {
+              console.log(`📦 ${key}: Array with ${parsed.length} items`);
+              parsed.slice(0, 2).forEach((item, i) => {
+                console.log(`  [${i}]: ${item.text || item.question_text || 'No text'}`);
+              });
+            } else if (parsed && typeof parsed === 'object') {
+              console.log(`📦 ${key}: Object - "${parsed.text || parsed.question_text || 'No text'}"`);
+            } else {
+              console.log(`📦 ${key}: ${typeof parsed} - ${String(parsed).substring(0, 50)}`);
+            }
+          } catch (e) {
+            console.log(`📦 ${key}: Invalid JSON - ${String(value).substring(0, 50)}`);
+          }
+        } else {
+          console.log(`📦 ${key}: Empty or null`);
+        }
+      });
+    }
+
+    // FIXED: Enhanced initialization with cleanup and better question loading
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Student Interface initializing with enhanced question loading...');
+      
+      // Clean up any conflicting storage first
+      cleanupConflictingStorage();
+      
+      // Initialize Supabase
       if (initSupabase()) {
-        setTimeout(loadQuestion, 1000);
+        // Wait a bit for connection to establish, then load question
+        setTimeout(() => {
+          console.log('⏱️ Loading question after Supabase initialization...');
+          loadQuestion();
+        }, 1000);
       } else {
+        // Initialize data layer and load question immediately
         initDataLayer();
-        loadQuestion();
+        setTimeout(loadQuestion, 500);
       }
+      
+      // Add periodic question refresh (every 30 seconds) to catch new questions
+      setInterval(() => {
+        if (!isSubmitted && (!currentQuestion || !currentQuestion.isReal)) {
+          console.log('🔄 Periodic question check...');
+          loadQuestion();
+        }
+      }, 30000);
       
       // Event listeners
       const nameInput = document.getElementById('studentName');
@@ -2356,9 +2490,19 @@
           document.getElementById('photoModal').classList.remove('show');
           stopCamera();
         }
+        
+        // Ctrl+Shift+D for storage debugging
+        if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+          e.preventDefault();
+          debugStorage();
+          
+          // Try to reload question
+          console.log('🔄 Force reloading question...');
+          loadQuestion();
+        }
       });
       
-      console.log('✅ Fixed mobile interface ready - submit button now always visible!');
+      console.log('✅ Enhanced student interface ready with robust question loading!');
     });
   </script>
 </body>
