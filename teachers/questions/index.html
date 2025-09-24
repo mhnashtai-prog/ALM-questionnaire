@@ -22,11 +22,6 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       position: relative;
       background: #000000;
-      /* Prevent mobile zoom/scroll issues */
-      -webkit-text-size-adjust: 100%;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
-      touch-action: manipulation;
     }
 
     .background {
@@ -162,7 +157,7 @@
     }
 
     .header h1 {
-      font-size: 38px; /* Increased from 32px */
+      font-size: 32px;
       font-weight: 800;
       color: #fff;
       margin-bottom: 8px;
@@ -171,7 +166,7 @@
     }
 
     .header p {
-      font-size: 16px; /* Increased from 14px */
+      font-size: 14px;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
       letter-spacing: 0.5px;
@@ -187,9 +182,7 @@
 
     .question-container {
       width: 100%;
-      height: auto; /* Changed from fixed 5cm to auto */
-      min-height: 180px; /* Minimum usable height */
-      max-height: 40vh; /* Responsive maximum */
+      height: 5cm;
       position: relative;
       perspective: 1000px;
       overflow: hidden;
@@ -224,7 +217,7 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 20px; /* Increased from 16px */
+      font-size: 16px;
       font-family: inherit;
       outline: none;
       resize: none;
@@ -234,7 +227,7 @@
     }
 
     .question-input::placeholder {
-      color: rgba(255, 255, 255, 0.5); /* More visible placeholder */
+      color: rgba(255, 255, 255, 0.4);
       font-style: italic;
     }
 
@@ -245,8 +238,8 @@
     .action-buttons {
       display: flex;
       justify-content: center;
-      gap: 20px; /* Increased from 15px */
-      padding-top: 20px; /* Increased from 15px */
+      gap: 15px;
+      padding-top: 15px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       opacity: 0;
       transition: all 0.3s ease;
@@ -260,15 +253,14 @@
       background: rgba(255, 140, 60, 0.6);
       border: none;
       border-radius: 12px;
-      padding: 12px 20px; /* Increased from 8px 16px */
+      padding: 8px 16px;
       color: #000;
-      font-size: 16px; /* Increased from 12px */
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      min-width: 100px; /* Added minimum width */
     }
 
     .action-btn:hover {
@@ -302,7 +294,7 @@
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
-      padding: 18px; /* Increased from 15px */
+      padding: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: space-around;
@@ -310,8 +302,8 @@
     }
 
     .nav-button {
-      width: 50px; /* Increased from 45px */
-      height: 50px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.08);
       border: none;
@@ -319,7 +311,7 @@
       align-items: center;
       justify-content: center;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 20px; /* Increased from 18px */
+      font-size: 18px;
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
@@ -344,21 +336,21 @@
       background: rgba(16, 185, 129, 0.15);
       border: 2px solid rgba(16, 185, 129, 0.5);
       border-radius: 16px;
-      padding: 35px; /* Increased from 30px */
+      padding: 30px;
       color: rgba(16, 185, 129, 0.9);
-      font-size: 20px; /* Increased from 18px */
+      font-size: 18px;
       font-weight: 600;
       text-align: center;
       z-index: 2000;
       display: none;
       backdrop-filter: blur(10px);
       animation: fadeIn 0.3s ease;
-      min-width: 320px; /* Increased from 300px */
+      min-width: 300px;
     }
 
     .success-icon {
-      font-size: 56px; /* Increased from 48px */
-      margin-bottom: 18px; /* Increased from 15px */
+      font-size: 48px;
+      margin-bottom: 15px;
       display: block;
     }
 
@@ -385,31 +377,31 @@
       background: rgba(0, 0, 0, 0.9);
       border: 2px solid rgba(255, 140, 60, 0.5);
       border-radius: 20px;
-      padding: 35px; /* Increased from 30px */
+      padding: 30px;
       backdrop-filter: blur(10px);
       text-align: center;
-      max-width: 420px; /* Increased from 400px */
+      max-width: 400px;
       margin: 20px;
     }
 
     .qr-modal h3 {
-      margin-bottom: 25px; /* Increased from 20px */
+      margin-bottom: 20px;
       color: #fff;
-      font-size: 24px; /* Increased from 20px */
+      font-size: 20px;
       font-weight: 600;
     }
 
     .qr-display {
-      width: 300px; /* Increased from 280px */
-      height: 300px;
-      margin: 0 auto 25px; /* Increased margin */
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 20px;
       background: white;
       border-radius: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #666;
-      font-size: 18px; /* Increased from 16px */
+      font-size: 16px;
       border: 2px solid rgba(255, 140, 60, 0.3);
       overflow: hidden;
     }
@@ -424,10 +416,10 @@
       background: rgba(255, 140, 60, 0.8);
       border: none;
       border-radius: 12px;
-      padding: 14px 28px; /* Increased from 12px 24px */
+      padding: 12px 24px;
       color: #000;
       font-weight: 600;
-      font-size: 18px; /* Increased from 16px */
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
@@ -437,198 +429,34 @@
       transform: scale(1.05);
     }
 
-    /* Better responsive design strategy with overlap prevention */
     @media (max-width: 768px) {
       .container {
-        padding: 30px 15px 15px; /* Reduced top padding */
-      }
-      
-      .header {
-        margin-bottom: 25px; /* Reduced to save space */
+        padding: 40px 15px 15px;
       }
       
       .header h1 {
-        font-size: 30px; /* Reduced from 34px to prevent overlap */
-      }
-      
-      .header p {
-        font-size: 14px; /* Slightly smaller on mobile */
-      }
-      
-      .main-content {
-        padding-bottom: 100px; /* Reduced to prevent footer overlap */
+        font-size: 28px;
       }
       
       .question-container {
-        min-height: 160px; /* Smaller minimum on mobile */
-        max-height: 35vh; /* Smaller max height */
+        height: 4cm;
       }
       
       .content-area {
-        padding: 12px; /* Reduced padding */
-      }
-      
-      .question-input {
-        font-size: 18px; /* Maintain readability */
-      }
-      
-      .action-buttons {
-        gap: 12px; /* Smaller gap on mobile */
-        padding-top: 15px; /* Reduced padding */
-      }
-      
-      .action-btn {
-        padding: 10px 16px; /* Smaller but still usable */
-        font-size: 14px; /* Maintain readability */
-        min-width: 80px; /* Smaller minimum */
-      }
-
-      .nav-button {
-        width: 42px; /* Smaller on mobile */
-        height: 42px;
-        font-size: 18px;
-      }
-
-      .footer {
-        padding: 12px; /* Reduced padding */
-        margin-top: 20px; /* Reduced margin */
-      }
-
-      .success-notification {
-        min-width: 260px; /* Smaller on mobile */
-        padding: 25px; /* Reduced padding */
-        margin: 15px; /* Ensure it fits */
-        font-size: 18px;
-      }
-
-      .success-icon {
-        font-size: 42px; /* Smaller icon */
-        margin-bottom: 15px;
-      }
-
-      .qr-modal-content {
-        padding: 25px; /* Reduced padding */
-        max-width: 350px; /* Smaller modal */
-        margin: 15px; /* Ensure it fits */
-      }
-
-      .qr-modal h3 {
-        font-size: 20px; /* Smaller title */
-        margin-bottom: 20px;
-      }
-
-      .qr-display {
-        width: 240px; /* Smaller QR code */
-        height: 240px;
-        font-size: 16px;
-        margin-bottom: 20px;
-      }
-
-      .close-btn {
-        padding: 12px 20px; /* Smaller button */
-        font-size: 16px;
-      }
-    }
-
-    /* Extra small screens - prevent all overlapping */
-    @media (max-width: 480px) {
-      .container {
-        padding: 20px 10px 10px; /* Minimal padding */
-      }
-      
-      .header {
-        margin-bottom: 20px;
-      }
-      
-      .header h1 {
-        font-size: 26px; /* Smaller for tiny screens */
-      }
-
-      .main-content {
-        padding-bottom: 80px; /* More space for footer */
-      }
-
-      .question-container {
-        min-height: 140px; /* Very compact */
-        max-height: 30vh;
-      }
-
-      .question-input {
-        font-size: 16px; /* Slightly smaller but still readable */
-      }
-
-      .action-btn {
-        font-size: 12px; /* Smaller text */
-        padding: 8px 12px; /* Smaller padding */
-        min-width: 70px;
-      }
-
-      .nav-button {
-        width: 38px; /* Smaller navigation */
-        height: 38px;
-        font-size: 16px;
-      }
-
-      .footer {
-        padding: 10px;
-        margin-top: 15px;
-      }
-      
-      .success-notification {
-        min-width: 240px;
-        padding: 20px;
-        margin: 10px;
-        font-size: 16px;
-      }
-      
-      .qr-modal-content {
-        padding: 20px;
-        max-width: 300px;
-        margin: 10px;
-      }
-      
-      .qr-display {
-        width: 200px;
-        height: 200px;
-        font-size: 14px;
-      }
-      
-      .close-btn {
-        padding: 10px 16px;
-        font-size: 14px;
-      }
-    }
-
-    /* Very small screens - emergency fallbacks */
-    @media (max-width: 320px) {
-      .header h1 {
-        font-size: 22px;
-      }
-      
-      .question-container {
-        min-height: 120px;
-        max-height: 25vh;
+        padding: 15px;
       }
       
       .question-input {
         font-size: 15px;
       }
       
+      .action-buttons {
+        gap: 10px;
+      }
+      
       .action-btn {
+        padding: 6px 12px;
         font-size: 11px;
-        padding: 6px 10px;
-        min-width: 60px;
-      }
-      
-      .nav-button {
-        width: 34px;
-        height: 34px;
-        font-size: 14px;
-      }
-      
-      .qr-display {
-        width: 180px;
-        height: 180px;
       }
     }
   </style>
@@ -679,7 +507,7 @@
   <div class="success-notification" id="successNotification">
     <span class="success-icon">✨</span>
     <div>Question Published!</div>
-    <div style="font-size: 16px; margin-top: 12px; opacity: 0.8;">
+    <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
       Students can now access your question.
     </div>
   </div>
@@ -842,7 +670,7 @@
       pathParts.push('students', 'answers', '');
       const studentURL = baseURL + pathParts.join('/');
       
-      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
       
       const img = new Image();
       img.onload = () => {
@@ -852,9 +680,9 @@
       img.onerror = () => {
         display.innerHTML = `
           <div style="color: #ef4444; padding: 20px;">
-            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
-            <div style="font-size: 16px;"><strong>Failed to generate QR code</strong></div>
-            <div style="font-size: 14px; margin-top: 8px;">Check your internet connection</div>
+            <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
+            <div><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 14px; margin-top: 5px;">Check your internet connection</div>
           </div>
         `;
       };
