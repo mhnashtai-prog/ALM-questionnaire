@@ -2,10 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>IN<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
   <title>INTUITY</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
@@ -31,362 +27,97 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.3) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.2) 0%, transparent 40%),
-                  linear-gradient(135deg, #000000 0%, #000000 40%, #0a0503 70%, #000000 100%);
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
     }
 
-    .container {
-      position: relative;
-      z-index: 10;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .header h1 {
-      font-size: 48px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 12px;
-      letter-spacing: 3px;
-      text-shadow: 0 0 30px rgba(255, 140, 60, 0.4);
-    }
-
-    .header p {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 300;
-      letter-spacing: 1px;
-      line-height: 1.6;
-    }
-
-    .nav-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 500px;
-      width: 100%;
-    }
-
-    .nav-option {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 30px 20px;
-      color: #fff;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .nav-option:hover {
-      background: rgba(255, 140, 60, 0.08);
-      border-color: rgba(255, 140, 60, 0.3);
-      transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(255, 140, 60, 0.15);
-    }
-
-    .nav-option:active {
-      transform: translateY(-2px);
-    }
-
-    .nav-option.secure::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(16, 185, 129, 0.8), rgba(16, 185, 129, 0.4));
-    }
-
-    .nav-icon {
-      font-size: 32px;
-      opacity: 0.9;
-    }
-
-    .nav-title {
-      font-size: 18px;
-      font-weight: 600;
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    .nav-subtitle {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-    }
-
-    .secure-indicator {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 0.9);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .footer-info {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 12px;
-      text-align: center;
-      font-weight: 300;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 30px 15px;
-      }
-
-      .header h1 {
-        font-size: 36px;
-        letter-spacing: 2px;
-      }
-
-      .header p {
-        font-size: 14px;
-      }
-
-      .header {
-        margin-bottom: 40px;
-      }
-
-      .nav-grid {
-        max-width: 350px;
-        gap: 16px;
-      }
-
-      .nav-option {
-        padding: 24px 16px;
-      }
-
-      .nav-icon {
-        font-size: 28px;
-      }
-
-      .nav-title {
-        font-size: 16px;
-      }
-
-      .nav-subtitle {
-        font-size: 11px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 25px 12px;
-      }
-
-      .header h1 {
-        font-size: 28px;
-        letter-spacing: 1px;
-      }
-
-      .header p {
-        font-size: 13px;
-      }
-
-      .header {
-        margin-bottom: 30px;
-      }
-
-      .nav-grid {
-        grid-template-columns: 1fr;
-        max-width: 280px;
-        gap: 12px;
-      }
-
-      .nav-option {
-        padding: 20px 16px;
-        flex-direction: row;
-        text-align: left;
-        gap: 16px;
-      }
-
-      .nav-icon {
-        font-size: 24px;
-        flex-shrink: 0;
-      }
-
-      .nav-content {
-        flex: 1;
-      }
-
-      .nav-title {
-        font-size: 15px;
-        text-align: left;
-        margin-bottom: 4px;
-      }
-
-      .nav-subtitle {
-        font-size: 10px;
-        text-align: left;
-      }
-    }
-
-    @media (orientation: landscape) and (max-height: 600px) {
-      .container {
-        padding: 20px 15px;
-        justify-content: center;
-      }
-
-      .header {
-        margin-bottom: 30px;
-      }
-
-      .header h1 {
-        font-size: 32px;
-      }
-
-      .header p {
-        font-size: 13px;
-      }
-
-      .nav-option {
-        padding: 20px 16px;
-      }
-
-      .footer-info {
-        bottom: 10px;
-        font-size: 10px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="background"></div>
-
-  <div class="container">
-    <header class="header">
-      <h1>INTUITY</h1>
-      <p>Intuitive Learning Platform<br>by Majid Nashtai</p>
-    </header>
-
-    <main class="nav-grid">
-      <a href="teachers/secure/" class="nav-option secure">
-        <div class="secure-indicator">Secure</div>
-        <div class="nav-icon">✏️</div>
-        <div class="nav-content">
-          <div class="nav-title">Teacher Portal</div>
-          <div class="nav-subtitle">Create & Manage</div>
-        </div>
-      </a>
-      
-      <a href="visualisation/" class="nav-option secure">
-        <div class="secure-indicator">Secure</div>
-        <div class="nav-icon">📊</div>
-        <div class="nav-content">
-          <div class="nav-title">Analytics</div>
-          <div class="nav-subtitle">View Insights</div>
-        </div>
-      </a>
-    </main>
-
-    <div class="footer-info">
-      Secure • Modern • Intuitive
-    </div>
-  </div>
-
-  <script>
-    function enhanceNavOptions() {
-      const navOptions = document.querySelectorAll('.nav-option');
-      
-      navOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-          option.style.transform = 'translateY(-1px) scale(0.98)';
-          setTimeout(() => {
-            option.style.transform = '';
-          }, 150);
-        });
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Minimalist Landing Page Loading...');
-      
-      enhanceNavOptions();
-      
-      const header = document.querySelector('.header');
-      const navGrid = document.querySelector('.nav-grid');
-      
-      header.style.opacity = '0';
-      header.style.transform = 'translateY(-20px)';
-      navGrid.style.opacity = '0';
-      navGrid.style.transform = 'translateY(20px)';
-      
-      setTimeout(() => {
-        header.style.transition = 'all 0.8s ease-out';
-        header.style.opacity = '1';
-        header.style.transform = 'translateY(0)';
-      }, 200);
-      
-      setTimeout(() => {
-        navGrid.style.transition = 'all 0.8s ease-out';
-        navGrid.style.opacity = '1';
-        navGrid.style.transform = 'translateY(0)';
-      }, 400);
-      
-      console.log('✅ INTUITY Minimalist Landing Page Ready!');
-    });
-  </script>
-</body>
-</html>TUITY</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      position: relative;
-      background: #000000;
-    }
-
-    .background {
+    .curved-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.3) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.2) 0%, transparent 40%),
-                  linear-gradient(135deg, #000000 0%, #000000 40%, #0a0503 70%, #000000 100%);
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(30deg);
+      border: 2px solid rgba(255, 140, 60, 0.7);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.25) 0%, rgba(255, 100, 40, 0.15) 50%, rgba(200, 80, 30, 0.08) 100%);
+      box-shadow: inset 0 0 60px rgba(255, 120, 50, 0.2), 0 0 40px rgba(255, 140, 60, 0.15);
+      opacity: 0.9;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-20deg);
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.18) 0%, rgba(200, 80, 30, 0.12) 50%, transparent 100%);
+      box-shadow: inset 0 0 45px rgba(255, 100, 40, 0.15);
+      opacity: 0.7;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(60deg);
+      border: 1px solid rgba(255, 160, 80, 0.4);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.12) 0%, rgba(255, 140, 60, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 35px rgba(255, 160, 80, 0.1);
+      opacity: 0.5;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-45deg);
+      border: 1px solid rgba(255, 120, 50, 0.3);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.08) 0%, rgba(200, 80, 30, 0.04) 50%, transparent 100%);
+      box-shadow: inset 0 0 25px rgba(255, 120, 50, 0.08);
+      opacity: 0.3;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(15deg);
+      border: 1.5px solid rgba(255, 140, 60, 0.6);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.2) 0%, rgba(255, 100, 40, 0.12) 50%, rgba(200, 80, 30, 0.06) 100%);
+      box-shadow: inset 0 0 50px rgba(255, 140, 60, 0.18), 0 0 30px rgba(255, 140, 60, 0.12);
+      opacity: 0.8;
+    }
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(80deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, transparent 100%);
+      opacity: 0.2;
     }
 
     .container {
@@ -395,287 +126,269 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
     }
 
     .header h1 {
-      font-size: 48px;
+      font-size: 32px;
       font-weight: 800;
       color: #fff;
-      margin-bottom: 12px;
-      letter-spacing: 3px;
-      text-shadow: 0 0 30px rgba(255, 140, 60, 0.4);
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
     .header p {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
-      letter-spacing: 1px;
-      line-height: 1.6;
-    }
-
-    .nav-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 500px;
-      width: 100%;
-    }
-
-    .nav-option {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 30px 20px;
-      color: #fff;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .nav-option:hover {
-      background: rgba(255, 140, 60, 0.08);
-      border-color: rgba(255, 140, 60, 0.3);
-      transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(255, 140, 60, 0.15);
-    }
-
-    .nav-option:active {
-      transform: translateY(-2px);
-    }
-
-    .nav-option.secure::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(16, 185, 129, 0.8), rgba(16, 185, 129, 0.4));
-    }
-
-    .nav-icon {
-      font-size: 32px;
-      opacity: 0.9;
-    }
-
-    .nav-title {
-      font-size: 18px;
-      font-weight: 600;
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    .nav-subtitle {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-    }
-
-    .secure-indicator {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 0.9);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .footer-info {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 12px;
-      text-align: center;
-      font-weight: 300;
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 140px;
     }
 
+    /* SINGLE BLACK BOX - Matches all other components */
+    .navigation-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .navigation-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .navigation-box:hover {
+      transform: translateY(-2px);
+    }
+
+    /* CONTENT AREA - Simple two-button layout */
+    .content-area {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    /* NAV BUTTONS - Clean and simple */
+    .nav-option {
+      width: 80%;
+      max-width: 300px;
+      padding: 18px 25px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .nav-option:hover {
+      background: rgba(255, 140, 60, 0.1);
+      border-color: rgba(255, 140, 60, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.2);
+    }
+
+    .nav-option:active {
+      transform: translateY(0);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+
+    /* FOOTER - Just two buttons */
+    .footer {
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
+    }
+
+    /* ANIMATIONS - Same as blueprint */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(1deg); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(-0.5deg); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(-0.5deg); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(0.8deg); }
+    }
+
+    .curve1 { --base-opacity: 0.9; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.7; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.5; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.3; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.8; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.2; animation: drift 15s ease-in-out infinite reverse; }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
-        padding: 30px 15px;
+        padding: 40px 15px 15px;
       }
-
-      .header h1 {
-        font-size: 36px;
-        letter-spacing: 2px;
-      }
-
-      .header p {
-        font-size: 14px;
-      }
-
-      .header {
-        margin-bottom: 40px;
-      }
-
-      .nav-grid {
-        max-width: 350px;
-        gap: 16px;
-      }
-
-      .nav-option {
-        padding: 24px 16px;
-      }
-
-      .nav-icon {
-        font-size: 28px;
-      }
-
-      .nav-title {
-        font-size: 16px;
-      }
-
-      .nav-subtitle {
-        font-size: 11px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 25px 12px;
-      }
-
+      
       .header h1 {
         font-size: 28px;
-        letter-spacing: 1px;
       }
-
+      
       .header p {
         font-size: 13px;
       }
-
-      .header {
-        margin-bottom: 30px;
+      
+      .navigation-container {
+        height: 4cm;
       }
-
-      .nav-grid {
-        grid-template-columns: 1fr;
-        max-width: 280px;
-        gap: 12px;
+      
+      .content-area {
+        padding: 15px;
+        gap: 15px;
       }
-
+      
       .nav-option {
-        padding: 20px 16px;
-        flex-direction: row;
-        text-align: left;
-        gap: 16px;
-      }
-
-      .nav-icon {
-        font-size: 24px;
-        flex-shrink: 0;
-      }
-
-      .nav-content {
-        flex: 1;
-      }
-
-      .nav-title {
+        width: 90%;
+        padding: 15px 20px;
         font-size: 15px;
-        text-align: left;
-        margin-bottom: 4px;
       }
-
-      .nav-subtitle {
-        font-size: 10px;
-        text-align: left;
-      }
-    }
-
-    @media (orientation: landscape) and (max-height: 600px) {
-      .container {
-        padding: 20px 15px;
-        justify-content: center;
-      }
-
-      .header {
-        margin-bottom: 30px;
-      }
-
-      .header h1 {
-        font-size: 32px;
-      }
-
-      .header p {
-        font-size: 13px;
-      }
-
-      .nav-option {
-        padding: 20px 16px;
-      }
-
-      .footer-info {
-        bottom: 10px;
-        font-size: 10px;
+      
+      .nav-icon {
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="background"></div>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
+    </div>
+  </div>
 
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Intuitive Learning Platform<br>by Majid Nashtai</p>
+      <p>Intuitive Learning<br>By Majid Nashtai</p>
     </header>
 
-    <main class="nav-grid">
-      <a href="teachers/secure/" class="nav-option secure">
-        <div class="secure-indicator">Secure</div>
-        <div class="nav-icon">✏️</div>
-        <div class="nav-content">
-          <div class="nav-title">Teacher Portal</div>
-          <div class="nav-subtitle">Create & Manage</div>
+    <main class="main-content">
+      <div class="navigation-container">
+        <div class="navigation-box">
+          <div class="content-area">
+            
+            <a href="teachers/questions/" class="nav-option">
+              <span class="nav-icon">✏️</span>
+              <span>Create Questions</span>
+            </a>
+            
+            <a href="visualisation/" class="nav-option">
+              <span class="nav-icon">📊</span>
+              <span>Analytics</span>
+            </a>
+            
+          </div>
         </div>
-      </a>
-      
-      <a href="visualisation/" class="nav-option secure">
-        <div class="secure-indicator">Secure</div>
-        <div class="nav-icon">📊</div>
-        <div class="nav-content">
-          <div class="nav-title">Analytics</div>
-          <div class="nav-subtitle">View Insights</div>
-        </div>
-      </a>
+      </div>
     </main>
 
-    <div class="footer-info">
-      Secure • Modern • Intuitive
-    </div>
+    <footer class="footer">
+      <a href="teachers/questions/" class="nav-button" title="Create Questions">✏️</a>
+      <a href="visualisation/" class="nav-button" title="Analytics">📊</a>
+    </footer>
   </div>
 
   <script>
+    // Simple hover effects
     function enhanceNavOptions() {
       const navOptions = document.querySelectorAll('.nav-option');
       
       navOptions.forEach(option => {
         option.addEventListener('click', (e) => {
-          option.style.transform = 'translateY(-1px) scale(0.98)';
+          // Add click animation
+          option.style.transform = 'translateY(1px) scale(0.98)';
           setTimeout(() => {
             option.style.transform = '';
           }, 150);
@@ -683,32 +396,25 @@
       });
     }
 
+    // Initialize when page loads
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Minimalist Landing Page Loading...');
+      console.log('🚀 INTUITY Landing Page Loading...');
       
+      // Enhance navigation options
       enhanceNavOptions();
       
-      const header = document.querySelector('.header');
-      const navGrid = document.querySelector('.nav-grid');
-      
-      header.style.opacity = '0';
-      header.style.transform = 'translateY(-20px)';
-      navGrid.style.opacity = '0';
-      navGrid.style.transform = 'translateY(20px)';
+      // Add welcome animation
+      const navContainer = document.querySelector('.navigation-container');
+      navContainer.style.opacity = '0';
+      navContainer.style.transform = 'translateY(30px)';
       
       setTimeout(() => {
-        header.style.transition = 'all 0.8s ease-out';
-        header.style.opacity = '1';
-        header.style.transform = 'translateY(0)';
-      }, 200);
+        navContainer.style.transition = 'all 0.8s ease-out';
+        navContainer.style.opacity = '1';
+        navContainer.style.transform = 'translateY(0)';
+      }, 500);
       
-      setTimeout(() => {
-        navGrid.style.transition = 'all 0.8s ease-out';
-        navGrid.style.opacity = '1';
-        navGrid.style.transform = 'translateY(0)';
-      }, 400);
-      
-      console.log('✅ INTUITY Minimalist Landing Page Ready!');
+      console.log('✅ INTUITY Landing Page Ready!');
     });
   </script>
 </body>
