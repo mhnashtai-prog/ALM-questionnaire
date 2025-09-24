@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Analytics (Mobile Fixed)</title>
+  <title>INTUITY - Analytics (Fixed)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -17,7 +17,7 @@
 
     body {
       height: 100vh;
-      height: 100dvh; /* Use dynamic viewport height for mobile */
+      height: 100dvh;
       width: 100vw;
       overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -155,22 +155,21 @@
     .curve5 { --base-opacity: 0.8; --rotate: 15deg; }
     .curve6 { --base-opacity: 0.2; --rotate: 80deg; }
 
-    /* FIXED: Better container layout for mobile */
     .container {
       position: relative;
       z-index: 10;
       height: 100vh;
-      height: 100dvh; /* Dynamic viewport height */
+      height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: 40px 20px 0; /* Removed bottom padding */
-      min-height: 0; /* Allow flex shrinking */
+      padding: 40px 20px 0;
+      min-height: 0;
     }
 
     .header {
       text-align: center;
       margin-bottom: 25px;
-      flex-shrink: 0; /* Don't shrink header */
+      flex-shrink: 0;
     }
 
     .header h1 {
@@ -189,21 +188,20 @@
       letter-spacing: 0.5px;
     }
 
-    /* FIXED: Main content now flexible and scrollable if needed */
     .main-content {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 0; /* Allow shrinking */
-      overflow-y: auto; /* Allow scrolling if needed */
-      padding: 10px 0; /* Small padding */
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px 0;
     }
 
     .analytics-container {
       width: 100%;
-      height: auto; /* Remove fixed height */
-      min-height: 160px; /* Minimum usable height */
+      height: auto;
+      min-height: 160px;
       position: relative;
       perspective: 1000px;
       overflow: visible;
@@ -233,7 +231,7 @@
       flex-direction: column;
       padding: 20px;
       justify-content: space-between;
-      min-height: 140px; /* Ensure minimum usable space */
+      min-height: 140px;
     }
 
     .dropdown-section {
@@ -241,30 +239,47 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      position: relative;
     }
 
+    /* FIXED: Ensure dropdown displays downwards */
     .question-dropdown {
       width: 100%;
-      background: transparent;
-      border: none;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
       color: #fff;
       font-size: 18px;
       font-family: inherit;
       outline: none;
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
+      padding: 15px 20px;
       cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 100;
+      /* Ensure dropdown appears below */
+      direction: ltr;
     }
 
     .question-dropdown:focus {
-      border-bottom-color: rgba(255, 140, 60, 0.6);
+      border-color: rgba(255, 140, 60, 0.6);
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 4px 20px rgba(255, 140, 60, 0.2);
     }
 
+    /* FIXED: Style dropdown options to appear downwards */
     .question-dropdown option {
       background: rgba(26, 35, 50, 0.95);
       color: #fff;
-      padding: 10px;
+      padding: 12px 15px;
+      border: none;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .question-dropdown option:hover,
+    .question-dropdown option:focus {
+      background: rgba(255, 140, 60, 0.2);
     }
 
     .response-counter {
@@ -277,7 +292,7 @@
       font-size: 16px;
       font-weight: 500;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
-      flex-shrink: 0; /* Don't shrink counter */
+      flex-shrink: 0;
     }
 
     .delete-btn {
@@ -315,19 +330,18 @@
       transform: scale(0.95);
     }
 
-    /* FIXED: Footer now properly positioned and always visible */
     .footer {
       background: rgba(64, 64, 64, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 25px;
-      padding: 15px; /* Slightly reduced padding */
+      padding: 15px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      flex-shrink: 0; /* Don't shrink footer */
-      margin-top: 15px; /* Reduced margin */
-      position: relative; /* Ensure it stays in flow */
+      flex-shrink: 0;
+      margin-top: 15px;
+      position: relative;
     }
 
     .nav-button {
@@ -516,42 +530,42 @@
       transition: opacity 0.3s ease;
       font-family: monospace;
       overflow-y: auto;
+      z-index: 50;
     }
 
     .debug-panel.show {
       opacity: 1;
     }
 
-    /* FIXED: Much better mobile responsive design */
     @media (max-width: 768px) {
       .container {
-        padding: 25px 15px 0; /* Reduced top padding, no bottom */
+        padding: 25px 15px 0;
       }
       
       .header {
-        margin-bottom: 20px; /* Reduced margin */
+        margin-bottom: 20px;
       }
       
       .header h1 {
-        font-size: 26px; /* Smaller title */
+        font-size: 26px;
       }
       
       .main-content {
-        padding: 5px 0; /* Minimal padding */
+        padding: 5px 0;
       }
       
       .analytics-container {
-        min-height: 140px; /* Smaller minimum height */
+        min-height: 140px;
       }
       
       .content-area {
-        padding: 15px; /* Reduced padding */
-        min-height: 120px; /* Smaller minimum */
+        padding: 15px;
+        min-height: 120px;
       }
       
       .question-dropdown {
         font-size: 16px;
-        padding: 12px 0;
+        padding: 12px 16px;
       }
       
       .response-counter {
@@ -560,14 +574,14 @@
       }
 
       .nav-button {
-        padding: 10px 16px; /* Smaller buttons */
+        padding: 10px 16px;
         font-size: 12px;
         min-width: 70px;
       }
 
       .footer {
-        padding: 10px; /* Reduced padding */
-        margin-top: 10px; /* Reduced margin */
+        padding: 10px;
+        margin-top: 10px;
       }
 
       .dialog-box {
@@ -583,10 +597,9 @@
       }
     }
 
-    /* FIXED: Extra small screens - aggressive space optimization */
     @media (max-width: 480px) {
       .container {
-        padding: 20px 10px 0; /* Even less padding */
+        padding: 20px 10px 0;
       }
       
       .header {
@@ -612,7 +625,7 @@
 
       .question-dropdown {
         font-size: 14px;
-        padding: 10px 0;
+        padding: 10px 12px;
       }
 
       .response-counter {
@@ -642,7 +655,6 @@
       }
     }
 
-    /* FIXED: Landscape orientation optimization */
     @media (max-height: 600px) and (orientation: landscape) {
       .container {
         padding: 15px 10px 0;
@@ -675,7 +687,7 @@
       
       .question-dropdown {
         font-size: 13px;
-        padding: 8px 0;
+        padding: 8px 12px;
       }
       
       .response-counter {
@@ -711,7 +723,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Analytics (Mobile Fixed)<br>By Majid Nashtai</p>
+      <p>Analytics Dashboard<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
@@ -770,7 +782,7 @@
     let isConnected = false;
     let debugMode = false;
 
-    // Storage keys - matching the fixed student interface
+    // Enhanced storage keys - comprehensive search
     const STORAGE_KEYS = {
       responses: 'intuity_student_responses',
       questions: 'intuity_questions',
@@ -799,20 +811,32 @@
       }
     }
 
-    // Fixed data loading - merge instead of reset
+    // FIXED: Enhanced data loading - check ALL possible storage locations
     function loadAllStorageData() {
-      debugLog('Loading all storage data...');
+      debugLog('Loading all storage data comprehensively...');
       
       if (!Array.isArray(allQuestions)) allQuestions = [];
       if (!Array.isArray(allResponses)) allResponses = [];
       
       try {
+        // Get all possible question sources including teacher-specific keys
         const questionSources = [STORAGE_KEYS.questions, ...STORAGE_KEYS.legacyQuestions];
+        
+        // Also check for teacher-specific question storage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.endsWith('_questions') || key.includes('teacher') || key.includes('secure'))) {
+            if (!questionSources.includes(key)) {
+              questionSources.push(key);
+            }
+          }
+        }
+        
         const foundQuestions = new Map();
         
         for (const key of questionSources) {
           const stored = localStorage.getItem(key);
-          if (stored) {
+          if (stored && stored !== '[]' && stored !== '{}') {
             try {
               const parsed = JSON.parse(stored);
               if (Array.isArray(parsed)) {
@@ -832,21 +856,34 @@
           }
         }
 
+        // Merge found questions without duplicates
         foundQuestions.forEach(question => {
           const existingIndex = allQuestions.findIndex(q => q.id === question.id);
           if (existingIndex >= 0) {
-            allQuestions[existingIndex] = question;
+            allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
           } else {
             allQuestions.push(question);
           }
         });
 
+        // Get all possible response sources
         const responseSources = [STORAGE_KEYS.responses, ...STORAGE_KEYS.legacyResponses];
+        
+        // Also check for teacher-specific response storage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.endsWith('_responses') || key.includes('response'))) {
+            if (!responseSources.includes(key)) {
+              responseSources.push(key);
+            }
+          }
+        }
+        
         const foundResponses = new Map();
         
         for (const key of responseSources) {
           const stored = localStorage.getItem(key);
-          if (stored) {
+          if (stored && stored !== '[]' && stored !== '{}') {
             try {
               const parsed = JSON.parse(stored);
               if (Array.isArray(parsed)) {
@@ -864,6 +901,7 @@
           }
         }
 
+        // Merge found responses without duplicates
         foundResponses.forEach(response => {
           const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}-${response.submitted_at || response.submittedAt || response.timestamp}`;
           const existingIndex = allResponses.findIndex(r => {
@@ -872,27 +910,24 @@
           });
           
           if (existingIndex >= 0) {
-            allResponses[existingIndex] = response;
+            allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
           } else {
             allResponses.push(response);
           }
         });
 
-        if (allQuestions.length === 0) {
-          allQuestions.push({
-            id: 'demo',
-            text: 'Demo: What would you like to learn today?',
-            question_text: 'Demo: What would you like to learn today?',
-            created_at: new Date().toISOString()
-          });
-          debugLog('Created demo question');
-        }
+        // Sort questions by date (newest first)
+        allQuestions.sort((a, b) => {
+          const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
+          const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
+          return dateB - dateA;
+        });
 
-        debugLog('Final data loaded', { 
+        debugLog('Final comprehensive data loaded', { 
           questions: allQuestions.length, 
           responses: allResponses.length,
-          questionIds: allQuestions.map(q => q.id),
-          responseCount: allResponses.length
+          questionIds: allQuestions.map(q => ({ id: q.id, text: (q.text || q.question_text || '').substring(0, 50) })),
+          storageKeys: { questionSources, responseSources }
         });
 
         return { questions: allQuestions.length, responses: allResponses.length };
@@ -951,7 +986,7 @@
           supabaseQuestions.forEach(question => {
             const existingIndex = allQuestions.findIndex(q => q.id === question.id);
             if (existingIndex >= 0) {
-              allQuestions[existingIndex] = question;
+              allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
             } else {
               allQuestions.push(question);
             }
@@ -968,7 +1003,7 @@
           supabaseResponses.forEach(response => {
             const existingIndex = allResponses.findIndex(r => r.id === response.id);
             if (existingIndex >= 0) {
-              allResponses[existingIndex] = response;
+              allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
             } else {
               allResponses.push(response);
             }
@@ -1024,31 +1059,55 @@
       updateDeleteButton();
     }
 
+    // FIXED: Improved question dropdown population with better sorting
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionSelector');
       
       if (allQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions available</option>';
+        selector.innerHTML = '<option value="">No questions available - create your first one!</option>';
         return;
       }
 
-      selector.innerHTML = '<option value="">Select a question...</option>';
+      selector.innerHTML = '<option value="">Select a question to view responses...</option>';
 
-      allQuestions.forEach((question) => {
+      // Sort questions by date and response count
+      const sortedQuestions = allQuestions.map(question => {
+        const responses = getResponsesForQuestion(question);
+        return {
+          ...question,
+          responseCount: responses.length,
+          sortDate: new Date(question.created_at || question.published_at || question.timestamp || 0)
+        };
+      }).sort((a, b) => {
+        // First by response count (desc), then by date (desc)
+        if (a.responseCount !== b.responseCount) {
+          return b.responseCount - a.responseCount;
+        }
+        return b.sortDate - a.sortDate;
+      });
+
+      sortedQuestions.forEach((question) => {
         const option = document.createElement('option');
         option.value = question.id || 'demo';
         
         const questionText = question.text || question.question_text || 'Untitled Question';
-        const shortText = questionText.length > 60 ? questionText.substring(0, 60) + '...' : questionText;
+        const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
         
-        const responses = getResponsesForQuestion(question);
-        const responseCount = responses.length;
-        option.textContent = `${shortText} (${responseCount} responses)`;
+        const responseCount = question.responseCount;
+        const dateStr = question.sortDate.toLocaleDateString();
+        
+        const migrated = question.migrated ? ' [Imported]' : '';
+        const createdBy = question.created_by ? ` [${question.created_by}]` : '';
+        
+        option.textContent = `${shortText} - ${responseCount} responses (${dateStr})${migrated}${createdBy}`;
         
         selector.appendChild(option);
       });
 
-      debugLog('Question dropdown populated', { count: allQuestions.length });
+      debugLog('Question dropdown populated with sorting', { 
+        total: allQuestions.length,
+        withResponses: sortedQuestions.filter(q => q.responseCount > 0).length
+      });
     }
 
     function updateResponseCount() {
@@ -1265,7 +1324,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      debugLog('INTUITY Analytics (Mobile Fixed) Loading...');
+      debugLog('INTUITY Analytics (Fixed) Loading...');
       
       debugMode = window.location.search.includes('debug') || localStorage.getItem('debug_mode') === 'true';
       
@@ -1296,7 +1355,10 @@
                 questions: allQuestions.length,
                 responses: allResponses.length,
                 connected: isConnected,
-                selected: currentSelectedQuestion?.id || 'none'
+                selected: currentSelectedQuestion?.id || 'none',
+                allStorageKeys: Object.keys(localStorage).filter(key => 
+                  key.includes('question') || key.includes('response') || key.includes('teacher')
+                )
               });
             }, 500);
           } else {
@@ -1306,7 +1368,7 @@
         }
       });
       
-      debugLog('INTUITY Analytics (Mobile Fixed) Ready!');
+      debugLog('INTUITY Analytics (Fixed) Ready!');
     });
   </script>
 </body>
