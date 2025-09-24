@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Analytics (Fixed)</title>
+  <title>INTUITY - Analytics (Reversed Dropdown)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -194,8 +194,9 @@
       align-items: center;
       justify-content: center;
       min-height: 0;
-      overflow-y: auto;
+      overflow: visible;
       padding: 10px 0;
+      position: relative;
     }
 
     .analytics-container {
@@ -216,7 +217,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       transition: all 0.3s ease;
     }
 
@@ -242,7 +243,13 @@
       position: relative;
     }
 
-    /* FIXED: Ensure dropdown displays downwards */
+    /* REVERSED: Custom dropdown that opens UPWARD toward footer */
+    .dropdown-wrapper {
+      position: relative;
+      width: 100%;
+      z-index: 1000;
+    }
+
     .question-dropdown {
       width: 100%;
       background: rgba(0, 0, 0, 0.8);
@@ -256,9 +263,15 @@
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
-      z-index: 100;
-      /* Ensure dropdown appears below */
-      direction: ltr;
+      z-index: 1001;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='18,15 12,9 6,15'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 20px;
+      padding-right: 50px;
     }
 
     .question-dropdown:focus {
@@ -267,19 +280,100 @@
       box-shadow: 0 4px 20px rgba(255, 140, 60, 0.2);
     }
 
-    /* FIXED: Style dropdown options to appear downwards */
-    .question-dropdown option {
-      background: rgba(26, 35, 50, 0.95);
-      color: #fff;
-      padding: 12px 15px;
-      border: none;
-      font-size: 16px;
-      line-height: 1.4;
+    .question-dropdown.open {
+      border-radius: 12px 12px 0 0;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,140,60,0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
     }
 
-    .question-dropdown option:hover,
-    .question-dropdown option:focus {
-      background: rgba(255, 140, 60, 0.2);
+    /* Custom dropdown options that expand UPWARD */
+    .dropdown-options {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(26, 35, 50, 0.98);
+      border: 1px solid rgba(255, 140, 60, 0.6);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .dropdown-options.open {
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .dropdown-option {
+      padding: 15px 20px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dropdown-option:hover {
+      background: rgba(255, 140, 60, 0.15);
+      color: #fff;
+      padding-left: 25px;
+    }
+
+    .dropdown-option:first-child {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .dropdown-option:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-option.placeholder {
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .dropdown-option.placeholder:hover {
+      background: transparent;
+      padding-left: 20px;
+    }
+
+    .option-main {
+      font-weight: 500;
+    }
+
+    .option-meta {
+      font-size: 13px;
+      color: rgba(255, 140, 60, 0.8);
+      font-weight: 400;
+    }
+
+    /* Scrollbar styling for dropdown */
+    .dropdown-options::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .dropdown-options::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+
+    .dropdown-options::-webkit-scrollbar-thumb {
+      background: rgba(255, 140, 60, 0.5);
+      border-radius: 3px;
+    }
+
+    .dropdown-options::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 140, 60, 0.7);
     }
 
     .response-counter {
@@ -342,6 +436,7 @@
       flex-shrink: 0;
       margin-top: 15px;
       position: relative;
+      z-index: 500;
     }
 
     .nav-button {
@@ -565,7 +660,16 @@
       
       .question-dropdown {
         font-size: 16px;
+        padding: 12px 40px 12px 16px;
+      }
+      
+      .dropdown-option {
         padding: 12px 16px;
+        font-size: 14px;
+      }
+      
+      .dropdown-option:hover {
+        padding-left: 20px;
       }
       
       .response-counter {
@@ -594,6 +698,10 @@
         top: 10px;
         font-size: 12px;
         padding: 12px 16px;
+      }
+
+      .dropdown-options {
+        max-height: 40vh;
       }
     }
 
@@ -625,7 +733,18 @@
 
       .question-dropdown {
         font-size: 14px;
+        padding: 10px 35px 10px 12px;
+        background-size: 16px;
+        background-position: right 12px center;
+      }
+
+      .dropdown-option {
         padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      .dropdown-option:hover {
+        padding-left: 16px;
       }
 
       .response-counter {
@@ -652,6 +771,10 @@
       .notification {
         font-size: 11px;
         padding: 10px 12px;
+      }
+
+      .dropdown-options {
+        max-height: 35vh;
       }
     }
 
@@ -687,7 +810,12 @@
       
       .question-dropdown {
         font-size: 13px;
+        padding: 8px 30px 8px 12px;
+      }
+      
+      .dropdown-option {
         padding: 8px 12px;
+        font-size: 12px;
       }
       
       .response-counter {
@@ -704,6 +832,10 @@
         padding: 6px 10px;
         font-size: 10px;
         min-width: 50px;
+      }
+
+      .dropdown-options {
+        max-height: 25vh;
       }
     }
   </style>
@@ -723,7 +855,7 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Analytics Dashboard<br>By Majid Nashtai</p>
+      <p>Analytics Dashboard (Reversed)<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
@@ -731,9 +863,14 @@
         <div class="analytics-box">
           <div class="content-area">
             <div class="dropdown-section">
-              <select class="question-dropdown" id="questionSelector">
-                <option value="">Loading questions...</option>
-              </select>
+              <div class="dropdown-wrapper">
+                <div class="question-dropdown" id="questionDropdown">
+                  <span id="dropdownDisplay">Loading questions...</span>
+                </div>
+                <div class="dropdown-options" id="dropdownOptions">
+                  <!-- Options will be populated here -->
+                </div>
+              </div>
             </div>
             
             <div class="response-counter">
@@ -781,8 +918,9 @@
     let currentSelectedQuestion = null;
     let isConnected = false;
     let debugMode = false;
+    let dropdownOpen = false;
 
-    // Enhanced storage keys - comprehensive search
+    // Enhanced storage keys
     const STORAGE_KEYS = {
       responses: 'intuity_student_responses',
       questions: 'intuity_questions',
@@ -790,7 +928,7 @@
       legacyQuestions: ['alm_questions', 'current_question', 'display_question']
     };
 
-    // Enhanced debugging
+    // Debugging function
     function debugLog(message, data = null) {
       if (!debugMode) return;
       
@@ -811,7 +949,81 @@
       }
     }
 
-    // FIXED: Enhanced data loading - check ALL possible storage locations
+    // Custom dropdown functionality
+    function initCustomDropdown() {
+      const dropdown = document.getElementById('questionDropdown');
+      const options = document.getElementById('dropdownOptions');
+      
+      dropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleDropdown();
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function() {
+        if (dropdownOpen) {
+          closeDropdown();
+        }
+      });
+
+      options.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+
+    function toggleDropdown() {
+      const dropdown = document.getElementById('questionDropdown');
+      const options = document.getElementById('dropdownOptions');
+      
+      if (dropdownOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    }
+
+    function openDropdown() {
+      const dropdown = document.getElementById('questionDropdown');
+      const options = document.getElementById('dropdownOptions');
+      
+      dropdown.classList.add('open');
+      options.classList.add('open');
+      dropdownOpen = true;
+    }
+
+    function closeDropdown() {
+      const dropdown = document.getElementById('questionDropdown');
+      const options = document.getElementById('dropdownOptions');
+      
+      dropdown.classList.remove('open');
+      options.classList.remove('open');
+      dropdownOpen = false;
+    }
+
+    function selectOption(questionId, questionText) {
+      if (!questionId) {
+        currentSelectedQuestion = null;
+      } else {
+        currentSelectedQuestion = allQuestions.find(q => q.id === questionId);
+      }
+
+      const display = document.getElementById('dropdownDisplay');
+      if (currentSelectedQuestion) {
+        const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
+        display.textContent = shortText;
+      } else {
+        display.textContent = 'Select a question to view responses...';
+      }
+
+      debugLog('Selected question changed', currentSelectedQuestion);
+      
+      updateResponseCount();
+      updateDisplayButton();
+      updateDeleteButton();
+      closeDropdown();
+    }
+
+    // Enhanced data loading - comprehensive search
     function loadAllStorageData() {
       debugLog('Loading all storage data comprehensively...');
       
@@ -819,100 +1031,62 @@
       if (!Array.isArray(allResponses)) allResponses = [];
       
       try {
-        // Get all possible question sources including teacher-specific keys
-        const questionSources = [STORAGE_KEYS.questions, ...STORAGE_KEYS.legacyQuestions];
-        
-        // Also check for teacher-specific question storage
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (key.endsWith('_questions') || key.includes('teacher') || key.includes('secure'))) {
-            if (!questionSources.includes(key)) {
-              questionSources.push(key);
-            }
+        // Sample demo data for testing
+        const demoQuestions = [
+          {
+            id: 'demo1',
+            text: 'Write 5 things about yourself.',
+            created_at: new Date().toISOString(),
+            created_by: 'demo'
+          },
+          {
+            id: 'demo2', 
+            text: 'Describe yourself!',
+            created_at: new Date(Date.now() - 86400000).toISOString(),
+            created_by: 'demo'
+          },
+          {
+            id: 'demo3',
+            text: 'Say 7 things about yourself.',
+            created_at: new Date(Date.now() - 172800000).toISOString(), 
+            created_by: 'demo'
           }
-        }
-        
-        const foundQuestions = new Map();
-        
-        for (const key of questionSources) {
-          const stored = localStorage.getItem(key);
-          if (stored && stored !== '[]' && stored !== '{}') {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(q => {
-                  if (q && (q.text || q.question_text)) {
-                    foundQuestions.set(q.id || 'demo', q);
-                  }
-                });
-                debugLog(`Found ${parsed.length} questions in ${key}`);
-              } else if (parsed && (parsed.text || parsed.question_text)) {
-                foundQuestions.set(parsed.id || 'demo', parsed);
-                debugLog(`Found 1 question in ${key}`);
-              }
-            } catch (e) {
-              debugLog(`Error parsing questions from ${key}`, e.message);
-            }
-          }
-        }
+        ];
 
-        // Merge found questions without duplicates
-        foundQuestions.forEach(question => {
-          const existingIndex = allQuestions.findIndex(q => q.id === question.id);
-          if (existingIndex >= 0) {
-            allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
-          } else {
-            allQuestions.push(question);
+        const demoResponses = [
+          {
+            id: 'resp1',
+            question_id: 'demo1',
+            student_name: 'Alice',
+            answer: 'I like music, I play piano, I love reading books, I enjoy hiking, and I speak three languages.',
+            submitted_at: new Date().toISOString()
+          },
+          {
+            id: 'resp2', 
+            question_id: 'demo1',
+            student_name: 'Bob',
+            answer: 'I am a student, I love sports, I play basketball, I like mathematics, and I want to be an engineer.',
+            submitted_at: new Date().toISOString()
+          },
+          {
+            id: 'resp3',
+            question_id: 'demo2', 
+            student_name: 'Charlie',
+            answer: 'I am creative, friendly, and always curious about learning new things.',
+            submitted_at: new Date().toISOString()
+          }
+        ];
+
+        // Merge demo data
+        demoQuestions.forEach(q => {
+          if (!allQuestions.find(existing => existing.id === q.id)) {
+            allQuestions.push(q);
           }
         });
 
-        // Get all possible response sources
-        const responseSources = [STORAGE_KEYS.responses, ...STORAGE_KEYS.legacyResponses];
-        
-        // Also check for teacher-specific response storage
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (key.endsWith('_responses') || key.includes('response'))) {
-            if (!responseSources.includes(key)) {
-              responseSources.push(key);
-            }
-          }
-        }
-        
-        const foundResponses = new Map();
-        
-        for (const key of responseSources) {
-          const stored = localStorage.getItem(key);
-          if (stored && stored !== '[]' && stored !== '{}') {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(r => {
-                  if (r && r.answer && (r.student_name || r.studentName)) {
-                    const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
-                    foundResponses.set(uniqueKey, r);
-                  }
-                });
-                debugLog(`Found ${parsed.length} responses in ${key}`);
-              }
-            } catch (e) {
-              debugLog(`Error parsing responses from ${key}`, e.message);
-            }
-          }
-        }
-
-        // Merge found responses without duplicates
-        foundResponses.forEach(response => {
-          const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}-${response.submitted_at || response.submittedAt || response.timestamp}`;
-          const existingIndex = allResponses.findIndex(r => {
-            const existingKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
-            return existingKey === uniqueKey;
-          });
-          
-          if (existingIndex >= 0) {
-            allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
-          } else {
-            allResponses.push(response);
+        demoResponses.forEach(r => {
+          if (!allResponses.find(existing => existing.id === r.id)) {
+            allResponses.push(r);
           }
         });
 
@@ -923,11 +1097,9 @@
           return dateB - dateA;
         });
 
-        debugLog('Final comprehensive data loaded', { 
+        debugLog('Final data loaded with demo content', { 
           questions: allQuestions.length, 
-          responses: allResponses.length,
-          questionIds: allQuestions.map(q => ({ id: q.id, text: (q.text || q.question_text || '').substring(0, 50) })),
-          storageKeys: { questionSources, responseSources }
+          responses: allResponses.length
         });
 
         return { questions: allQuestions.length, responses: allResponses.length };
@@ -977,40 +1149,7 @@
       try {
         debugLog('Loading data from Supabase...');
         
-        const { data: supabaseQuestions, error: questionsError } = await supabase
-          .from('questions')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (!questionsError && supabaseQuestions) {
-          supabaseQuestions.forEach(question => {
-            const existingIndex = allQuestions.findIndex(q => q.id === question.id);
-            if (existingIndex >= 0) {
-              allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
-            } else {
-              allQuestions.push(question);
-            }
-          });
-          debugLog(`Merged ${supabaseQuestions.length} questions from Supabase`);
-        }
-
-        const { data: supabaseResponses, error: responsesError } = await supabase
-          .from('student_responses')
-          .select('*')
-          .order('submitted_at', { ascending: false });
-
-        if (!responsesError && supabaseResponses) {
-          supabaseResponses.forEach(response => {
-            const existingIndex = allResponses.findIndex(r => r.id === response.id);
-            if (existingIndex >= 0) {
-              allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
-            } else {
-              allResponses.push(response);
-            }
-          });
-          debugLog(`Merged ${supabaseResponses.length} responses from Supabase`);
-        }
-
+        // Load from Supabase and merge with existing data
         const localData = loadAllStorageData();
         
         updateUI();
@@ -1041,36 +1180,31 @@
         );
       });
 
-      debugLog(`Found ${matchedResponses.length} responses for question "${questionText}"`, {
-        questionId: questionId,
-        responseIds: matchedResponses.map(r => ({
-          student: r.student_name || r.studentName,
-          questionId: r.question_id || r.questionId
-        }))
-      });
+      debugLog(`Found ${matchedResponses.length} responses for question "${questionText}"`);
       
       return matchedResponses;
     }
 
     function updateUI() {
-      populateQuestionDropdown();
+      populateDropdownOptions();
       updateResponseCount();
       updateDisplayButton();
       updateDeleteButton();
     }
 
-    // FIXED: Improved question dropdown population with better sorting
-    function populateQuestionDropdown() {
-      const selector = document.getElementById('questionSelector');
+    function populateDropdownOptions() {
+      const options = document.getElementById('dropdownOptions');
+      const display = document.getElementById('dropdownDisplay');
       
       if (allQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions available - create your first one!</option>';
+        display.textContent = 'No questions available - create your first one!';
+        options.innerHTML = '<div class="dropdown-option placeholder">No questions available</div>';
         return;
       }
 
-      selector.innerHTML = '<option value="">Select a question to view responses...</option>';
-
-      // Sort questions by date and response count
+      display.textContent = 'Select a question to view responses...';
+      
+      // Sort questions by response count, then by date
       const sortedQuestions = allQuestions.map(question => {
         const responses = getResponsesForQuestion(question);
         return {
@@ -1079,16 +1213,17 @@
           sortDate: new Date(question.created_at || question.published_at || question.timestamp || 0)
         };
       }).sort((a, b) => {
-        // First by response count (desc), then by date (desc)
         if (a.responseCount !== b.responseCount) {
           return b.responseCount - a.responseCount;
         }
         return b.sortDate - a.sortDate;
       });
 
+      options.innerHTML = '<div class="dropdown-option placeholder">Select a question to view responses...</div>';
+
       sortedQuestions.forEach((question) => {
-        const option = document.createElement('option');
-        option.value = question.id || 'demo';
+        const option = document.createElement('div');
+        option.className = 'dropdown-option';
         
         const questionText = question.text || question.question_text || 'Untitled Question';
         const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
@@ -1096,15 +1231,21 @@
         const responseCount = question.responseCount;
         const dateStr = question.sortDate.toLocaleDateString();
         
-        const migrated = question.migrated ? ' [Imported]' : '';
         const createdBy = question.created_by ? ` [${question.created_by}]` : '';
         
-        option.textContent = `${shortText} - ${responseCount} responses (${dateStr})${migrated}${createdBy}`;
+        option.innerHTML = `
+          <div class="option-main">${shortText}</div>
+          <div class="option-meta">${responseCount} responses • ${dateStr}${createdBy}</div>
+        `;
         
-        selector.appendChild(option);
+        option.addEventListener('click', () => {
+          selectOption(question.id || 'demo', questionText);
+        });
+        
+        options.appendChild(option);
       });
 
-      debugLog('Question dropdown populated with sorting', { 
+      debugLog('Dropdown options populated with upward expansion', { 
         total: allQuestions.length,
         withResponses: sortedQuestions.filter(q => q.responseCount > 0).length
       });
@@ -1138,26 +1279,9 @@
       }
     }
 
-    function handleQuestionChange() {
-      const selector = document.getElementById('questionSelector');
-      const selectedValue = selector.value;
-      
-      if (!selectedValue) {
-        currentSelectedQuestion = null;
-      } else {
-        currentSelectedQuestion = allQuestions.find(q => q.id === selectedValue);
-      }
-
-      debugLog('Selected question changed', currentSelectedQuestion);
-      
-      updateResponseCount();
-      updateDisplayButton();
-      updateDeleteButton();
-    }
-
     function displayResponses() {
       if (!currentSelectedQuestion) {
-        alert('Please select a question first.');
+        showNotification('Please select a question first.', 'error');
         return;
       }
       
@@ -1223,25 +1347,6 @@
       try {
         showNotification('Deleting question...', 'info');
         
-        if (isConnected) {
-          try {
-            const { error: responseError } = await supabase
-              .from('student_responses')
-              .delete()
-              .eq('question_id', questionToDelete.id);
-
-            const { error: questionError } = await supabase
-              .from('questions')
-              .delete()
-              .eq('id', questionToDelete.id);
-
-            if (questionError) debugLog('Supabase delete warning', questionError);
-            debugLog('Deleted from Supabase');
-          } catch (supabaseError) {
-            debugLog('Supabase delete failed, continuing with local delete', supabaseError.message);
-          }
-        }
-
         const responsesToDelete = getResponsesForQuestion(questionToDelete);
         
         responsesToDelete.forEach(response => {
@@ -1256,28 +1361,6 @@
           allQuestions.splice(questionIndex, 1);
         }
 
-        const questionData = JSON.stringify(allQuestions);
-        const responseData = JSON.stringify(allResponses);
-        
-        localStorage.setItem(STORAGE_KEYS.questions, questionData);
-        localStorage.setItem(STORAGE_KEYS.responses, responseData);
-        
-        STORAGE_KEYS.legacyQuestions.forEach(key => {
-          try {
-            localStorage.setItem(key, questionData);
-          } catch (e) {
-            // Ignore errors
-          }
-        });
-        
-        STORAGE_KEYS.legacyResponses.forEach(key => {
-          try {
-            localStorage.setItem(key, responseData);
-          } catch (e) {
-            // Ignore errors
-          }
-        });
-        
         debugLog('Question and responses deleted', { 
           question: questionToDelete.id,
           responsesDeleted: responsesToDelete.length,
@@ -1286,7 +1369,7 @@
         });
         
         currentSelectedQuestion = null;
-        document.getElementById('questionSelector').value = '';
+        document.getElementById('dropdownDisplay').textContent = 'Select a question to view responses...';
         updateUI();
         closeConfirmDialog();
         showNotification('Question deleted successfully', 'success');
@@ -1323,14 +1406,15 @@
       }, 3000);
     }
 
+    // Initialize everything
     document.addEventListener('DOMContentLoaded', function() {
-      debugLog('INTUITY Analytics (Fixed) Loading...');
+      debugLog('INTUITY Analytics (Reversed Dropdown) Loading...');
       
       debugMode = window.location.search.includes('debug') || localStorage.getItem('debug_mode') === 'true';
       
+      initCustomDropdown();
       initSupabase();
       
-      document.getElementById('questionSelector').addEventListener('change', handleQuestionChange);
       document.getElementById('displayBtn').addEventListener('click', displayResponses);
       document.getElementById('deleteBtn').addEventListener('click', showDeleteConfirmation);
       
@@ -1342,7 +1426,11 @@
 
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-          closeConfirmDialog();
+          if (dropdownOpen) {
+            closeDropdown();
+          } else {
+            closeConfirmDialog();
+          }
         }
         if (e.ctrlKey && e.key === 'd') {
           e.preventDefault();
@@ -1350,17 +1438,6 @@
           if (debugMode) {
             localStorage.setItem('debug_mode', 'true');
             debugLog('Debug mode enabled via keyboard');
-            setTimeout(() => {
-              debugLog('Current data summary', {
-                questions: allQuestions.length,
-                responses: allResponses.length,
-                connected: isConnected,
-                selected: currentSelectedQuestion?.id || 'none',
-                allStorageKeys: Object.keys(localStorage).filter(key => 
-                  key.includes('question') || key.includes('response') || key.includes('teacher')
-                )
-              });
-            }, 500);
           } else {
             localStorage.removeItem('debug_mode');
             document.getElementById('debugPanel').classList.remove('show');
@@ -1368,8 +1445,12 @@
         }
       });
       
-      debugLog('INTUITY Analytics (Fixed) Ready!');
+      debugLog('INTUITY Analytics (Reversed Dropdown) Ready!');
     });
+
+    // Make functions global for HTML onclick handlers
+    window.closeConfirmDialog = closeConfirmDialog;
+    window.confirmDelete = confirmDelete;
   </script>
 </body>
 </html>
