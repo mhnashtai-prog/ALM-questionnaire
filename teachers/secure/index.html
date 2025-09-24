@@ -146,19 +146,17 @@
     .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
     .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
 
-    /* Authentication Screen */
+    /* FIXED: Minimalist Authentication Screen */
     .auth-screen {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.95);
       z-index: 3000;
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(10px);
     }
 
     .auth-screen.hidden {
@@ -166,49 +164,47 @@
     }
 
     .auth-container {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid rgba(255, 140, 60, 0.5);
-      border-radius: 25px;
-      padding: 40px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 30px 20px;
       text-align: center;
-      max-width: 450px;
+      max-width: 320px;
       width: 90%;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
     }
 
     .auth-title {
       color: #fff;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       letter-spacing: 2px;
       text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
     .auth-subtitle {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 16px;
-      margin-bottom: 30px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-bottom: 40px;
       line-height: 1.4;
+      font-weight: 300;
     }
 
+    /* FIXED: Simplified tab system */
     .auth-tabs {
       display: flex;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      padding: 4px;
+      justify-content: center;
       margin-bottom: 30px;
+      gap: 4px;
     }
 
     .auth-tab {
-      flex: 1;
       background: transparent;
       border: none;
-      border-radius: 12px;
-      padding: 12px 20px;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
+      border-radius: 20px;
+      padding: 8px 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -217,14 +213,15 @@
     }
 
     .auth-tab.active {
-      background: rgba(255, 140, 60, 0.8);
-      color: #000;
+      background: rgba(255, 140, 60, 0.1);
+      color: rgba(255, 140, 60, 0.9);
+      border: 1px solid rgba(255, 140, 60, 0.2);
     }
 
     .auth-form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
     .auth-input-group {
@@ -233,62 +230,61 @@
 
     .auth-label {
       display: block;
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 14px;
+      color: rgba(255, 140, 60, 0.7);
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
+    /* FIXED: Cleaner input styling */
     .auth-input {
       width: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
       color: #fff;
-      font-size: 16px;
+      font-size: 15px;
       font-family: inherit;
       outline: none;
       transition: all 0.3s ease;
     }
 
     .auth-input:focus {
-      border-color: rgba(255, 140, 60, 0.6);
-      background: rgba(0, 0, 0, 0.8);
-      box-shadow: 0 0 20px rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.4);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .auth-input::placeholder {
-      color: rgba(255, 255, 255, 0.4);
+      color: rgba(255, 255, 255, 0.3);
     }
 
     .auth-input.short {
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       font-weight: 600;
     }
 
     .auth-button {
       background: rgba(255, 140, 60, 0.8);
       border: none;
-      border-radius: 15px;
-      padding: 18px 30px;
+      border-radius: 12px;
+      padding: 14px 24px;
       color: #000;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-top: 10px;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
     }
 
     .auth-button:hover {
       background: rgba(255, 140, 60, 1);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.3);
+      transform: translateY(-1px);
     }
 
     .auth-button:disabled {
@@ -296,53 +292,43 @@
       color: rgba(255, 255, 255, 0.4);
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
+    }
+
+    /* FIXED: Simplified error/success messages */
+    .auth-error, .auth-success {
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+      text-align: center;
     }
 
     .auth-error {
       background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 10px;
-      padding: 12px;
       color: rgba(239, 68, 68, 0.9);
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: none;
-    }
-
-    .auth-error.show {
-      display: block;
-      animation: shake 0.5s ease-in-out;
+      border: 1px solid rgba(239, 68, 68, 0.2);
     }
 
     .auth-success {
       background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 10px;
-      padding: 12px;
       color: rgba(16, 185, 129, 0.9);
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: none;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
-    .auth-success.show {
+    .auth-error.show, .auth-success.show {
       display: block;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
     }
 
     .migration-notice {
       background: rgba(255, 140, 60, 0.1);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 20px;
+      border: 1px solid rgba(255, 140, 60, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
       display: none;
+      font-size: 12px;
+      text-align: left;
     }
 
     .migration-notice.show {
@@ -351,54 +337,57 @@
 
     .migration-title {
       color: rgba(255, 140, 60, 0.9);
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .migration-text {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 14px;
-      line-height: 1.4;
-      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      line-height: 1.3;
+      margin-bottom: 10px;
     }
 
     .migration-button {
       background: rgba(16, 185, 129, 0.8);
       border: none;
-      border-radius: 10px;
-      padding: 10px 20px;
+      border-radius: 6px;
+      padding: 6px 12px;
       color: #000;
-      font-size: 14px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
 
     .migration-button:hover {
       background: rgba(16, 185, 129, 1);
-      transform: translateY(-1px);
     }
 
+    /* FIXED: Responsive logout button */
     .logout-button {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 15px;
+      right: 15px;
       background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 25px;
-      padding: 8px 16px;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 20px;
+      padding: 6px 12px;
       color: rgba(239, 68, 68, 0.8);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       z-index: 1000;
       display: none;
+      touch-action: manipulation;
+      min-height: 32px;
+      min-width: 60px;
     }
 
     .logout-button.show {
@@ -411,7 +400,11 @@
       transform: scale(1.05);
     }
 
-    /* Main Interface (hidden until authenticated) */
+    .logout-button:active {
+      transform: scale(0.95);
+    }
+
+    /* Main Interface */
     .main-interface {
       position: relative;
       z-index: 10;
@@ -534,9 +527,10 @@
       font-weight: 600;
     }
 
+    /* FIXED: Enhanced dropdown styling for better functionality */
     .selection-dropdown {
       width: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px;
       padding: 12px 15px;
@@ -546,11 +540,12 @@
       outline: none;
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
     }
 
     .selection-dropdown:focus {
       border-color: rgba(255, 140, 60, 0.6);
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.8);
     }
 
     .selection-dropdown option {
@@ -791,6 +786,12 @@
       to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
     .qr-modal {
       position: fixed;
       top: 0;
@@ -864,16 +865,25 @@
     /* Mobile responsive design */
     @media (max-width: 768px) {
       .auth-container {
-        margin: 20px;
-        padding: 30px;
+        padding: 25px 15px;
+        max-width: 280px;
       }
 
       .auth-title {
-        font-size: 26px;
+        font-size: 24px;
       }
 
       .auth-subtitle {
-        font-size: 14px;
+        font-size: 13px;
+      }
+
+      .logout-button {
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        font-size: 10px;
+        min-height: 28px;
+        min-width: 50px;
       }
 
       .main-interface {
@@ -945,23 +955,23 @@
         padding: 10px;
         margin-top: 10px;
       }
-
-      .logout-button {
-        top: 10px;
-        right: 10px;
-        padding: 6px 12px;
-        font-size: 11px;
-      }
     }
 
     @media (max-width: 480px) {
       .auth-container {
-        margin: 15px;
-        padding: 25px;
+        padding: 20px 12px;
+        max-width: 260px;
       }
 
       .auth-title {
         font-size: 22px;
+      }
+
+      .logout-button {
+        padding: 4px 8px;
+        font-size: 9px;
+        min-height: 24px;
+        min-width: 45px;
       }
 
       .main-interface {
@@ -1028,34 +1038,33 @@
     </div>
   </div>
 
-  <!-- Authentication Screen -->
+  <!-- FIXED: Minimalist Authentication Screen -->
   <div class="auth-screen" id="authScreen">
     <div class="auth-container">
       <div class="auth-title">INTUITY</div>
-      <div class="auth-subtitle">Teacher Portal<br>Login or create your account</div>
+      <div class="auth-subtitle">Teacher Portal</div>
       
-      <!-- Login/Signup Tabs -->
+      <!-- Simplified Login/Signup Tabs -->
       <div class="auth-tabs">
         <button class="auth-tab active" id="loginTab">Login</button>
         <button class="auth-tab" id="signupTab">Sign Up</button>
       </div>
       
       <div class="auth-error" id="authError">
-        <strong>Error:</strong> <span id="errorMessage">Something went wrong.</span>
+        <span id="errorMessage">Something went wrong.</span>
       </div>
       
       <div class="auth-success" id="authSuccess">
-        <strong>Success:</strong> <span id="successMessage">Account created successfully!</span>
+        <span id="successMessage">Account created successfully!</span>
       </div>
 
       <!-- Data Migration Notice -->
       <div class="migration-notice" id="migrationNotice">
-        <div class="migration-title">🔄 Existing Data Found!</div>
+        <div class="migration-title">🔄 Existing Data Found</div>
         <div class="migration-text">
-          We found questions and responses from your previous INTUITY usage. 
-          Would you like to import them to your new secure account?
+          Found questions from previous usage. Import them to your secure account?
         </div>
-        <button class="migration-button" id="migrateBtn">Import My Data</button>
+        <button class="migration-button" id="migrateBtn">Import Data</button>
       </div>
       
       <!-- Login Form -->
@@ -1066,7 +1075,7 @@
             type="text" 
             id="loginCode" 
             class="auth-input short" 
-            placeholder="Your unique code" 
+            placeholder="Your code" 
             maxlength="12"
             autocomplete="username"
             required
@@ -1079,7 +1088,7 @@
             type="password" 
             id="loginPassword" 
             class="auth-input" 
-            placeholder="Enter your password" 
+            placeholder="Password" 
             autocomplete="current-password"
             required
           />
@@ -1093,12 +1102,12 @@
       <!-- Signup Form -->
       <form class="auth-form" id="signupForm" style="display: none;">
         <div class="auth-input-group">
-          <label class="auth-label" for="signupName">Your Name</label>
+          <label class="auth-label" for="signupName">Name</label>
           <input 
             type="text" 
             id="signupName" 
             class="auth-input" 
-            placeholder="e.g., Dr. Sarah Johnson" 
+            placeholder="Dr. Sarah Johnson" 
             maxlength="50"
             required
           />
@@ -1110,7 +1119,7 @@
             type="text" 
             id="signupSubject" 
             class="auth-input" 
-            placeholder="e.g., Mathematics, English" 
+            placeholder="Mathematics" 
             maxlength="30"
             required
           />
@@ -1122,7 +1131,7 @@
             type="text" 
             id="signupCode" 
             class="auth-input short" 
-            placeholder="Create unique code" 
+            placeholder="Create code" 
             maxlength="12"
             autocomplete="username"
             required
@@ -1135,7 +1144,7 @@
             type="password" 
             id="signupPassword" 
             class="auth-input" 
-            placeholder="Create secure password" 
+            placeholder="Secure password" 
             autocomplete="new-password"
             minlength="6"
             required
@@ -1149,10 +1158,10 @@
     </div>
   </div>
 
-  <!-- Logout Button -->
+  <!-- FIXED: Responsive Logout Button -->
   <button class="logout-button" id="logoutButton">🚪 Logout</button>
 
-  <!-- Main Interface (hidden until authenticated) -->
+  <!-- Main Interface -->
   <div class="main-interface" id="mainInterface">
     <header class="header">
       <h1>INTUITY</h1>
@@ -1180,7 +1189,7 @@
       <div class="republish-info" id="republishInfo">
         <span class="info-icon">ℹ️</span>
         <strong>Republishing:</strong> This will make the selected question available to students again. 
-        New responses will be added to the existing question. Perfect for absent students!
+        New responses will be added to the existing question.
       </div>
     </section>
 
@@ -1207,7 +1216,7 @@
     <footer class="footer">
       <a href="../../index.html" class="nav-button" title="Home">⌂</a>
       <button class="nav-button" id="nextQuestionBtn" title="Clear">✨</button>
-      <button class="nav-button" id="analyticsBtn" title="Your Analytics">📊</button>
+      <button class="nav-button" id="analyticsBtn" title="Analytics">📊</button>
     </footer>
   </div>
 
@@ -1573,6 +1582,7 @@
       }
     }
 
+    // FIXED: Enhanced question loading from all possible sources
     async function loadTeacherQuestions() {
       try {
         teacherQuestions = [];
@@ -1590,27 +1600,72 @@
           }
         }
         
-        // Also load from local storage
-        const localKey = getTeacherStorageKey('questions');
-        const localQuestions = JSON.parse(localStorage.getItem(localKey) || '[]');
+        // FIXED: Load from multiple local storage locations
+        const teacherKey = getTeacherStorageKey('questions');
+        const legacyKeys = ['alm_questions', 'current_question', 'display_question'];
+        const allSources = [teacherKey, ...legacyKeys];
+        
+        // Also check for any teacher-specific keys in storage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.includes(currentTeacher.code) && key.includes('question')) {
+            if (!allSources.includes(key)) {
+              allSources.push(key);
+            }
+          }
+        }
+        
+        const localQuestions = new Map();
+        
+        for (const key of allSources) {
+          try {
+            const data = localStorage.getItem(key);
+            if (data && data !== '[]' && data !== '{}') {
+              const parsed = JSON.parse(data);
+              
+              if (Array.isArray(parsed)) {
+                parsed.forEach(q => {
+                  if (q && (q.text || q.question_text)) {
+                    // Only include questions by this teacher or general questions
+                    if (!q.created_by || q.created_by === currentTeacher.code) {
+                      localQuestions.set(q.id || 'temp_' + Date.now(), q);
+                    }
+                  }
+                });
+              } else if (parsed && (parsed.text || parsed.question_text)) {
+                if (!parsed.created_by || parsed.created_by === currentTeacher.code) {
+                  localQuestions.set(parsed.id || 'temp_' + Date.now(), parsed);
+                }
+              }
+            }
+          } catch (e) {
+            console.warn(`Could not parse questions from ${key}:`, e);
+          }
+        }
         
         // Merge with local questions (avoid duplicates)
-        localQuestions.forEach(localQ => {
-          if (!teacherQuestions.find(q => q.id === localQ.id)) {
+        localQuestions.forEach((localQ, id) => {
+          if (!teacherQuestions.find(q => q.id === id)) {
             teacherQuestions.push(localQ);
           }
         });
         
-        teacherQuestions.sort((a, b) => new Date(b.created_at || b.published_at || 0) - new Date(a.created_at || a.published_at || 0));
+        // Sort by creation date (newest first)
+        teacherQuestions.sort((a, b) => {
+          const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
+          const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
+          return dateB - dateA;
+        });
         
         populateQuestionDropdown();
-        console.log(`✅ Loaded ${teacherQuestions.length} questions for ${currentTeacher.code}`);
+        console.log(`✅ Loaded ${teacherQuestions.length} questions for ${currentTeacher.code} from multiple sources`);
         
       } catch (error) {
         console.error('❌ Error loading teacher questions:', error);
       }
     }
 
+    // FIXED: Better question dropdown population
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionSelector');
       
@@ -1626,13 +1681,15 @@
         option.value = question.id;
         
         const questionText = question.text || question.question_text || 'Untitled Question';
-        const shortText = questionText.length > 60 ? questionText.substring(0, 60) + '...' : questionText;
+        const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
         
-        const date = new Date(question.created_at || question.published_at || 0);
+        const date = new Date(question.created_at || question.published_at || question.timestamp || 0);
         const dateStr = date.toLocaleDateString();
         
         const migrated = question.migrated ? ' [Imported]' : '';
-        option.textContent = `${shortText} (${dateStr})${migrated}`;
+        const published = question.is_published ? ' [Active]' : '';
+        
+        option.textContent = `${shortText} (${dateStr})${migrated}${published}`;
         
         selector.appendChild(option);
       });
@@ -1993,7 +2050,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Real Secure Teacher Interface initializing...');
+      console.log('🚀 INTUITY Minimalist Secure Teacher Interface initializing...');
       
       // Check if already authenticated
       if (checkAuthentication()) {
@@ -2107,6 +2164,11 @@
         }
       });
 
+      console.log('✅ Minimalist Secure Teacher Interface ready!');
+    });
+  </script>
+</body>
+</html>
       console.log('✅ Real Secure Teacher Interface ready!');
     });
   </script>
