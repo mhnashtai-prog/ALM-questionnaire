@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher Portal</title>
+  <title>INTUITY - Teacher Portal (FIXED)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -146,7 +146,7 @@
     .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
     .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
 
-    /* FIXED: Minimalist Authentication Screen */
+    /* FIXED: Enhanced Authentication Screen */
     .auth-screen {
       position: absolute;
       top: 0;
@@ -190,7 +190,6 @@
       font-weight: 300;
     }
 
-    /* FIXED: Simplified tab system */
     .auth-tabs {
       display: flex;
       justify-content: center;
@@ -238,7 +237,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* FIXED: Cleaner input styling */
     .auth-input {
       width: 100%;
       background: rgba(255, 255, 255, 0.05);
@@ -294,7 +292,6 @@
       transform: none;
     }
 
-    /* FIXED: Simplified error/success messages */
     .auth-error, .auth-success {
       border-radius: 8px;
       padding: 10px 12px;
@@ -367,41 +364,49 @@
       background: rgba(16, 185, 129, 1);
     }
 
-    /* FIXED: Responsive logout button */
+    /* FIXED: Fully responsive logout button - Issue 3 solved */
     .logout-button {
       position: fixed;
-      top: 15px;
-      right: 15px;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      border-radius: 20px;
-      padding: 6px 12px;
-      color: rgba(239, 68, 68, 0.8);
-      font-size: 11px;
+      top: 20px;
+      right: 20px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 25px;
+      padding: 8px 16px;
+      color: rgba(239, 68, 68, 0.9);
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
       z-index: 1000;
       display: none;
       touch-action: manipulation;
-      min-height: 32px;
-      min-width: 60px;
+      min-height: 36px;
+      min-width: 70px;
+      backdrop-filter: blur(10px);
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .logout-button.show {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .logout-button:hover {
       background: rgba(239, 68, 68, 0.2);
       color: rgba(239, 68, 68, 1);
-      transform: scale(1.05);
+      transform: translateY(-1px) scale(1.03);
+      border-color: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
     }
 
     .logout-button:active {
-      transform: scale(0.95);
+      transform: translateY(0) scale(0.98);
+      transition-duration: 0.1s;
     }
 
     /* Main Interface */
@@ -412,7 +417,7 @@
       height: 100dvh;
       display: none;
       flex-direction: column;
-      padding: 40px 20px 0;
+      padding: 50px 20px 0;
       min-height: 0;
     }
 
@@ -527,7 +532,7 @@
       font-weight: 600;
     }
 
-    /* FIXED: Enhanced dropdown styling for better functionality */
+    /* Enhanced dropdown styling for better functionality */
     .selection-dropdown {
       width: 100%;
       background: rgba(0, 0, 0, 0.6);
@@ -781,6 +786,30 @@
       display: block;
     }
 
+    /* FIXED: Debug panel for monitoring data flow */
+    .debug-panel {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 400px;
+      max-height: 200px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      font-family: monospace;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .debug-panel.show {
+      opacity: 1;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
       to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -862,7 +891,18 @@
       transform: scale(1.05);
     }
 
-    /* Mobile responsive design */
+    /* FIXED: Comprehensive responsive design - Issue 3 continued */
+    @media (max-width: 1024px) {
+      .logout-button {
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        font-size: 11px;
+        min-height: 32px;
+        min-width: 60px;
+      }
+    }
+
     @media (max-width: 768px) {
       .auth-container {
         padding: 25px 15px;
@@ -878,16 +918,17 @@
       }
 
       .logout-button {
-        top: 10px;
-        right: 10px;
+        top: 12px;
+        right: 12px;
         padding: 5px 10px;
         font-size: 10px;
         min-height: 28px;
         min-width: 50px;
+        border-radius: 20px;
       }
 
       .main-interface {
-        padding: 20px 15px 0;
+        padding: 35px 15px 0;
       }
       
       .header {
@@ -968,14 +1009,17 @@
       }
 
       .logout-button {
+        top: 8px;
+        right: 8px;
         padding: 4px 8px;
         font-size: 9px;
         min-height: 24px;
-        min-width: 45px;
+        min-width: 40px;
+        border-radius: 15px;
       }
 
       .main-interface {
-        padding: 15px 10px 0;
+        padding: 30px 10px 0;
       }
       
       .header {
@@ -1025,6 +1069,18 @@
         margin-top: 8px;
       }
     }
+
+    @media (max-width: 360px) {
+      .logout-button {
+        top: 5px;
+        right: 5px;
+        padding: 3px 6px;
+        font-size: 8px;
+        min-height: 20px;
+        min-width: 35px;
+        border-radius: 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1038,13 +1094,12 @@
     </div>
   </div>
 
-  <!-- FIXED: Minimalist Authentication Screen -->
+  <!-- Authentication Screen -->
   <div class="auth-screen" id="authScreen">
     <div class="auth-container">
       <div class="auth-title">INTUITY</div>
       <div class="auth-subtitle">Teacher Portal</div>
       
-      <!-- Simplified Login/Signup Tabs -->
       <div class="auth-tabs">
         <button class="auth-tab active" id="loginTab">Login</button>
         <button class="auth-tab" id="signupTab">Sign Up</button>
@@ -1058,7 +1113,6 @@
         <span id="successMessage">Account created successfully!</span>
       </div>
 
-      <!-- Data Migration Notice -->
       <div class="migration-notice" id="migrationNotice">
         <div class="migration-title">🔄 Existing Data Found</div>
         <div class="migration-text">
@@ -1067,7 +1121,6 @@
         <button class="migration-button" id="migrateBtn">Import Data</button>
       </div>
       
-      <!-- Login Form -->
       <form class="auth-form" id="loginForm">
         <div class="auth-input-group">
           <label class="auth-label" for="loginCode">Teacher Code</label>
@@ -1099,7 +1152,6 @@
         </button>
       </form>
       
-      <!-- Signup Form -->
       <form class="auth-form" id="signupForm" style="display: none;">
         <div class="auth-input-group">
           <label class="auth-label" for="signupName">Name</label>
@@ -1158,7 +1210,7 @@
     </div>
   </div>
 
-  <!-- FIXED: Responsive Logout Button -->
+  <!-- FIXED: Fully responsive logout button -->
   <button class="logout-button" id="logoutButton">🚪 Logout</button>
 
   <!-- Main Interface -->
@@ -1238,6 +1290,11 @@
     </div>
   </div>
 
+  <!-- FIXED: Debug panel for monitoring -->
+  <div class="debug-panel" id="debugPanel">
+    <div id="debugContent"></div>
+  </div>
+
   <script>
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
@@ -1251,6 +1308,44 @@
     let currentMode = 'new';
     let selectedQuestion = null;
     let currentTab = 'login';
+    let debugMode = false;
+
+    // FIXED: Enhanced debugging system - Issue 1 & 4 debugging
+    function debugLog(message, data = null) {
+      if (!debugMode) return;
+      
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[TEACHER DEBUG] ${timestamp} - ${message}`, data || '');
+      
+      const debugPanel = document.getElementById('debugPanel');
+      const debugContent = document.getElementById('debugContent');
+      debugContent.innerHTML += `<div><strong>${timestamp}:</strong> ${message}${data ? '<br><pre>' + JSON.stringify(data, null, 2).substring(0, 200) + '</pre>' : ''}</div><hr>`;
+      debugPanel.classList.add('show');
+      
+      // Keep only last 15 entries
+      const entries = debugContent.children;
+      while (entries.length > 30) {
+        entries[0].remove();
+        if (entries[1] && entries[1].tagName === 'HR') {
+          entries[1].remove();
+        }
+      }
+    }
+
+    // FIXED: Comprehensive storage key management - Issue 1 & 4 fix
+    const STORAGE_KEYS = {
+      teachers: 'intuity_teachers',
+      currentQuestion: 'current_question',
+      displayQuestion: 'display_question',
+      responses: 'intuity_student_responses',
+      analyticsQuestions: 'intuity_questions',
+      legacyQuestions: ['alm_questions', 'current_question', 'display_question'],
+      legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses']
+    };
+
+    function getTeacherStorageKey(key) {
+      return `${currentTeacher.code}_${key}`;
+    }
 
     // Authentication Functions
     function checkAuthentication() {
@@ -1280,8 +1375,9 @@
 
     function getTeachers() {
       try {
-        return JSON.parse(localStorage.getItem('intuity_teachers') || '{}');
+        return JSON.parse(localStorage.getItem(STORAGE_KEYS.teachers) || '{}');
       } catch (error) {
+        debugLog('Error loading teachers', error.message);
         return {};
       }
     }
@@ -1290,9 +1386,11 @@
       try {
         const teachers = getTeachers();
         teachers[code.toUpperCase()] = teacherData;
-        localStorage.setItem('intuity_teachers', JSON.stringify(teachers));
+        localStorage.setItem(STORAGE_KEYS.teachers, JSON.stringify(teachers));
+        debugLog('Teacher saved', { code, name: teacherData.name });
         return true;
       } catch (error) {
+        debugLog('Error saving teacher', error.message);
         console.error('Error saving teacher:', error);
         return false;
       }
@@ -1311,8 +1409,10 @@
           timestamp: Date.now()
         }));
         
+        debugLog('Teacher authenticated', { code: currentTeacher.code, name: currentTeacher.name });
         return true;
       }
+      debugLog('Authentication failed', { code, teacherExists: !!teacher });
       return false;
     }
 
@@ -1356,6 +1456,8 @@
         document.getElementById('loginForm').reset();
         document.getElementById('signupForm').reset();
         hideMessage();
+        
+        debugLog('Teacher logged out');
       }
     }
 
@@ -1368,7 +1470,7 @@
       document.getElementById('currentTeacherCode').textContent = currentTeacher.code;
       document.getElementById('currentTeacherName').textContent = currentTeacher.name;
       
-      console.log('✅ Authenticated as:', currentTeacher.name);
+      debugLog('Main interface shown for teacher', currentTeacher);
       initializeTeacherInterface();
     }
 
@@ -1421,11 +1523,13 @@
       hideMessage();
     }
 
-    // Data Migration Functions
+    // FIXED: Enhanced data migration - Issue 2 fix
     function checkForExistingData() {
       const legacyKeys = [
-        'alm_questions', 'current_question', 'display_question',
-        'alm_student_responses', 'student_responses', 'display_responses'
+        ...STORAGE_KEYS.legacyQuestions,
+        ...STORAGE_KEYS.legacyResponses,
+        STORAGE_KEYS.analyticsQuestions,
+        STORAGE_KEYS.responses
       ];
       
       let hasData = false;
@@ -1437,6 +1541,7 @@
             if ((Array.isArray(parsed) && parsed.length > 0) || 
                 (typeof parsed === 'object' && Object.keys(parsed).length > 0)) {
               hasData = true;
+              debugLog(`Found existing data in ${key}`, { items: Array.isArray(parsed) ? parsed.length : Object.keys(parsed).length });
               break;
             }
           } catch (e) {
@@ -1447,6 +1552,7 @@
       
       if (hasData) {
         document.getElementById('migrationNotice').classList.add('show');
+        debugLog('Showing migration notice');
       }
     }
 
@@ -1461,11 +1567,27 @@
         let migratedQuestions = 0;
         let migratedResponses = 0;
         
-        // Migrate questions
-        const questionSources = ['alm_questions', 'current_question', 'display_question'];
+        debugLog('Starting data migration', { teacherCode });
+        
+        // FIXED: Migrate questions from ALL sources including analytics - Issue 2 fix
+        const allQuestionSources = [
+          ...STORAGE_KEYS.legacyQuestions,
+          STORAGE_KEYS.analyticsQuestions
+        ];
+        
+        // Also check for dynamic keys
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes('question') || key.includes('teacher'))) {
+            if (!allQuestionSources.includes(key)) {
+              allQuestionSources.push(key);
+            }
+          }
+        }
+        
         const allQuestions = [];
         
-        questionSources.forEach(key => {
+        allQuestionSources.forEach(key => {
           const data = localStorage.getItem(key);
           if (data) {
             try {
@@ -1477,7 +1599,8 @@
                       ...q,
                       created_by: teacherCode,
                       migrated: true,
-                      migrated_at: new Date().toISOString()
+                      migrated_at: new Date().toISOString(),
+                      migrated_from: key
                     });
                   }
                 });
@@ -1487,21 +1610,36 @@
                     ...parsed,
                     created_by: teacherCode,
                     migrated: true,
-                    migrated_at: new Date().toISOString()
+                    migrated_at: new Date().toISOString(),
+                    migrated_from: key
                   });
                 }
               }
             } catch (e) {
-              console.warn(`Could not parse ${key}:`, e);
+              debugLog(`Could not parse questions from ${key}`, e.message);
             }
           }
         });
         
-        // Migrate responses
-        const responseSources = ['alm_student_responses', 'student_responses', 'display_responses'];
+        // Migrate responses from ALL sources
+        const allResponseSources = [
+          ...STORAGE_KEYS.legacyResponses,
+          STORAGE_KEYS.responses
+        ];
+        
+        // Check for dynamic response keys
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.includes('response')) {
+            if (!allResponseSources.includes(key)) {
+              allResponseSources.push(key);
+            }
+          }
+        }
+        
         const allResponses = [];
         
-        responseSources.forEach(key => {
+        allResponseSources.forEach(key => {
           const data = localStorage.getItem(key);
           if (data) {
             try {
@@ -1517,29 +1655,32 @@
                       allResponses.push({
                         ...r,
                         migrated: true,
-                        migrated_at: new Date().toISOString()
+                        migrated_at: new Date().toISOString(),
+                        migrated_from: key
                       });
                     }
                   }
                 });
               }
             } catch (e) {
-              console.warn(`Could not parse ${key}:`, e);
+              debugLog(`Could not parse responses from ${key}`, e.message);
             }
           }
         });
         
         // Save migrated data to teacher-specific keys
         if (allQuestions.length > 0) {
-          const teacherKey = `${teacherCode}_questions`;
-          localStorage.setItem(teacherKey, JSON.stringify(allQuestions));
+          const teacherQuestionKey = getTeacherStorageKey('questions');
+          localStorage.setItem(teacherQuestionKey, JSON.stringify(allQuestions));
           migratedQuestions = allQuestions.length;
+          debugLog('Questions migrated', { count: migratedQuestions, key: teacherQuestionKey });
         }
         
         if (allResponses.length > 0) {
-          const teacherKey = `${teacherCode}_responses`;
-          localStorage.setItem(teacherKey, JSON.stringify(allResponses));
+          const teacherResponseKey = getTeacherStorageKey('responses');
+          localStorage.setItem(teacherResponseKey, JSON.stringify(allResponses));
           migratedResponses = allResponses.length;
+          debugLog('Responses migrated', { count: migratedResponses, key: teacherResponseKey });
         }
         
         // Hide migration notice
@@ -1555,37 +1696,37 @@
         }, 2000);
         
       } catch (error) {
+        debugLog('Migration error', error.message);
         console.error('Migration error:', error);
         showError('Failed to migrate data. Please try again.');
       }
     }
 
-    function getTeacherStorageKey(key) {
-      return `${currentTeacher.code}_${key}`;
-    }
-
     async function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase client initialized');
+        debugLog('Supabase client initialized');
         
         const { data, error } = await supabase.from('questions').select('count').limit(1);
         if (error) throw error;
         
         isConnected = true;
-        console.log('✅ Connected to Supabase');
+        debugLog('Connected to Supabase');
         return true;
       } catch (error) {
+        debugLog('Supabase connection failed', error.message);
         console.error('❌ Supabase connection failed:', error);
         isConnected = false;
         return false;
       }
     }
 
-    // FIXED: Enhanced question loading from all possible sources
+    // FIXED: Comprehensive question loading from ALL sources - Issue 2 fix
     async function loadTeacherQuestions() {
       try {
         teacherQuestions = [];
+        
+        debugLog('Loading teacher questions', { teacherCode: currentTeacher.code, connected: isConnected });
         
         if (isConnected) {
           // Load from Supabase - filter by teacher
@@ -1597,18 +1738,27 @@
 
           if (!error && data) {
             teacherQuestions = data;
+            debugLog('Loaded questions from Supabase', { count: data.length });
           }
         }
         
-        // FIXED: Load from multiple local storage locations
-        const teacherKey = getTeacherStorageKey('questions');
-        const legacyKeys = ['alm_questions', 'current_question', 'display_question'];
-        const allSources = [teacherKey, ...legacyKeys];
+        // FIXED: Load from comprehensive local storage sources - Issue 2 major fix
+        const teacherQuestionKey = getTeacherStorageKey('questions');
+        const allSources = [
+          teacherQuestionKey,
+          ...STORAGE_KEYS.legacyQuestions,
+          STORAGE_KEYS.analyticsQuestions
+        ];
         
-        // Also check for any teacher-specific keys in storage
+        // FIXED: Also check for any analytics or system questions that could be republished - Issue 2 fix
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
-          if (key && key.includes(currentTeacher.code) && key.includes('question')) {
+          if (key && (
+            key.includes('question') || 
+            key.includes('analytics') ||
+            key.includes('teacher') ||
+            key.includes(currentTeacher.code)
+          )) {
             if (!allSources.includes(key)) {
               allSources.push(key);
             }
@@ -1626,26 +1776,43 @@
               if (Array.isArray(parsed)) {
                 parsed.forEach(q => {
                   if (q && (q.text || q.question_text)) {
-                    // Only include questions by this teacher or general questions
-                    if (!q.created_by || q.created_by === currentTeacher.code) {
-                      localQuestions.set(q.id || 'temp_' + Date.now(), q);
+                    // Include questions by this teacher OR system questions that can be republished
+                    if (!q.created_by || q.created_by === currentTeacher.code || key === STORAGE_KEYS.analyticsQuestions) {
+                      const questionId = q.id || 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                      localQuestions.set(questionId, {
+                        ...q,
+                        id: questionId,
+                        source: key,
+                        can_republish: true
+                      });
                     }
                   }
                 });
               } else if (parsed && (parsed.text || parsed.question_text)) {
-                if (!parsed.created_by || parsed.created_by === currentTeacher.code) {
-                  localQuestions.set(parsed.id || 'temp_' + Date.now(), parsed);
+                if (!parsed.created_by || parsed.created_by === currentTeacher.code || key === STORAGE_KEYS.analyticsQuestions) {
+                  const questionId = parsed.id || 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                  localQuestions.set(questionId, {
+                    ...parsed,
+                    id: questionId,
+                    source: key,
+                    can_republish: true
+                  });
                 }
               }
             }
           } catch (e) {
-            console.warn(`Could not parse questions from ${key}:`, e);
+            debugLog(`Could not parse questions from ${key}`, e.message);
           }
         }
         
-        // Merge with local questions (avoid duplicates)
+        // Merge with local questions (avoid duplicates by checking text content)
         localQuestions.forEach((localQ, id) => {
-          if (!teacherQuestions.find(q => q.id === id)) {
+          const existingQuestion = teacherQuestions.find(q => 
+            (q.id === id) || 
+            (q.text === localQ.text || q.question_text === localQ.question_text)
+          );
+          
+          if (!existingQuestion) {
             teacherQuestions.push(localQ);
           }
         });
@@ -1658,14 +1825,20 @@
         });
         
         populateQuestionDropdown();
-        console.log(`✅ Loaded ${teacherQuestions.length} questions for ${currentTeacher.code} from multiple sources`);
+        debugLog('Total questions loaded', { 
+          count: teacherQuestions.length,
+          sources: allSources.length,
+          byTeacher: teacherQuestions.filter(q => q.created_by === currentTeacher.code).length,
+          fromAnalytics: teacherQuestions.filter(q => q.source === STORAGE_KEYS.analyticsQuestions).length
+        });
         
       } catch (error) {
+        debugLog('Error loading teacher questions', error.message);
         console.error('❌ Error loading teacher questions:', error);
       }
     }
 
-    // FIXED: Better question dropdown population
+    // Enhanced question dropdown population
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionSelector');
       
@@ -1688,13 +1861,15 @@
         
         const migrated = question.migrated ? ' [Imported]' : '';
         const published = question.is_published ? ' [Active]' : '';
+        const fromAnalytics = question.source === STORAGE_KEYS.analyticsQuestions ? ' [Analytics]' : '';
+        const own = question.created_by === currentTeacher.code ? ' [Mine]' : '';
         
-        option.textContent = `${shortText} (${dateStr})${migrated}${published}`;
+        option.textContent = `${shortText} (${dateStr})${migrated}${published}${fromAnalytics}${own}`;
         
         selector.appendChild(option);
       });
 
-      console.log('✅ Question dropdown populated for teacher');
+      debugLog('Question dropdown populated', { count: teacherQuestions.length });
     }
 
     function switchMode(mode) {
@@ -1742,6 +1917,8 @@
       updateButtonStates();
       actionButtons.classList.remove('show');
       isPublished = false;
+      
+      debugLog('Mode switched', { mode, questionsAvailable: teacherQuestions.length });
     }
 
     function handleQuestionSelection() {
@@ -1761,7 +1938,11 @@
         const questionText = selectedQuestion.text || selectedQuestion.question_text || '';
         questionInput.value = questionText;
         updateButtonStates();
-        console.log('✅ Selected question for republishing:', selectedQuestion);
+        debugLog('Selected question for republishing', { 
+          id: selectedQuestion.id, 
+          text: questionText.substring(0, 50),
+          source: selectedQuestion.source
+        });
       }
     }
 
@@ -1802,131 +1983,264 @@
       }
     }
 
+    // FIXED: Comprehensive question publishing - Issue 1 & 4 major fix
     async function publishQuestion() {
       if (currentMode !== 'new') return;
       
       const questionText = document.getElementById('questionInput').value.trim();
-      if (!questionText) return;
+      if (!questionText) {
+        debugLog('Publish attempted with empty question');
+        return;
+      }
 
       const publishBtn = document.getElementById('publishBtn');
       const qrBtn = document.getElementById('qrBtn');
       
-      publishBtn.innerHTML = '⏳';
+      publishBtn.innerHTML = '⏳ Publishing...';
       publishBtn.disabled = true;
 
       try {
+        const questionId = 'question_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
         const questionData = {
+          id: questionId,
           text: questionText,
+          question_text: questionText, // Dual format for compatibility
           question_type: 'open-ended',
           is_published: true,
           published_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
           created_by: currentTeacher.code,
+          teacher_code: currentTeacher.code,
           metadata: {
             createdBy: currentTeacher.code,
             teacherName: currentTeacher.name,
             subject: currentTeacher.subject,
-            source: 'secure_teacher_interface'
+            source: 'secure_teacher_interface',
+            version: '2.0'
           }
         };
 
+        debugLog('Publishing question', { 
+          id: questionId, 
+          text: questionText.substring(0, 50),
+          teacher: currentTeacher.code
+        });
+
+        // Try Supabase first
         if (isConnected) {
-          // Unpublish other questions first
-          await supabase
-            .from('questions')
-            .update({ is_published: false })
-            .eq('is_published', true);
+          try {
+            // Unpublish other questions first
+            await supabase
+              .from('questions')
+              .update({ is_published: false })
+              .eq('is_published', true);
 
-          const { data, error } = await supabase
-            .from('questions')
-            .insert([questionData])
-            .select();
+            const { data, error } = await supabase
+              .from('questions')
+              .insert([questionData])
+              .select();
 
-          if (error) throw error;
-          currentQuestion = data[0];
+            if (error) throw error;
+            currentQuestion = data[0];
+            debugLog('Question saved to Supabase', { id: currentQuestion.id });
+          } catch (supabaseError) {
+            debugLog('Supabase save failed, continuing with local', supabaseError.message);
+            currentQuestion = questionData;
+          }
         } else {
-          currentQuestion = {
-            id: Date.now(),
-            ...questionData
-          };
+          currentQuestion = questionData;
         }
 
-        // Save to teacher's local storage
-        const localKey = getTeacherStorageKey('questions');
-        const existingQuestions = JSON.parse(localStorage.getItem(localKey) || '[]');
-        existingQuestions.unshift(currentQuestion);
-        localStorage.setItem(localKey, JSON.stringify(existingQuestions));
-
-        // Also save as current question for global access
-        localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-
-        console.log('✅ New question published by', currentTeacher.code);
+        // FIXED: Save to ALL necessary storage locations - Issue 1 & 4 critical fix
+        const storageOperations = [];
         
+        try {
+          // 1. Save to teacher's personal storage
+          const teacherQuestionKey = getTeacherStorageKey('questions');
+          const existingTeacherQuestions = JSON.parse(localStorage.getItem(teacherQuestionKey) || '[]');
+          existingTeacherQuestions.unshift(currentQuestion);
+          localStorage.setItem(teacherQuestionKey, JSON.stringify(existingTeacherQuestions));
+          storageOperations.push(`Teacher storage (${teacherQuestionKey})`);
+
+          // 2. Save as current question for global access - CRITICAL for student interface
+          localStorage.setItem(STORAGE_KEYS.currentQuestion, JSON.stringify(currentQuestion));
+          storageOperations.push('Current question');
+          
+          // 3. Save to display question for compatibility
+          localStorage.setItem(STORAGE_KEYS.displayQuestion, JSON.stringify(currentQuestion));
+          storageOperations.push('Display question');
+          
+          // 4. Save to analytics questions for cross-system access
+          const analyticsQuestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.analyticsQuestions) || '[]');
+          // Remove any existing question with same ID
+          const filteredAnalytics = analyticsQuestions.filter(q => q.id !== currentQuestion.id);
+          filteredAnalytics.unshift(currentQuestion);
+          localStorage.setItem(STORAGE_KEYS.analyticsQuestions, JSON.stringify(filteredAnalytics));
+          storageOperations.push('Analytics questions');
+          
+          // 5. Save to legacy locations for backwards compatibility
+          for (const legacyKey of STORAGE_KEYS.legacyQuestions) {
+            try {
+              localStorage.setItem(legacyKey, JSON.stringify(currentQuestion));
+              storageOperations.push(`Legacy (${legacyKey})`);
+            } catch (e) {
+              debugLog(`Failed to save to ${legacyKey}`, e.message);
+            }
+          }
+
+          debugLog('Question saved to storage locations', { 
+            operations: storageOperations,
+            questionId: currentQuestion.id
+          });
+
+        } catch (storageError) {
+          debugLog('Storage save error', storageError.message);
+          throw new Error('Failed to save question to local storage');
+        }
+
+        // Update UI
         isPublished = true;
         publishBtn.innerHTML = '✓ Published';
         qrBtn.classList.add('show');
         
         showSuccessNotification('Question Published!', 'Students can now access your new question.');
         
+        // Reload questions to show the new one
         await loadTeacherQuestions();
+        
+        debugLog('Question successfully published', { 
+          id: currentQuestion.id,
+          storageLocations: storageOperations.length
+        });
 
       } catch (error) {
+        debugLog('Error publishing question', error.message);
         console.error('❌ Error publishing question:', error);
+        
         publishBtn.innerHTML = 'Publish';
         publishBtn.disabled = false;
+        
+        showError('Failed to publish question. Please try again.');
       }
     }
 
+    // FIXED: Enhanced republishing functionality - Issue 1 & 4 fix
     async function republishQuestion() {
-      if (currentMode !== 'republish' || !selectedQuestion) return;
+      if (currentMode !== 'republish' || !selectedQuestion) {
+        debugLog('Republish attempted without valid selection', { 
+          mode: currentMode, 
+          hasSelection: !!selectedQuestion 
+        });
+        return;
+      }
 
       const republishBtn = document.getElementById('republishBtn');
       const qrBtn = document.getElementById('qrBtn');
       
-      republishBtn.innerHTML = '⏳';
+      republishBtn.innerHTML = '⏳ Republishing...';
       republishBtn.disabled = true;
 
       try {
+        const republishedQuestion = {
+          ...selectedQuestion,
+          is_published: true,
+          published_at: new Date().toISOString(),
+          republished_by: currentTeacher.code,
+          republished_at: new Date().toISOString()
+        };
+
+        debugLog('Republishing question', { 
+          id: selectedQuestion.id,
+          originalSource: selectedQuestion.source,
+          teacher: currentTeacher.code
+        });
+
         if (isConnected) {
-          await supabase
-            .from('questions')
-            .update({ is_published: false })
-            .eq('is_published', true);
+          try {
+            await supabase
+              .from('questions')
+              .update({ is_published: false })
+              .eq('is_published', true);
 
-          const { data, error } = await supabase
-            .from('questions')
-            .update({ 
-              is_published: true,
-              published_at: new Date().toISOString()
-            })
-            .eq('id', selectedQuestion.id)
-            .select();
+            const { data, error } = await supabase
+              .from('questions')
+              .update({ 
+                is_published: true,
+                published_at: new Date().toISOString()
+              })
+              .eq('id', selectedQuestion.id)
+              .select();
 
-          if (error) throw error;
-          currentQuestion = data[0];
+            if (error) throw error;
+            currentQuestion = data[0] || republishedQuestion;
+            debugLog('Question republished in Supabase');
+          } catch (supabaseError) {
+            debugLog('Supabase republish failed, continuing locally', supabaseError.message);
+            currentQuestion = republishedQuestion;
+          }
         } else {
-          currentQuestion = {
-            ...selectedQuestion,
-            is_published: true,
-            published_at: new Date().toISOString()
-          };
+          currentQuestion = republishedQuestion;
         }
 
-        // Update global current question
-        localStorage.setItem('current_question', JSON.stringify(currentQuestion));
-
-        console.log('✅ Question republished by', currentTeacher.code);
+        // FIXED: Save republished question to ALL necessary locations - Issue 4 fix
+        const storageOperations = [];
         
+        try {
+          // Update global current question - CRITICAL for students
+          localStorage.setItem(STORAGE_KEYS.currentQuestion, JSON.stringify(currentQuestion));
+          storageOperations.push('Current question');
+          
+          // Update display question
+          localStorage.setItem(STORAGE_KEYS.displayQuestion, JSON.stringify(currentQuestion));
+          storageOperations.push('Display question');
+          
+          // Update analytics questions
+          const analyticsQuestions = JSON.parse(localStorage.getItem(STORAGE_KEYS.analyticsQuestions) || '[]');
+          const updatedAnalytics = analyticsQuestions.map(q => 
+            q.id === currentQuestion.id ? currentQuestion : q
+          );
+          if (!updatedAnalytics.find(q => q.id === currentQuestion.id)) {
+            updatedAnalytics.unshift(currentQuestion);
+          }
+          localStorage.setItem(STORAGE_KEYS.analyticsQuestions, JSON.stringify(updatedAnalytics));
+          storageOperations.push('Analytics questions');
+          
+          // Update legacy locations
+          for (const legacyKey of STORAGE_KEYS.legacyQuestions) {
+            try {
+              localStorage.setItem(legacyKey, JSON.stringify(currentQuestion));
+              storageOperations.push(`Legacy (${legacyKey})`);
+            } catch (e) {
+              debugLog(`Failed to republish to ${legacyKey}`, e.message);
+            }
+          }
+
+        } catch (storageError) {
+          debugLog('Republish storage error', storageError.message);
+          throw new Error('Failed to save republished question');
+        }
+
         isPublished = true;
         republishBtn.innerHTML = '✓ Republished';
         qrBtn.classList.add('show');
         
         const shortText = selectedQuestion.text?.substring(0, 40) + '...' || 'Question';
         showSuccessNotification('Question Republished!', `"${shortText}" is now available to students again.`);
+        
+        debugLog('Question successfully republished', { 
+          id: currentQuestion.id,
+          storageLocations: storageOperations.length
+        });
 
       } catch (error) {
+        debugLog('Error republishing question', error.message);
         console.error('❌ Error republishing question:', error);
+        
         republishBtn.innerHTML = 'Republish';
         republishBtn.disabled = false;
+        
+        showError('Failed to republish question. Please try again.');
       }
     }
 
@@ -1943,6 +2257,17 @@
       setTimeout(() => {
         notification.style.display = 'none';
       }, 3000);
+    }
+
+    function showError(message) {
+      const errorElement = document.getElementById('authError');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message;
+      errorElement.classList.add('show');
+      
+      setTimeout(() => {
+        errorElement.classList.remove('show');
+      }, 5000);
     }
 
     function nextQuestion() {
@@ -1968,6 +2293,8 @@
         
         switchMode('new');
         document.getElementById('questionInput').focus();
+        
+        debugLog('Session cleared for new question');
       }
     }
 
@@ -1979,6 +2306,8 @@
         timestamp: Date.now()
       }));
       
+      debugLog('Opening analytics for teacher', { code: currentTeacher.code });
+      
       try {
         window.open('../../visualisation/secure/?teacher=' + currentTeacher.code, '_blank');
       } catch (error) {
@@ -1987,7 +2316,10 @@
     }
 
     function generateQR() {
-      if (!currentQuestion) return;
+      if (!currentQuestion) {
+        debugLog('QR generation attempted without current question');
+        return;
+      }
       
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
@@ -2004,6 +2336,8 @@
       const studentURL = baseURL + pathParts.join('/');
       
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      debugLog('Generating QR code', { studentURL, questionId: currentQuestion.id });
       
       const img = new Image();
       img.onload = () => {
@@ -2028,6 +2362,8 @@
     }
 
     async function initializeTeacherInterface() {
+      debugLog('Initializing teacher interface', { teacher: currentTeacher.code });
+      
       await initSupabase();
       await loadTeacherQuestions();
       
@@ -2047,10 +2383,15 @@
       
       switchMode('new');
       questionInput.focus();
+      
+      debugLog('Teacher interface fully initialized');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Minimalist Secure Teacher Interface initializing...');
+      debugLog('INTUITY Fixed Teacher Portal Loading...');
+      
+      // Enable debug mode if requested
+      debugMode = window.location.search.includes('debug') || localStorage.getItem('debug_mode') === 'true';
       
       // Check if already authenticated
       if (checkAuthentication()) {
@@ -2162,9 +2503,20 @@
         if (e.key === 'Escape') {
           closeQRModal();
         }
+        if (e.ctrlKey && e.key === 'd') {
+          e.preventDefault();
+          debugMode = !debugMode;
+          if (debugMode) {
+            localStorage.setItem('debug_mode', 'true');
+            debugLog('Debug mode enabled');
+          } else {
+            localStorage.removeItem('debug_mode');
+            document.getElementById('debugPanel').classList.remove('show');
+          }
+        }
       });
 
-      console.log('✅ Minimalist Secure Teacher Interface ready!');
+      debugLog('INTUITY Fixed Teacher Portal Ready!');
     });
   </script>
 </body>
