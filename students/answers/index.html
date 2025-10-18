@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>INTUITY - Student Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../../intuity-data-sync.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../intuity-data-sync.js"></script>
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -489,82 +489,105 @@
     let videoStream = null;
     let capturedPhoto = null;
 
-    // Storage keys - matching the teacher interface
-    const STORAGE_KEYS = {
-      currentQuestion: 'current_question',
-      questions: 'intuity_questions',
-      responses: 'intuity_student_responses',
-      legacyQuestions: ['alm_questions', 'display_question', 'question_history'],
-      legacyResponses: ['alm_student_responses', 'student_responses']
-    };
-
-    // Load all available questions from ALL storage locations
-    function loadAllQuestions() {
-      console.log('🔍 Loading questions from all sources...');
+    // ========================================
+    // LOAD ALL QUESTIONS (FIXED VERSION)
+    // ========================================
+    async function loadAllQuestions() {
+      console.log('🔍 Loading questions via INTUITY Data Sync...');
       
       allQuestions = [];
-      const foundQuestions = new Map();
       
-      // Priority 1: Current question (most recent from teacher)
-      const currentQ = localStorage.getItem(STORAGE_KEYS.currentQuestion);
-      if (currentQ && currentQ !== 'null') {
-        try {
-          const parsed = JSON.parse(currentQ);
-          if (parsed && (parsed.text || parsed.question_text)) {
-            foundQuestions.set(parsed.id || 'current', parsed);
-            console.log('✅ Found current question');
-          }
-        } catch (e) {
-          console.warn('Could not parse current question');
+      // Try using the global sync layer first
+      if (window.intuitySync) {
+        console.log('✅ Using INTUITY DataSync layer');
+        
+        // Get current published question
+        const currentQ = await window.intuitySync.getCurrentQuestion();
+        
+        if (currentQ) {
+          allQuestions.push(currentQ);
+          console.log('✅ Got current question from DataSync:', (currentQ.text || currentQ.question_text)?.substring(0, 50));
         }
-      }
-
-      // Priority 2: All questions from analytics
-      const analyticsQ = localStorage.getItem(STORAGE_KEYS.questions);
-      if (analyticsQ && analyticsQ !== '[]') {
-        try {
-          const parsed = JSON.parse(analyticsQ);
-          if (Array.isArray(parsed)) {
-            parsed.forEach(q => {
-              if (q && (q.text || q.question_text)) {
-                foundQuestions.set(q.id || `q_${Date.now()}`, q);
-              }
-            });
-            console.log(`✅ Found ${parsed.length} questions from analytics`);
+        
+        // Also get all available questions
+        const allQ = window.intuitySync.getAllQuestions();
+        allQ.forEach(q => {
+          if (!allQuestions.find(existing => existing.id === q.id)) {
+            allQuestions.push(q);
           }
-        } catch (e) {
-          console.warn('Could not parse analytics questions');
-        }
-      }
-
-      // Priority 3: Legacy storage locations
-      STORAGE_KEYS.legacyQuestions.forEach(key => {
-        const stored = localStorage.getItem(key);
-        if (stored && stored !== 'null' && stored !== '[]') {
+        });
+        
+        console.log(`✅ Total questions from DataSync: ${allQuestions.length}`);
+      } else {
+        console.warn('⚠️ INTUITY DataSync not available, using direct localStorage');
+        
+        // Fallback: Direct localStorage access
+        const foundQuestions = new Map();
+        
+        // Check current question
+        const currentQ = localStorage.getItem('current_question');
+        if (currentQ && currentQ !== 'null') {
           try {
-            const parsed = JSON.parse(stored);
-            const items = Array.isArray(parsed) ? parsed : [parsed];
-            items.forEach(q => {
-              if (q && (q.text || q.question_text)) {
-                foundQuestions.set(q.id || `legacy_${key}`, q);
-              }
-            });
-            console.log(`✅ Found questions from ${key}`);
+            const parsed = JSON.parse(currentQ);
+            if (parsed && (parsed.text || parsed.question_text)) {
+              foundQuestions.set(parsed.id || 'current', parsed);
+              console.log('✅ Found current question from localStorage');
+            }
           } catch (e) {
-            // Continue
+            console.warn('Could not parse current question');
           }
         }
-      });
-
-      // Convert map to array and sort by date (newest first)
-      allQuestions = Array.from(foundQuestions.values()).sort((a, b) => {
+        
+        // Check analytics questions
+        const analyticsQ = localStorage.getItem('intuity_questions');
+        if (analyticsQ && analyticsQ !== '[]') {
+          try {
+            const parsed = JSON.parse(analyticsQ);
+            if (Array.isArray(parsed)) {
+              parsed.forEach(q => {
+                if (q && (q.text || q.question_text)) {
+                  foundQuestions.set(q.id || `q_${Date.now()}`, q);
+                }
+              });
+              console.log(`✅ Found ${parsed.length} questions from analytics`);
+            }
+          } catch (e) {
+            console.warn('Could not parse analytics questions');
+          }
+        }
+        
+        // Check legacy locations
+        const legacyKeys = ['alm_questions', 'display_question', 'question_history'];
+        legacyKeys.forEach(key => {
+          const stored = localStorage.getItem(key);
+          if (stored && stored !== 'null' && stored !== '[]') {
+            try {
+              const parsed = JSON.parse(stored);
+              const items = Array.isArray(parsed) ? parsed : [parsed];
+              items.forEach(q => {
+                if (q && (q.text || q.question_text)) {
+                  foundQuestions.set(q.id || `legacy_${key}`, q);
+                }
+              });
+              console.log(`✅ Found questions from ${key}`);
+            } catch (e) {
+              // Continue
+            }
+          }
+        });
+        
+        allQuestions = Array.from(foundQuestions.values());
+      }
+      
+      // Sort by date (newest first)
+      allQuestions.sort((a, b) => {
         const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
         const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
         return dateB - dateA;
       });
-
-      console.log(`📊 Total questions found: ${allQuestions.length}`);
-
+      
+      console.log(`📊 Total questions available: ${allQuestions.length}`);
+      
       // Update UI
       if (allQuestions.length === 0) {
         document.getElementById('noQuestion').style.display = 'block';
@@ -624,7 +647,9 @@
       submitBtn.disabled = !(name && answer);
     }
 
-    // Camera Functions
+    // ========================================
+    // CAMERA FUNCTIONS
+    // ========================================
     async function startCamera() {
       try {
         console.log('📷 Starting camera...');
@@ -696,7 +721,10 @@
       }
     }
 
-    function submitResponse() {
+    // ========================================
+    // SUBMIT RESPONSE (FIXED VERSION)
+    // ========================================
+    async function submitResponse() {
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
       
@@ -705,9 +733,9 @@
         return;
       }
 
-      console.log('💾 Submitting response...');
+      console.log('💾 Submitting response via INTUITY DataSync...');
 
-      const response = {
+      const responseData = {
         id: 'r_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
         questionId: currentQuestion.id,
         question_id: currentQuestion.id,
@@ -726,17 +754,35 @@
         hasPhoto: !!capturedPhoto
       };
 
-      // Save to primary storage
-      const responses = JSON.parse(localStorage.getItem(STORAGE_KEYS.responses) || '[]');
-      responses.push(response);
-      localStorage.setItem(STORAGE_KEYS.responses, JSON.stringify(responses));
+      // Try using INTUITY DataSync first
+      if (window.intuitySync) {
+        try {
+          const result = await window.intuitySync.submitResponse(responseData);
+          
+          if (result.success) {
+            console.log('✅ Response submitted via DataSync!', result.synced ? '(synced to cloud)' : '(saved locally)');
+            showSuccessScreen();
+            return;
+          }
+        } catch (error) {
+          console.warn('⚠️ DataSync submission failed, using fallback:', error);
+        }
+      }
+      
+      // Fallback: Direct localStorage save
+      console.log('📝 Using direct localStorage save');
+      
+      const responses = JSON.parse(localStorage.getItem('intuity_student_responses') || '[]');
+      responses.push(responseData);
+      localStorage.setItem('intuity_student_responses', JSON.stringify(responses));
       console.log('✅ Saved to primary storage');
 
       // Save to legacy storage
-      STORAGE_KEYS.legacyResponses.forEach(key => {
+      const legacyKeys = ['alm_student_responses', 'student_responses'];
+      legacyKeys.forEach(key => {
         try {
           const existing = JSON.parse(localStorage.getItem(key) || '[]');
-          existing.push(response);
+          existing.push(responseData);
           localStorage.setItem(key, JSON.stringify(existing));
           console.log(`✅ Saved to ${key}`);
         } catch (e) {
@@ -745,13 +791,13 @@
       });
 
       console.log('✅ Response submitted successfully!');
+      showSuccessScreen();
+    }
 
-      // Show success screen
+    function showSuccessScreen() {
       document.getElementById('questionSection').style.display = 'none';
       document.getElementById('questionSelection').style.display = 'none';
       document.getElementById('successScreen').classList.add('show');
-      
-      // Stop camera if running
       stopCamera();
     }
 
@@ -782,6 +828,10 @@
       console.log('🔄 Ready for another response');
     }
 
+    // ========================================
+    // AUTO-REFRESH & INITIALIZATION
+    // ========================================
+    
     // Auto-refresh questions every 10 seconds
     setInterval(() => {
       const previousCount = allQuestions.length;
@@ -793,10 +843,43 @@
       }
     }, 10000);
 
-    // Initialize on page load
-    window.addEventListener('DOMContentLoaded', () => {
+    // Initialize on page load (WITH DEBUGGING)
+    window.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Student Portal Ready!');
-      loadAllQuestions();
+      
+      // CRITICAL DEBUGGING
+      console.log('=== DEBUGGING INFO ===');
+      console.log('🔍 INTUITY DataSync available?', !!window.intuitySync);
+      console.log('🔍 Supabase available?', !!window.supabase);
+      
+      // Check localStorage directly
+      const currentQ = localStorage.getItem('current_question');
+      const analyticsQ = localStorage.getItem('intuity_questions');
+      
+      console.log('🔍 localStorage current_question:', currentQ ? 'EXISTS' : 'EMPTY');
+      console.log('🔍 localStorage intuity_questions:', analyticsQ ? 'EXISTS' : 'EMPTY');
+      
+      if (currentQ) {
+        try {
+          const parsed = JSON.parse(currentQ);
+          console.log('📝 Current question text:', parsed.text || parsed.question_text);
+        } catch (e) {
+          console.error('❌ Cannot parse current_question');
+        }
+      }
+      
+      // List ALL localStorage keys
+      const allKeys = Object.keys(localStorage).filter(key => 
+        key.includes('question') || key.includes('response') || key.includes('intuity')
+      );
+      console.log('🔍 Relevant localStorage keys:', allKeys);
+      console.log('======================');
+      
+      // Wait a moment for DataSync to initialize
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Load questions
+      await loadAllQuestions();
       
       // Check if coming from QR code - auto-select latest question
       const urlParams = new URLSearchParams(window.location.search);
@@ -814,3 +897,5 @@
   </script>
 </body>
 </html>
+
+📊 Total questions available: 2
