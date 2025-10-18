@@ -434,7 +434,6 @@
       transform: scale(1.05);
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
       .container {
         padding: 35px 15px 0;
@@ -462,29 +461,6 @@
         font-size: 14px;
         min-width: 80px;
       }
-    }
-
-    /* Debug Console */
-    .debug-console {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid rgba(255, 140, 60, 0.5);
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 12px;
-      color: #0f0;
-      font-family: monospace;
-      max-width: 300px;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 3000;
-      display: none;
-    }
-
-    .debug-console.show {
-      display: block;
     }
   </style>
 </head>
@@ -549,24 +525,11 @@
     </div>
   </div>
 
-  <div class="debug-console" id="debugConsole"></div>
-
   <script>
     console.log('🚀 INTUITY Teacher Portal Loading...');
     
     let currentQuestion = null;
     let isPublished = false;
-    let debugLog = [];
-
-    function addDebug(msg) {
-      debugLog.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
-      console.log(msg);
-      const debugConsole = document.getElementById('debugConsole');
-      if (debugConsole) {
-        debugConsole.innerHTML = debugLog.slice(-20).join('<br>');
-        debugConsole.scrollTop = debugConsole.scrollHeight;
-      }
-    }
 
     function handleQuestionInput() {
       const questionInput = document.getElementById('questionInput');
@@ -599,31 +562,19 @@
       publishBtn.innerHTML = '⏳ Publishing...';
       publishBtn.disabled = true;
 
-      addDebug('📝 Starting publish process...');
-
       try {
-        // Wait for DataSync
         if (!window.intuitySync) {
-          addDebug('⏳ Waiting for DataSync...');
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         if (!window.intuitySync) {
-          throw new Error('DataSync not available after waiting');
+          throw new Error('DataSync not available');
         }
 
-        addDebug('✅ DataSync available');
-        addDebug(`🌐 Online: ${window.intuitySync.isOnline}`);
-        addDebug(`🔌 Connected: ${window.intuitySync.isConnected}`);
-
-        // DIRECT SUPABASE WRITE (bypass DataSync for debugging)
         let supabaseSuccess = false;
         
         if (window.intuitySync.supabase && window.intuitySync.isOnline) {
-          addDebug('🌐 Attempting DIRECT Supabase write...');
-          
           const questionData = {
-            id: 'q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
             text: questionText,
             created_at: new Date().toISOString(),
             published_at: new Date().toISOString(),
@@ -632,69 +583,47 @@
             question_type: 'open-ended'
           };
 
-          addDebug(`📦 Question data: ${JSON.stringify(questionData).substring(0, 100)}...`);
+          const { data, error } = await window.intuitySync.supabase
+            .from('questions')
+            .insert([questionData])
+            .select();
 
-          try {
-            const { data, error } = await window.intuitySync.supabase
-              .from('questions')
-              .insert([questionData])
-              .select();
-
-            if (error) {
-              addDebug(`❌ Supabase ERROR: ${error.message}`);
-              addDebug(`Error details: ${JSON.stringify(error)}`);
-              throw error;
-            }
-
-            if (data && data.length > 0) {
-              addDebug('✅✅✅ SUPABASE WRITE SUCCESS!');
-              addDebug(`Inserted ID: ${data[0].id}`);
-              supabaseSuccess = true;
-              currentQuestion = data[0];
-              
-              // Also save to localStorage
-              localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
-            }
-          } catch (supabaseError) {
-            addDebug(`❌ Supabase exception: ${supabaseError.message}`);
-            throw supabaseError;
+          if (error) {
+            throw error;
           }
-        } else {
-          addDebug('⚠️ Supabase not available or offline');
+
+          if (data && data.length > 0) {
+            supabaseSuccess = true;
+            currentQuestion = data[0];
+            
+            const questionForStorage = {
+              ...data[0],
+              storedAt: new Date().toISOString()
+            };
+            localStorage.setItem('intuity_current_question', JSON.stringify(questionForStorage));
+          }
         }
 
         isPublished = true;
         
         if (supabaseSuccess) {
-          publishBtn.innerHTML = '✓ Published (Cloud)';
-          document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
-          addDebug('🎉 SUCCESS: Question in Supabase!');
+          publishBtn.innerHTML = '✓ Published';
+          document.getElementById('successMessage').innerHTML = 'Question Published!';
         } else {
-          publishBtn.innerHTML = '✓ Published (Local Only)';
-          document.getElementById('successMessage').innerHTML = 'Saved Locally<br><span style="font-size:14px;">Check connection!</span>';
-          addDebug('⚠️ Only saved locally - Supabase failed');
+          publishBtn.innerHTML = '✓ Saved Locally';
+          document.getElementById('successMessage').innerHTML = 'Saved Locally<br><span style="font-size:14px;">Check connection</span>';
         }
         
         qrBtn.classList.add('show');
         showSuccessNotification();
-        
-        // Show debug console
-        document.getElementById('debugConsole').classList.add('show');
-        setTimeout(() => {
-          document.getElementById('debugConsole').classList.remove('show');
-        }, 10000);
 
       } catch (error) {
-        addDebug(`❌❌❌ CRITICAL ERROR: ${error.message}`);
-        console.error('Full error:', error);
+        console.error('Publish error:', error);
         
         publishBtn.innerHTML = 'Publish';
         publishBtn.disabled = false;
         
-        alert(`FAILED TO PUBLISH:\n\n${error.message}\n\nCheck console for details.`);
-        
-        // Show debug console
-        document.getElementById('debugConsole').classList.add('show');
+        alert(`Failed to publish: ${error.message}`);
       }
     }
 
@@ -722,17 +651,12 @@
         
         isPublished = false;
         currentQuestion = null;
-        debugLog = [];
         
         document.getElementById('questionInput').focus();
-        
-        console.log('Session cleared for new question');
       }
     }
 
     function openAnalytics() {
-      console.log('Opening analytics...');
-      
       try {
         window.open('../../visualisation/', '_blank');
       } catch (error) {
@@ -742,7 +666,7 @@
 
     function generateQR() {
       if (!currentQuestion) {
-        console.warn('QR generation attempted without current question');
+        console.warn('No question to generate QR for');
         return;
       }
       
@@ -761,8 +685,6 @@
       const studentURL = baseURL + pathParts.join('/') + '?auto=true';
       
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
-      
-      console.log('Generating QR code for:', studentURL);
       
       const img = new Image();
       img.onload = () => {
@@ -786,38 +708,8 @@
       document.getElementById('qrModal').style.display = 'none';
     }
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Teacher Portal Ready!');
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (window.intuitySync) {
-        addDebug('✅ DataSync loaded');
-        addDebug(`🌐 Online: ${window.intuitySync.isOnline}`);
-        addDebug(`🔌 Supabase: ${window.intuitySync.isConnected}`);
-        
-        // Test Supabase connection
-        if (window.intuitySync.supabase) {
-          addDebug('🧪 Testing Supabase connection...');
-          try {
-            const { data, error } = await window.intuitySync.supabase
-              .from('questions')
-              .select('count')
-              .limit(1);
-            
-            if (error) {
-              addDebug(`❌ Supabase test FAILED: ${error.message}`);
-            } else {
-              addDebug('✅ Supabase connection OK!');
-            }
-          } catch (e) {
-            addDebug(`❌ Supabase test exception: ${e.message}`);
-          }
-        }
-      } else {
-        addDebug('❌ DataSync NOT loaded!');
-      }
       
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
@@ -832,6 +724,7 @@
           closeQRModal();
         }
       });
+
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           if (!document.getElementById('publishBtn').disabled) {
@@ -840,11 +733,6 @@
         }
         if (e.key === 'Escape') {
           closeQRModal();
-        }
-        // Press 'D' to toggle debug console
-        if (e.key === 'd' || e.key === 'D') {
-          const debugConsole = document.getElementById('debugConsole');
-          debugConsole.classList.toggle('show');
         }
       });
 
