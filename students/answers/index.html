@@ -870,7 +870,7 @@
 
   if (window.intuitySync) {
     try {
-      const result = await window.intuitySync.submitResponse(responseData);
+      const { data, error } = await supabase;
       
       if (result.success) {
         console.log('✅ Response submitted!', result.synced ? '(synced)' : '(local)');
