@@ -32,32 +32,52 @@
     .header {
       text-align: center;
       margin-bottom: 50px;
+      padding: 20px 0 16px;
     }
 
     .header h1 {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 56px;
-      font-weight: 800;
-      color: rgba(255, 140, 60, 1);
-      margin-bottom: 10px;
-      text-shadow: 0 0 30px rgba(255, 140, 60, 0.4);
+      font-weight: 700;
+      color: #C9A961;
+      margin-bottom: 8px;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #C9A961 0%, rgba(201, 169, 97, 0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .header p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 18px;
+    .header .subtitle {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .header .author {
+      font-size: 11px;
+      color: #636366;
+      font-weight: 400;
+      letter-spacing: 0.02em;
     }
 
     .question-box {
-      background: rgba(255, 140, 60, 0.08);
-      border: 2px solid rgba(255, 140, 60, 0.3);
+      background: rgba(0, 0, 0, 0.8);
+      border: 3px solid rgba(201, 169, 97, 0.8);
       border-radius: 25px;
       padding: 40px;
       margin-bottom: 30px;
       transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(201, 169, 97, 0.2);
     }
 
     .question-box:hover {
-      border-color: rgba(255, 140, 60, 0.5);
+      border-color: rgba(201, 169, 97, 1);
+      box-shadow: 0 0 30px rgba(201, 169, 97, 0.3);
       transform: translateY(-2px);
     }
 
@@ -87,7 +107,7 @@
     }
 
     .action-btn {
-      background: rgba(255, 140, 60, 0.9);
+      background: rgba(201, 169, 97, 0.9);
       border: none;
       border-radius: 18px;
       padding: 18px 36px;
@@ -101,9 +121,9 @@
     }
 
     .action-btn:hover {
-      background: rgba(255, 140, 60, 1);
+      background: rgba(201, 169, 97, 1);
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.3);
+      box-shadow: 0 8px 25px rgba(201, 169, 97, 0.3);
     }
 
     .action-btn:disabled {
@@ -116,12 +136,12 @@
 
     .action-btn.secondary {
       background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 140, 60, 0.9);
+      color: rgba(201, 169, 97, 0.9);
     }
 
     .action-btn.secondary:hover {
       background: rgba(255, 255, 255, 0.15);
-      color: rgba(255, 140, 60, 1);
+      color: rgba(201, 169, 97, 1);
     }
 
     .success-popup {
@@ -178,7 +198,7 @@
     }
 
     .history-label {
-      color: rgba(255, 140, 60, 0.7);
+      color: rgba(201, 169, 97, 0.7);
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -187,7 +207,7 @@
 
     .history-dropdown {
       background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 140, 60, 0.3);
+      border: 1px solid rgba(201, 169, 97, 0.3);
       border-radius: 12px;
       padding: 12px 16px;
       color: white;
@@ -198,12 +218,12 @@
     }
 
     .history-dropdown:hover {
-      border-color: rgba(255, 140, 60, 0.5);
+      border-color: rgba(201, 169, 97, 0.5);
     }
 
     .history-dropdown:focus {
       outline: none;
-      border-color: rgba(255, 140, 60, 0.6);
+      border-color: rgba(201, 169, 97, 0.6);
     }
 
     .char-count {
@@ -242,7 +262,8 @@
   <div class="container">
     <div class="header">
       <h1>INTUITY</h1>
-      <p>Teacher Portal</p>
+      <p class="subtitle">Teacher Portal</p>
+      <p class="author">by Majid Nashtai</p>
     </div>
 
     <div class="question-box">
@@ -259,6 +280,9 @@
     <div class="action-buttons">
       <button class="action-btn" id="publishBtn" onclick="publishQuestion()" disabled>
         📤 Publish
+      </button>
+      <button class="action-btn secondary" id="qrBtn" onclick="showQRCode()" style="display: none;">
+        📱 QR Code
       </button>
       <button class="action-btn secondary" onclick="clearQuestion()">
         🗑️ Clear
@@ -281,6 +305,83 @@
     <div class="success-icon">✨</div>
     <div class="success-title">Published!</div>
     <div class="success-text">Students can now see your question</div>
+  </div>
+
+  <!-- QR Code Modal -->
+  <div id="qrModal" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+  ">
+    <div style="
+      background: rgba(20, 20, 20, 0.98);
+      border: 3px solid rgba(201, 169, 97, 0.6);
+      border-radius: 25px;
+      padding: 40px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+    ">
+      <h2 style="
+        color: rgba(201, 169, 97, 1);
+        font-size: 28px;
+        margin-bottom: 15px;
+      ">📱 Student QR Code</h2>
+      <p style="
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 25px;
+        font-size: 15px;
+      ">Students scan this to access the response page</p>
+      
+      <div id="qrDisplay" style="
+        width: 320px;
+        height: 320px;
+        margin: 0 auto 25px;
+        background: white;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid rgba(201, 169, 97, 0.4);
+      ">
+        <div style="color: #666; font-size: 16px;">Generating QR Code...</div>
+      </div>
+      
+      <div style="
+        background: rgba(201, 169, 97, 0.1);
+        border: 1px solid rgba(201, 169, 97, 0.3);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 25px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+        word-break: break-all;
+      " id="studentUrl"></div>
+      
+      <button onclick="closeQRModal()" style="
+        width: 100%;
+        background: rgba(201, 169, 97, 0.8);
+        border: none;
+        border-radius: 15px;
+        padding: 16px;
+        color: black;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+      " onmouseover="this.style.background='rgba(201, 169, 97, 1)'" 
+         onmouseout="this.style.background='rgba(201, 169, 97, 0.8)'">
+        Close
+      </button>
+    </div>
   </div>
 
   <script>
@@ -368,6 +469,10 @@
 
         // Show success
         showSuccess();
+
+        // Show QR code button
+        document.getElementById('qrBtn').style.display = 'block';
+        console.log('✅ QR button shown - teacher can share immediately');
 
         // Clear after 2 seconds
         setTimeout(() => {
@@ -502,7 +607,7 @@
       modal.innerHTML = `
         <div style="
           background: rgba(20, 20, 20, 0.95);
-          border: 2px solid rgba(255, 140, 60, 0.5);
+          border: 2px solid rgba(201, 169, 97, 0.5);
           border-radius: 20px;
           padding: 30px;
           max-width: 900px;
@@ -511,17 +616,17 @@
           overflow-y: auto;
           color: white;
         ">
-          <h2 style="color: rgba(255, 140, 60, 1); margin-bottom: 20px; font-size: 28px;">
+          <h2 style="color: rgba(201, 169, 97, 1); margin-bottom: 20px; font-size: 28px;">
             📊 Responses (${currentResponses.length})
           </h2>
           <div style="
-            background: rgba(255, 140, 60, 0.1);
-            border: 1px solid rgba(255, 140, 60, 0.3);
+            background: rgba(201, 169, 97, 0.1);
+            border: 1px solid rgba(201, 169, 97, 0.3);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 25px;
           ">
-            <strong style="color: rgba(255, 140, 60, 0.9);">Question:</strong><br>
+            <strong style="color: rgba(201, 169, 97, 0.9);">Question:</strong><br>
             <span style="font-size: 18px; margin-top: 10px; display: block;">"${questionText}"</span>
           </div>
           <div style="display: grid; gap: 20px;">
@@ -554,7 +659,7 @@
                         width: 60px;
                         height: 60px;
                         border-radius: 10px;
-                        background: rgba(255, 140, 60, 0.2);
+                        background: rgba(201, 169, 97, 0.2);
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -563,7 +668,7 @@
                     `}
                     <div style="flex: 1;">
                       <div style="
-                        color: rgba(255, 140, 60, 1);
+                        color: rgba(201, 169, 97, 1);
                         font-weight: 700;
                         font-size: 18px;
                         margin-bottom: 10px;
@@ -597,7 +702,7 @@
           </div>
           <button onclick="this.parentElement.parentElement.remove()" style="
             width: 100%;
-            background: rgba(255, 140, 60, 0.8);
+            background: rgba(201, 169, 97, 0.8);
             border: none;
             border-radius: 15px;
             padding: 16px;
@@ -607,7 +712,7 @@
             cursor: pointer;
             margin-top: 25px;
             transition: all 0.3s;
-          " onmouseover="this.style.background='rgba(255, 140, 60, 1)'" onmouseout="this.style.background='rgba(255, 140, 60, 0.8)'">
+          " onmouseover="this.style.background='rgba(201, 169, 97, 1)'" onmouseout="this.style.background='rgba(201, 169, 97, 0.8)'">
             Close
           </button>
         </div>
@@ -625,6 +730,60 @@
     }
 
     // ============================================
+    // QR CODE GENERATION
+    // ============================================
+
+    function showQRCode() {
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
+      const urlDisplay = document.getElementById('studentUrl');
+      
+      modal.style.display = 'flex';
+      display.innerHTML = '<div style="color: #666; font-size: 16px;">Generating QR Code...</div>';
+      
+      // Build student URL
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      
+      // Remove current file and navigate to student path
+      pathParts.pop(); // remove index.html
+      pathParts.pop(); // remove questions
+      pathParts.pop(); // remove teachers
+      pathParts.push('students', 'answers', '');
+      
+      const studentURL = baseURL + pathParts.join('/');
+      
+      // Show URL
+      urlDisplay.textContent = studentURL;
+      
+      // Generate QR code using API
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=15`;
+      
+      const img = new Image();
+      img.onload = () => {
+        display.innerHTML = `<img src="${qrCodeURL}" style="width: 100%; height: 100%; object-fit: contain;" alt="QR Code for Students">`;
+        console.log('✅ QR Code generated');
+      };
+      
+      img.onerror = () => {
+        display.innerHTML = `
+          <div style="color: #ef4444; padding: 20px; text-align: center;">
+            <div style="font-size: 32px; margin-bottom: 12px;">⚠️</div>
+            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 12px; margin-top: 8px; color: #999;">Check your internet connection</div>
+          </div>
+        `;
+        console.error('❌ QR Code generation failed');
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').style.display = 'none';
+    }
+
+    // ============================================
     // KEYBOARD SHORTCUTS
     // ============================================
 
@@ -636,10 +795,24 @@
         }
       }
       
-      // Escape = Clear
+      // Escape = Clear or close modal
       if (e.key === 'Escape') {
-        clearQuestion();
+        const qrModal = document.getElementById('qrModal');
+        if (qrModal.style.display === 'flex') {
+          closeQRModal();
+        } else {
+          clearQuestion();
+        }
       }
+    });
+
+    // Close QR modal on background click
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQRModal();
+        }
+      });
     });
 
     console.log('💡 Tip: Press Ctrl+Enter to publish, Escape to clear');
