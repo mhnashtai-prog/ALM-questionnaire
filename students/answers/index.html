@@ -43,6 +43,59 @@
       margin-bottom: 8px;
     }
 
+    .welcome-back {
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      border-radius: 15px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .welcome-back.show {
+      display: flex;
+    }
+
+    .student-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid rgba(16, 185, 129, 0.5);
+      object-fit: cover;
+    }
+
+    .welcome-text {
+      flex: 1;
+    }
+
+    .welcome-text h3 {
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .welcome-text p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+    }
+
+    .clear-profile-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: rgba(239, 68, 68, 0.9);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .clear-profile-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
     .question-selection {
       background: rgba(0,0,0,0.5);
       border: 2px solid rgba(255,140,60,0.3);
@@ -187,6 +240,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .camera-title {
@@ -200,6 +255,7 @@
     .camera-controls {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .camera-btn {
@@ -212,6 +268,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
 
     .camera-btn:hover {
@@ -223,6 +280,33 @@
       opacity: 0.3;
       cursor: not-allowed;
       transform: none;
+    }
+
+    .camera-mode-switch {
+      display: flex;
+      gap: 5px;
+      background: rgba(0,0,0,0.3);
+      padding: 5px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 10px 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .mode-btn.active {
+      background: rgba(255, 140, 60, 0.3);
+      color: rgb(255, 140, 60);
     }
 
     #videoPreview {
@@ -246,6 +330,10 @@
       color: rgba(255, 255, 255, 0.6);
       font-size: 14px;
       margin-top: 10px;
+    }
+
+    #fileInput {
+      display: none;
     }
 
     .submit-btn {
@@ -331,6 +419,8 @@
       .question-text { font-size: 22px; }
       .form-input { font-size: 16px; }
       .question-selection, .camera-section { padding: 20px; }
+      .camera-controls { width: 100%; }
+      .camera-btn { flex: 1; min-width: 100px; }
     }
 
     @media (max-width: 480px) {
@@ -338,8 +428,9 @@
       .question-display { padding: 30px 20px; }
       .question-text { font-size: 20px; }
       .selection-header { flex-direction: column; align-items: flex-start; }
-      .camera-controls { flex-direction: column; width: 100%; }
+      .camera-controls { flex-direction: column; }
       .camera-btn { width: 100%; }
+      .welcome-back { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
@@ -349,6 +440,16 @@
       <h1>INTUITY</h1>
       <p>Student Response Portal</p>
       <p style="font-size: 14px; color: rgba(255, 255, 255, 0.5);">Answer questions from your teacher</p>
+    </div>
+
+    <!-- Welcome Back Section -->
+    <div class="welcome-back" id="welcomeBack">
+      <img id="studentAvatar" class="student-avatar" alt="Your photo">
+      <div class="welcome-text">
+        <h3>Welcome back, <span id="welcomeName"></span>! 👋</h3>
+        <p>Your profile has been loaded</p>
+      </div>
+      <button class="clear-profile-btn" onclick="clearProfile()">Clear Profile</button>
     </div>
 
     <div class="no-question" id="noQuestion">
@@ -378,15 +479,27 @@
       <div class="camera-section">
         <div class="camera-header">
           <div class="camera-title">📷 Optional Photo</div>
-          <div class="camera-controls">
-            <button class="camera-btn" id="startCameraBtn" onclick="startCamera()">Start Camera</button>
-            <button class="camera-btn" id="captureBtn" onclick="capturePhoto()" disabled style="display: none;">Capture</button>
-            <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display: none;">Retake</button>
-          </div>
         </div>
+
+        <!-- Camera Mode Selector -->
+        <div class="camera-mode-switch">
+          <button class="mode-btn active" onclick="switchMode('camera')">📷 Camera</button>
+          <button class="mode-btn" onclick="switchMode('selfie')">🤳 Selfie</button>
+          <button class="mode-btn" onclick="switchMode('upload')">📁 Upload</button>
+        </div>
+
+        <div class="camera-controls">
+          <button class="camera-btn" id="startCameraBtn" onclick="startCamera()">Start Camera</button>
+          <button class="camera-btn" id="captureBtn" onclick="capturePhoto()" disabled style="display: none;">Capture Photo</button>
+          <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display: none;">Retake</button>
+          <button class="camera-btn" id="uploadBtn" onclick="triggerFileUpload()" style="display: none;">Choose File</button>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx" onchange="handleFileUpload(event)">
+        
         <video id="videoPreview" autoplay playsinline></video>
         <img id="photoPreview" alt="Captured photo">
-        <div class="camera-info" id="cameraInfo">Add a photo of your work (optional)</div>
+        <div class="camera-info" id="cameraInfo">Choose a method above to add a photo</div>
       </div>
 
       <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
@@ -409,86 +522,173 @@
     let capturedPhoto = null;
     let isLoadingQuestions = false;
     let autoRefreshInterval = null;
+    let currentCameraMode = 'environment'; // 'environment' or 'user' (selfie)
+    let studentProfile = null;
 
     // ========================================
-    // LOAD QUESTIONS - FIXED VERSION
+    // STUDENT PROFILE MANAGEMENT
+    // ========================================
+    function loadStudentProfile() {
+      const saved = localStorage.getItem('intuity_student_profile');
+      if (saved) {
+        try {
+          studentProfile = JSON.parse(saved);
+          console.log('✅ Student profile loaded:', studentProfile.name);
+          
+          // Pre-fill name
+          document.getElementById('studentName').value = studentProfile.name;
+          
+          // Show welcome message
+          document.getElementById('welcomeName').textContent = studentProfile.name;
+          if (studentProfile.photo) {
+            document.getElementById('studentAvatar').src = studentProfile.photo;
+          } else {
+            document.getElementById('studentAvatar').style.display = 'none';
+          }
+          document.getElementById('welcomeBack').classList.add('show');
+          
+          checkForm();
+        } catch (e) {
+          console.error('❌ Error loading profile:', e);
+        }
+      }
+    }
+
+    function saveStudentProfile(name, photo) {
+      studentProfile = { name, photo, lastUsed: new Date().toISOString() };
+      localStorage.setItem('intuity_student_profile', JSON.stringify(studentProfile));
+      console.log('✅ Student profile saved');
+    }
+
+    function clearProfile() {
+      if (confirm('Clear your saved profile?')) {
+        localStorage.removeItem('intuity_student_profile');
+        studentProfile = null;
+        document.getElementById('welcomeBack').classList.remove('show');
+        document.getElementById('studentName').value = '';
+        console.log('🗑 Profile cleared');
+      }
+    }
+
+    // ========================================
+    // CAMERA MODE SWITCHING
+    // ========================================
+    function switchMode(mode) {
+      // Update button states
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Reset camera state
+      stopCamera();
+      document.getElementById('videoPreview').style.display = 'none';
+      document.getElementById('captureBtn').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+      document.getElementById('uploadBtn').style.display = 'none';
+      document.getElementById('startCameraBtn').style.display = 'none';
+      
+      if (mode === 'camera') {
+        currentCameraMode = 'environment';
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Take a photo of your work';
+      } else if (mode === 'selfie') {
+        currentCameraMode = 'user';
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Take a selfie with your work';
+      } else if (mode === 'upload') {
+        document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
+      }
+      
+      console.log('📷 Camera mode:', mode);
+    }
+
+    // ========================================
+    // FILE UPLOAD
+    // ========================================
+    function triggerFileUpload() {
+      document.getElementById('fileInput').click();
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      console.log('📁 File selected:', file.name, file.type);
+      
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          capturedPhoto = e.target.result;
+          const photo = document.getElementById('photoPreview');
+          photo.src = capturedPhoto;
+          photo.style.display = 'block';
+          document.getElementById('uploadBtn').style.display = 'none';
+          document.getElementById('retakeBtn').style.display = 'inline-block';
+          document.getElementById('cameraInfo').textContent = '✓ File uploaded! Click Retake to change';
+          console.log('✅ Image uploaded');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Handle documents (PDF, DOC, etc.)
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          capturedPhoto = e.target.result;
+          document.getElementById('photoPreview').style.display = 'none';
+          document.getElementById('uploadBtn').style.display = 'none';
+          document.getElementById('retakeBtn').style.display = 'inline-block';
+          document.getElementById('cameraInfo').textContent = `✓ Document uploaded: ${file.name}`;
+          console.log('✅ Document uploaded');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // ========================================
+    // LOAD QUESTIONS
     // ========================================
     async function loadAllQuestions(silent = false) {
-      if (isLoadingQuestions) {
-        console.log('⚠️ Already loading questions, skipping...');
-        return;
-      }
-
+      if (isLoadingQuestions) return;
       isLoadingQuestions = true;
       
-      if (!silent) {
-        console.log('🔍 Loading questions via INTUITY DataSync...');
-      }
+      if (!silent) console.log('🔍 Loading questions...');
       
-      // Wait for DataSync
       let retries = 0;
       while (!window.intuitySync && retries < 10) {
-        console.log('⏳ Waiting for DataSync...', retries);
         await new Promise(resolve => setTimeout(resolve, 200));
         retries++;
       }
       
       if (!window.intuitySync) {
-        console.error('❌ CRITICAL: DataSync never loaded!');
-        showError('System error: Data sync not available');
+        console.error('❌ DataSync not available');
         isLoadingQuestions = false;
         return;
       }
-      
-      console.log('✅ DataSync ready');
-      console.log('🌐 Online:', window.intuitySync.isOnline);
-      console.log('🔌 Connected:', window.intuitySync.isConnected);
       
       const previousCount = allQuestions.length;
       allQuestions = [];
       
       try {
-        // PRIORITY 1: Try Supabase FIRST if online
         if (window.intuitySync.isOnline && window.intuitySync.isConnected && window.intuitySync.supabase) {
-          console.log('🌐 Fetching from Supabase (PRIORITY)...');
+          const { data, error } = await window.intuitySync.supabase
+            .from('questions')
+            .select('*')
+            .order('created_at', { ascending: false });
           
-          try {
-            const { data, error } = await window.intuitySync.supabase
-              .from('questions')
-              .select('*')
-              .eq('is_published', true)
-              .order('published_at', { ascending: false });
+          if (!error && data && data.length > 0) {
+            console.log(`✅ Got ${data.length} questions from Supabase`);
+            allQuestions = data;
             
-            if (!error && data && data.length > 0) {
-              console.log(`✅ Got ${data.length} questions from Supabase!`);
-              allQuestions = data;
-              
-              // Cache latest to localStorage
-              if (data[0]) {
-                localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
-                console.log('✅ Cached latest question to localStorage');
-              }
-            } else {
-              console.warn('⚠️ Supabase query returned no data or error:', error);
+            if (data[0]) {
+              localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
             }
-          } catch (supabaseError) {
-            console.error('❌ Supabase fetch failed:', supabaseError);
           }
         }
         
-        // PRIORITY 2: If no Supabase data, try DataSync methods
         if (allQuestions.length === 0) {
-          console.log('⚠️ No Supabase data, trying DataSync methods...');
-          
           const currentQ = await window.intuitySync.getCurrentQuestion();
-          if (currentQ) {
-            console.log('✅ Got current question from DataSync');
-            allQuestions.push(currentQ);
-          }
+          if (currentQ) allQuestions.push(currentQ);
           
           const allQ = window.intuitySync.getAllQuestions();
-          console.log(`📚 Found ${allQ.length} questions in history`);
-          
           allQ.forEach(q => {
             if (q && (q.text || q.question_text)) {
               if (!allQuestions.find(existing => existing.id === q.id)) {
@@ -497,28 +697,21 @@
             }
           });
         }
-        
       } catch (error) {
         console.error('❌ Error loading questions:', error);
       }
       
-      // Sort by date (newest first)
       allQuestions.sort((a, b) => {
-        const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
-        const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
+        const dateA = new Date(a.created_at || a.published_at || 0);
+        const dateB = new Date(b.created_at || b.published_at || 0);
         return dateB - dateA;
       });
       
-      console.log(`📊 FINAL: ${allQuestions.length} questions available`);
-      
-      // Check for new questions
       if (!silent && allQuestions.length > previousCount) {
-        console.log(`✨ NEW QUESTIONS DETECTED! ${previousCount} → ${allQuestions.length}`);
+        console.log(`✨ New questions! ${previousCount} → ${allQuestions.length}`);
       }
       
-      // Update UI
       updateUI();
-      
       isLoadingQuestions = false;
     }
 
@@ -529,35 +722,20 @@
       } else {
         document.getElementById('noQuestion').style.display = 'none';
         document.getElementById('questionSelection').style.display = 'block';
-        
-        // Store current selection
-        const currentSelection = document.getElementById('questionDropdown').value;
-        
         populateDropdown();
-        
-        // Restore selection if still valid
-        if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
-          document.getElementById('questionDropdown').value = currentSelection;
-        }
-      }
-    }
-
-    function showError(message) {
-      console.error('❌', message);
-      const noQuestion = document.getElementById('noQuestion');
-      if (noQuestion) {
-        noQuestion.querySelector('p').textContent = message;
       }
     }
 
     function populateDropdown() {
       const dropdown = document.getElementById('questionDropdown');
+      const currentSelection = dropdown.value;
+      
       dropdown.innerHTML = '<option value="">Select a question...</option>';
       
       allQuestions.forEach((q, index) => {
         const text = q.text || q.question_text || 'Untitled Question';
         const preview = text.length > 60 ? text.substring(0, 60) + '...' : text;
-        const date = new Date(q.created_at || q.published_at || q.timestamp || 0);
+        const date = new Date(q.created_at || q.published_at || 0);
         const dateStr = date.toLocaleDateString();
         
         const option = document.createElement('option');
@@ -566,7 +744,9 @@
         dropdown.appendChild(option);
       });
 
-      console.log(`✅ Dropdown populated with ${allQuestions.length} questions`);
+      if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
+        dropdown.value = currentSelection;
+      }
     }
 
     function selectQuestion() {
@@ -584,8 +764,6 @@
       document.getElementById('questionText').textContent = questionText;
       document.getElementById('questionSection').style.display = 'block';
       document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      
-      console.log('✅ Question selected:', questionText.substring(0, 50));
     }
 
     function checkForm() {
@@ -594,17 +772,20 @@
       document.getElementById('submitBtn').disabled = !(name && answer);
     }
 
-    // Manual refresh button
     async function manualRefresh() {
-      console.log('🔄 Manual refresh triggered');
+      console.log('🔄 Manual refresh');
       await loadAllQuestions(false);
     }
 
-    // Camera functions
+    // ========================================
+    // CAMERA FUNCTIONS
+    // ========================================
     async function startCamera() {
       try {
-        console.log('📷 Starting camera...');
-        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        console.log('📷 Starting camera in', currentCameraMode, 'mode');
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: currentCameraMode }
+        });
         const video = document.getElementById('videoPreview');
         video.srcObject = videoStream;
         video.style.display = 'block';
@@ -612,7 +793,6 @@
         document.getElementById('captureBtn').style.display = 'inline-block';
         document.getElementById('captureBtn').disabled = false;
         document.getElementById('cameraInfo').textContent = 'Position your work and click Capture';
-        console.log('✅ Camera started');
       } catch (error) {
         console.error('❌ Camera error:', error);
         document.getElementById('cameraInfo').textContent = 'Camera not available: ' + error.message;
@@ -632,17 +812,23 @@
       stopCamera();
       document.getElementById('captureBtn').style.display = 'none';
       document.getElementById('retakeBtn').style.display = 'inline-block';
-      document.getElementById('cameraInfo').textContent = '✓ Photo captured! Click Retake to try again';
-      console.log('✅ Photo captured');
+      document.getElementById('cameraInfo').textContent = '✓ Photo captured!';
     }
 
     function retakePhoto() {
       capturedPhoto = null;
       document.getElementById('photoPreview').style.display = 'none';
       document.getElementById('retakeBtn').style.display = 'none';
-      document.getElementById('startCameraBtn').style.display = 'inline-block';
-      document.getElementById('cameraInfo').textContent = 'Add a photo of your work (optional)';
-      console.log('🔄 Ready to retake photo');
+      document.getElementById('fileInput').value = '';
+      
+      const activeMode = document.querySelector('.mode-btn.active');
+      if (activeMode.textContent.includes('Upload')) {
+        document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
+      } else {
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Add a photo (optional)';
+      }
     }
 
     function stopCamera() {
@@ -653,6 +839,445 @@
       }
     }
 
+    // ========================================
+    // SUBMIT RESPONSE
+    // ========================================
+    async function submitResponse() {
+      const name = document.getElementById('
+       if (!name || !answer || !currentQuestion) {
+    console.warn('❌ Cannot submit: missing required fields');
+    return;
+  }
+
+  console.log('💾 Submitting response...');
+
+  // Save student profile for next time
+  saveStudentProfile(name, capturedPhoto);
+
+  const responseData = {
+    questionId: currentQuestion.id,
+    question_id: currentQuestion.id,
+    questionText: currentQuestion.text || currentQuestion.question_text,
+    question_text: currentQuestion.text || currentQuestion.question_text,
+    studentName: name,
+    student_name: name,
+    answer: answer,
+    wordCount: answer.split(/\s+/).length,
+    word_count: answer.split(/\s+/).length,
+    photo_url: capturedPhoto || null,
+    hasPhoto: !!capturedPhoto
+  };
+
+  if (window.intuitySync) {
+    try {
+      const result = await window.intuitySync.submitResponse(responseData);
+      
+      if (result.success) {
+        console.log('✅ Response submitted!', result.synced ? '(synced)' : '(local)');
+        showSuccessScreen();
+        return;
+      }
+    } catch (error) {
+      console.error('❌ Submission failed:', error);
+      alert('Failed to submit response: ' + error.message);
+    }
+  } else {
+    console.error('❌ DataSync not available!');
+    alert('System error: Cannot submit response');
+  }
+}
+
+function showSuccessScreen() {
+  document.getElementById('questionSection').style.display = 'none';
+  document.getElementById('questionSelection').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  stopCamera();
+}
+
+function writeAnother() {
+  // Keep the name but clear answer and photo
+  document.getElementById('studentAnswer').value = '';
+  document.getElementById('questionDropdown').value = '';
+  capturedPhoto = null;
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('retakeBtn').style.display = 'none';
+  document.getElementById('startCameraBtn').style.display = 'inline-block';
+  document.getElementById('cameraInfo').textContent = 'Choose a method above to add a photo';
+  
+  // Reset to camera mode
+  document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector('.mode-btn').classList.add('active');
+  currentCameraMode = 'environment';
+  
+  currentQuestion = null;
+  document.getElementById('successScreen').classList.remove('show');
+  loadAllQuestions();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  checkForm();
+}
+
+// Auto-refresh every 15 seconds
+function startAutoRefresh() {
+  autoRefreshInterval = setInterval(() => {
+    loadAllQuestions(true);
+  }, 15000);
+  console.log('🔄 Auto-refresh enabled');
+}
+
+// Initialize
+window.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 INTUITY Student Portal Ready!');
+  
+  // Load student profile first
+  loadStudentProfile();
+  
+  await new Promise(resolve => setTimeout(resolve, 500));
+  await loadAllQuestions(false);
+  
+  // QR code auto-select
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
+    document.getElementById('questionDropdown').value = '0';
+    selectQuestion();
+    console.log('🎯 Auto-selected from QR code');
+  }
+  
+  startAutoRefresh();
+});
+
+window.addEventListener('beforeunload', () => {
+  stopCamera();
+  if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+});
+  <script>
+    console.log('🚀 INTUITY Student Portal Loading...');
+    
+    let allQuestions = [];
+    let currentQuestion = null;
+    let videoStream = null;
+    let capturedPhoto = null;
+    let isLoadingQuestions = false;
+    let autoRefreshInterval = null;
+    let currentCameraMode = 'environment'; // 'environment' or 'user' (selfie)
+    let studentProfile = null;
+
+    // ========================================
+    // STUDENT PROFILE MANAGEMENT
+    // ========================================
+    function loadStudentProfile() {
+      const saved = localStorage.getItem('intuity_student_profile');
+      if (saved) {
+        try {
+          studentProfile = JSON.parse(saved);
+          console.log('✅ Student profile loaded:', studentProfile.name);
+          
+          // Pre-fill name
+          document.getElementById('studentName').value = studentProfile.name;
+          
+          // Show welcome message
+          document.getElementById('welcomeName').textContent = studentProfile.name;
+          if (studentProfile.photo) {
+            document.getElementById('studentAvatar').src = studentProfile.photo;
+          } else {
+            document.getElementById('studentAvatar').style.display = 'none';
+          }
+          document.getElementById('welcomeBack').classList.add('show');
+          
+          checkForm();
+        } catch (e) {
+          console.error('❌ Error loading profile:', e);
+        }
+      }
+    }
+
+    function saveStudentProfile(name, photo) {
+      studentProfile = { name, photo, lastUsed: new Date().toISOString() };
+      localStorage.setItem('intuity_student_profile', JSON.stringify(studentProfile));
+      console.log('✅ Student profile saved');
+    }
+
+    function clearProfile() {
+      if (confirm('Clear your saved profile?')) {
+        localStorage.removeItem('intuity_student_profile');
+        studentProfile = null;
+        document.getElementById('welcomeBack').classList.remove('show');
+        document.getElementById('studentName').value = '';
+        console.log('🗑 Profile cleared');
+      }
+    }
+
+    // ========================================
+    // CAMERA MODE SWITCHING
+    // ========================================
+    function switchMode(mode) {
+      // Update button states
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Reset camera state
+      stopCamera();
+      document.getElementById('videoPreview').style.display = 'none';
+      document.getElementById('captureBtn').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+      document.getElementById('uploadBtn').style.display = 'none';
+      document.getElementById('startCameraBtn').style.display = 'none';
+      
+      if (mode === 'camera') {
+        currentCameraMode = 'environment';
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Take a photo of your work';
+      } else if (mode === 'selfie') {
+        currentCameraMode = 'user';
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Take a selfie with your work';
+      } else if (mode === 'upload') {
+        document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
+      }
+      
+      console.log('📷 Camera mode:', mode);
+    }
+
+    // ========================================
+    // FILE UPLOAD
+    // ========================================
+    function triggerFileUpload() {
+      document.getElementById('fileInput').click();
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      console.log('📁 File selected:', file.name, file.type);
+      
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          capturedPhoto = e.target.result;
+          const photo = document.getElementById('photoPreview');
+          photo.src = capturedPhoto;
+          photo.style.display = 'block';
+          document.getElementById('uploadBtn').style.display = 'none';
+          document.getElementById('retakeBtn').style.display = 'inline-block';
+          document.getElementById('cameraInfo').textContent = '✓ File uploaded! Click Retake to change';
+          console.log('✅ Image uploaded');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Handle documents (PDF, DOC, etc.)
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          capturedPhoto = e.target.result;
+          document.getElementById('photoPreview').style.display = 'none';
+          document.getElementById('uploadBtn').style.display = 'none';
+          document.getElementById('retakeBtn').style.display = 'inline-block';
+          document.getElementById('cameraInfo').textContent = `✓ Document uploaded: ${file.name}`;
+          console.log('✅ Document uploaded');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // ========================================
+    // LOAD QUESTIONS
+    // ========================================
+    async function loadAllQuestions(silent = false) {
+      if (isLoadingQuestions) return;
+      isLoadingQuestions = true;
+      
+      if (!silent) console.log('🔍 Loading questions...');
+      
+      let retries = 0;
+      while (!window.intuitySync && retries < 10) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        retries++;
+      }
+      
+      if (!window.intuitySync) {
+        console.error('❌ DataSync not available');
+        isLoadingQuestions = false;
+        return;
+      }
+      
+      const previousCount = allQuestions.length;
+      allQuestions = [];
+      
+      try {
+        if (window.intuitySync.isOnline && window.intuitySync.isConnected && window.intuitySync.supabase) {
+          const { data, error } = await window.intuitySync.supabase
+            .from('questions')
+            .select('*')
+            .order('created_at', { ascending: false });
+          
+          if (!error && data && data.length > 0) {
+            console.log(`✅ Got ${data.length} questions from Supabase`);
+            allQuestions = data;
+            
+            if (data[0]) {
+              localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
+            }
+          }
+        }
+        
+        if (allQuestions.length === 0) {
+          const currentQ = await window.intuitySync.getCurrentQuestion();
+          if (currentQ) allQuestions.push(currentQ);
+          
+          const allQ = window.intuitySync.getAllQuestions();
+          allQ.forEach(q => {
+            if (q && (q.text || q.question_text)) {
+              if (!allQuestions.find(existing => existing.id === q.id)) {
+                allQuestions.push(q);
+              }
+            }
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error loading questions:', error);
+      }
+      
+      allQuestions.sort((a, b) => {
+        const dateA = new Date(a.created_at || a.published_at || 0);
+        const dateB = new Date(b.created_at || b.published_at || 0);
+        return dateB - dateA;
+      });
+      
+      if (!silent && allQuestions.length > previousCount) {
+        console.log(`✨ New questions! ${previousCount} → ${allQuestions.length}`);
+      }
+      
+      updateUI();
+      isLoadingQuestions = false;
+    }
+
+    function updateUI() {
+      if (allQuestions.length === 0) {
+        document.getElementById('noQuestion').style.display = 'block';
+        document.getElementById('questionSelection').style.display = 'none';
+      } else {
+        document.getElementById('noQuestion').style.display = 'none';
+        document.getElementById('questionSelection').style.display = 'block';
+        populateDropdown();
+      }
+    }
+
+    function populateDropdown() {
+      const dropdown = document.getElementById('questionDropdown');
+      const currentSelection = dropdown.value;
+      
+      dropdown.innerHTML = '<option value="">Select a question...</option>';
+      
+      allQuestions.forEach((q, index) => {
+        const text = q.text || q.question_text || 'Untitled Question';
+        const preview = text.length > 60 ? text.substring(0, 60) + '...' : text;
+        const date = new Date(q.created_at || q.published_at || 0);
+        const dateStr = date.toLocaleDateString();
+        
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${preview} (${dateStr})`;
+        dropdown.appendChild(option);
+      });
+
+      if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
+        dropdown.value = currentSelection;
+      }
+    }
+
+    function selectQuestion() {
+      const index = document.getElementById('questionDropdown').value;
+      
+      if (!index) {
+        document.getElementById('questionSection').style.display = 'none';
+        currentQuestion = null;
+        return;
+      }
+      
+      currentQuestion = allQuestions[parseInt(index)];
+      const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
+      
+      document.getElementById('questionText').textContent = questionText;
+      document.getElementById('questionSection').style.display = 'block';
+      document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function checkForm() {
+      const name = document.getElementById('studentName').value.trim();
+      const answer = document.getElementById('studentAnswer').value.trim();
+      document.getElementById('submitBtn').disabled = !(name && answer);
+    }
+
+    async function manualRefresh() {
+      console.log('🔄 Manual refresh');
+      await loadAllQuestions(false);
+    }
+
+    // ========================================
+    // CAMERA FUNCTIONS
+    // ========================================
+    async function startCamera() {
+      try {
+        console.log('📷 Starting camera in', currentCameraMode, 'mode');
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: currentCameraMode }
+        });
+        const video = document.getElementById('videoPreview');
+        video.srcObject = videoStream;
+        video.style.display = 'block';
+        document.getElementById('startCameraBtn').style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'inline-block';
+        document.getElementById('captureBtn').disabled = false;
+        document.getElementById('cameraInfo').textContent = 'Position your work and click Capture';
+      } catch (error) {
+        console.error('❌ Camera error:', error);
+        document.getElementById('cameraInfo').textContent = 'Camera not available: ' + error.message;
+      }
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('videoPreview');
+      const photo = document.getElementById('photoPreview');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+      photo.src = capturedPhoto;
+      photo.style.display = 'block';
+      stopCamera();
+      document.getElementById('captureBtn').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'inline-block';
+      document.getElementById('cameraInfo').textContent = '✓ Photo captured!';
+    }
+
+    function retakePhoto() {
+      capturedPhoto = null;
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+      document.getElementById('fileInput').value = '';
+      
+      const activeMode = document.querySelector('.mode-btn.active');
+      if (activeMode && activeMode.textContent.includes('Upload')) {
+        document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
+      } else {
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Add a photo (optional)';
+      }
+    }
+
+    function stopCamera() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        document.getElementById('videoPreview').style.display = 'none';
+        videoStream = null;
+      }
+    }
+
+    // ========================================
+    // SUBMIT RESPONSE
+    // ========================================
     async function submitResponse() {
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
@@ -662,7 +1287,10 @@
         return;
       }
 
-      console.log('💾 Submitting response via INTUITY DataSync...');
+      console.log('💾 Submitting response...');
+
+      // Save student profile for next time
+      saveStudentProfile(name, capturedPhoto);
 
       const responseData = {
         questionId: currentQuestion.id,
@@ -683,12 +1311,12 @@
           const result = await window.intuitySync.submitResponse(responseData);
           
           if (result.success) {
-            console.log('✅ Response submitted via DataSync!', result.synced ? '(synced to cloud)' : '(saved locally)');
+            console.log('✅ Response submitted!', result.synced ? '(synced)' : '(local)');
             showSuccessScreen();
             return;
           }
         } catch (error) {
-          console.error('❌ DataSync submission failed:', error);
+          console.error('❌ Submission failed:', error);
           alert('Failed to submit response: ' + error.message);
         }
       } else {
@@ -705,41 +1333,44 @@
     }
 
     function writeAnother() {
-      document.getElementById('studentName').value = '';
+      // Keep the name but clear answer and photo
       document.getElementById('studentAnswer').value = '';
       document.getElementById('questionDropdown').value = '';
       capturedPhoto = null;
       document.getElementById('photoPreview').style.display = 'none';
       document.getElementById('retakeBtn').style.display = 'none';
       document.getElementById('startCameraBtn').style.display = 'inline-block';
-      document.getElementById('cameraInfo').textContent = 'Add a photo of your work (optional)';
+      document.getElementById('cameraInfo').textContent = 'Choose a method above to add a photo';
+      
+      // Reset to camera mode
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      const firstModeBtn = document.querySelector('.mode-btn');
+      if (firstModeBtn) firstModeBtn.classList.add('active');
+      currentCameraMode = 'environment';
+      
       currentQuestion = null;
       document.getElementById('successScreen').classList.remove('show');
       loadAllQuestions();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      console.log('🔄 Ready for another response');
+      checkForm();
     }
 
-    // Auto-refresh every 15 seconds (SILENT mode)
+    // Auto-refresh every 15 seconds
     function startAutoRefresh() {
       autoRefreshInterval = setInterval(() => {
-        loadAllQuestions(true); // Silent refresh
+        loadAllQuestions(true);
       }, 15000);
-      console.log('🔄 Auto-refresh enabled (every 15 seconds)');
+      console.log('🔄 Auto-refresh enabled');
     }
 
-    // Initialize
+    // ========================================
+    // INITIALIZE
+    // ========================================
     window.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Student Portal Ready!');
-      console.log('=== DEBUGGING INFO ===');
-      console.log('🔍 DataSync available?', !!window.intuitySync);
-      console.log('🔍 Supabase available?', !!window.supabase);
       
-      if (window.intuitySync) {
-        console.log('🔍 DataSync online?', window.intuitySync.isOnline);
-        console.log('🔍 DataSync connected?', window.intuitySync.isConnected);
-      }
-      console.log('======================');
+      // Load student profile first
+      loadStudentProfile();
       
       await new Promise(resolve => setTimeout(resolve, 500));
       await loadAllQuestions(false);
@@ -749,10 +1380,9 @@
       if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
         document.getElementById('questionDropdown').value = '0';
         selectQuestion();
-        console.log('🎯 Auto-selected latest question from QR code');
+        console.log('🎯 Auto-selected from QR code');
       }
       
-      // Start auto-refresh
       startAutoRefresh();
     });
 
@@ -762,4 +1392,4 @@
     });
   </script>
 </body>
-</html>
+</html>  
