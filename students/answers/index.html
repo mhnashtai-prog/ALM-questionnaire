@@ -490,93 +490,92 @@
     let capturedPhoto = null;
 
     // ========================================
-    // LOAD ALL QUESTIONS (FIXED VERSION)
+    // LOAD ALL QUESTIONS (PHONE-OPTIMIZED VERSION)
     // ========================================
     async function loadAllQuestions() {
       console.log('🔍 Loading questions via INTUITY Data Sync...');
       
       allQuestions = [];
       
-      // Try using the global sync layer first
-      if (window.intuitySync) {
-        console.log('✅ Using INTUITY DataSync layer');
+      // PHONE FIX: Wait longer for DataSync to be ready
+      let retries = 0;
+      while (!window.intuitySync && retries < 10) {
+        console.log('⏳ Waiting for DataSync...', retries);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        retries++;
+      }
+      
+      if (!window.intuitySync) {
+        console.error('❌ CRITICAL: DataSync never loaded!');
+        showError('System error: Data sync not available');
+        return;
+      }
+      
+      console.log('✅ DataSync ready, attempting to load questions...');
+      
+      // PHONE FIX: Force Supabase check first
+      if (window.intuitySync.supabase && window.intuitySync.isOnline) {
+        console.log('🌐 Attempting Supabase fetch (phone optimized)...');
         
-        // Get current published question
+        try {
+          // Direct Supabase query - bypass localStorage completely
+          const { data, error } = await window.intuitySync.supabase
+            .from('questions')
+            .select('*')
+            .eq('is_published', true)
+            .order('published_at', { ascending: false });
+          
+          if (!error && data && data.length > 0) {
+            console.log(`✅ Got ${data.length} questions from Supabase!`);
+            allQuestions = data;
+            
+            // Cache to localStorage for future
+            data.forEach(q => {
+              localStorage.setItem('current_question', JSON.stringify(q));
+            });
+          } else {
+            console.warn('⚠️ Supabase returned no questions or error:', error);
+          }
+        } catch (supabaseError) {
+          console.error('❌ Supabase fetch failed:', supabaseError);
+        }
+      }
+      
+      // If Supabase didn't work, try DataSync methods
+      if (allQuestions.length === 0) {
+        console.log('⚠️ Trying DataSync getCurrentQuestion...');
         const currentQ = await window.intuitySync.getCurrentQuestion();
         
         if (currentQ) {
           allQuestions.push(currentQ);
-          console.log('✅ Got current question from DataSync:', (currentQ.text || currentQ.question_text)?.substring(0, 50));
+          console.log('✅ Got question from DataSync');
         }
         
-        // Also get all available questions
+        // Also try getAllQuestions
         const allQ = window.intuitySync.getAllQuestions();
         allQ.forEach(q => {
           if (!allQuestions.find(existing => existing.id === q.id)) {
             allQuestions.push(q);
           }
         });
+      }
+      
+      // Last resort: Check localStorage directly
+      if (allQuestions.length === 0) {
+        console.warn('⚠️ No questions from cloud, checking localStorage...');
         
-        console.log(`✅ Total questions from DataSync: ${allQuestions.length}`);
-      } else {
-        console.warn('⚠️ INTUITY DataSync not available, using direct localStorage');
-        
-        // Fallback: Direct localStorage access
-        const foundQuestions = new Map();
-        
-        // Check current question
         const currentQ = localStorage.getItem('current_question');
         if (currentQ && currentQ !== 'null') {
           try {
             const parsed = JSON.parse(currentQ);
             if (parsed && (parsed.text || parsed.question_text)) {
-              foundQuestions.set(parsed.id || 'current', parsed);
-              console.log('✅ Found current question from localStorage');
+              allQuestions.push(parsed);
+              console.log('✅ Found question in localStorage');
             }
           } catch (e) {
-            console.warn('Could not parse current question');
+            console.error('❌ localStorage parse error');
           }
         }
-        
-        // Check analytics questions
-        const analyticsQ = localStorage.getItem('intuity_questions');
-        if (analyticsQ && analyticsQ !== '[]') {
-          try {
-            const parsed = JSON.parse(analyticsQ);
-            if (Array.isArray(parsed)) {
-              parsed.forEach(q => {
-                if (q && (q.text || q.question_text)) {
-                  foundQuestions.set(q.id || `q_${Date.now()}`, q);
-                }
-              });
-              console.log(`✅ Found ${parsed.length} questions from analytics`);
-            }
-          } catch (e) {
-            console.warn('Could not parse analytics questions');
-          }
-        }
-        
-        // Check legacy locations
-        const legacyKeys = ['alm_questions', 'display_question', 'question_history'];
-        legacyKeys.forEach(key => {
-          const stored = localStorage.getItem(key);
-          if (stored && stored !== 'null' && stored !== '[]') {
-            try {
-              const parsed = JSON.parse(stored);
-              const items = Array.isArray(parsed) ? parsed : [parsed];
-              items.forEach(q => {
-                if (q && (q.text || q.question_text)) {
-                  foundQuestions.set(q.id || `legacy_${key}`, q);
-                }
-              });
-              console.log(`✅ Found questions from ${key}`);
-            } catch (e) {
-              // Continue
-            }
-          }
-        });
-        
-        allQuestions = Array.from(foundQuestions.values());
       }
       
       // Sort by date (newest first)
@@ -586,16 +585,26 @@
         return dateB - dateA;
       });
       
-      console.log(`📊 Total questions available: ${allQuestions.length}`);
+      console.log(`📊 FINAL: ${allQuestions.length} questions available`);
       
       // Update UI
       if (allQuestions.length === 0) {
         document.getElementById('noQuestion').style.display = 'block';
         document.getElementById('questionSelection').style.display = 'none';
+        showError('No questions published yet. Ask your teacher to publish a question.');
       } else {
         document.getElementById('noQuestion').style.display = 'none';
         document.getElementById('questionSelection').style.display = 'block';
         populateDropdown();
+      }
+    }
+
+    // Helper function to show errors
+    function showError(message) {
+      console.error('❌', message);
+      const noQuestion = document.getElementById('noQuestion');
+      if (noQuestion) {
+        noQuestion.querySelector('p').textContent = message;
       }
     }
 
@@ -897,5 +906,3 @@
   </script>
 </body>
 </html>
-
-📊 Total questions available: 2
