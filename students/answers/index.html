@@ -2,42 +2,135 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student (FIXED)</title>
+  <title>INTUITY - Student Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
- <!-- Supabase CDN -->
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../../intuity-data-sync.js"></script>  
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
       min-height: 100vh;
-      font-family: -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #000 0%, #1a0a05 100%);
       color: white;
       padding: 20px;
     }
-    .container { max-width: 650px; margin: 0 auto; padding: 40px 20px; }
-    .header { text-align: center; margin-bottom: 50px; }
+    
+    .container { 
+      max-width: 650px; 
+      margin: 0 auto; 
+      padding: 40px 20px; 
+    }
+    
+    .header { 
+      text-align: center; 
+      margin-bottom: 40px; 
+    }
+    
     .header h1 {
       font-size: 56px;
       font-weight: 800;
       color: rgb(255, 140, 60);
       margin-bottom: 10px;
+      letter-spacing: 2px;
     }
-    .no-question { text-align: center; padding: 80px 20px; }
-    .no-question-icon { font-size: 80px; margin-bottom: 30px; opacity: 0.5; }
-    #questionSelection, #questionSection { display: none; }
+    
+    .header p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+    }
+
+    /* Question Selection Section */
+    .question-selection {
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,140,60,0.3);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .selection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .selection-title {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .refresh-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 1px solid rgba(255, 140, 60, 0.4);
+      border-radius: 10px;
+      padding: 8px 16px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
     .question-dropdown {
       width: 100%;
       background: rgba(0,0,0,0.5);
       border: 2px solid rgba(255,140,60,0.3);
       border-radius: 15px;
-      padding: 14px;
+      padding: 16px;
       color: white;
       font-size: 16px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
+
+    .question-dropdown:focus {
+      outline: none;
+      border-color: rgba(255,140,60,0.6);
+      background: rgba(0,0,0,0.7);
+    }
+
+    .question-dropdown option {
+      background: rgba(20, 20, 20, 0.98);
+      padding: 12px;
+    }
+
+    /* No Question State */
+    .no-question { 
+      text-align: center; 
+      padding: 80px 20px; 
+      display: none;
+    }
+    
+    .no-question-icon { 
+      font-size: 80px; 
+      margin-bottom: 30px; 
+      opacity: 0.5; 
+    }
+
+    .no-question p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+    }
+    
+    /* Question Display */
+    #questionSection { 
+      display: none; 
+    }
+    
     .question-display {
       background: rgba(255,140,60,0.1);
       border: 2px solid rgba(255,140,60,0.4);
@@ -46,7 +139,14 @@
       margin: 30px 0;
       text-align: center;
     }
-    .question-text { font-size: 26px; line-height: 1.5; }
+    
+    .question-text { 
+      font-size: 26px; 
+      line-height: 1.5; 
+      color: #fff;
+    }
+
+    /* Form Inputs */
     .form-input {
       width: 100%;
       background: rgba(0,0,0,0.5);
@@ -56,8 +156,102 @@
       color: white;
       font-size: 18px;
       margin: 15px 0;
+      font-family: inherit;
+      transition: all 0.3s ease;
     }
-    .form-textarea { min-height: 160px; }
+
+    .form-input:focus {
+      outline: none;
+      border-color: rgba(255,140,60,0.5);
+      background: rgba(0,0,0,0.7);
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .form-textarea { 
+      min-height: 160px; 
+      resize: vertical;
+    }
+
+    /* Camera Section */
+    .camera-section {
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,140,60,0.2);
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .camera-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .camera-title {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .camera-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .camera-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 1px solid rgba(255, 140, 60, 0.4);
+      border-radius: 10px;
+      padding: 8px 16px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .camera-btn:hover {
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
+    .camera-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #videoPreview {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 15px;
+      margin: 15px auto;
+      display: none;
+      border: 2px solid rgba(255,140,60,0.3);
+    }
+
+    #photoPreview {
+      max-width: 100%;
+      border-radius: 15px;
+      margin: 15px 0;
+      display: none;
+      border: 2px solid rgba(255,140,60,0.5);
+    }
+
+    .camera-info {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    /* Submit Button */
     .submit-btn {
       width: 100%;
       background: rgba(255,140,60,0.9);
@@ -69,101 +263,307 @@
       font-weight: 700;
       cursor: pointer;
       margin-top: 20px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .success-screen { display: none; text-align: center; padding: 80px 20px; }
-    .success-screen.show { display: block; }
+
+    .submit-btn:hover {
+      background: rgba(255,140,60,1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,140,60,0.3);
+    }
+    
+    .submit-btn:disabled { 
+      opacity: 0.3; 
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Success Screen */
+    .success-screen { 
+      display: none; 
+      text-align: center; 
+      padding: 80px 20px; 
+    }
+    
+    .success-screen.show { 
+      display: block; 
+    }
+
+    .success-icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .success-screen h2 {
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .success-screen p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .write-another-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 15px;
+      padding: 15px 30px;
+      color: rgb(255, 140, 60);
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .write-another-btn:hover {
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* Loading Indicator */
+    .loading {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 40px;
+      font-size: 16px;
+    }
+
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 42px;
+      }
+
+      .question-text {
+        font-size: 22px;
+      }
+
+      .form-input {
+        font-size: 16px;
+      }
+
+      .question-selection,
+      .camera-section {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 36px;
+      }
+
+      .question-display {
+        padding: 30px 20px;
+      }
+
+      .question-text {
+        font-size: 20px;
+      }
+
+      .selection-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .camera-controls {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .camera-btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>INTUITY</h1>
-      <p>Student Response Portal (FIXED)</p>
+      <p>Student Response Portal</p>
+      <p style="font-size: 14px; color: rgba(255, 255, 255, 0.5);">Answer questions from your teacher</p>
     </div>
 
+    <!-- No Questions Available -->
     <div class="no-question" id="noQuestion">
       <div class="no-question-icon">📭</div>
-      <div>No questions available yet</div>
+      <p>No questions available yet</p>
+      <p style="font-size: 14px; margin-top: 10px;">Check back soon or scan a QR code from your teacher</p>
     </div>
 
-    <div id="questionSelection">
+    <!-- Question Selection -->
+    <div class="question-selection" id="questionSelection" style="display: none;">
+      <div class="selection-header">
+        <div class="selection-title">📚 Available Questions</div>
+        <button class="refresh-btn" onclick="loadAllQuestions()">🔄 Refresh</button>
+      </div>
       <select id="questionDropdown" onchange="selectQuestion()" class="question-dropdown">
         <option value="">Select a question...</option>
       </select>
     </div>
 
+    <!-- Question Display & Response Form -->
     <div id="questionSection">
       <div class="question-display">
         <div class="question-text" id="questionText"></div>
       </div>
-      <input type="text" id="studentName" class="form-input" placeholder="Your name" oninput="checkForm()">
-      <textarea id="studentAnswer" class="form-input form-textarea" placeholder="Your answer" oninput="checkForm()"></textarea>
-      <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>Submit</button>
+
+      <input 
+        type="text" 
+        id="studentName" 
+        class="form-input" 
+        placeholder="Your name" 
+        oninput="checkForm()"
+      >
+
+      <textarea 
+        id="studentAnswer" 
+        class="form-input form-textarea" 
+        placeholder="Type your answer here..." 
+        oninput="checkForm()"
+      ></textarea>
+
+      <!-- Camera Section -->
+      <div class="camera-section">
+        <div class="camera-header">
+          <div class="camera-title">📷 Optional Photo</div>
+          <div class="camera-controls">
+            <button class="camera-btn" id="startCameraBtn" onclick="startCamera()">Start Camera</button>
+            <button class="camera-btn" id="captureBtn" onclick="capturePhoto()" disabled style="display: none;">Capture</button>
+            <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display: none;">Retake</button>
+          </div>
+        </div>
+        
+        <video id="videoPreview" autoplay playsinline></video>
+        <img id="photoPreview" alt="Captured photo">
+        
+        <div class="camera-info" id="cameraInfo">
+          Add a photo of your work (optional)
+        </div>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>
+        Submit Response
+      </button>
     </div>
 
+    <!-- Success Screen -->
     <div class="success-screen" id="successScreen">
-      <div style="font-size: 100px;">✨</div>
+      <div class="success-icon">✨</div>
       <h2>Response Submitted!</h2>
-      <button onclick="writeAnother()" style="margin-top: 30px; padding: 15px 30px; background: rgba(255,140,60,0.2); border: 2px solid rgba(255,140,60,0.5); border-radius: 15px; color: rgb(255,140,60); cursor: pointer;">Write Another</button>
+      <p>Your answer has been recorded successfully</p>
+      <button class="write-another-btn" onclick="writeAnother()">Answer Another Question</button>
     </div>
   </div>
 
   <script>
-    console.log('🚀 FIXED VERSION - Bulletproof Question Loading');
+    console.log('🚀 INTUITY Student Portal Loading...');
     
     let allQuestions = [];
     let currentQuestion = null;
+    let videoStream = null;
+    let capturedPhoto = null;
 
+    // Storage keys - matching the teacher interface
+    const STORAGE_KEYS = {
+      currentQuestion: 'current_question',
+      questions: 'intuity_questions',
+      responses: 'intuity_student_responses',
+      legacyQuestions: ['alm_questions', 'display_question', 'question_history'],
+      legacyResponses: ['alm_student_responses', 'student_responses']
+    };
+
+    // Load all available questions from ALL storage locations
     function loadAllQuestions() {
-      console.log('🔍 Loading questions from ALL possible sources...');
+      console.log('🔍 Loading questions from all sources...');
       
-      const sources = [
-        'current_question',      // MOST IMPORTANT - teacher publishes here
-        'question_history',      // Teacher history
-        'intuity_questions',     // Analytics
-        'alm_questions',         // Legacy
-        'display_question'       // Display
-      ];
+      allQuestions = [];
+      const foundQuestions = new Map();
       
-      const found = [];
-      
-      sources.forEach(source => {
+      // Priority 1: Current question (most recent from teacher)
+      const currentQ = localStorage.getItem(STORAGE_KEYS.currentQuestion);
+      if (currentQ && currentQ !== 'null') {
         try {
-          const data = localStorage.getItem(source);
-          console.log(`Checking ${source}:`, data ? 'FOUND' : 'empty');
-          
-          if (data && data !== 'null' && data !== '[]') {
-            const parsed = JSON.parse(data);
-            
-            if (Array.isArray(parsed)) {
-              parsed.forEach((q, i) => {
-                if (q && (q.text || q.question_text)) {
-                  q.id = q.id || `q_${source}_${i}`;
-                  const text = q.text || q.question_text;
-                  if (!found.some(e => (e.text || e.question_text) === text)) {
-                    found.push(q);
-                    console.log(`✅ Added: "${text.substring(0,40)}..." from ${source}`);
-                  }
-                }
-              });
-            } else if (parsed && (parsed.text || parsed.question_text)) {
-              parsed.id = parsed.id || `q_${source}`;
-              const text = parsed.text || parsed.question_text;
-              if (!found.some(e => (e.text || e.question_text) === text)) {
-                found.push(parsed);
-                console.log(`✅ Added: "${text.substring(0,40)}..." from ${source}`);
-              }
-            }
+          const parsed = JSON.parse(currentQ);
+          if (parsed && (parsed.text || parsed.question_text)) {
+            foundQuestions.set(parsed.id || 'current', parsed);
+            console.log('✅ Found current question');
           }
         } catch (e) {
-          console.warn(`Error with ${source}:`, e.message);
+          console.warn('Could not parse current question');
+        }
+      }
+
+      // Priority 2: All questions from analytics
+      const analyticsQ = localStorage.getItem(STORAGE_KEYS.questions);
+      if (analyticsQ && analyticsQ !== '[]') {
+        try {
+          const parsed = JSON.parse(analyticsQ);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(q => {
+              if (q && (q.text || q.question_text)) {
+                foundQuestions.set(q.id || `q_${Date.now()}`, q);
+              }
+            });
+            console.log(`✅ Found ${parsed.length} questions from analytics`);
+          }
+        } catch (e) {
+          console.warn('Could not parse analytics questions');
+        }
+      }
+
+      // Priority 3: Legacy storage locations
+      STORAGE_KEYS.legacyQuestions.forEach(key => {
+        const stored = localStorage.getItem(key);
+        if (stored && stored !== 'null' && stored !== '[]') {
+          try {
+            const parsed = JSON.parse(stored);
+            const items = Array.isArray(parsed) ? parsed : [parsed];
+            items.forEach(q => {
+              if (q && (q.text || q.question_text)) {
+                foundQuestions.set(q.id || `legacy_${key}`, q);
+              }
+            });
+            console.log(`✅ Found questions from ${key}`);
+          } catch (e) {
+            // Continue
+          }
         }
       });
-      
-      allQuestions = found;
-      console.log(`TOTAL FOUND: ${allQuestions.length} questions`);
-      
+
+      // Convert map to array and sort by date (newest first)
+      allQuestions = Array.from(foundQuestions.values()).sort((a, b) => {
+        const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
+        const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
+        return dateB - dateA;
+      });
+
+      console.log(`📊 Total questions found: ${allQuestions.length}`);
+
+      // Update UI
       if (allQuestions.length === 0) {
         document.getElementById('noQuestion').style.display = 'block';
         document.getElementById('questionSelection').style.display = 'none';
@@ -178,43 +578,137 @@
       const dropdown = document.getElementById('questionDropdown');
       dropdown.innerHTML = '<option value="">Select a question...</option>';
       
-      allQuestions.forEach((q, i) => {
+      allQuestions.forEach((q, index) => {
         const text = q.text || q.question_text;
         const preview = text.length > 60 ? text.substring(0, 60) + '...' : text;
+        const date = new Date(q.created_at || q.published_at || q.timestamp || 0);
+        const dateStr = date.toLocaleDateString();
+        
         const option = document.createElement('option');
-        option.value = i;
-        option.textContent = preview;
+        option.value = index;
+        option.textContent = `${preview} (${dateStr})`;
         dropdown.appendChild(option);
       });
+
+      console.log(`✅ Dropdown populated with ${allQuestions.length} questions`);
     }
 
     function selectQuestion() {
       const index = document.getElementById('questionDropdown').value;
+      
       if (!index) {
         document.getElementById('questionSection').style.display = 'none';
+        currentQuestion = null;
         return;
       }
       
       currentQuestion = allQuestions[parseInt(index)];
-      document.getElementById('questionText').textContent = currentQuestion.text || currentQuestion.question_text;
+      const questionText = currentQuestion.text || currentQuestion.question_text;
+      
+      document.getElementById('questionText').textContent = questionText;
       document.getElementById('questionSection').style.display = 'block';
+      
+      // Scroll to question
+      document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      console.log('✅ Question selected:', questionText.substring(0, 50));
     }
 
     function checkForm() {
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
-      document.getElementById('submitBtn').disabled = !(name && answer);
+      const submitBtn = document.getElementById('submitBtn');
+      
+      submitBtn.disabled = !(name && answer);
+    }
+
+    // Camera Functions
+    async function startCamera() {
+      try {
+        console.log('📷 Starting camera...');
+        
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'environment' } 
+        });
+        
+        const video = document.getElementById('videoPreview');
+        video.srcObject = videoStream;
+        video.style.display = 'block';
+        
+        document.getElementById('startCameraBtn').style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'inline-block';
+        document.getElementById('captureBtn').disabled = false;
+        document.getElementById('cameraInfo').textContent = 'Position your work and click Capture';
+        
+        console.log('✅ Camera started');
+      } catch (error) {
+        console.error('❌ Camera error:', error);
+        document.getElementById('cameraInfo').textContent = 'Camera not available: ' + error.message;
+      }
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('videoPreview');
+      const photo = document.getElementById('photoPreview');
+      
+      // Create canvas to capture frame
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      
+      // Convert to base64
+      capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+      
+      // Display captured photo
+      photo.src = capturedPhoto;
+      photo.style.display = 'block';
+      
+      // Stop camera
+      stopCamera();
+      
+      // Update UI
+      document.getElementById('captureBtn').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'inline-block';
+      document.getElementById('cameraInfo').textContent = '✓ Photo captured! Click Retake to try again';
+      
+      console.log('✅ Photo captured');
+    }
+
+    function retakePhoto() {
+      capturedPhoto = null;
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+      document.getElementById('startCameraBtn').style.display = 'inline-block';
+      document.getElementById('cameraInfo').textContent = 'Add a photo of your work (optional)';
+      
+      console.log('🔄 Ready to retake photo');
+    }
+
+    function stopCamera() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        document.getElementById('videoPreview').style.display = 'none';
+        videoStream = null;
+      }
     }
 
     function submitResponse() {
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
       
-      if (!name || !answer || !currentQuestion) return;
+      if (!name || !answer || !currentQuestion) {
+        console.warn('❌ Cannot submit: missing required fields');
+        return;
+      }
+
+      console.log('💾 Submitting response...');
 
       const response = {
-        id: 'r_' + Date.now(),
+        id: 'r_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
         questionId: currentQuestion.id,
+        question_id: currentQuestion.id,
         questionText: currentQuestion.text || currentQuestion.question_text,
         question_text: currentQuestion.text || currentQuestion.question_text,
         studentName: name,
@@ -224,42 +718,96 @@
         word_count: answer.split(/\s+/).length,
         timestamp: new Date().toISOString(),
         submitted_at: new Date().toISOString(),
-        source: 'web_fixed'
+        submittedAt: new Date().toLocaleString(),
+        source: 'web_student_portal',
+        photo_url: capturedPhoto || null,
+        hasPhoto: !!capturedPhoto
       };
 
-      const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+      // Save to primary storage
+      const responses = JSON.parse(localStorage.getItem(STORAGE_KEYS.responses) || '[]');
       responses.push(response);
-      localStorage.setItem('alm_student_responses', JSON.stringify(responses));
-      
-      console.log('✅ Response saved!', response);
-      
+      localStorage.setItem(STORAGE_KEYS.responses, JSON.stringify(responses));
+      console.log('✅ Saved to primary storage');
+
+      // Save to legacy storage
+      STORAGE_KEYS.legacyResponses.forEach(key => {
+        try {
+          const existing = JSON.parse(localStorage.getItem(key) || '[]');
+          existing.push(response);
+          localStorage.setItem(key, JSON.stringify(existing));
+          console.log(`✅ Saved to ${key}`);
+        } catch (e) {
+          console.warn(`Could not save to ${key}`);
+        }
+      });
+
+      console.log('✅ Response submitted successfully!');
+
+      // Show success screen
       document.getElementById('questionSection').style.display = 'none';
       document.getElementById('questionSelection').style.display = 'none';
       document.getElementById('successScreen').classList.add('show');
+      
+      // Stop camera if running
+      stopCamera();
     }
 
     function writeAnother() {
+      // Reset form
       document.getElementById('studentName').value = '';
       document.getElementById('studentAnswer').value = '';
       document.getElementById('questionDropdown').value = '';
+      
+      // Reset camera
+      capturedPhoto = null;
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+      document.getElementById('startCameraBtn').style.display = 'inline-block';
+      document.getElementById('cameraInfo').textContent = 'Add a photo of your work (optional)';
+      
       currentQuestion = null;
+      
+      // Hide success screen
       document.getElementById('successScreen').classList.remove('show');
+      
+      // Reload questions
       loadAllQuestions();
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      console.log('🔄 Ready for another response');
     }
 
-    // Auto-refresh
+    // Auto-refresh questions every 10 seconds
     setInterval(() => {
-      const prev = allQuestions.length;
+      const previousCount = allQuestions.length;
       loadAllQuestions();
-      if (allQuestions.length > prev) {
-        console.log(`✨ NEW QUESTIONS! ${prev} → ${allQuestions.length}`);
+      const newCount = allQuestions.length;
+      
+      if (newCount > previousCount) {
+        console.log(`✨ NEW QUESTIONS! ${previousCount} → ${newCount}`);
       }
     }, 10000);
 
-    // Initialize
+    // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 INTUITY Student Portal Ready!');
       loadAllQuestions();
-      console.log('✅ FIXED interface ready');
+      
+      // Check if coming from QR code - auto-select latest question
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
+        document.getElementById('questionDropdown').value = '0';
+        selectQuestion();
+        console.log('🎯 Auto-selected latest question from QR code');
+      }
+    });
+
+    // Cleanup camera on page unload
+    window.addEventListener('beforeunload', () => {
+      stopCamera();
     });
   </script>
 </body>
