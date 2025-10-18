@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Secure Analytics</title>
+  <title>INTUITY - Analytics (Improved Layout)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -155,120 +155,20 @@
     .curve5 { --base-opacity: 0.8; --rotate: 15deg; }
     .curve6 { --base-opacity: 0.2; --rotate: 80deg; }
 
-    /* Authentication Redirect Screen */
-    .auth-redirect {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 3000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .auth-redirect.hidden {
-      display: none;
-    }
-
-    .auth-message {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid rgba(239, 68, 68, 0.5);
-      border-radius: 25px;
-      padding: 40px;
-      text-align: center;
-      max-width: 450px;
-      width: 90%;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
-    }
-
-    .auth-title {
-      color: rgba(239, 68, 68, 0.9);
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 20px;
-      letter-spacing: 2px;
-    }
-
-    .auth-subtitle {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 16px;
-      margin-bottom: 30px;
-      line-height: 1.4;
-    }
-
-    .auth-redirect-btn {
-      background: rgba(255, 140, 60, 0.8);
-      border: none;
-      border-radius: 15px;
-      padding: 18px 30px;
-      color: #000;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .auth-redirect-btn:hover {
-      background: rgba(255, 140, 60, 1);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.3);
-    }
-
-    .logout-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 25px;
-      padding: 8px 16px;
-      color: rgba(239, 68, 68, 0.8);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      z-index: 1000;
-      display: none;
-    }
-
-    .logout-button.show {
-      display: block;
-    }
-
-    .logout-button:hover {
-      background: rgba(239, 68, 68, 0.2);
-      color: rgba(239, 68, 68, 1);
-      transform: scale(1.05);
-    }
-
-    /* Main Interface (hidden until authenticated) */
     .container {
       position: relative;
       z-index: 10;
       height: 100vh;
       height: 100dvh;
-      display: none;
-      flex-direction: column;
-      padding: 40px 20px 0;
-      min-height: 0;
-    }
-
-    .container.authenticated {
       display: flex;
+      flex-direction: column;
+      padding: 25px 20px 0;
+      min-height: 0;
+      gap: 20px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 25px;
       flex-shrink: 0;
     }
 
@@ -288,66 +188,66 @@
       letter-spacing: 0.5px;
     }
 
-    .teacher-badge {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 20px;
-      padding: 8px 16px;
-      margin-top: 10px;
-      display: inline-block;
-    }
-
-    .teacher-badge .teacher-code {
-      color: rgba(16, 185, 129, 0.9);
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .teacher-badge .teacher-name-display {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 12px;
-      margin-left: 8px;
-    }
-
-    .stats-overview {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 140, 60, 0.2);
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 20px;
+    /* NEW: Elevated dropdown section */
+    .dropdown-section {
       flex-shrink: 0;
+      padding: 0 10px;
     }
 
-    .stat-item {
-      text-align: center;
+    .question-dropdown {
+      width: 100%;
+      background: rgba(15, 15, 15, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.4);
+      border-radius: 16px;
+      color: #fff;
+      font-size: 18px;
+      font-family: inherit;
+      outline: none;
+      padding: 18px 24px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
-    .stat-number {
-      font-size: 32px;
-      font-weight: 800;
-      color: rgba(255, 140, 60, 0.9);
-      display: block;
-      line-height: 1;
+    .question-dropdown:hover {
+      border-color: rgba(255, 140, 60, 0.6);
+      background: rgba(20, 20, 20, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(255, 140, 60, 0.15), 
+                  inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
-    .stat-label {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.7);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 5px;
+    .question-dropdown:focus {
+      border-color: rgba(255, 140, 60, 0.8);
+      background: rgba(25, 25, 25, 0.98);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(255, 140, 60, 0.25), 
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
+    .question-dropdown option {
+      background: rgba(25, 25, 25, 0.98);
+      color: #fff;
+      padding: 14px 18px;
+      border: none;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .question-dropdown option:hover,
+    .question-dropdown option:focus {
+      background: rgba(255, 140, 60, 0.2);
+    }
+
+    /* NEW: Separated analytics container - appears below dropdown */
     .main-content {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       min-height: 0;
       overflow-y: auto;
@@ -356,8 +256,7 @@
 
     .analytics-container {
       width: 100%;
-      height: auto;
-      min-height: 160px;
+      max-width: 600px;
       position: relative;
       perspective: 1000px;
       overflow: visible;
@@ -365,85 +264,75 @@
 
     .analytics-box {
       width: 100%;
-      height: 100%;
-      background: #000000;
+      background: rgba(5, 5, 5, 0.8);
       border-radius: 20px;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transform: translateY(0);
+      opacity: 1;
     }
 
     .analytics-box:hover {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5),
+                  0 0 40px rgba(255, 140, 60, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 140, 60, 0.2);
+    }
+
+    .analytics-box.has-selection {
+      border-color: rgba(255, 140, 60, 0.3);
+      background: rgba(8, 8, 8, 0.9);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                  0 0 30px rgba(255, 140, 60, 0.08),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .content-area {
       width: 100%;
-      height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 20px;
-      justify-content: space-between;
-      min-height: 140px;
-    }
-
-    .dropdown-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      padding: 30px 28px;
       justify-content: center;
-    }
-
-    .question-dropdown {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 18px;
-      font-family: inherit;
-      outline: none;
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .question-dropdown:focus {
-      border-bottom-color: rgba(255, 140, 60, 0.6);
-    }
-
-    .question-dropdown option {
-      background: rgba(26, 35, 50, 0.95);
-      color: #fff;
-      padding: 10px;
+      align-items: center;
+      min-height: 120px;
+      gap: 20px;
     }
 
     .response-counter {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
-      padding: 15px 0;
-      color: rgba(255, 140, 60, 0.8);
+      gap: 20px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .response-counter.no-selection {
+      color: rgba(255, 255, 255, 0.4);
       font-size: 16px;
-      font-weight: 500;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      flex-shrink: 0;
+      font-weight: 400;
     }
 
     .delete-btn {
-      width: 37px;
-      height: 37px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.2);
       color: rgba(239, 68, 68, 0.6);
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       transform: scale(0.8);
       pointer-events: none;
@@ -461,8 +350,9 @@
     .delete-btn:hover {
       background: rgba(239, 68, 68, 0.2);
       border-color: rgba(239, 68, 68, 0.4);
-      color: rgba(239, 68, 68, 0.8);
+      color: rgba(239, 68, 68, 0.9);
       transform: scale(1.1);
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
     }
 
     .delete-btn:active {
@@ -470,34 +360,34 @@
     }
 
     .footer {
-      background: rgba(64, 64, 64, 0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 25px;
-      padding: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(15, 15, 15, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-around;
       align-items: center;
       flex-shrink: 0;
-      margin-top: 15px;
       position: relative;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .nav-button {
       background: rgba(255, 255, 255, 0.08);
       border: none;
-      border-radius: 12px;
-      padding: 12px 20px;
+      border-radius: 14px;
+      padding: 14px 24px;
       color: rgba(255, 255, 255, 0.7);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       backdrop-filter: blur(5px);
       text-decoration: none;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      min-width: 80px;
+      letter-spacing: 0.8px;
+      min-width: 90px;
       text-align: center;
     }
 
@@ -505,63 +395,59 @@
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
       transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.15);
     }
 
     .nav-button:active {
-      transform: scale(0.95);
+      transform: translateY(-1px) scale(0.98);
     }
 
     .nav-button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
     .nav-button.primary {
       background: rgba(255, 140, 60, 0.2);
       color: rgba(255, 140, 60, 1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
     }
 
-    .nav-button.primary:hover {
+    .nav-button.primary:hover:not(:disabled) {
       background: rgba(255, 140, 60, 0.3);
       color: #fff;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(255, 140, 60, 0.25);
     }
 
     .nav-button.primary:disabled {
-      opacity: 0.4;
+      opacity: 0.3;
       background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       transform: none;
+      box-shadow: none;
     }
 
-    .nav-button#migrationBtn {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 0.9);
-    }
-
-    .nav-button#migrationBtn:hover {
-      background: rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 1);
-      transform: translateY(-2px);
-    }
-
+    /* Enhanced notification system */
     .notification {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
+      top: 25px;
+      right: 25px;
+      padding: 16px 24px;
+      border-radius: 14px;
+      backdrop-filter: blur(15px);
       z-index: 1000;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
-      gap: 10px;
-      transform: translateX(100%);
+      gap: 12px;
+      transform: translateX(120%);
       font-size: 14px;
       font-weight: 500;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
     .notification.show {
@@ -569,35 +455,36 @@
     }
 
     .notification.success {
-      background: rgba(16, 185, 129, 0.1);
+      background: rgba(16, 185, 129, 0.15);
       border: 1px solid rgba(16, 185, 129, 0.3);
-      color: rgba(16, 185, 129, 0.9);
+      color: rgba(16, 185, 129, 0.95);
     }
 
     .notification.info {
-      background: rgba(255, 140, 60, 0.1);
+      background: rgba(255, 140, 60, 0.15);
       border: 1px solid rgba(255, 140, 60, 0.3);
-      color: rgba(255, 140, 60, 0.9);
+      color: rgba(255, 140, 60, 0.95);
     }
 
     .notification.error {
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.3);
-      color: rgba(239, 68, 68, 0.9);
+      color: rgba(239, 68, 68, 0.95);
     }
 
+    /* Enhanced dialog */
     .dialog-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 2000;
       display: none;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(15px);
     }
 
     .dialog-overlay.show {
@@ -605,27 +492,35 @@
     }
 
     .dialog-box {
-      background: #000000;
-      border-radius: 20px;
+      background: rgba(10, 10, 10, 0.95);
+      border-radius: 24px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      max-width: 400px;
+      padding: 35px;
+      max-width: 450px;
       width: 90%;
       text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dialog-overlay.show .dialog-box {
+      transform: scale(1);
     }
 
     .dialog-title {
       color: #fff;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
     }
 
     .dialog-message {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 25px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 30px;
     }
 
     .dialog-buttons {
@@ -635,189 +530,176 @@
     }
 
     .dialog-btn {
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      min-width: 80px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 90px;
     }
 
     .dialog-btn.cancel {
       background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .dialog-btn.cancel:hover {
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
+      transform: translateY(-2px);
     }
 
     .dialog-btn.delete {
       background: rgba(239, 68, 68, 0.2);
       color: rgba(239, 68, 68, 1);
+      border: 1px solid rgba(239, 68, 68, 0.4);
     }
 
     .dialog-btn.delete:hover {
       background: rgba(239, 68, 68, 0.3);
       color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
     }
 
-    .dialog-box input[type="checkbox"] {
-      accent-color: rgba(255, 140, 60, 0.8);
+    .debug-panel {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background: rgba(0, 0, 0, 0.95);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 450px;
+      max-height: 250px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      overflow-y: auto;
+      z-index: 50;
+      backdrop-filter: blur(10px);
     }
 
-    /* Mobile responsive design */
+    .debug-panel.show {
+      opacity: 1;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .auth-message {
-        margin: 20px;
-        padding: 30px;
-      }
-
-      .auth-title {
-        font-size: 26px;
-      }
-
-      .auth-subtitle {
-        font-size: 14px;
-      }
-
       .container {
-        padding: 25px 15px 0;
-      }
-      
-      .header {
-        margin-bottom: 20px;
+        padding: 20px 15px 0;
+        gap: 15px;
       }
       
       .header h1 {
-        font-size: 26px;
-      }
-
-      .stats-overview {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 15px;
-        padding: 15px;
-        margin-bottom: 15px;
-      }
-
-      .stat-number {
-        font-size: 24px;
-      }
-
-      .stat-label {
-        font-size: 11px;
-      }
-      
-      .main-content {
-        padding: 5px 0;
-      }
-      
-      .analytics-container {
-        min-height: 140px;
-      }
-      
-      .content-area {
-        padding: 15px;
-        min-height: 120px;
+        font-size: 28px;
       }
       
       .question-dropdown {
         font-size: 16px;
-        padding: 12px 0;
+        padding: 15px 20px;
       }
       
       .response-counter {
+        font-size: 18px;
+      }
+      
+      .response-counter.no-selection {
         font-size: 14px;
-        padding: 12px 0;
       }
 
       .nav-button {
-        padding: 10px 16px;
-        font-size: 12px;
-        min-width: 70px;
+        padding: 12px 18px;
+        font-size: 13px;
+        min-width: 75px;
       }
 
       .footer {
-        padding: 10px;
-        margin-top: 10px;
+        padding: 14px;
       }
 
-      .logout-button {
-        top: 10px;
-        right: 10px;
-        padding: 6px 12px;
-        font-size: 11px;
+      .content-area {
+        padding: 25px 20px;
+        min-height: 100px;
       }
     }
 
     @media (max-width: 480px) {
-      .auth-message {
-        margin: 15px;
-        padding: 25px;
-      }
-
-      .auth-title {
-        font-size: 22px;
-      }
-
       .container {
-        padding: 20px 10px 0;
+        padding: 15px 12px 0;
+        gap: 12px;
       }
       
-      .header {
-        margin-bottom: 15px;
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .question-dropdown {
+        font-size: 15px;
+        padding: 14px 18px;
+      }
+
+      .response-counter {
+        font-size: 16px;
+      }
+
+      .nav-button {
+        padding: 10px 15px;
+        font-size: 12px;
+        min-width: 65px;
+      }
+
+      .footer {
+        padding: 12px;
+      }
+
+      .content-area {
+        padding: 20px 16px;
+        min-height: 90px;
+      }
+    }
+
+    @media (max-height: 600px) and (orientation: landscape) {
+      .container {
+        padding: 12px 10px 0;
+        gap: 10px;
       }
       
       .header h1 {
         font-size: 22px;
       }
-
-      .stats-overview {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        padding: 12px;
-        margin-bottom: 12px;
+      
+      .header p {
+        font-size: 12px;
       }
-
-      .stat-number {
-        font-size: 20px;
-      }
-
-      .main-content {
-        padding: 5px 0;
-      }
-
-      .analytics-container {
-        min-height: 120px;
-      }
-
-      .content-area {
-        padding: 12px;
-        min-height: 100px;
-      }
-
+      
       .question-dropdown {
         font-size: 14px;
-        padding: 10px 0;
+        padding: 12px 16px;
       }
-
+      
       .response-counter {
-        font-size: 12px;
-        padding: 10px 0;
+        font-size: 14px;
       }
-
+      
+      .footer {
+        padding: 8px;
+      }
+      
       .nav-button {
         padding: 8px 12px;
         font-size: 11px;
-        min-width: 60px;
+        min-width: 55px;
       }
 
-      .footer {
-        padding: 8px;
-        margin-top: 8px;
+      .content-area {
+        padding: 15px 14px;
+        min-height: 70px;
       }
     }
   </style>
@@ -834,68 +716,28 @@
     </div>
   </div>
 
-  <!-- Authentication Redirect Screen -->
-  <div class="auth-redirect" id="authRedirect">
-    <div class="auth-message">
-      <div class="auth-title">🔒 Access Denied</div>
-      <div class="auth-subtitle">
-        You need to be authenticated as a teacher to access analytics.<br>
-        Please login through the secure teacher portal first.
-      </div>
-      <button class="auth-redirect-btn" onclick="redirectToLogin()">
-        Go to Teacher Portal
-      </button>
-    </div>
-  </div>
-
-  <!-- Logout Button -->
-  <button class="logout-button" id="logoutButton">🚪 Logout</button>
-
-  <!-- Main Interface (hidden until authenticated) -->
-  <div class="container" id="mainContainer">
+  <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Secure Analytics Dashboard<br>By Majid Nashtai</p>
-      <div class="teacher-badge">
-        <span class="teacher-code" id="currentTeacherCode"></span>
-        <span class="teacher-name-display" id="currentTeacherName"></span>
-      </div>
+      <p>Analytics Dashboard<br>By Majid Nashtai</p>
     </header>
 
-    <!-- Statistics Overview -->
-    <section class="stats-overview">
-      <div class="stat-item">
-        <span class="stat-number" id="totalQuestions">0</span>
-        <div class="stat-label">Your Questions</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number" id="totalResponses">0</span>
-        <div class="stat-label">Total Responses</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number" id="uniqueStudents">0</span>
-        <div class="stat-label">Unique Students</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number" id="averageScore">0</span>
-        <div class="stat-label">Avg Score</div>
-      </div>
+    <!-- NEW: Elevated dropdown section - standalone control -->
+    <section class="dropdown-section">
+      <select class="question-dropdown" id="questionSelector">
+        <option value="">Loading questions...</option>
+      </select>
     </section>
 
+    <!-- NEW: Separated main content area - results display -->
     <main class="main-content">
       <div class="analytics-container">
-        <div class="analytics-box">
+        <div class="analytics-box" id="analyticsBox">
           <div class="content-area">
-            <div class="dropdown-section">
-              <select class="question-dropdown" id="questionSelector">
-                <option value="">Loading your questions...</option>
-              </select>
+            <div class="response-counter no-selection" id="responseCounter">
+              Select a question above to view analytics
             </div>
-            
-            <div class="response-counter">
-              <span id="responseCounter">0 Responses</span>
-              <button class="delete-btn" id="deleteBtn" title="Delete this question and all its responses">🗑</button>
-            </div>
+            <button class="delete-btn" id="deleteBtn" title="Delete this question and all its responses">🗑</button>
           </div>
         </div>
       </div>
@@ -903,8 +745,8 @@
 
     <footer class="footer">
       <button class="nav-button primary" id="displayBtn" disabled>DISPLAY</button>
-      <button class="nav-button" onclick="redirectToCreate()">CREATE</button>
-      <button class="nav-button" onclick="window.location.href='../../index.html'">HOME</button>
+      <a href="../index.html" class="nav-button">HOME</a>
+      <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
   </div>
 
@@ -921,192 +763,262 @@
     </div>
   </div>
 
+  <div class="debug-panel" id="debugPanel">
+    <div id="debugContent"></div>
+  </div>
+
   <script>
+    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
+    // Global variables
     let supabase;
-    let currentTeacher = null;
-    let teacherQuestions = [];
-    let teacherResponses = [];
+    let allQuestions = [];
+    let allResponses = [];
     let currentSelectedQuestion = null;
     let isConnected = false;
+    let debugMode = false;
 
-    function getTeachers() {
+    // Enhanced storage keys - comprehensive search
+    const STORAGE_KEYS = {
+      responses: 'intuity_student_responses',
+      questions: 'intuity_questions',
+      legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses'],
+      legacyQuestions: ['alm_questions', 'current_question', 'display_question']
+    };
+
+    // Enhanced debugging
+    function debugLog(message, data = null) {
+      if (!debugMode) return;
+      
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[ANALYTICS DEBUG] ${timestamp} - ${message}`, data || '');
+      
+      const debugPanel = document.getElementById('debugPanel');
+      const debugContent = document.getElementById('debugContent');
+      debugContent.innerHTML += `<div><strong>${timestamp}:</strong> ${message}${data ? '<br><pre>' + JSON.stringify(data, null, 2).substring(0, 200) + '</pre>' : ''}</div><hr>`;
+      debugPanel.classList.add('show');
+      
+      const entries = debugContent.children;
+      while (entries.length > 20) {
+        entries[0].remove();
+        if (entries[1] && entries[1].tagName === 'HR') {
+          entries[1].remove();
+        }
+      }
+    }
+
+    // Enhanced data loading - check ALL possible storage locations
+    function loadAllStorageData() {
+      debugLog('Loading all storage data comprehensively...');
+      
+      if (!Array.isArray(allQuestions)) allQuestions = [];
+      if (!Array.isArray(allResponses)) allResponses = [];
+      
       try {
-        return JSON.parse(localStorage.getItem('intuity_teachers') || '{}');
-      } catch (error) {
-        return {};
-      }
-    }
-
-    function checkAuthentication() {
-      // Check URL parameter first
-      const urlParams = new URLSearchParams(window.location.search);
-      const teacherCode = urlParams.get('teacher');
-      
-      if (teacherCode) {
-        const stored = localStorage.getItem('analytics_teacher');
-        if (stored) {
-          try {
-            const teacherData = JSON.parse(stored);
-            const teachers = getTeachers();
-            const teacher = teachers[teacherData.code];
-            
-            if (teacher && teacherData.code === teacherCode && teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) {
-              currentTeacher = { ...teacher, code: teacherData.code };
-              return true;
+        // Get all possible question sources including teacher-specific keys
+        const questionSources = [STORAGE_KEYS.questions, ...STORAGE_KEYS.legacyQuestions];
+        
+        // Also check for teacher-specific question storage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.endsWith('_questions') || key.includes('teacher') || key.includes('secure'))) {
+            if (!questionSources.includes(key)) {
+              questionSources.push(key);
             }
-          } catch (error) {
-            console.error('Error parsing teacher data:', error);
           }
         }
-      }
-      
-      // Fallback to general authentication
-      const stored = localStorage.getItem('authenticated_teacher');
-      if (stored) {
-        try {
-          const teacherData = JSON.parse(stored);
-          const teachers = getTeachers();
-          const teacher = teachers[teacherData.code];
+        
+        const foundQuestions = new Map();
+        
+        for (const key of questionSources) {
+          const stored = localStorage.getItem(key);
+          if (stored && stored !== '[]' && stored !== '{}') {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(q => {
+                  if (q && (q.text || q.question_text)) {
+                    foundQuestions.set(q.id || 'demo', q);
+                  }
+                });
+                debugLog(`Found ${parsed.length} questions in ${key}`);
+              } else if (parsed && (parsed.text || parsed.question_text)) {
+                foundQuestions.set(parsed.id || 'demo', parsed);
+                debugLog(`Found 1 question in ${key}`);
+              }
+            } catch (e) {
+              debugLog(`Error parsing questions from ${key}`, e.message);
+            }
+          }
+        }
+
+        // Merge found questions without duplicates
+        foundQuestions.forEach(question => {
+          const existingIndex = allQuestions.findIndex(q => q.id === question.id);
+          if (existingIndex >= 0) {
+            allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
+          } else {
+            allQuestions.push(question);
+          }
+        });
+
+        // Get all possible response sources
+        const responseSources = [STORAGE_KEYS.responses, ...STORAGE_KEYS.legacyResponses];
+        
+        // Also check for teacher-specific response storage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.endsWith('_responses') || key.includes('response'))) {
+            if (!responseSources.includes(key)) {
+              responseSources.push(key);
+            }
+          }
+        }
+        
+        const foundResponses = new Map();
+        
+        for (const key of responseSources) {
+          const stored = localStorage.getItem(key);
+          if (stored && stored !== '[]' && stored !== '{}') {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(r => {
+                  if (r && r.answer && (r.student_name || r.studentName)) {
+                    const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
+                    foundResponses.set(uniqueKey, r);
+                  }
+                });
+                debugLog(`Found ${parsed.length} responses in ${key}`);
+              }
+            } catch (e) {
+              debugLog(`Error parsing responses from ${key}`, e.message);
+            }
+          }
+        }
+
+        // Merge found responses without duplicates
+        foundResponses.forEach(response => {
+          const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}-${response.submitted_at || response.submittedAt || response.timestamp}`;
+          const existingIndex = allResponses.findIndex(r => {
+            const existingKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
+            return existingKey === uniqueKey;
+          });
           
-          if (teacher && teacherData.timestamp > Date.now() - (8 * 60 * 60 * 1000)) {
-            currentTeacher = { ...teacher, code: teacherData.code };
-            return true;
+          if (existingIndex >= 0) {
+            allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
+          } else {
+            allResponses.push(response);
           }
-        } catch (error) {
-          console.error('Error parsing general teacher data:', error);
-        }
-      }
-      
-      return false;
-    }
+        });
 
-    function showMainInterface() {
-      document.getElementById('authRedirect').classList.add('hidden');
-      document.getElementById('mainContainer').classList.add('authenticated');
-      document.getElementById('logoutButton').classList.add('show');
-      
-      // Update teacher display
-      document.getElementById('currentTeacherCode').textContent = currentTeacher.code;
-      document.getElementById('currentTeacherName').textContent = currentTeacher.name;
-      
-      console.log('✅ Analytics access granted for:', currentTeacher.name);
-      initializeAnalytics();
-    }
+        // Sort questions by date (newest first)
+        allQuestions.sort((a, b) => {
+          const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
+          const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
+          return dateB - dateA;
+        });
 
-    function logout() {
-      if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('authenticated_teacher');
-        localStorage.removeItem('analytics_teacher');
-        redirectToLogin();
+        debugLog('Final comprehensive data loaded', { 
+          questions: allQuestions.length, 
+          responses: allResponses.length,
+          questionIds: allQuestions.map(q => ({ id: q.id, text: (q.text || q.question_text || '').substring(0, 50) })),
+          storageKeys: { questionSources, responseSources }
+        });
+
+        return { questions: allQuestions.length, responses: allResponses.length };
+        
+      } catch (error) {
+        debugLog('Error loading storage data', error.message);
+        console.error('Error loading storage data:', error);
+        return { questions: 0, responses: 0 };
       }
     }
 
-    function redirectToLogin() {
-      const baseURL = window.location.origin;
-      const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); // remove current file
-      pathParts.pop(); // remove 'secure'
-      pathParts.pop(); // remove 'visualisation'
-      pathParts.push('teachers', 'secure', '');
-      const loginURL = baseURL + pathParts.join('/');
-      window.location.href = loginURL;
-    }
-
-    function redirectToCreate() {
-      const baseURL = window.location.origin;
-      const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); // remove current file
-      pathParts.pop(); // remove 'secure'
-      pathParts.pop(); // remove 'visualisation'
-      pathParts.push('teachers', 'secure', '');
-      const createURL = baseURL + pathParts.join('/');
-      window.location.href = createURL;
-    }
-
-    function getTeacherStorageKey(key) {
-      return `${currentTeacher.code}_${key}`;
-    }
-
-    async function initSupabase() {
+    function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase client initialized');
-        
-        const { data, error } = await supabase.from('questions').select('count').limit(1);
-        if (error) throw error;
-        
-        isConnected = true;
-        console.log('✅ Connected to Supabase');
+        debugLog('Supabase client initialized');
+        testConnection();
         return true;
       } catch (error) {
-        console.error('❌ Supabase connection failed:', error);
-        isConnected = false;
+        debugLog('Error initializing Supabase', error.message);
+        loadAllStorageData();
+        updateUI();
         return false;
       }
     }
 
-    async function loadTeacherData() {
+    async function testConnection() {
       try {
-        teacherQuestions = [];
-        teacherResponses = [];
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
         
-        if (isConnected) {
-          // Load teacher's questions from Supabase
-          const { data: questions, error: qError } = await supabase
-            .from('questions')
-            .select('*')
-            .eq('created_by', currentTeacher.code)
-            .order('created_at', { ascending: false });
-
-          if (!qError && questions) {
-            teacherQuestions = questions;
-          }
-
-          // Load responses for teacher's questions
-          if (teacherQuestions.length > 0) {
-            const questionIds = teacherQuestions.map(q => q.id);
-            const { data: responses, error: rError } = await supabase
-              .from('student_responses')
-              .select('*')
-              .in('question_id', questionIds)
-              .order('submitted_at', { ascending: false });
-
-            if (!rError && responses) {
-              teacherResponses = responses;
-            }
-          }
-        }
+        if (error) throw error;
         
-        // Also load from local storage
-        const localQuestions = JSON.parse(localStorage.getItem(getTeacherStorageKey('questions')) || '[]');
-        const localResponses = JSON.parse(localStorage.getItem(getTeacherStorageKey('responses')) || '[]');
+        isConnected = true;
+        debugLog('Supabase connection successful');
         
-        // Merge with local data (avoid duplicates)
-        localQuestions.forEach(localQ => {
-          if (!teacherQuestions.find(q => q.id === localQ.id)) {
-            teacherQuestions.push(localQ);
-          }
-        });
-
-        localResponses.forEach(localR => {
-          if (!teacherResponses.find(r => r.id === localR.id)) {
-            teacherResponses.push(localR);
-          }
-        });
-        
-        teacherQuestions.sort((a, b) => new Date(b.created_at || b.published_at || 0) - new Date(a.created_at || a.published_at || 0));
-        
-        updateUI();
-        updateStatistics();
-        
-        console.log(`✅ Loaded ${teacherQuestions.length} questions and ${teacherResponses.length} responses for ${currentTeacher.code}`);
+        await loadSupabaseData();
         
       } catch (error) {
-        console.error('❌ Error loading teacher data:', error);
-        showNotification('Error loading your data', 'error');
+        debugLog('Supabase connection failed', error.message);
+        isConnected = false;
+        loadAllStorageData();
+        updateUI();
+        showNotification('Using offline data only', 'info');
+      }
+    }
+
+    async function loadSupabaseData() {
+      try {
+        debugLog('Loading data from Supabase...');
+        
+        const { data: supabaseQuestions, error: questionsError } = await supabase
+          .from('questions')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!questionsError && supabaseQuestions) {
+          supabaseQuestions.forEach(question => {
+            const existingIndex = allQuestions.findIndex(q => q.id === question.id);
+            if (existingIndex >= 0) {
+              allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
+            } else {
+              allQuestions.push(question);
+            }
+          });
+          debugLog(`Merged ${supabaseQuestions.length} questions from Supabase`);
+        }
+
+        const { data: supabaseResponses, error: responsesError } = await supabase
+          .from('student_responses')
+          .select('*')
+          .order('submitted_at', { ascending: false });
+
+        if (!responsesError && supabaseResponses) {
+          supabaseResponses.forEach(response => {
+            const existingIndex = allResponses.findIndex(r => r.id === response.id);
+            if (existingIndex >= 0) {
+              allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
+            } else {
+              allResponses.push(response);
+            }
+          });
+          debugLog(`Merged ${supabaseResponses.length} responses from Supabase`);
+        }
+
+        const localData = loadAllStorageData();
+        
+        updateUI();
+        showNotification(`Connected: ${allQuestions.length} questions, ${allResponses.length} responses`, 'success');
+        
+      } catch (error) {
+        debugLog('Error loading Supabase data', error.message);
+        loadAllStorageData();
+        updateUI();
+        showNotification('Database error, using local data', 'error');
       }
     }
 
@@ -1116,111 +1028,109 @@
       const questionId = question.id;
       const questionText = question.text || question.question_text || '';
       
-      const matchedResponses = teacherResponses.filter(response => {
+      const matchedResponses = allResponses.filter(response => {
         const responseQuestionId = response.question_id || response.questionId;
         const responseQuestionText = response.questionText || response.question_text || '';
         
         return (
           (questionId && responseQuestionId && questionId === responseQuestionId) ||
-          (questionText && responseQuestionText && questionText === responseQuestionText)
+          (questionText && responseQuestionText && questionText === responseQuestionText) ||
+          (questionId === 'demo' && (!responseQuestionId || responseQuestionId === 'demo'))
         );
+      });
+
+      debugLog(`Found ${matchedResponses.length} responses for question "${questionText}"`, {
+        questionId: questionId,
+        responseIds: matchedResponses.map(r => ({
+          student: r.student_name || r.studentName,
+          questionId: r.question_id || r.questionId
+        }))
       });
       
       return matchedResponses;
     }
 
-    function updateStatistics() {
-      const totalQuestions = teacherQuestions.length;
-      const totalResponses = teacherResponses.length;
-      
-      // Calculate unique students
-      const uniqueStudentNames = new Set();
-      teacherResponses.forEach(response => {
-        const studentName = response.student_name || response.studentName;
-        if (studentName) {
-          uniqueStudentNames.add(studentName.toLowerCase().trim());
-        }
-      });
-      const uniqueStudents = uniqueStudentNames.size;
-      
-      // Calculate average score
-      const scoresWithValues = teacherResponses
-        .map(r => r.score)
-        .filter(score => score !== null && score !== undefined && !isNaN(score));
-      
-      const averageScore = scoresWithValues.length > 0 
-        ? Math.round(scoresWithValues.reduce((sum, score) => sum + score, 0) / scoresWithValues.length)
-        : 0;
-      
-      // Update display
-      document.getElementById('totalQuestions').textContent = totalQuestions;
-      document.getElementById('totalResponses').textContent = totalResponses;
-      document.getElementById('uniqueStudents').textContent = uniqueStudents;
-      document.getElementById('averageScore').textContent = averageScore;
-    }
-
     function updateUI() {
       populateQuestionDropdown();
-      updateResponseCount();
+      updateAnalyticsBox();
       updateDisplayButton();
-      updateDeleteButton();
     }
 
+    // Enhanced question dropdown population
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionSelector');
       
-      if (teacherQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions created yet</option>';
+      if (allQuestions.length === 0) {
+        selector.innerHTML = '<option value="">No questions available - create your first one!</option>';
         return;
       }
 
-      selector.innerHTML = '<option value="">Select a question to view responses...</option>';
+      selector.innerHTML = '<option value="">Select a question to view analytics...</option>';
 
-      teacherQuestions.forEach((question) => {
+      // Sort questions by response count and date
+      const sortedQuestions = allQuestions.map(question => {
+        const responses = getResponsesForQuestion(question);
+        return {
+          ...question,
+          responseCount: responses.length,
+          sortDate: new Date(question.created_at || question.published_at || question.timestamp || 0)
+        };
+      }).sort((a, b) => {
+        // First by response count (desc), then by date (desc)
+        if (a.responseCount !== b.responseCount) {
+          return b.responseCount - a.responseCount;
+        }
+        return b.sortDate - a.sortDate;
+      });
+
+      sortedQuestions.forEach((question) => {
         const option = document.createElement('option');
         option.value = question.id || 'demo';
         
         const questionText = question.text || question.question_text || 'Untitled Question';
-        const shortText = questionText.length > 60 ? questionText.substring(0, 60) + '...' : questionText;
+        const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
         
-        const responses = getResponsesForQuestion(question);
-        const responseCount = responses.length;
+        const responseCount = question.responseCount;
+        const dateStr = question.sortDate.toLocaleDateString();
         
         const migrated = question.migrated ? ' [Imported]' : '';
-        option.textContent = `${shortText} (${responseCount} responses)${migrated}`;
+        const createdBy = question.created_by ? ` [${question.created_by}]` : '';
+        
+        option.textContent = `${shortText} - ${responseCount} responses (${dateStr})${migrated}${createdBy}`;
         
         selector.appendChild(option);
       });
 
-      console.log('✅ Question dropdown populated for teacher');
+      debugLog('Question dropdown populated with sorting', { 
+        total: allQuestions.length,
+        withResponses: sortedQuestions.filter(q => q.responseCount > 0).length
+      });
     }
 
-    function updateResponseCount() {
+    // NEW: Enhanced analytics box update
+    function updateAnalyticsBox() {
       const counter = document.getElementById('responseCounter');
+      const deleteBtn = document.getElementById('deleteBtn');
+      const analyticsBox = document.getElementById('analyticsBox');
       
       if (!currentSelectedQuestion) {
-        counter.textContent = '0 Responses';
-        return;
+        counter.textContent = 'Select a question above to view analytics';
+        counter.className = 'response-counter no-selection';
+        deleteBtn.classList.remove('visible');
+        analyticsBox.classList.remove('has-selection');
+      } else {
+        const responses = getResponsesForQuestion(currentSelectedQuestion);
+        const count = responses.length;
+        counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+        counter.className = 'response-counter';
+        deleteBtn.classList.add('visible');
+        analyticsBox.classList.add('has-selection');
       }
-
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      const count = responses.length;
-      counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
     }
 
     function updateDisplayButton() {
       const displayBtn = document.getElementById('displayBtn');
       displayBtn.disabled = !currentSelectedQuestion;
-    }
-
-    function updateDeleteButton() {
-      const deleteBtn = document.getElementById('deleteBtn');
-      
-      if (currentSelectedQuestion && currentTeacher.permissions.includes('delete')) {
-        deleteBtn.classList.add('visible');
-      } else {
-        deleteBtn.classList.remove('visible');
-      }
     }
 
     function handleQuestionChange() {
@@ -1230,14 +1140,13 @@
       if (!selectedValue) {
         currentSelectedQuestion = null;
       } else {
-        currentSelectedQuestion = teacherQuestions.find(q => q.id === selectedValue);
+        currentSelectedQuestion = allQuestions.find(q => q.id === selectedValue);
       }
 
-      console.log('Selected question changed:', currentSelectedQuestion);
+      debugLog('Selected question changed', currentSelectedQuestion);
       
-      updateResponseCount();
+      updateAnalyticsBox();
       updateDisplayButton();
-      updateDeleteButton();
     }
 
     function displayResponses() {
@@ -1246,13 +1155,12 @@
         return;
       }
       
-      console.log('Displaying responses for question:', currentSelectedQuestion);
+      debugLog('Displaying responses for question', currentSelectedQuestion);
       
       const matchedResponses = getResponsesForQuestion(currentSelectedQuestion);
       
       showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
       
-      // Store data for display page
       const questionData = JSON.stringify(currentSelectedQuestion);
       const responseData = JSON.stringify(matchedResponses);
       
@@ -1260,20 +1168,23 @@
       localStorage.setItem('display_responses', responseData);
       localStorage.setItem('current_question', questionData);
       
-      console.log('Stored display data:', { 
+      localStorage.setItem(STORAGE_KEYS.responses, JSON.stringify(allResponses));
+      localStorage.setItem(STORAGE_KEYS.questions, JSON.stringify(allQuestions));
+      
+      debugLog('Stored display data', { 
         question: currentSelectedQuestion.id, 
         responses: matchedResponses.length 
       });
       
       try {
-        window.open('../../displays/', '_blank');
+        window.open('../displays/', '_blank');
       } catch (error) {
-        window.location.href = '../../displays/';
+        window.location.href = '../displays/';
       }
     }
 
     function showDeleteConfirmation() {
-      if (!currentSelectedQuestion || !currentTeacher.permissions.includes('delete')) return;
+      if (!currentSelectedQuestion) return;
 
       const responses = getResponsesForQuestion(currentSelectedQuestion);
       const count = responses.length;
@@ -1296,7 +1207,7 @@
     }
 
     async function confirmDelete() {
-      if (!currentSelectedQuestion || !currentTeacher.permissions.includes('delete')) {
+      if (!currentSelectedQuestion) {
         closeConfirmDialog();
         return;
       }
@@ -1318,48 +1229,64 @@
               .delete()
               .eq('id', questionToDelete.id);
 
-            if (questionError) console.log('Supabase delete warning:', questionError);
-            console.log('Deleted from Supabase');
+            if (questionError) debugLog('Supabase delete warning', questionError);
+            debugLog('Deleted from Supabase');
           } catch (supabaseError) {
-            console.log('Supabase delete failed, continuing with local delete:', supabaseError.message);
+            debugLog('Supabase delete failed, continuing with local delete', supabaseError.message);
           }
         }
 
-        // Remove from local arrays
         const responsesToDelete = getResponsesForQuestion(questionToDelete);
         
         responsesToDelete.forEach(response => {
-          const index = teacherResponses.findIndex(r => r === response);
+          const index = allResponses.findIndex(r => r === response);
           if (index > -1) {
-            teacherResponses.splice(index, 1);
+            allResponses.splice(index, 1);
           }
         });
 
-        const questionIndex = teacherQuestions.findIndex(q => q === questionToDelete);
+        const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
         if (questionIndex > -1) {
-          teacherQuestions.splice(questionIndex, 1);
+          allQuestions.splice(questionIndex, 1);
         }
 
-        // Update local storage
-        localStorage.setItem(getTeacherStorageKey('questions'), JSON.stringify(teacherQuestions));
-        localStorage.setItem(getTeacherStorageKey('responses'), JSON.stringify(teacherResponses));
+        const questionData = JSON.stringify(allQuestions);
+        const responseData = JSON.stringify(allResponses);
         
-        console.log('Question and responses deleted:', { 
+        localStorage.setItem(STORAGE_KEYS.questions, questionData);
+        localStorage.setItem(STORAGE_KEYS.responses, responseData);
+        
+        STORAGE_KEYS.legacyQuestions.forEach(key => {
+          try {
+            localStorage.setItem(key, questionData);
+          } catch (e) {
+            // Ignore errors
+          }
+        });
+        
+        STORAGE_KEYS.legacyResponses.forEach(key => {
+          try {
+            localStorage.setItem(key, responseData);
+          } catch (e) {
+            // Ignore errors
+          }
+        });
+        
+        debugLog('Question and responses deleted', { 
           question: questionToDelete.id,
           responsesDeleted: responsesToDelete.length,
-          remainingQuestions: teacherQuestions.length,
-          remainingResponses: teacherResponses.length
+          remainingQuestions: allQuestions.length,
+          remainingResponses: allResponses.length
         });
         
         currentSelectedQuestion = null;
         document.getElementById('questionSelector').value = '';
         updateUI();
-        updateStatistics();
         closeConfirmDialog();
         showNotification('Question deleted successfully', 'success');
         
       } catch (error) {
-        console.error('Error deleting question:', error);
+        debugLog('Error deleting question', error.message);
         showNotification('Error deleting question', 'error');
         closeConfirmDialog();
       }
@@ -1390,9 +1317,13 @@
       }, 3000);
     }
 
-    async function initializeAnalytics() {
-      await initSupabase();
-      await loadTeacherData();
+    // Initialize on DOM load
+    document.addEventListener('DOMContentLoaded', function() {
+      debugLog('INTUITY Analytics (Improved Layout) Loading...');
+      
+      debugMode = window.location.search.includes('debug') || localStorage.getItem('debug_mode') === 'true';
+      
+      initSupabase();
       
       document.getElementById('questionSelector').addEventListener('change', handleQuestionChange);
       document.getElementById('displayBtn').addEventListener('click', displayResponses);
@@ -1408,432 +1339,31 @@
         if (e.key === 'Escape') {
           closeConfirmDialog();
         }
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 INTUITY Real Secure Analytics Loading...');
-      
-      // Check authentication
-      if (!checkAuthentication()) {
-        console.log('❌ Authentication failed - redirecting to login');
-        document.getElementById('authRedirect').classList.remove('hidden');
-        return;
-      }
-
-      if (!currentTeacher.permissions.includes('analytics')) {
-        alert('You do not have permission to access analytics.');
-        redirectToLogin();
-        return;
-      }
-      
-      showMainInterface();
-      
-      // Logout handler
-      document.getElementById('logoutButton').addEventListener('click', logout);
-      
-      console.log('✅ Real Secure Analytics Ready!');
-    });
-
-    // ===== FIXED MIGRATION FUNCTIONALITY =====
-
-    // Updated migration storage keys - includes current_question and display_question
-    const MIGRATION_STORAGE_KEYS = {
-      responses: 'intuity_student_responses',
-      questions: 'intuity_questions',
-      legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses'],
-      legacyQuestions: ['alm_questions', 'current_question', 'display_question']  // ✅ ADDED YOUR KEYS
-    };
-
-    // Migration state
-    let migrationInProgress = false;
-
-    // Add migration button to the footer
-    function addMigrationButton() {
-      const footer = document.querySelector('.footer');
-      if (!footer || document.getElementById('migrationBtn')) return;
-      
-      const migrationBtn = document.createElement('button');
-      migrationBtn.className = 'nav-button';
-      migrationBtn.id = 'migrationBtn';
-      migrationBtn.innerHTML = '📦 MIGRATE';
-      migrationBtn.title = 'Migrate data from regular analytics';
-      migrationBtn.addEventListener('click', showMigrationDialog);
-      
-      // Insert before the HOME button
-      const homeBtn = footer.querySelector('button[onclick*="index.html"]');
-      if (homeBtn) {
-        footer.insertBefore(migrationBtn, homeBtn);
-      } else {
-        footer.appendChild(migrationBtn);
-      }
-    }
-
-    // Migration dialog HTML
-    function createMigrationDialog() {
-      const dialogHTML = `
-        <div class="dialog-overlay" id="migrationDialog">
-          <div class="dialog-box" style="max-width: 500px;">
-            <div class="dialog-title">📦 Data Migration (FIXED)</div>
-            <div class="dialog-message">
-              <p style="margin-bottom: 15px;">Import ALL questions and responses from the regular analytics system to your secure teacher account.</p>
-              <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                  <span>Questions found:</span>
-                  <span id="migrationQuestionsFound">Scanning...</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                  <span>Responses found:</span>
-                  <span id="migrationResponsesFound">Scanning...</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                  <span>Status:</span>
-                  <span id="migrationStatus">Ready</span>
-                </div>
-              </div>
-              <div style="margin-bottom: 15px;">
-                <label style="display: flex; align-items: center; color: rgba(255,255,255,0.8); margin-bottom: 8px;">
-                  <input type="checkbox" id="migrationIncludeResponses" checked style="margin-right: 8px;">
-                  Include student responses
-                </label>
-                <label style="display: flex; align-items: center; color: rgba(255,255,255,0.8);">
-                  <input type="checkbox" id="migrationMarkOriginal" checked style="margin-right: 8px;">
-                  Mark original data as migrated
-                </label>
-              </div>
-            </div>
-            <div class="dialog-buttons">
-              <button class="dialog-btn cancel" onclick="closeMigrationDialog()">Cancel</button>
-              <button class="dialog-btn" id="scanMigrationBtn" onclick="scanForMigrationData()" 
-                      style="background: rgba(255,140,60,0.2); color: rgba(255,140,60,1);">Scan Data</button>
-              <button class="dialog-btn" id="startMigrationBtn" onclick="startDataMigration()" 
-                      style="background: rgba(16,185,129,0.2); color: rgba(16,185,129,1); display: none;">Start Migration</button>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      document.body.insertAdjacentHTML('beforeend', dialogHTML);
-    }
-
-    // Show migration dialog
-    function showMigrationDialog() {
-      if (!document.getElementById('migrationDialog')) {
-        createMigrationDialog();
-      }
-      
-      // Reset UI
-      document.getElementById('migrationQuestionsFound').textContent = 'Scanning...';
-      document.getElementById('migrationResponsesFound').textContent = 'Scanning...';
-      document.getElementById('migrationStatus').textContent = 'Ready';
-      document.getElementById('startMigrationBtn').style.display = 'none';
-      document.getElementById('scanMigrationBtn').style.display = 'inline-block';
-      
-      document.getElementById('migrationDialog').classList.add('show');
-      
-      // Auto-scan on open
-      setTimeout(scanForMigrationData, 500);
-    }
-
-    // Close migration dialog
-    function closeMigrationDialog() {
-      const dialog = document.getElementById('migrationDialog');
-      if (dialog) {
-        dialog.classList.remove('show');
-      }
-    }
-
-    // FIXED SCAN FUNCTION - REMOVES TEACHER FILTER
-    async function scanForMigrationData() {
-      try {
-        document.getElementById('migrationStatus').textContent = 'Scanning...';
-        document.getElementById('scanMigrationBtn').disabled = true;
-        
-        let foundQuestions = [];
-        let foundResponses = [];
-        
-        console.log('🔍 Starting migration scan...');
-        
-        // Scan questions - REMOVE TEACHER FILTER
-        const questionSources = [MIGRATION_STORAGE_KEYS.questions, ...MIGRATION_STORAGE_KEYS.legacyQuestions];
-        
-        for (const key of questionSources) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(q => {
-                  if (q && (q.text || q.question_text) && !foundQuestions.find(existing => existing.id === q.id)) {
-                    // ✅ INCLUDE ALL QUESTIONS - NO TEACHER FILTER
-                    foundQuestions.push(q);
-                    console.log('📝 Found question from', key, ':', (q.text || q.question_text).substring(0, 50) + '...');
-                  }
-                });
-              } else if (parsed && (parsed.text || parsed.question_text)) {
-                if (!foundQuestions.find(existing => existing.id === parsed.id)) {
-                  // ✅ INCLUDE ALL QUESTIONS - NO TEACHER FILTER
-                  foundQuestions.push(parsed);
-                  console.log('📝 Found single question from', key, ':', (parsed.text || parsed.question_text).substring(0, 50) + '...');
-                }
-              }
-            } catch (e) {
-              console.warn('Error parsing questions from', key, e);
-            }
+        if (e.ctrlKey && e.key === 'd') {
+          e.preventDefault();
+          debugMode = !debugMode;
+          if (debugMode) {
+            localStorage.setItem('debug_mode', 'true');
+            debugLog('Debug mode enabled via keyboard');
+            setTimeout(() => {
+              debugLog('Current data summary', {
+                questions: allQuestions.length,
+                responses: allResponses.length,
+                connected: isConnected,
+                selected: currentSelectedQuestion?.id || 'none',
+                allStorageKeys: Object.keys(localStorage).filter(key => 
+                  key.includes('question') || key.includes('response') || key.includes('teacher')
+                )
+              });
+            }, 500);
+          } else {
+            localStorage.removeItem('debug_mode');
+            document.getElementById('debugPanel').classList.remove('show');
           }
-        }
-        
-        // Scan responses - INCLUDE ALL
-        const responseSources = [MIGRATION_STORAGE_KEYS.responses, ...MIGRATION_STORAGE_KEYS.legacyResponses];
-        
-        for (const key of responseSources) {
-          const stored = localStorage.getItem(key);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(r => {
-                  if (r && r.answer && (r.student_name || r.studentName)) {
-                    const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}`;
-                    if (!foundResponses.find(existing => {
-                      const existingKey = `${existing.student_name || existing.studentName}-${existing.answer.substring(0,50)}`;
-                      return existingKey === uniqueKey;
-                    })) {
-                      foundResponses.push(r);
-                      console.log('💬 Found response from', key, ':', r.student_name || r.studentName);
-                    }
-                  }
-                });
-              }
-            } catch (e) {
-              console.warn('Error parsing responses from', key, e);
-            }
-          }
-        }
-        
-        // Update UI
-        document.getElementById('migrationQuestionsFound').textContent = foundQuestions.length;
-        document.getElementById('migrationResponsesFound').textContent = foundResponses.length;
-        
-        console.log('🔍 Scan complete:', { questions: foundQuestions.length, responses: foundResponses.length });
-        
-        if (foundQuestions.length > 0 || foundResponses.length > 0) {
-          document.getElementById('migrationStatus').textContent = 'Ready to migrate';
-          document.getElementById('startMigrationBtn').style.display = 'inline-block';
-          document.getElementById('scanMigrationBtn').style.display = 'none';
-          
-          // Store found data for migration
-          window.migrationData = { questions: foundQuestions, responses: foundResponses };
-          
-          // Show details in console for debugging
-          console.log('🔍 Found Questions:', foundQuestions);
-          console.log('🔍 Found Responses:', foundResponses);
-          
-        } else {
-          document.getElementById('migrationStatus').textContent = 'No data found';
-        }
-        
-      } catch (error) {
-        console.error('Migration scan error:', error);
-        document.getElementById('migrationStatus').textContent = 'Scan failed';
-        showNotification('Migration scan failed', 'error');
-      } finally {
-        document.getElementById('scanMigrationBtn').disabled = false;
-      }
-    }
-
-    // ENHANCED MIGRATION FUNCTION
-    async function startDataMigration() {
-      if (migrationInProgress || !window.migrationData) return;
-      
-      try {
-        migrationInProgress = true;
-        document.getElementById('startMigrationBtn').disabled = true;
-        document.getElementById('migrationStatus').textContent = 'Migrating...';
-        
-        const { questions: foundQuestions, responses: foundResponses } = window.migrationData;
-        const includeResponses = document.getElementById('migrationIncludeResponses').checked;
-        const markOriginal = document.getElementById('migrationMarkOriginal').checked;
-        
-        let migratedQuestions = 0;
-        let migratedResponses = 0;
-        
-        // Get existing teacher data
-        const existingQuestions = JSON.parse(localStorage.getItem(getTeacherStorageKey('questions')) || '[]');
-        const existingResponses = JSON.parse(localStorage.getItem(getTeacherStorageKey('responses')) || '[]');
-        const migratedQuestionsList = [];
-        
-        console.log('🚀 Starting migration with:', {
-          foundQuestions: foundQuestions.length,
-          foundResponses: foundResponses.length,
-          existingQuestions: existingQuestions.length,
-          existingResponses: existingResponses.length
-        });
-        
-        // Migrate questions
-        for (const question of foundQuestions) {
-          // Check if already exists (by ID)
-          if (existingQuestions.find(q => q.id === question.id)) {
-            console.log('⚠️ Question already exists:', question.id);
-            continue;
-          }
-          
-          const teacherQuestion = {
-            ...question,
-            created_by: currentTeacher.code,  // Override with current teacher
-            migrated: true,
-            migrated_at: new Date().toISOString(),
-            original_source: 'regular_analytics',
-            original_created_by: question.created_by  // Keep original for reference
-          };
-          
-          // Ensure required fields
-          if (!teacherQuestion.id) {
-            teacherQuestion.id = 'migrated_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-          }
-          if (!teacherQuestion.created_at) {
-            teacherQuestion.created_at = new Date().toISOString();
-          }
-          
-          existingQuestions.push(teacherQuestion);
-          migratedQuestionsList.push(teacherQuestion);
-          migratedQuestions++;
-          
-          console.log('✅ Migrated question:', teacherQuestion.text?.substring(0, 50) + '...' || teacherQuestion.question_text?.substring(0, 50) + '...');
-        }
-        
-        // Save migrated questions
-        localStorage.setItem(getTeacherStorageKey('questions'), JSON.stringify(existingQuestions));
-        
-        // Migrate responses if enabled
-        if (includeResponses) {
-          for (const response of foundResponses) {
-            // Find matching question
-            const matchingQuestion = migratedQuestionsList.find(q => {
-              const questionId = q.id;
-              const responseQuestionId = response.question_id || response.questionId;
-              
-              // Try multiple matching strategies
-              return (
-                (questionId && responseQuestionId && questionId === responseQuestionId) ||
-                (questionId === 'demo' && (!responseQuestionId || responseQuestionId === 'demo'))
-              );
-            });
-            
-            if (!matchingQuestion) {
-              console.log('⚠️ No matching question for response from:', response.student_name || response.studentName);
-              continue;
-            }
-            
-            // Check if already exists
-            const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}`;
-            if (existingResponses.find(r => {
-              const existingKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}`;
-              return existingKey === uniqueKey;
-            })) {
-              console.log('⚠️ Response already exists:', uniqueKey);
-              continue;
-            }
-            
-            const teacherResponse = {
-              ...response,
-              question_id: matchingQuestion.id,
-              migrated: true,
-              migrated_at: new Date().toISOString(),
-              original_source: 'regular_analytics'
-            };
-            
-            // Ensure required fields
-            if (!teacherResponse.id) {
-              teacherResponse.id = 'migrated_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            }
-            if (!teacherResponse.submitted_at && !teacherResponse.submittedAt) {
-              teacherResponse.submitted_at = new Date().toISOString();
-            }
-            
-            existingResponses.push(teacherResponse);
-            migratedResponses++;
-            
-            console.log('✅ Migrated response from:', teacherResponse.student_name || teacherResponse.studentName);
-          }
-          
-          // Save migrated responses
-          localStorage.setItem(getTeacherStorageKey('responses'), JSON.stringify(existingResponses));
-        }
-        
-        // Mark original data as migrated if enabled (OPTIONAL)
-        if (markOriginal) {
-          const questionSources = ['current_question', 'display_question', 'intuity_questions'];
-          
-          for (const key of questionSources) {
-            const stored = localStorage.getItem(key);
-            if (stored) {
-              try {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed)) {
-                  let updated = false;
-                  parsed.forEach(q => {
-                    if (foundQuestions.find(fq => fq.id === q.id)) {
-                      q.migrated_to_teacher = currentTeacher.code;
-                      q.migrated_at = new Date().toISOString();
-                      updated = true;
-                    }
-                  });
-                  if (updated) {
-                    localStorage.setItem(key, JSON.stringify(parsed));
-                  }
-                } else if (parsed && foundQuestions.find(fq => fq.id === parsed.id)) {
-                  // Single question
-                  parsed.migrated_to_teacher = currentTeacher.code;
-                  parsed.migrated_at = new Date().toISOString();
-                  localStorage.setItem(key, JSON.stringify(parsed));
-                }
-              } catch (e) {
-                console.warn('Error updating', key, e);
-              }
-            }
-          }
-        }
-        
-        // Update UI and reload data
-        document.getElementById('migrationStatus').textContent = `Complete: ${migratedQuestions} questions, ${migratedResponses} responses`;
-        
-        // Reload teacher data
-        await loadTeacherData();
-        
-        console.log('🎉 Migration completed:', { migratedQuestions, migratedResponses });
-        showNotification(`Migration complete: ${migratedQuestions} questions, ${migratedResponses} responses`, 'success');
-        
-        setTimeout(() => {
-          closeMigrationDialog();
-        }, 2000);
-        
-      } catch (error) {
-        console.error('Migration error:', error);
-        document.getElementById('migrationStatus').textContent = 'Migration failed';
-        showNotification('Migration failed: ' + error.message, 'error');
-      } finally {
-        migrationInProgress = false;
-        document.getElementById('startMigrationBtn').disabled = false;
-      }
-    }
-
-    // Add migration functionality on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Add migration button after the interface is ready
-      setTimeout(() => {
-        if (document.querySelector('.footer') && !document.getElementById('migrationBtn')) {
-          addMigrationButton();
-          console.log('✅ Fixed migration functionality added to secure analytics');
-        }
-      }, 1000);
-      
-      // Handle escape key for migration dialog
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.getElementById('migrationDialog')?.classList.contains('show')) {
-          closeMigrationDialog();
         }
       });
+      
+      debugLog('INTUITY Analytics (Improved Layout) Ready!');
     });
   </script>
 </body>
