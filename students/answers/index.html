@@ -326,69 +326,20 @@
       transform: scale(1.05);
     }
 
-    .loading {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.6);
-      padding: 40px;
-      font-size: 16px;
-    }
-
-    .loading::after {
-      content: '...';
-      animation: dots 1.5s steps(4, end) infinite;
-    }
-
-    @keyframes dots {
-      0%, 20% { content: '.'; }
-      40% { content: '..'; }
-      60%, 100% { content: '...'; }
-    }
-
     @media (max-width: 768px) {
-      .header h1 {
-        font-size: 42px;
-      }
-
-      .question-text {
-        font-size: 22px;
-      }
-
-      .form-input {
-        font-size: 16px;
-      }
-
-      .question-selection,
-      .camera-section {
-        padding: 20px;
-      }
+      .header h1 { font-size: 42px; }
+      .question-text { font-size: 22px; }
+      .form-input { font-size: 16px; }
+      .question-selection, .camera-section { padding: 20px; }
     }
 
     @media (max-width: 480px) {
-      .header h1 {
-        font-size: 36px;
-      }
-
-      .question-display {
-        padding: 30px 20px;
-      }
-
-      .question-text {
-        font-size: 20px;
-      }
-
-      .selection-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .camera-controls {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .camera-btn {
-        width: 100%;
-      }
+      .header h1 { font-size: 36px; }
+      .question-display { padding: 30px 20px; }
+      .question-text { font-size: 20px; }
+      .selection-header { flex-direction: column; align-items: flex-start; }
+      .camera-controls { flex-direction: column; width: 100%; }
+      .camera-btn { width: 100%; }
     }
   </style>
 </head>
@@ -409,7 +360,7 @@
     <div class="question-selection" id="questionSelection" style="display: none;">
       <div class="selection-header">
         <div class="selection-title">📚 Available Questions</div>
-        <button class="refresh-btn" onclick="loadAllQuestions()">🔄 Refresh</button>
+        <button class="refresh-btn" onclick="manualRefresh()">🔄 Refresh</button>
       </div>
       <select id="questionDropdown" onchange="selectQuestion()" class="question-dropdown">
         <option value="">Select a question...</option>
@@ -421,20 +372,8 @@
         <div class="question-text" id="questionText"></div>
       </div>
 
-      <input 
-        type="text" 
-        id="studentName" 
-        class="form-input" 
-        placeholder="Your name" 
-        oninput="checkForm()"
-      >
-
-      <textarea 
-        id="studentAnswer" 
-        class="form-input form-textarea" 
-        placeholder="Type your answer here..." 
-        oninput="checkForm()"
-      ></textarea>
+      <input type="text" id="studentName" class="form-input" placeholder="Your name" oninput="checkForm()">
+      <textarea id="studentAnswer" class="form-input form-textarea" placeholder="Type your answer here..." oninput="checkForm()"></textarea>
 
       <div class="camera-section">
         <div class="camera-header">
@@ -445,18 +384,12 @@
             <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display: none;">Retake</button>
           </div>
         </div>
-        
         <video id="videoPreview" autoplay playsinline></video>
         <img id="photoPreview" alt="Captured photo">
-        
-        <div class="camera-info" id="cameraInfo">
-          Add a photo of your work (optional)
-        </div>
+        <div class="camera-info" id="cameraInfo">Add a photo of your work (optional)</div>
       </div>
 
-      <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>
-        Submit Response
-      </button>
+      <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
     </div>
 
     <div class="success-screen" id="successScreen">
@@ -474,12 +407,25 @@
     let currentQuestion = null;
     let videoStream = null;
     let capturedPhoto = null;
+    let isLoadingQuestions = false;
+    let autoRefreshInterval = null;
 
-    async function loadAllQuestions() {
-      console.log('🔍 Loading questions via INTUITY DataSync...');
+    // ========================================
+    // LOAD QUESTIONS - FIXED VERSION
+    // ========================================
+    async function loadAllQuestions(silent = false) {
+      if (isLoadingQuestions) {
+        console.log('⚠️ Already loading questions, skipping...');
+        return;
+      }
+
+      isLoadingQuestions = true;
       
-      allQuestions = [];
+      if (!silent) {
+        console.log('🔍 Loading questions via INTUITY DataSync...');
+      }
       
+      // Wait for DataSync
       let retries = 0;
       while (!window.intuitySync && retries < 10) {
         console.log('⏳ Waiting for DataSync...', retries);
@@ -490,6 +436,7 @@
       if (!window.intuitySync) {
         console.error('❌ CRITICAL: DataSync never loaded!');
         showError('System error: Data sync not available');
+        isLoadingQuestions = false;
         return;
       }
       
@@ -497,25 +444,13 @@
       console.log('🌐 Online:', window.intuitySync.isOnline);
       console.log('🔌 Connected:', window.intuitySync.isConnected);
       
+      const previousCount = allQuestions.length;
+      allQuestions = [];
+      
       try {
-        const currentQ = await window.intuitySync.getCurrentQuestion();
-        
-        if (currentQ) {
-          console.log('✅ Got current question from DataSync');
-          allQuestions.push(currentQ);
-        }
-        
-        const allQ = window.intuitySync.getAllQuestions();
-        console.log(`📚 Found ${allQ.length} questions in history`);
-        
-        allQ.forEach(q => {
-          if (!allQuestions.find(existing => existing.id === q.id)) {
-            allQuestions.push(q);
-          }
-        });
-        
-        if (allQuestions.length === 0 && window.intuitySync.isOnline && window.intuitySync.isConnected) {
-          console.log('⚠️ No questions found, trying direct Supabase fetch...');
+        // PRIORITY 1: Try Supabase FIRST if online
+        if (window.intuitySync.isOnline && window.intuitySync.isConnected && window.intuitySync.supabase) {
+          console.log('🌐 Fetching from Supabase (PRIORITY)...');
           
           try {
             const { data, error } = await window.intuitySync.supabase
@@ -528,19 +463,46 @@
               console.log(`✅ Got ${data.length} questions from Supabase!`);
               allQuestions = data;
               
+              // Cache latest to localStorage
               if (data[0]) {
                 localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
+                console.log('✅ Cached latest question to localStorage');
               }
+            } else {
+              console.warn('⚠️ Supabase query returned no data or error:', error);
             }
           } catch (supabaseError) {
-            console.error('❌ Supabase direct fetch failed:', supabaseError);
+            console.error('❌ Supabase fetch failed:', supabaseError);
           }
+        }
+        
+        // PRIORITY 2: If no Supabase data, try DataSync methods
+        if (allQuestions.length === 0) {
+          console.log('⚠️ No Supabase data, trying DataSync methods...');
+          
+          const currentQ = await window.intuitySync.getCurrentQuestion();
+          if (currentQ) {
+            console.log('✅ Got current question from DataSync');
+            allQuestions.push(currentQ);
+          }
+          
+          const allQ = window.intuitySync.getAllQuestions();
+          console.log(`📚 Found ${allQ.length} questions in history`);
+          
+          allQ.forEach(q => {
+            if (q && (q.text || q.question_text)) {
+              if (!allQuestions.find(existing => existing.id === q.id)) {
+                allQuestions.push(q);
+              }
+            }
+          });
         }
         
       } catch (error) {
         console.error('❌ Error loading questions:', error);
       }
       
+      // Sort by date (newest first)
       allQuestions.sort((a, b) => {
         const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
         const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
@@ -549,14 +511,34 @@
       
       console.log(`📊 FINAL: ${allQuestions.length} questions available`);
       
+      // Check for new questions
+      if (!silent && allQuestions.length > previousCount) {
+        console.log(`✨ NEW QUESTIONS DETECTED! ${previousCount} → ${allQuestions.length}`);
+      }
+      
+      // Update UI
+      updateUI();
+      
+      isLoadingQuestions = false;
+    }
+
+    function updateUI() {
       if (allQuestions.length === 0) {
         document.getElementById('noQuestion').style.display = 'block';
         document.getElementById('questionSelection').style.display = 'none';
-        showError('No questions published yet. Ask your teacher to publish a question.');
       } else {
         document.getElementById('noQuestion').style.display = 'none';
         document.getElementById('questionSelection').style.display = 'block';
+        
+        // Store current selection
+        const currentSelection = document.getElementById('questionDropdown').value;
+        
         populateDropdown();
+        
+        // Restore selection if still valid
+        if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
+          document.getElementById('questionDropdown').value = currentSelection;
+        }
       }
     }
 
@@ -573,7 +555,7 @@
       dropdown.innerHTML = '<option value="">Select a question...</option>';
       
       allQuestions.forEach((q, index) => {
-        const text = q.text || q.question_text;
+        const text = q.text || q.question_text || 'Untitled Question';
         const preview = text.length > 60 ? text.substring(0, 60) + '...' : text;
         const date = new Date(q.created_at || q.published_at || q.timestamp || 0);
         const dateStr = date.toLocaleDateString();
@@ -597,11 +579,10 @@
       }
       
       currentQuestion = allQuestions[parseInt(index)];
-      const questionText = currentQuestion.text || currentQuestion.question_text;
+      const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
       
       document.getElementById('questionText').textContent = questionText;
       document.getElementById('questionSection').style.display = 'block';
-      
       document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
       
       console.log('✅ Question selected:', questionText.substring(0, 50));
@@ -610,28 +591,27 @@
     function checkForm() {
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
-      const submitBtn = document.getElementById('submitBtn');
-      
-      submitBtn.disabled = !(name && answer);
+      document.getElementById('submitBtn').disabled = !(name && answer);
     }
 
+    // Manual refresh button
+    async function manualRefresh() {
+      console.log('🔄 Manual refresh triggered');
+      await loadAllQuestions(false);
+    }
+
+    // Camera functions
     async function startCamera() {
       try {
         console.log('📷 Starting camera...');
-        
-        videoStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'environment' } 
-        });
-        
+        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         const video = document.getElementById('videoPreview');
         video.srcObject = videoStream;
         video.style.display = 'block';
-        
         document.getElementById('startCameraBtn').style.display = 'none';
         document.getElementById('captureBtn').style.display = 'inline-block';
         document.getElementById('captureBtn').disabled = false;
         document.getElementById('cameraInfo').textContent = 'Position your work and click Capture';
-        
         console.log('✅ Camera started');
       } catch (error) {
         console.error('❌ Camera error:', error);
@@ -642,24 +622,17 @@
     function capturePhoto() {
       const video = document.getElementById('videoPreview');
       const photo = document.getElementById('photoPreview');
-      
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0);
-      
+      canvas.getContext('2d').drawImage(video, 0, 0);
       capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
-      
       photo.src = capturedPhoto;
       photo.style.display = 'block';
-      
       stopCamera();
-      
       document.getElementById('captureBtn').style.display = 'none';
       document.getElementById('retakeBtn').style.display = 'inline-block';
       document.getElementById('cameraInfo').textContent = '✓ Photo captured! Click Retake to try again';
-      
       console.log('✅ Photo captured');
     }
 
@@ -669,7 +642,6 @@
       document.getElementById('retakeBtn').style.display = 'none';
       document.getElementById('startCameraBtn').style.display = 'inline-block';
       document.getElementById('cameraInfo').textContent = 'Add a photo of your work (optional)';
-      
       console.log('🔄 Ready to retake photo');
     }
 
@@ -736,62 +708,57 @@
       document.getElementById('studentName').value = '';
       document.getElementById('studentAnswer').value = '';
       document.getElementById('questionDropdown').value = '';
-      
       capturedPhoto = null;
       document.getElementById('photoPreview').style.display = 'none';
       document.getElementById('retakeBtn').style.display = 'none';
       document.getElementById('startCameraBtn').style.display = 'inline-block';
       document.getElementById('cameraInfo').textContent = 'Add a photo of your work (optional)';
-      
       currentQuestion = null;
-      
       document.getElementById('successScreen').classList.remove('show');
-      
       loadAllQuestions();
-      
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
       console.log('🔄 Ready for another response');
     }
 
-    setInterval(() => {
-      const previousCount = allQuestions.length;
-      loadAllQuestions();
-      const newCount = allQuestions.length;
-      
-      if (newCount > previousCount) {
-        console.log(`✨ NEW QUESTIONS! ${previousCount} → ${newCount}`);
-      }
-    }, 10000);
+    // Auto-refresh every 15 seconds (SILENT mode)
+    function startAutoRefresh() {
+      autoRefreshInterval = setInterval(() => {
+        loadAllQuestions(true); // Silent refresh
+      }, 15000);
+      console.log('🔄 Auto-refresh enabled (every 15 seconds)');
+    }
 
+    // Initialize
     window.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Student Portal Ready!');
-      
       console.log('=== DEBUGGING INFO ===');
-      console.log('🔍 INTUITY DataSync available?', !!window.intuitySync);
+      console.log('🔍 DataSync available?', !!window.intuitySync);
       console.log('🔍 Supabase available?', !!window.supabase);
       
       if (window.intuitySync) {
         console.log('🔍 DataSync online?', window.intuitySync.isOnline);
         console.log('🔍 DataSync connected?', window.intuitySync.isConnected);
       }
-      
       console.log('======================');
       
       await new Promise(resolve => setTimeout(resolve, 500));
+      await loadAllQuestions(false);
       
-      await loadAllQuestions();
-      
+      // QR code auto-select
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
         document.getElementById('questionDropdown').value = '0';
         selectQuestion();
         console.log('🎯 Auto-selected latest question from QR code');
       }
+      
+      // Start auto-refresh
+      startAutoRefresh();
     });
 
     window.addEventListener('beforeunload', () => {
       stopCamera();
+      if (autoRefreshInterval) clearInterval(autoRefreshInterval);
     });
   </script>
 </body>
