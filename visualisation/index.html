@@ -245,6 +245,7 @@
       color: #fff;
       padding: 14px 18px;
     }
+
     .main-content {
       flex: 1;
       display: flex;
@@ -675,6 +676,7 @@
       </div>
     </div>
   </div>
+
   <script>
     console.log('🚀 INTUITY Analytics Loading...');
     
@@ -766,8 +768,7 @@
               allQuestions = [parsed];
               console.log('✅ Loaded 1 question from localStorage');
             }
-          }
-          catch (e) {
+          } catch (e) {
             console.error('❌ Error parsing localStorage question:', e);
           }
         }
@@ -976,215 +977,149 @@
         }
       }, 500);
     }
-    catch (e) {
-            console.error('❌ Error parsing localStorage question:', e);
-          }
-        }
+
+    function showDeleteConfirmation() {
+      if (!currentSelectedQuestion) return;
+
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
+      
+      const message = document.getElementById('dialogMessage');
+      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
+      const shortQuestion = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
+      
+      if (count > 0) {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
+      } else {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}"? This action cannot be undone.`;
       }
       
-      if (allQuestions.length === 0) {
-        console.warn('⚠️ No questions found in Supabase or localStorage');
-      }
+      document.getElementById('confirmDialog').classList.add('show');
     }
 
-    async function loadAllResponses() {
-      allResponses = [];
+    function closeConfirmDialog() {
+      document.getElementById('confirmDialog').classList.remove('show');
+    }
 
-      if (supabase && isOnline) {
-        console.log('🌐 Fetching responses from Supabase...');
-        try {
-          const { data, error } = await supabase
-            .from('responses')
-            .select('*')
-            .order('submitted_at', { ascending: false });
-
-          if (error) {
-            console.error('❌ Supabase responses error:', error);
-            throw error;
-          }
-
-          if (data && data.length > 0) {
-            console.log(`✅ Got ${data.length} responses from Supabase`);
-            allResponses = data;
-            return;
-          } else {
-            console.log('ℹ️ No responses found in Supabase');
-          }
-        } catch (err) {
-          console.error('❌ Supabase responses fetch failed:', err.message || err);
-        }
+    async function confirmDelete() {
+      if (!currentSelectedQuestion) {
+        closeConfirmDialog();
+        return;
       }
 
-      // Fallback to localStorage if no Supabase data
-      if (allResponses.length === 0) {
-        console.log('📦 Checking localStorage for responses...');
-        const stored = localStorage.getItem('intuity_student_responses');
-        if (stored) {
+      const questionToDelete = currentSelectedQuestion;
+      const questionId = questionToDelete.id;
+
+      try {
+        console.log('🗑 Deleting question and responses...');
+        
+        const responsesToDelete = getResponsesForQuestion(questionToDelete);
+        
+        // Delete from Supabase if online
+        if (supabase && isOnline && questionId) {
           try {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed)) {
-              allResponses = parsed;
-              console.log(`✅ Loaded ${parsed.length} responses from localStorage`);
+            // Delete responses first
+            if (responsesToDelete.length > 0) {
+              const responseIds = responsesToDelete.map(r => r.id).filter(id => id);
+              if (responseIds.length > 0) {
+                console.log(`Deleting ${responseIds.length} responses from Supabase...`);
+                const { error: respError } = await supabase
+                  .from('responses')
+                  .delete()
+                  .in('id', responseIds);
+                
+                if (respError) {
+                  console.error('Error deleting responses from Supabase:', respError);
+                } else {
+                  console.log(`✅ Deleted ${responseIds.length} responses from Supabase`);
+                }
+              }
             }
-          } catch (e) {
-            console.error('❌ Error parsing localStorage responses:', e);
+            
+            // Delete question
+            console.log(`Deleting question ${questionId} from Supabase...`);
+            const { error: qError } = await supabase
+              .from('questions')
+              .delete()
+              .eq('id', questionId);
+            
+            if (qError) {
+              console.error('Error deleting question from Supabase:', qError);
+            } else {
+              console.log('✅ Deleted question from Supabase');
+            }
+          } catch (err) {
+            console.error('Supabase delete error:', err);
           }
         }
-      }
-      
-      if (allResponses.length === 0) {
-        console.log('ℹ️ No responses found');
-      }
-    }
-
-    function getResponsesForQuestion(question) {
-      if (!question) return [];
-      
-      const questionId = question.id;
-      
-      if (!questionId) {
-        console.warn('⚠️ Question has no ID');
-        return [];
-      }
-      
-      const matchedResponses = allResponses.filter(response => {
-        const responseQuestionId = response.question_id || response.questionId;
-        return questionId && responseQuestionId && questionId === responseQuestionId;
-      });
-
-      console.log(`Found ${matchedResponses.length} responses for question ID: ${questionId}`);
-      
-      return matchedResponses;
-    }
-
-    function updateUI() {
-      populateQuestionDropdown();
-      updateAnalyticsBox();
-      updateDisplayButton();
-    }
-
-    function populateQuestionDropdown() {
-      const selector = document.getElementById('questionSelector');
-      
-      if (allQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions available - create your first one!</option>';
-        return;
-      }
-
-      selector.innerHTML = '<option value="">Select a question to view analytics...</option>';
-
-      allQuestions.forEach((question, index) => {
-        const option = document.createElement('option');
-        option.value = index;
         
-        const questionText = question.text || question.question_text || 'Untitled Question';
-        const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
-        
-        const responses = getResponsesForQuestion(question);
-        const responseCount = responses.length;
-        const dateStr = new Date(question.created_at || question.published_at || Date.now()).toLocaleDateString();
-        
-        option.textContent = `${shortText} - ${responseCount} response${responseCount !== 1 ? 's' : ''} (${dateStr})`;
-        
-        selector.appendChild(option);
-      });
+        // Remove from local arrays
+        responsesToDelete.forEach(response => {
+          const index = allResponses.findIndex(r => r === response);
+          if (index > -1) {
+            allResponses.splice(index, 1);
+          }
+        });
 
-      console.log(`✅ Dropdown populated with ${allQuestions.length} questions`);
-    }
-
-    function updateAnalyticsBox() {
-      const counter = document.getElementById('responseCounter');
-      const deleteBtn = document.getElementById('deleteBtn');
-      const analyticsBox = document.getElementById('analyticsBox');
-      const statsGrid = document.getElementById('statsGrid');
-      
-      if (!currentSelectedQuestion) {
-        counter.textContent = 'Select a question above to view analytics';
-        counter.className = 'response-counter no-selection';
-        deleteBtn.classList.remove('visible');
-        analyticsBox.classList.remove('has-selection');
-        statsGrid.style.display = 'none';
-      } else {
-        const responses = getResponsesForQuestion(currentSelectedQuestion);
-        const count = responses.length;
-        
-        counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
-        counter.className = 'response-counter';
-        deleteBtn.classList.add('visible');
-        analyticsBox.classList.add('has-selection');
-        
-        if (count > 0) {
-          statsGrid.style.display = 'grid';
-          
-          const totalWords = responses.reduce((sum, r) => {
-            const text = r.answer || r.response_text || '';
-            return sum + text.split(/\s+/).filter(w => w.length > 0).length;
-          }, 0);
-          const avgWords = Math.round(totalWords / count);
-          const withPhotos = responses.filter(r => r.photo_url || r.hasPhoto).length;
-          
-          document.getElementById('totalResponses').textContent = count;
-          document.getElementById('avgWords').textContent = avgWords;
-          document.getElementById('withPhotos').textContent = withPhotos;
-        } else {
-          statsGrid.style.display = 'none';
+        const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
+        if (questionIndex > -1) {
+          allQuestions.splice(questionIndex, 1);
         }
-      }
-    }
 
-    function updateDisplayButton() {
-      const displayBtn = document.getElementById('displayBtn');
-      displayBtn.disabled = !currentSelectedQuestion;
-    }
-
-    function handleQuestionChange() {
-      const selector = document.getElementById('questionSelector');
-      const selectedValue = selector.value;
-      
-      if (!selectedValue) {
+        // Update localStorage
+        localStorage.setItem('intuity_student_responses', JSON.stringify(allResponses));
+        
+        // If this was the only/current question in localStorage, remove it
+        const storedQuestion = localStorage.getItem('intuity_current_question');
+        if (storedQuestion) {
+          try {
+            const parsed = JSON.parse(storedQuestion);
+            if (parsed.id === questionId) {
+              localStorage.removeItem('intuity_current_question');
+            }
+          } catch (e) {}
+        }
+        
+        console.log(`✅ Deleted question and ${responsesToDelete.length} responses`);
+        
         currentSelectedQuestion = null;
-      } else {
-        currentSelectedQuestion = allQuestions[parseInt(selectedValue)];
+        document.getElementById('questionSelector').value = '';
+        updateUI();
+        closeConfirmDialog();
+        showNotification('Question deleted successfully', 'success');
+        
+      } catch (error) {
+        console.error('❌ Error deleting question:', error);
+        showNotification('Error deleting question', 'error');
+        closeConfirmDialog();
       }
-
-      console.log('Selected question:', currentSelectedQuestion?.text?.substring(0, 50) || 'none');
-      
-      updateAnalyticsBox();
-      updateDisplayButton();
     }
 
-    function displayResponses() {
-      if (!currentSelectedQuestion) {
-        showNotification('Please select a question first', 'error');
-        return;
-      }
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
       
-      const matchedResponses = getResponsesForQuestion(currentSelectedQuestion);
+      const icons = {
+        success: '✓',
+        error: '⚠',
+        info: 'ℹ'
+      };
       
-      if (matchedResponses.length === 0) {
-        showNotification('No responses to display', 'info');
-        return;
-      }
+      notification.innerHTML = `
+        <span>${icons[type] || 'ℹ'}</span>
+        <span>${message}</span>
+      `;
       
-      showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
+      document.body.appendChild(notification);
       
-      const questionData = JSON.stringify(currentSelectedQuestion);
-      const responseData = JSON.stringify(matchedResponses);
-      
-      localStorage.setItem('display_question', questionData);
-      localStorage.setItem('display_responses', responseData);
-      localStorage.setItem('current_question', questionData);
-      
-      console.log(`✅ Prepared display data: ${matchedResponses.length} responses`);
+      setTimeout(() => notification.classList.add('show'), 100);
       
       setTimeout(() => {
-        try {
-          window.open('../displays/', '_blank');
-        } catch (error) {
-          window.location.href = '../displays/';
-        }
-      }, 500);
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
     }
+
     // Auto-refresh every 10 seconds
     setInterval(async () => {
       if (!supabase || !isOnline) return;
