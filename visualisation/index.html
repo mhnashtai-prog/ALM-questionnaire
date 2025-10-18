@@ -786,7 +786,7 @@
         console.log('🌐 Fetching responses from Supabase...');
         try {
           const { data, error } = await supabase
-            .from('responses')
+            .from('student_responses')
             .select('*')
             .order('submitted_at', { ascending: false });
 
