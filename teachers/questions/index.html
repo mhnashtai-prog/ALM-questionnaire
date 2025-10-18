@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher Portal (Simplified)</title>
+  <title>INTUITY - Teacher Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
    <script src="../../intuity-data-sync.js"></script> 
@@ -527,13 +527,50 @@
   </div>
 
   <script>
-    console.log('🚀 INTUITY Teacher Portal (Simplified - No Auth) Loading...');
+    console.log('🚀 INTUITY Teacher Portal Loading...');
     
     let currentQuestion = null;
     let isPublished = false;
+    let supabase = null;
+    let isOnline = false;
+
+    // ========================================
+    // YOUR SUPABASE CREDENTIALS
+    // ========================================
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
     // CRITICAL: The exact storage key that the student interface reads from
     const STUDENT_KEY = 'current_question';
+
+    // Initialize Supabase
+    function initSupabase() {
+      try {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          console.log('✅ Supabase initialized successfully');
+          checkOnlineStatus();
+          return true;
+        } else {
+          console.warn('⚠️ Supabase not available');
+          return false;
+        }
+      } catch (error) {
+        console.error('❌ Supabase initialization error:', error);
+        return false;
+      }
+    }
+
+    async function checkOnlineStatus() {
+      try {
+        const { data, error } = await supabase.from('questions').select('id').limit(1);
+        isOnline = !error;
+        console.log(isOnline ? '🌐 Online - connected to Supabase' : '📴 Offline mode');
+      } catch (error) {
+        isOnline = false;
+        console.log('📴 Offline mode');
+      }
+    }
 
     function handleQuestionInput() {
       const questionInput = document.getElementById('questionInput');
@@ -553,7 +590,7 @@
       }
     }
 
-    function publishQuestion() {
+    async function publishQuestion() {
       const questionText = document.getElementById('questionInput').value.trim();
       if (!questionText) {
         console.warn('Attempted to publish empty question');
@@ -568,16 +605,17 @@
 
       try {
         const questionId = 'question_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const timestamp = new Date().toISOString();
         
         // Create question object in format both teacher and student understand
         const questionData = {
           id: questionId,
           text: questionText,
-          question_text: questionText, // Dual format for compatibility
+          question_text: questionText,
           question_type: 'open-ended',
           is_published: true,
-          published_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
+          published_at: timestamp,
+          created_at: timestamp,
           created_by: 'teacher',
           metadata: {
             source: 'simplified_teacher_interface',
@@ -587,6 +625,41 @@
 
         console.log('📝 Publishing question:', questionData);
 
+        // ========================================
+        // PUBLISH TO SUPABASE FIRST!
+        // ========================================
+        let supabaseSuccess = false;
+        
+        if (supabase && isOnline) {
+          console.log('🌐 Publishing to Supabase...');
+          
+          try {
+            const { data, error } = await supabase
+              .from('questions')
+              .insert([questionData])
+              .select();
+            
+            if (error) {
+              console.error('❌ Supabase insert error:', error);
+              throw error;
+            }
+            
+            if (data && data.length > 0) {
+              console.log('✅ Question published to Supabase!');
+              supabaseSuccess = true;
+            }
+          } catch (supabaseError) {
+            console.error('❌ Supabase publish failed:', supabaseError);
+            // Continue with localStorage save
+          }
+        } else {
+          console.warn('⚠️ Supabase not available - saving locally only');
+        }
+
+        // ========================================
+        // SAVE TO LOCALSTORAGE (backup + local access)
+        // ========================================
+        
         // CRITICAL: Save to the EXACT key the student interface reads
         localStorage.setItem(STUDENT_KEY, JSON.stringify(questionData));
         console.log('✅ Saved to student key:', STUDENT_KEY);
@@ -613,7 +686,7 @@
         if (verification) {
           const verificationData = JSON.parse(verification);
           if (verificationData.text === questionText && verificationData.id === questionId) {
-            console.log('✅ VERIFICATION PASSED: Question correctly saved');
+            console.log('✅ VERIFICATION PASSED: Question correctly saved to localStorage');
           } else {
             throw new Error('Verification failed: Data mismatch');
           }
@@ -624,12 +697,21 @@
         currentQuestion = questionData;
         isPublished = true;
         
-        publishBtn.innerHTML = '✓ Published';
+        // Update UI based on sync status
+        if (supabaseSuccess) {
+          publishBtn.innerHTML = '✓ Published (Cloud)';
+          document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
+        } else {
+          publishBtn.innerHTML = '✓ Published (Local)';
+          document.getElementById('successMessage').innerHTML = 'Question Published Locally!<br><span style="font-size:14px;opacity:0.8;">Will sync when online</span>';
+        }
+        
         qrBtn.classList.add('show');
         
         showSuccessNotification();
         
         console.log('✅ Question successfully published!');
+        console.log(`📊 Supabase: ${supabaseSuccess ? 'YES' : 'NO'}, localStorage: YES`);
 
       } catch (error) {
         console.error('❌ Error publishing question:', error);
@@ -700,7 +782,7 @@
       pathParts.pop();
       pathParts.pop();
       pathParts.push('students', 'answers', '');
-      const studentURL = baseURL + pathParts.join('/');
+      const studentURL = baseURL + pathParts.join('/') + '?auto=true';
       
       const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
       
@@ -729,8 +811,14 @@
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 INTUITY Teacher Portal (Simplified) Ready!');
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Teacher Portal Ready!');
+      
+      // Initialize Supabase
+      initSupabase();
+      
+      // Wait for initialization
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
@@ -758,6 +846,9 @@
       });
 
       questionInput.focus();
+      
+      console.log('✅ Teacher portal initialized');
+      console.log(`📊 Supabase: ${isOnline ? 'ONLINE' : 'OFFLINE'}`);
     });
   </script>
 </body>
