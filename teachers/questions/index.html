@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher Portal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Teacher Questions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     * {
@@ -14,766 +17,674 @@
 
     body {
       height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #000000 0%, #1a0a05 100%);
-      color: white;
+      width: 100vw;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
     }
 
-    .container {
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 700px;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(8deg);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
+      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
+      opacity: 0.4;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-5deg);
+      border: 1px solid rgba(255, 100, 40, 0.2);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
+      opacity: 0.3;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(12deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
+      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
+      opacity: 0.25;
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-10deg);
+      border: 1px solid rgba(255, 120, 50, 0.15);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
+      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
+      opacity: 0.2;
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(6deg);
+      border: 1px solid rgba(255, 140, 60, 0.25);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
+      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
+      opacity: 0.35;
+      animation: float 9s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
+    }
+
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 20px 20px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 50px;
-      padding: 20px 0 16px;
+      margin-bottom: 40px;
     }
 
     .header h1 {
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 56px;
-      font-weight: 700;
-      color: #C9A961;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
       margin-bottom: 8px;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #C9A961 0%, rgba(201, 169, 97, 0.8) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
-    .header .subtitle {
-      font-size: 13px;
-      color: #8e8e93;
-      margin-bottom: 6px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
     }
 
-    .header .author {
-      font-size: 11px;
-      color: #636366;
-      font-weight: 400;
-      letter-spacing: 0.02em;
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 140px;
+    }
+
+    .question-container {
+      width: 100%;
+      height: 5cm;
+      position: relative;
+      perspective: 1000px;
+      overflow: hidden;
     }
 
     .question-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 3px solid rgba(201, 169, 97, 0.8);
-      border-radius: 25px;
-      padding: 40px;
-      margin-bottom: 30px;
-      transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(201, 169, 97, 0.2);
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
     .question-box:hover {
-      border-color: rgba(201, 169, 97, 1);
-      box-shadow: 0 0 30px rgba(201, 169, 97, 0.3);
       transform: translateY(-2px);
     }
 
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
     .question-input {
-      width: 100%;
-      min-height: 180px;
+      flex: 1;
       background: transparent;
       border: none;
-      color: white;
-      font-size: 26px;
-      text-align: center;
-      resize: none;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
       outline: none;
-      line-height: 1.5;
+      resize: none;
+      line-height: 1.6;
+      padding: 0;
+      text-align: center;
     }
 
     .question-input::placeholder {
-      color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.4);
       font-style: italic;
+    }
+
+    .question-input:focus {
+      color: #fff;
     }
 
     .action-buttons {
       display: flex;
-      gap: 15px;
       justify-content: center;
-      flex-wrap: wrap;
+      gap: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .action-buttons.show {
+      opacity: 1;
     }
 
     .action-btn {
-      background: rgba(201, 169, 97, 0.9);
+      background: rgba(255, 140, 60, 0.6);
       border: none;
-      border-radius: 18px;
-      padding: 18px 36px;
-      color: black;
-      font-size: 18px;
-      font-weight: 700;
+      border-radius: 12px;
+      padding: 8px 16px;
+      color: #000;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     .action-btn:hover {
-      background: rgba(201, 169, 97, 1);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(201, 169, 97, 0.3);
+      background: rgba(255, 140, 60, 0.8);
+      transform: translateY(-1px);
     }
 
     .action-btn:disabled {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.3);
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
     }
 
     .action-btn.secondary {
       background: rgba(255, 255, 255, 0.1);
-      color: rgba(201, 169, 97, 0.9);
+      color: rgba(255, 140, 60, 0.9);
+      display: none;
+    }
+
+    .action-btn.secondary.show {
+      display: block;
     }
 
     .action-btn.secondary:hover {
       background: rgba(255, 255, 255, 0.15);
-      color: rgba(201, 169, 97, 1);
+      color: rgba(255, 140, 60, 1);
     }
 
-    .success-popup {
+    .footer {
+      margin-top: 40px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
+    }
+
+    .success-notification {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: rgba(16, 185, 129, 0.15);
-      border: 3px solid rgba(16, 185, 129, 0.6);
-      border-radius: 25px;
-      padding: 50px 60px;
+      border: 2px solid rgba(16, 185, 129, 0.5);
+      border-radius: 16px;
+      padding: 30px;
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 18px;
+      font-weight: 600;
       text-align: center;
-      display: none;
       z-index: 2000;
+      display: none;
       backdrop-filter: blur(10px);
-    }
-
-    .success-popup.show {
-      display: block;
-      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-
-    @keyframes popIn {
-      0% { 
-        transform: translate(-50%, -50%) scale(0.5); 
-        opacity: 0; 
-      }
-      100% { 
-        transform: translate(-50%, -50%) scale(1); 
-        opacity: 1; 
-      }
+      animation: fadeIn 0.3s ease;
+      min-width: 300px;
     }
 
     .success-icon {
-      font-size: 72px;
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .qr-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .qr-modal-content {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      max-width: 400px;
+      margin: 20px;
+    }
+
+    .qr-modal h3 {
       margin-bottom: 20px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
     }
 
-    .success-title {
-      font-size: 32px;
-      font-weight: 700;
-      color: rgba(16, 185, 129, 1);
-      margin-bottom: 10px;
+    .qr-display {
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 20px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 16px;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      overflow: hidden;
     }
 
-    .success-text {
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.8);
+    .qr-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
-    .history-section {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    .history-label {
-      color: rgba(201, 169, 97, 0.7);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-    }
-
-    .history-dropdown {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(201, 169, 97, 0.3);
+    .close-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
       border-radius: 12px;
-      padding: 12px 16px;
-      color: white;
-      font-size: 15px;
-      min-width: 300px;
+      padding: 12px 24px;
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
 
-    .history-dropdown:hover {
-      border-color: rgba(201, 169, 97, 0.5);
-    }
-
-    .history-dropdown:focus {
-      outline: none;
-      border-color: rgba(201, 169, 97, 0.6);
-    }
-
-    .char-count {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 13px;
-      margin-top: 10px;
+    .close-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
     }
 
     @media (max-width: 768px) {
+      .container {
+        padding: 40px 15px 15px;
+      }
+      
       .header h1 {
-        font-size: 42px;
+        font-size: 28px;
       }
-
-      .question-box {
-        padding: 25px;
+      
+      .question-container {
+        height: 4cm;
       }
-
+      
+      .content-area {
+        padding: 15px;
+      }
+      
       .question-input {
-        font-size: 20px;
-        min-height: 140px;
+        font-size: 15px;
       }
-
+      
+      .action-buttons {
+        gap: 10px;
+      }
+      
       .action-btn {
-        padding: 14px 28px;
-        font-size: 16px;
-      }
-
-      .success-popup {
-        padding: 35px 40px;
+        padding: 6px 12px;
+        font-size: 11px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+    </div>
+  </div>
+
   <div class="container">
-    <div class="header">
+    <header class="header">
       <h1>INTUITY</h1>
-      <p class="subtitle">Teacher Portal</p>
-      <p class="author">by Majid Nashtai</p>
-    </div>
+      <p>Create Question<br>By Majid Nashtai</p>
+    </header>
 
-    <div class="question-box">
-      <textarea 
-        class="question-input" 
-        id="questionInput"
-        placeholder="What question do you want to ask your students?"
-        oninput="updateCharCount()"
-        maxlength="500"
-      ></textarea>
-      <div class="char-count" id="charCount">0 / 500 characters</div>
-    </div>
-
-    <div class="action-buttons">
-      <button class="action-btn" id="publishBtn" onclick="publishQuestion()" disabled>
-        📤 Publish
-      </button>
-      <button class="action-btn secondary" id="qrBtn" onclick="showQRCode()" style="display: none;">
-        📱 QR Code
-      </button>
-      <button class="action-btn secondary" onclick="clearQuestion()">
-        🗑️ Clear
-      </button>
-      <button class="action-btn secondary" onclick="viewResponses()">
-        📊 View Responses
-      </button>
-    </div>
-
-    <div class="history-section">
-      <div class="history-label">Previous Questions</div>
-      <select class="history-dropdown" id="historyDropdown" onchange="loadFromHistory()">
-        <option value="">No history yet</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Success Popup -->
-  <div class="success-popup" id="successPopup">
-    <div class="success-icon">✨</div>
-    <div class="success-title">Published!</div>
-    <div class="success-text">Students can now see your question</div>
-  </div>
-
-  <!-- QR Code Modal -->
-  <div id="qrModal" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 3000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-  ">
-    <div style="
-      background: rgba(20, 20, 20, 0.98);
-      border: 3px solid rgba(201, 169, 97, 0.6);
-      border-radius: 25px;
-      padding: 40px;
-      text-align: center;
-      max-width: 450px;
-      width: 90%;
-    ">
-      <h2 style="
-        color: rgba(201, 169, 97, 1);
-        font-size: 28px;
-        margin-bottom: 15px;
-      ">📱 Student QR Code</h2>
-      <p style="
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 25px;
-        font-size: 15px;
-      ">Students scan this to access the response page</p>
-      
-      <div id="qrDisplay" style="
-        width: 320px;
-        height: 320px;
-        margin: 0 auto 25px;
-        background: white;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 3px solid rgba(201, 169, 97, 0.4);
-      ">
-        <div style="color: #666; font-size: 16px;">Generating QR Code...</div>
+    <main class="main-content">
+      <div class="question-container">
+        <div class="question-box">
+          <div class="content-area">
+            <textarea 
+              class="question-input" 
+              id="questionInput"
+              placeholder="What would you like to ask your students?"
+            ></textarea>
+            
+            <div class="action-buttons" id="actionButtons">
+              <button class="action-btn" id="publishBtn" disabled>Publish</button>
+              <button class="action-btn secondary" id="qrBtn">QR Code</button>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div style="
-        background: rgba(201, 169, 97, 0.1);
-        border: 1px solid rgba(201, 169, 97, 0.3);
-        border-radius: 12px;
-        padding: 12px;
-        margin-bottom: 25px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.8);
-        word-break: break-all;
-      " id="studentUrl"></div>
-      
-      <button onclick="closeQRModal()" style="
-        width: 100%;
-        background: rgba(201, 169, 97, 0.8);
-        border: none;
-        border-radius: 15px;
-        padding: 16px;
-        color: black;
-        font-size: 18px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s;
-      " onmouseover="this.style.background='rgba(201, 169, 97, 1)'" 
-         onmouseout="this.style.background='rgba(201, 169, 97, 0.8)'">
-        Close
-      </button>
+    </main>
+
+    <footer class="footer">
+      <a href="../../index.html" class="nav-button" title="Home">⌂</a>
+      <button class="nav-button" id="nextQuestionBtn" title="Next Question">+</button>
+      <a href="../../visualisation/" class="nav-button" title="Analytics">📊</a>
+    </footer>
+  </div>
+
+  <div class="success-notification" id="successNotification">
+    <span class="success-icon">✨</span>
+    <div>Question Published!</div>
+    <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
+      Students can now access your question.
+    </div>
+  </div>
+
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-content">
+      <h3>Student QR Code</h3>
+      <div id="qrDisplay" class="qr-display">
+        <div>Generating QR Code...</div>
+      </div>
+      <button class="close-btn" onclick="closeQRModal()">Close</button>
     </div>
   </div>
 
   <script>
-    console.log('🚀 INTUITY Teacher Portal - Analytics Compatible');
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    const STORAGE = {
-      current: 'current_question',        // Students read this
-      history: 'question_history',        // Teacher history
-      responses: 'alm_student_responses', // Responses (analytics reads this)
-      analytics: 'intuity_questions'      // Analytics format
-    };
+    let supabase;
+    let currentQuestion = null;
+    let isConnected = false;
+    let isPublished = false;
 
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-
-    window.addEventListener('DOMContentLoaded', () => {
-      console.log('✅ Teacher portal ready');
-      loadHistory();
-      document.getElementById('questionInput').focus();
-    });
-
-    // ============================================
-    // CHARACTER COUNT
-    // ============================================
-
-    function updateCharCount() {
-      const input = document.getElementById('questionInput');
-      const text = input.value;
-      const count = text.length;
-      
-      document.getElementById('charCount').textContent = `${count} / 500 characters`;
-      document.getElementById('publishBtn').disabled = count === 0;
+    async function initSupabase() {
+      try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized');
+        
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        if (error) throw error;
+        
+        isConnected = true;
+        console.log('✅ Connected to Supabase');
+        return true;
+      } catch (error) {
+        console.error('❌ Supabase connection failed:', error);
+        isConnected = false;
+        return false;
+      }
     }
 
-    // ============================================
-    // PUBLISH QUESTION
-    // ============================================
+    function handleQuestionInput() {
+      const input = document.getElementById('questionInput');
+      const publishBtn = document.getElementById('publishBtn');
+      const actionButtons = document.getElementById('actionButtons');
 
-    function publishQuestion() {
-      const text = document.getElementById('questionInput').value.trim();
-      if (!text) {
-        console.log('❌ Empty question');
-        return;
+      const text = input.value.trim();
+      
+      if (text.length > 0 && !isPublished) {
+        publishBtn.disabled = false;
+        actionButtons.classList.add('show');
+      } else if (!isPublished) {
+        publishBtn.disabled = true;
+        actionButtons.classList.remove('show');
       }
+    }
 
-      console.log('📤 Publishing question...');
+    async function publishQuestion() {
+      const questionText = document.getElementById('questionInput').value.trim();
+      
+      if (!questionText) return;
 
-      const timestamp = new Date().toISOString();
-      const questionId = 'q_' + Date.now();
-
-      // Create question object (with DUAL FORMATS for maximum compatibility)
-      const question = {
-        id: questionId,
-        text: text,
-        question_text: text,              // Analytics format
-        questionText: text,                // Alternative format
-        created: timestamp,
-        created_at: timestamp,             // Analytics format
-        published: timestamp,
-        published_at: timestamp,           // Analytics format
-        is_published: true,                // Analytics format
-        question_type: 'open-ended',       // Analytics format
-        source: 'teacher_portal'
-      };
+      const publishBtn = document.getElementById('publishBtn');
+      const qrBtn = document.getElementById('qrBtn');
+      
+      publishBtn.innerHTML = '⏳';
+      publishBtn.disabled = true;
 
       try {
-        // 1. Save to THE KEY students read (most critical!)
-        localStorage.setItem(STORAGE.current, JSON.stringify(question));
-        console.log('✅ Saved to current_question (students can see it)');
+        if (isConnected) {
+          await supabase
+            .from('questions')
+            .update({ is_published: false })
+            .eq('is_published', true);
 
-        // 2. Save to teacher history
-        const history = JSON.parse(localStorage.getItem(STORAGE.history) || '[]');
-        history.unshift(question);
-        if (history.length > 50) history.length = 50;
-        localStorage.setItem(STORAGE.history, JSON.stringify(history));
-        console.log('✅ Saved to teacher history');
+          const { data, error } = await supabase
+            .from('questions')
+            .insert([{
+              text: questionText,
+              question_type: 'open-ended',
+              is_published: true,
+              published_at: new Date().toISOString(),
+              metadata: {
+                createdBy: 'teacher',
+                source: 'intuity_teacher_interface'
+              }
+            }])
+            .select();
 
-        // 3. Save to analytics format (for analytics dashboard)
-        const analyticsQuestions = JSON.parse(localStorage.getItem(STORAGE.analytics) || '[]');
-        analyticsQuestions.unshift(question);
-        if (analyticsQuestions.length > 100) analyticsQuestions.length = 100;
-        localStorage.setItem(STORAGE.analytics, JSON.stringify(analyticsQuestions));
-        console.log('✅ Saved to analytics format');
+          if (error) throw error;
+          currentQuestion = data[0];
+        } else {
+          currentQuestion = {
+            id: Date.now(),
+            text: questionText,
+            published_at: new Date().toISOString()
+          };
+          localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+        }
 
-        // Show success
-        showSuccess();
-
-        // Show QR code button
-        document.getElementById('qrBtn').style.display = 'block';
-        console.log('✅ QR button shown - teacher can share immediately');
-
-        // Clear after 2 seconds
-        setTimeout(() => {
-          document.getElementById('questionInput').value = '';
-          updateCharCount();
-          loadHistory();
-        }, 2000);
+        console.log('✅ Question published:', currentQuestion);
+        
+        isPublished = true;
+        publishBtn.innerHTML = '✓ Published';
+        qrBtn.classList.add('show');
+        
+        showSuccessNotification();
 
       } catch (error) {
-        console.error('❌ Error:', error);
-        alert('Failed to publish. Please try again.');
+        console.error('❌ Error publishing question:', error);
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = false;
       }
     }
 
-    function showSuccess() {
-      const popup = document.getElementById('successPopup');
-      popup.classList.add('show');
+    function showSuccessNotification() {
+      const notification = document.getElementById('successNotification');
+      notification.style.display = 'block';
       
       setTimeout(() => {
-        popup.classList.remove('show');
-      }, 2500);
+        notification.style.display = 'none';
+      }, 3000);
     }
 
-    // ============================================
-    // CLEAR
-    // ============================================
-
-    function clearQuestion() {
-      const input = document.getElementById('questionInput');
-      if (input.value && !confirm('Clear this question?')) {
-        return;
-      }
-      input.value = '';
-      updateCharCount();
-      input.focus();
-    }
-
-    // ============================================
-    // HISTORY
-    // ============================================
-
-    function loadHistory() {
-      const history = JSON.parse(localStorage.getItem(STORAGE.history) || '[]');
-      const dropdown = document.getElementById('historyDropdown');
-      
-      if (history.length === 0) {
-        dropdown.innerHTML = '<option value="">No history yet</option>';
-        return;
-      }
-
-      dropdown.innerHTML = '<option value="">Select previous question...</option>';
-      
-      history.forEach((q, index) => {
-        const date = new Date(q.created || q.created_at).toLocaleDateString();
-        const time = new Date(q.created || q.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const preview = (q.text || q.question_text).length > 60 ? 
-                        (q.text || q.question_text).substring(0, 60) + '...' : 
-                        (q.text || q.question_text);
+    function nextQuestion() {
+      if (confirm('Start a new question? This will clear the current one.')) {
+        document.getElementById('questionInput').value = '';
+        document.getElementById('questionInput').placeholder = 'What would you like to ask your students?';
         
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = `${date} ${time} - ${preview}`;
-        dropdown.appendChild(option);
-      });
-
-      console.log(`📚 Loaded ${history.length} questions from history`);
+        const publishBtn = document.getElementById('publishBtn');
+        const qrBtn = document.getElementById('qrBtn');
+        const actionButtons = document.getElementById('actionButtons');
+        
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = true;
+        qrBtn.classList.remove('show');
+        actionButtons.classList.remove('show');
+        
+        isPublished = false;
+        currentQuestion = null;
+        
+        document.getElementById('questionInput').focus();
+      }
     }
 
-    function loadFromHistory() {
-      const dropdown = document.getElementById('historyDropdown');
-      const index = dropdown.value;
+    function generateQR() {
+      if (!currentQuestion) return;
       
-      if (!index) return;
-
-      const history = JSON.parse(localStorage.getItem(STORAGE.history) || '[]');
-      const question = history[parseInt(index)];
-      
-      if (question) {
-        document.getElementById('questionInput').value = question.text || question.question_text;
-        updateCharCount();
-        console.log('✅ Loaded from history');
-      }
-
-      dropdown.value = '';
-    }
-
-    // ============================================
-    // VIEW RESPONSES
-    // ============================================
-
-    function viewResponses() {
-      const responses = JSON.parse(localStorage.getItem(STORAGE.responses) || '[]');
-      const currentQ = JSON.parse(localStorage.getItem(STORAGE.current) || '{}');
-      
-      if (!currentQ.text && !currentQ.question_text) {
-        alert('No question published yet!');
-        return;
-      }
-
-      const questionText = currentQ.text || currentQ.question_text;
-
-      // Filter responses for current question (check multiple formats)
-      const currentResponses = responses.filter(r => 
-        r.questionId === currentQ.id || 
-        r.question_id === currentQ.id ||
-        r.questionText === questionText ||
-        r.question_text === questionText
-      );
-
-      if (currentResponses.length === 0) {
-        alert(`No responses yet for:\n\n"${questionText}"`);
-        return;
-      }
-
-      // Create response viewer modal
-      const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 3000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        overflow-y: auto;
-      `;
-
-      modal.innerHTML = `
-        <div style="
-          background: rgba(20, 20, 20, 0.95);
-          border: 2px solid rgba(201, 169, 97, 0.5);
-          border-radius: 20px;
-          padding: 30px;
-          max-width: 900px;
-          width: 100%;
-          max-height: 90vh;
-          overflow-y: auto;
-          color: white;
-        ">
-          <h2 style="color: rgba(201, 169, 97, 1); margin-bottom: 20px; font-size: 28px;">
-            📊 Responses (${currentResponses.length})
-          </h2>
-          <div style="
-            background: rgba(201, 169, 97, 0.1);
-            border: 1px solid rgba(201, 169, 97, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-          ">
-            <strong style="color: rgba(201, 169, 97, 0.9);">Question:</strong><br>
-            <span style="font-size: 18px; margin-top: 10px; display: block;">"${questionText}"</span>
-          </div>
-          <div style="display: grid; gap: 20px;">
-            ${currentResponses.map((r, i) => {
-              const studentName = r.studentName || r.student_name || 'Anonymous';
-              const answer = r.answer || '';
-              const wordCount = r.wordCount || r.word_count || 0;
-              const timestamp = r.timestamp || r.submitted_at || r.submittedAt || '';
-              const photoUrl = r.photo_url || '';
-              
-              return `
-                <div style="
-                  background: rgba(255, 255, 255, 0.05);
-                  border: 1px solid rgba(255, 255, 255, 0.1);
-                  border-radius: 12px;
-                  padding: 20px;
-                  transition: all 0.3s;
-                " onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'">
-                  <div style="display: flex; align-items: start; gap: 15px;">
-                    ${photoUrl ? `
-                      <img src="${photoUrl}" style="
-                        width: 60px;
-                        height: 60px;
-                        border-radius: 10px;
-                        object-fit: cover;
-                        border: 2px solid rgba(255, 140, 60, 0.4);
-                      " />
-                    ` : `
-                      <div style="
-                        width: 60px;
-                        height: 60px;
-                        border-radius: 10px;
-                        background: rgba(201, 169, 97, 0.2);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 28px;
-                      ">👤</div>
-                    `}
-                    <div style="flex: 1;">
-                      <div style="
-                        color: rgba(201, 169, 97, 1);
-                        font-weight: 700;
-                        font-size: 18px;
-                        margin-bottom: 10px;
-                      ">
-                        ${i + 1}. ${studentName}
-                      </div>
-                      <div style="
-                        line-height: 1.7;
-                        margin-bottom: 12px;
-                        font-size: 16px;
-                        color: rgba(255, 255, 255, 0.9);
-                      ">
-                        ${answer}
-                      </div>
-                      <div style="
-                        color: rgba(255, 255, 255, 0.5);
-                        font-size: 13px;
-                        display: flex;
-                        gap: 15px;
-                        flex-wrap: wrap;
-                      ">
-                        <span>📝 ${wordCount} words</span>
-                        ${photoUrl ? '<span>📸 Photo attached</span>' : ''}
-                        <span>🕐 ${new Date(timestamp).toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-          <button onclick="this.parentElement.parentElement.remove()" style="
-            width: 100%;
-            background: rgba(201, 169, 97, 0.8);
-            border: none;
-            border-radius: 15px;
-            padding: 16px;
-            color: black;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: all 0.3s;
-          " onmouseover="this.style.background='rgba(201, 169, 97, 1)'" onmouseout="this.style.background='rgba(201, 169, 97, 0.8)'">
-            Close
-          </button>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-      
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.remove();
-        }
-      });
-
-      console.log('📊 Showing', currentResponses.length, 'responses');
-    }
-
-    // ============================================
-    // QR CODE GENERATION
-    // ============================================
-
-    function showQRCode() {
       const modal = document.getElementById('qrModal');
       const display = document.getElementById('qrDisplay');
-      const urlDisplay = document.getElementById('studentUrl');
       
       modal.style.display = 'flex';
-      display.innerHTML = '<div style="color: #666; font-size: 16px;">Generating QR Code...</div>';
+      display.innerHTML = '<div>Generating QR Code...</div>';
       
-      // Build student URL
       const baseURL = window.location.origin;
       const pathParts = window.location.pathname.split('/');
-      
-      // Remove current file and navigate to student path
-      pathParts.pop(); // remove index.html
-      pathParts.pop(); // remove questions
-      pathParts.pop(); // remove teachers
+      pathParts.pop(); // remove current file
+      pathParts.pop(); // remove 'questions'
+      pathParts.pop(); // remove 'teachers'
       pathParts.push('students', 'answers', '');
-      
       const studentURL = baseURL + pathParts.join('/');
       
-      // Show URL
-      urlDisplay.textContent = studentURL;
-      
-      // Generate QR code using API
-      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=15`;
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
       
       const img = new Image();
       img.onload = () => {
-        display.innerHTML = `<img src="${qrCodeURL}" style="width: 100%; height: 100%; object-fit: contain;" alt="QR Code for Students">`;
-        console.log('✅ QR Code generated');
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code for Students">`;
       };
       
       img.onerror = () => {
         display.innerHTML = `
-          <div style="color: #ef4444; padding: 20px; text-align: center;">
-            <div style="font-size: 32px; margin-bottom: 12px;">⚠️</div>
-            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
-            <div style="font-size: 12px; margin-top: 8px; color: #999;">Check your internet connection</div>
+          <div style="color: #ef4444; padding: 20px;">
+            <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
+            <div><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 14px; margin-top: 5px;">Check your internet connection</div>
           </div>
         `;
-        console.error('❌ QR Code generation failed');
       };
       
       img.src = qrCodeURL;
@@ -783,39 +694,38 @@
       document.getElementById('qrModal').style.display = 'none';
     }
 
-    // ============================================
-    // KEYBOARD SHORTCUTS
-    // ============================================
-
-    document.addEventListener('keydown', (e) => {
-      // Ctrl/Cmd + Enter = Publish
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        if (!document.getElementById('publishBtn').disabled) {
-          publishQuestion();
-        }
-      }
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Teacher Question Creator initializing...');
       
-      // Escape = Clear or close modal
-      if (e.key === 'Escape') {
-        const qrModal = document.getElementById('qrModal');
-        if (qrModal.style.display === 'flex') {
-          closeQRModal();
-        } else {
-          clearQuestion();
-        }
-      }
-    });
-
-    // Close QR modal on background click
-    document.addEventListener('DOMContentLoaded', () => {
+      await initSupabase();
+      
+      const questionInput = document.getElementById('questionInput');
+      questionInput.addEventListener('input', handleQuestionInput);
+      questionInput.focus();
+      
+      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
+      
       document.getElementById('qrModal').addEventListener('click', (e) => {
         if (e.target.id === 'qrModal') {
           closeQRModal();
         }
       });
-    });
 
-    console.log('💡 Tip: Press Ctrl+Enter to publish, Escape to clear');
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          if (!document.getElementById('publishBtn').disabled) {
+            publishQuestion();
+          }
+        }
+        if (e.key === 'Escape') {
+          closeQRModal();
+        }
+      });
+
+      console.log('✅ Teacher Question Creator ready!');
+    });
   </script>
 </body>
 </html>
