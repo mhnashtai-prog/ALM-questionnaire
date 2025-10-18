@@ -686,25 +686,14 @@
     let supabase = null;
     let isOnline = false;
 
-    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Storage keys - matching teacher and student interfaces
-    const STORAGE_KEYS = {
-      questions: 'intuity_questions',
-      responses: 'intuity_student_responses',
-      currentQuestion: 'current_question',
-      legacyQuestions: ['alm_questions', 'display_question', 'question_history'],
-      legacyResponses: ['alm_student_responses', 'student_responses']
-    };
-
-    // Initialize Supabase
     function initSupabase() {
       try {
         if (window.supabase && typeof window.supabase.createClient === 'function') {
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-          console.log('✅ Supabase initialized successfully');
+          console.log('✅ Supabase initialized');
           checkOnlineStatus();
           return true;
         } else {
@@ -721,31 +710,26 @@
       try {
         const { data, error } = await supabase.from('questions').select('id').limit(1);
         isOnline = !error;
-        console.log(isOnline ? '🌐 Online - connected to Supabase' : '📴 Offline mode');
+        console.log(isOnline ? '🌐 Online' : '📴 Offline');
       } catch (error) {
         isOnline = false;
-        console.log('📴 Offline mode');
+        console.log('📴 Offline');
       }
     }
 
-    // ========================================
-    // LOAD ALL DATA (PHONE-OPTIMIZED WITH SUPABASE)
-    // ========================================
     async function loadAllData() {
-      console.log('📊 Loading all data from storage and Supabase...');
+      console.log('📊 Loading data...');
       
       await loadAllQuestions();
       await loadAllResponses();
       updateUI();
       
-      console.log(`✅ Loaded ${allQuestions.length} questions and ${allResponses.length} responses`);
+      console.log(`✅ Loaded ${allQuestions.length} questions, ${allResponses.length} responses`);
     }
 
     async function loadAllQuestions() {
       allQuestions = [];
-      const foundQuestions = new Map();
 
-      // PHONE FIX: Try Supabase FIRST (highest priority)
       if (supabase && isOnline) {
         console.log('🌐 Fetching questions from Supabase...');
         try {
@@ -756,187 +740,77 @@
             .order('published_at', { ascending: false });
           
           if (!error && data && data.length > 0) {
-            console.log(`✅ Got ${data.length} questions from Supabase!`);
-            data.forEach(q => {
-              if (q && (q.text || q.question_text)) {
-                foundQuestions.set(q.id, q);
-              }
-            });
+            console.log(`✅ Got ${data.length} questions from Supabase`);
+            allQuestions = data;
             
             // Cache to localStorage
-            data.forEach(q => {
-              localStorage.setItem('current_question', JSON.stringify(q));
-            });
-          } else {
-            console.warn('⚠️ No questions from Supabase or error:', error);
+            localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
           }
-        } catch (supabaseError) {
-          console.error('❌ Supabase fetch failed:', supabaseError);
+        } catch (err) {
+          console.error('❌ Supabase fetch failed:', err);
         }
       }
 
-      // Load from primary localStorage storage
-      const primaryQ = localStorage.getItem(STORAGE_KEYS.questions);
-      if (primaryQ && primaryQ !== '[]') {
-        try {
-          const parsed = JSON.parse(primaryQ);
-          if (Array.isArray(parsed)) {
-            parsed.forEach(q => {
-              if (q && (q.text || q.question_text)) {
-                if (!foundQuestions.has(q.id)) {
-                  foundQuestions.set(q.id || 'q_' + Date.now(), q);
-                }
-              }
-            });
-            console.log(`✅ Found ${parsed.length} questions from localStorage`);
-          }
-        } catch (e) {
-          console.warn('Could not parse primary questions');
-        }
-      }
-
-      // Load from current question
-      const currentQ = localStorage.getItem(STORAGE_KEYS.currentQuestion);
-      if (currentQ && currentQ !== 'null') {
-        try {
-          const parsed = JSON.parse(currentQ);
-          if (parsed && (q.text || parsed.question_text)) {
-            if (!foundQuestions.has(parsed.id)) {
-              foundQuestions.set(parsed.id || 'current', parsed);
-            }
-            console.log('✅ Found current question');
-          }
-        } catch (e) {
-          console.warn('Could not parse current question');
-        }
-      }
-
-      // Load from legacy storage
-      STORAGE_KEYS.legacyQuestions.forEach(key => {
-        const stored = localStorage.getItem(key);
-        if (stored && stored !== 'null' && stored !== '[]') {
+      // Fallback to localStorage if no Supabase data
+      if (allQuestions.length === 0) {
+        const stored = localStorage.getItem('intuity_current_question');
+        if (stored) {
           try {
             const parsed = JSON.parse(stored);
-            const items = Array.isArray(parsed) ? parsed : [parsed];
-            items.forEach(q => {
-              if (q && (q.text || q.question_text)) {
-                if (!foundQuestions.has(q.id)) {
-                  foundQuestions.set(q.id || `legacy_${key}`, q);
-                }
-              }
-            });
-            console.log(`✅ Found questions from ${key}`);
-          } catch (e) {
-            // Continue
-          }
+            if (parsed && parsed.text) {
+              allQuestions = [parsed];
+              console.log('✅ Loaded question from localStorage');
+            }
+          } catch (e) {}
         }
-      });
-
-      // Convert to array and sort by date
-      allQuestions = Array.from(foundQuestions.values()).sort((a, b) => {
-        const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
-        const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
-        return dateB - dateA;
-      });
-
-      console.log(`📊 Total questions loaded: ${allQuestions.length}`);
+      }
     }
 
     async function loadAllResponses() {
       allResponses = [];
-      const foundResponses = new Map();
 
-      // PHONE FIX: Try Supabase FIRST (highest priority)
       if (supabase && isOnline) {
         console.log('🌐 Fetching responses from Supabase...');
         try {
           const { data, error } = await supabase
             .from('responses')
             .select('*')
-            .order('submitted_at', { ascending: false });
+            .order('submitted_at', { ascending: false});
           
           if (!error && data && data.length > 0) {
-            console.log(`✅ Got ${data.length} responses from Supabase!`);
-            data.forEach(r => {
-              if (r && r.answer && (r.student_name || r.studentName)) {
-                const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
-                foundResponses.set(uniqueKey, r);
-              }
-            });
-          } else {
-            console.warn('⚠️ No responses from Supabase or error:', error);
+            console.log(`✅ Got ${data.length} responses from Supabase`);
+            allResponses = data;
           }
-        } catch (supabaseError) {
-          console.error('❌ Supabase responses fetch failed:', supabaseError);
+        } catch (err) {console.error('❌ Supabase responses fetch failed:', err);
         }
       }
 
-      // Load from primary localStorage storage
-      const primaryR = localStorage.getItem(STORAGE_KEYS.responses);
-      if (primaryR && primaryR !== '[]') {
-        try {
-          const parsed = JSON.parse(primaryR);
-          if (Array.isArray(parsed)) {
-            parsed.forEach(r => {
-              if (r && r.answer && (r.student_name || r.studentName)) {
-                const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
-                if (!foundResponses.has(uniqueKey)) {
-                  foundResponses.set(uniqueKey, r);
-                }
-              }
-            });
-            console.log(`✅ Found ${parsed.length} responses from localStorage`);
-          }
-        } catch (e) {
-          console.warn('Could not parse primary responses');
-        }
-      }
-
-      // Load from legacy storage
-      STORAGE_KEYS.legacyResponses.forEach(key => {
-        const stored = localStorage.getItem(key);
-        if (stored && stored !== '[]') {
+      // Fallback to localStorage if no Supabase data
+      if (allResponses.length === 0) {
+        const stored = localStorage.getItem('intuity_student_responses');
+        if (stored) {
           try {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed)) {
-              parsed.forEach(r => {
-                if (r && r.answer && (r.student_name || r.studentName)) {
-                  const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
-                  if (!foundResponses.has(uniqueKey)) {
-                    foundResponses.set(uniqueKey, r);
-                  }
-                }
-              });
-              console.log(`✅ Found responses from ${key}`);
+              allResponses = parsed;
+              console.log(`✅ Loaded ${parsed.length} responses from localStorage`);
             }
-          } catch (e) {
-            // Continue
-          }
+          } catch (e) {}
         }
-      });
-
-      allResponses = Array.from(foundResponses.values());
-      console.log(`📊 Total responses loaded: ${allResponses.length}`);
+      }
     }
 
     function getResponsesForQuestion(question) {
       if (!question) return [];
       
       const questionId = question.id;
-      const questionText = question.text || question.question_text || '';
       
       const matchedResponses = allResponses.filter(response => {
         const responseQuestionId = response.question_id || response.questionId;
-        const responseQuestionText = response.questionText || response.question_text || '';
-        
-        // Match by ID or by question text
-        return (
-          (questionId && responseQuestionId && questionId === responseQuestionId) ||
-          (questionText && responseQuestionText && questionText === responseQuestionText)
-        );
+        return questionId && responseQuestionId && questionId === responseQuestionId;
       });
 
-      console.log(`Found ${matchedResponses.length} responses for question "${questionText.substring(0, 50)}"`);
+      console.log(`Found ${matchedResponses.length} responses for question ID: ${questionId}`);
       
       return matchedResponses;
     }
@@ -966,7 +840,7 @@
         
         const responses = getResponsesForQuestion(question);
         const responseCount = responses.length;
-        const dateStr = new Date(question.created_at || question.published_at || question.timestamp || 0).toLocaleDateString();
+        const dateStr = new Date(question.created_at || question.published_at || 0).toLocaleDateString();
         
         option.textContent = `${shortText} - ${responseCount} response${responseCount !== 1 ? 's' : ''} (${dateStr})`;
         
@@ -1000,8 +874,10 @@
         if (count > 0) {
           statsGrid.style.display = 'grid';
           
-          // Calculate statistics
-          const totalWords = responses.reduce((sum, r) => sum + (r.word_count || r.wordCount || 0), 0);
+          const totalWords = responses.reduce((sum, r) => {
+            const text = r.answer || r.response_text || '';
+            return sum + text.split(/\s+/).filter(w => w.length > 0).length;
+          }, 0);
           const avgWords = Math.round(totalWords / count);
           const withPhotos = responses.filter(r => r.photo_url || r.hasPhoto).length;
           
@@ -1045,18 +921,15 @@
       
       showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
       
-      // Prepare data for display page
       const questionData = JSON.stringify(currentSelectedQuestion);
       const responseData = JSON.stringify(matchedResponses);
       
-      // Save to display keys
       localStorage.setItem('display_question', questionData);
       localStorage.setItem('display_responses', responseData);
       localStorage.setItem('current_question', questionData);
       
       console.log(`✅ Prepared display data: ${matchedResponses.length} responses`);
       
-      // Open display page
       try {
         window.open('../displays/', '_blank');
       } catch (error) {
@@ -1087,7 +960,7 @@
       document.getElementById('confirmDialog').classList.remove('show');
     }
 
-    function confirmDelete() {
+    async function confirmDelete() {
       if (!currentSelectedQuestion) {
         closeConfirmDialog();
         return;
@@ -1098,10 +971,47 @@
       try {
         console.log('🗑 Deleting question and responses...');
         
-        // Get responses to delete
         const responsesToDelete = getResponsesForQuestion(questionToDelete);
         
-        // Remove responses from allResponses array
+        // Delete from Supabase if online
+        if (supabase && isOnline) {
+          try {
+            // Delete responses first
+            if (responsesToDelete.length > 0) {
+              const responseIds = responsesToDelete.map(r => r.id).filter(id => id);
+              if (responseIds.length > 0) {
+                const { error: respError } = await supabase
+                  .from('responses')
+                  .delete()
+                  .in('id', responseIds);
+                
+                if (respError) {
+                  console.error('Error deleting responses from Supabase:', respError);
+                } else {
+                  console.log(`✅ Deleted ${responseIds.length} responses from Supabase`);
+                }
+              }
+            }
+            
+            // Delete question
+            if (questionToDelete.id) {
+              const { error: qError } = await supabase
+                .from('questions')
+                .delete()
+                .eq('id', questionToDelete.id);
+              
+              if (qError) {
+                console.error('Error deleting question from Supabase:', qError);
+              } else {
+                console.log('✅ Deleted question from Supabase');
+              }
+            }
+          } catch (err) {
+            console.error('Supabase delete error:', err);
+          }
+        }
+        
+        // Remove from local arrays
         responsesToDelete.forEach(response => {
           const index = allResponses.findIndex(r => r === response);
           if (index > -1) {
@@ -1109,31 +1019,13 @@
           }
         });
 
-        // Remove question from allQuestions array
         const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
         if (questionIndex > -1) {
           allQuestions.splice(questionIndex, 1);
         }
 
-        // Save updated data to storage
-        const questionData = JSON.stringify(allQuestions);
-        const responseData = JSON.stringify(allResponses);
-        
-        localStorage.setItem(STORAGE_KEYS.questions, questionData);
-        localStorage.setItem(STORAGE_KEYS.responses, responseData);
-        
-        // Update legacy storage
-        STORAGE_KEYS.legacyQuestions.forEach(key => {
-          try {
-            localStorage.setItem(key, questionData);
-          } catch (e) {}
-        });
-        
-        STORAGE_KEYS.legacyResponses.forEach(key => {
-          try {
-            localStorage.setItem(key, responseData);
-          } catch (e) {}
-        });
+        // Update localStorage
+        localStorage.setItem('intuity_student_responses', JSON.stringify(allResponses));
         
         console.log(`✅ Deleted question and ${responsesToDelete.length} responses`);
         
@@ -1175,7 +1067,7 @@
       }, 3000);
     }
 
-    // Auto-refresh data every 10 seconds
+    // Auto-refresh every 10 seconds
     setInterval(async () => {
       const prevQuestions = allQuestions.length;
       const prevResponses = allResponses.length;
@@ -1183,7 +1075,7 @@
       await loadAllData();
       
       if (allQuestions.length > prevQuestions || allResponses.length > prevResponses) {
-        console.log(`✨ New data detected! Questions: ${prevQuestions}→${allQuestions.length}, Responses: ${prevResponses}→${allResponses.length}`);
+        console.log(`✨ New data! Q: ${prevQuestions}→${allQuestions.length}, R: ${prevResponses}→${allResponses.length}`);
       }
     }, 10000);
 
@@ -1191,16 +1083,12 @@
     document.addEventListener('DOMContentLoaded', async function() {
       console.log('🚀 INTUITY Analytics Ready!');
       
-      // Initialize Supabase
       initSupabase();
       
-      // Wait a moment for everything to initialize
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Load all data
       await loadAllData();
       
-      // Event listeners
       document.getElementById('confirmDialog').addEventListener('click', function(e) {
         if (e.target === this) {
           closeConfirmDialog();
@@ -1213,7 +1101,7 @@
         }
       });
       
-      console.log('✅ Analytics initialized successfully');
+      console.log('✅ Analytics initialized');
       console.log('📊 Questions:', allQuestions.length, '| Responses:', allResponses.length);
     });
   </script>
