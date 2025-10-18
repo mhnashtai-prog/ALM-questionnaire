@@ -2,12 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Analytics (Improved Layout)</title>
+  <title>INTUITY - Analytics</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  
- <!-- Supabase CDN -->
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../intuity-data-sync.js"></script>  
   
   <style>
     * {
@@ -119,18 +115,6 @@
       animation: float 9s ease-in-out infinite reverse;
     }
 
-    .curve6 {
-      width: 60px;
-      height: 120px;
-      top: 65%;
-      left: 8%;
-      transform: rotate(-15deg);
-      border: 1px solid rgba(255, 160, 80, 0.1);
-      background: linear-gradient(45deg, rgba(255, 160, 80, 0.03) 0%, transparent 100%);
-      opacity: 0.15;
-      animation: drift 15s ease-in-out infinite reverse;
-    }
-
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
@@ -149,12 +133,11 @@
       75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
     }
 
-    .curve1 { --base-opacity: 0.9; --rotate: 30deg; }
-    .curve2 { --base-opacity: 0.7; --rotate: -20deg; }
-    .curve3 { --base-opacity: 0.5; --rotate: 60deg; }
-    .curve4 { --base-opacity: 0.3; --rotate: -45deg; }
-    .curve5 { --base-opacity: 0.8; --rotate: 15deg; }
-    .curve6 { --base-opacity: 0.2; --rotate: 80deg; }
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
 
     .container {
       position: relative;
@@ -189,10 +172,43 @@
       letter-spacing: 0.5px;
     }
 
-    /* NEW: Elevated dropdown section */
     .dropdown-section {
       flex-shrink: 0;
       padding: 0 10px;
+    }
+
+    .selection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .selection-title {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .refresh-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 1px solid rgba(255, 140, 60, 0.4);
+      border-radius: 10px;
+      padding: 6px 14px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
     }
 
     .question-dropdown {
@@ -207,44 +223,28 @@
       padding: 18px 24px;
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      z-index: 100;
       backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .question-dropdown:hover {
       border-color: rgba(255, 140, 60, 0.6);
       background: rgba(20, 20, 20, 0.95);
       transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(255, 140, 60, 0.15), 
-                  inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 40px rgba(255, 140, 60, 0.15);
     }
 
     .question-dropdown:focus {
       border-color: rgba(255, 140, 60, 0.8);
       background: rgba(25, 25, 25, 0.98);
-      transform: translateY(-3px);
-      box-shadow: 0 16px 48px rgba(255, 140, 60, 0.25), 
-                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .question-dropdown option {
       background: rgba(25, 25, 25, 0.98);
       color: #fff;
       padding: 14px 18px;
-      border: none;
-      font-size: 16px;
-      line-height: 1.4;
     }
 
-    .question-dropdown option:hover,
-    .question-dropdown option:focus {
-      background: rgba(255, 140, 60, 0.2);
-    }
-
-    /* NEW: Separated analytics container - appears below dropdown */
     .main-content {
       flex: 1;
       display: flex;
@@ -259,8 +259,6 @@
       width: 100%;
       max-width: 600px;
       position: relative;
-      perspective: 1000px;
-      overflow: visible;
     }
 
     .analytics-box {
@@ -274,26 +272,17 @@
       overflow: hidden;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       backdrop-filter: blur(15px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      transform: translateY(0);
-      opacity: 1;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     }
 
     .analytics-box:hover {
       transform: translateY(-4px);
-      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5),
-                  0 0 40px rgba(255, 140, 60, 0.1),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 140, 60, 0.2);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
     }
 
     .analytics-box.has-selection {
       border-color: rgba(255, 140, 60, 0.3);
       background: rgba(8, 8, 8, 0.9);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
-                  0 0 30px rgba(255, 140, 60, 0.08),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .content-area {
@@ -322,6 +311,36 @@
       color: rgba(255, 255, 255, 0.4);
       font-size: 16px;
       font-weight: 400;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: rgba(255, 140, 60, 0.9);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .delete-btn {
@@ -356,10 +375,6 @@
       box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
     }
 
-    .delete-btn:active {
-      transform: scale(0.95);
-    }
-
     .footer {
       background: rgba(15, 15, 15, 0.8);
       backdrop-filter: blur(15px);
@@ -370,7 +385,6 @@
       justify-content: space-around;
       align-items: center;
       flex-shrink: 0;
-      position: relative;
       box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
     }
 
@@ -384,7 +398,6 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(5px);
       text-decoration: none;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -399,15 +412,10 @@
       box-shadow: 0 8px 25px rgba(255, 140, 60, 0.15);
     }
 
-    .nav-button:active {
-      transform: translateY(-1px) scale(0.98);
-    }
-
     .nav-button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
     }
 
     .nav-button.primary {
@@ -427,12 +435,8 @@
       opacity: 0.3;
       background: rgba(255, 255, 255, 0.08);
       color: rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transform: none;
-      box-shadow: none;
     }
 
-    /* Enhanced notification system */
     .notification {
       position: fixed;
       top: 25px;
@@ -473,7 +477,6 @@
       color: rgba(239, 68, 68, 0.95);
     }
 
-    /* Enhanced dialog */
     .dialog-overlay {
       position: fixed;
       top: 0;
@@ -550,7 +553,6 @@
     .dialog-btn.cancel:hover {
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
-      transform: translateY(-2px);
     }
 
     .dialog-btn.delete {
@@ -562,35 +564,9 @@
     .dialog-btn.delete:hover {
       background: rgba(239, 68, 68, 0.3);
       color: #fff;
-      transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
     }
 
-    .debug-panel {
-      position: fixed;
-      bottom: 15px;
-      left: 15px;
-      background: rgba(0, 0, 0, 0.95);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 450px;
-      max-height: 250px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-      overflow-y: auto;
-      z-index: 50;
-      backdrop-filter: blur(10px);
-    }
-
-    .debug-panel.show {
-      opacity: 1;
-    }
-
-    /* Responsive Design */
     @media (max-width: 768px) {
       .container {
         padding: 20px 15px 0;
@@ -609,10 +585,6 @@
       .response-counter {
         font-size: 18px;
       }
-      
-      .response-counter.no-selection {
-        font-size: 14px;
-      }
 
       .nav-button {
         padding: 12px 18px;
@@ -620,87 +592,12 @@
         min-width: 75px;
       }
 
-      .footer {
-        padding: 14px;
-      }
-
       .content-area {
         padding: 25px 20px;
-        min-height: 100px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 15px 12px 0;
-        gap: 12px;
-      }
-      
-      .header h1 {
-        font-size: 24px;
       }
 
-      .question-dropdown {
-        font-size: 15px;
-        padding: 14px 18px;
-      }
-
-      .response-counter {
-        font-size: 16px;
-      }
-
-      .nav-button {
-        padding: 10px 15px;
-        font-size: 12px;
-        min-width: 65px;
-      }
-
-      .footer {
-        padding: 12px;
-      }
-
-      .content-area {
-        padding: 20px 16px;
-        min-height: 90px;
-      }
-    }
-
-    @media (max-height: 600px) and (orientation: landscape) {
-      .container {
-        padding: 12px 10px 0;
-        gap: 10px;
-      }
-      
-      .header h1 {
-        font-size: 22px;
-      }
-      
-      .header p {
-        font-size: 12px;
-      }
-      
-      .question-dropdown {
-        font-size: 14px;
-        padding: 12px 16px;
-      }
-      
-      .response-counter {
-        font-size: 14px;
-      }
-      
-      .footer {
-        padding: 8px;
-      }
-      
-      .nav-button {
-        padding: 8px 12px;
-        font-size: 11px;
-        min-width: 55px;
-      }
-
-      .content-area {
-        padding: 15px 14px;
-        min-height: 70px;
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -713,7 +610,6 @@
       <div class="curve curve3"></div>
       <div class="curve curve4"></div>
       <div class="curve curve5"></div>
-      <div class="curve curve6"></div>
     </div>
   </div>
 
@@ -723,14 +619,16 @@
       <p>Analytics Dashboard<br>By Majid Nashtai</p>
     </header>
 
-    <!-- NEW: Elevated dropdown section - standalone control -->
     <section class="dropdown-section">
-      <select class="question-dropdown" id="questionSelector">
+      <div class="selection-header">
+        <div class="selection-title">📊 Question Analytics</div>
+        <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh</button>
+      </div>
+      <select class="question-dropdown" id="questionSelector" onchange="handleQuestionChange()">
         <option value="">Loading questions...</option>
       </select>
     </section>
 
-    <!-- NEW: Separated main content area - results display -->
     <main class="main-content">
       <div class="analytics-container">
         <div class="analytics-box" id="analyticsBox">
@@ -738,14 +636,28 @@
             <div class="response-counter no-selection" id="responseCounter">
               Select a question above to view analytics
             </div>
-            <button class="delete-btn" id="deleteBtn" title="Delete this question and all its responses">🗑</button>
+            <div class="stats-grid" id="statsGrid" style="display: none;">
+              <div class="stat-card">
+                <div class="stat-value" id="totalResponses">0</div>
+                <div class="stat-label">Responses</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="avgWords">0</div>
+                <div class="stat-label">Avg Words</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="withPhotos">0</div>
+                <div class="stat-label">With Photos</div>
+              </div>
+            </div>
+            <button class="delete-btn" id="deleteBtn" onclick="showDeleteConfirmation()" title="Delete this question and all responses">🗑</button>
           </div>
         </div>
       </div>
     </main>
 
     <footer class="footer">
-      <button class="nav-button primary" id="displayBtn" disabled>DISPLAY</button>
+      <button class="nav-button primary" id="displayBtn" onclick="displayResponses()" disabled>DISPLAY</button>
       <a href="../index.html" class="nav-button">HOME</a>
       <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
@@ -755,7 +667,7 @@
     <div class="dialog-box">
       <div class="dialog-title">Delete Question</div>
       <div class="dialog-message" id="dialogMessage">
-        Are you sure you want to delete all responses for this question? This action cannot be undone.
+        Are you sure you want to delete this question and all responses? This action cannot be undone.
       </div>
       <div class="dialog-buttons">
         <button class="dialog-btn cancel" onclick="closeConfirmDialog()">Cancel</button>
@@ -764,263 +676,143 @@
     </div>
   </div>
 
-  <div class="debug-panel" id="debugPanel">
-    <div id="debugContent"></div>
-  </div>
-
   <script>
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
-
-    // Global variables
-    let supabase;
+    console.log('🚀 INTUITY Analytics Loading...');
+    
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
-    let isConnected = false;
-    let debugMode = false;
 
-    // Enhanced storage keys - comprehensive search
+    // Storage keys - matching teacher and student interfaces
     const STORAGE_KEYS = {
-      responses: 'intuity_student_responses',
       questions: 'intuity_questions',
-      legacyResponses: ['alm_student_responses', 'student_responses', 'display_responses', 'offline_responses'],
-      legacyQuestions: ['alm_questions', 'current_question', 'display_question']
+      responses: 'intuity_student_responses',
+      currentQuestion: 'current_question',
+      legacyQuestions: ['alm_questions', 'display_question', 'question_history'],
+      legacyResponses: ['alm_student_responses', 'student_responses']
     };
 
-    // Enhanced debugging
-    function debugLog(message, data = null) {
-      if (!debugMode) return;
+    // Load ALL data from storage
+    function loadAllData() {
+      console.log('📊 Loading all data from storage...');
       
-      const timestamp = new Date().toLocaleTimeString();
-      console.log(`[ANALYTICS DEBUG] ${timestamp} - ${message}`, data || '');
+      loadAllQuestions();
+      loadAllResponses();
+      updateUI();
       
-      const debugPanel = document.getElementById('debugPanel');
-      const debugContent = document.getElementById('debugContent');
-      debugContent.innerHTML += `<div><strong>${timestamp}:</strong> ${message}${data ? '<br><pre>' + JSON.stringify(data, null, 2).substring(0, 200) + '</pre>' : ''}</div><hr>`;
-      debugPanel.classList.add('show');
-      
-      const entries = debugContent.children;
-      while (entries.length > 20) {
-        entries[0].remove();
-        if (entries[1] && entries[1].tagName === 'HR') {
-          entries[1].remove();
-        }
-      }
+      console.log(`✅ Loaded ${allQuestions.length} questions and ${allResponses.length} responses`);
     }
 
-    // Enhanced data loading - check ALL possible storage locations
-    function loadAllStorageData() {
-      debugLog('Loading all storage data comprehensively...');
-      
-      if (!Array.isArray(allQuestions)) allQuestions = [];
-      if (!Array.isArray(allResponses)) allResponses = [];
-      
-      try {
-        // Get all possible question sources including teacher-specific keys
-        const questionSources = [STORAGE_KEYS.questions, ...STORAGE_KEYS.legacyQuestions];
-        
-        // Also check for teacher-specific question storage
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (key.endsWith('_questions') || key.includes('teacher') || key.includes('secure'))) {
-            if (!questionSources.includes(key)) {
-              questionSources.push(key);
-            }
-          }
-        }
-        
-        const foundQuestions = new Map();
-        
-        for (const key of questionSources) {
-          const stored = localStorage.getItem(key);
-          if (stored && stored !== '[]' && stored !== '{}') {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(q => {
-                  if (q && (q.text || q.question_text)) {
-                    foundQuestions.set(q.id || 'demo', q);
-                  }
-                });
-                debugLog(`Found ${parsed.length} questions in ${key}`);
-              } else if (parsed && (parsed.text || parsed.question_text)) {
-                foundQuestions.set(parsed.id || 'demo', parsed);
-                debugLog(`Found 1 question in ${key}`);
+    function loadAllQuestions() {
+      allQuestions = [];
+      const foundQuestions = new Map();
+
+      // Load from primary storage
+      const primaryQ = localStorage.getItem(STORAGE_KEYS.questions);
+      if (primaryQ && primaryQ !== '[]') {
+        try {
+          const parsed = JSON.parse(primaryQ);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(q => {
+              if (q && (q.text || q.question_text)) {
+                foundQuestions.set(q.id || 'q_' + Date.now(), q);
               }
-            } catch (e) {
-              debugLog(`Error parsing questions from ${key}`, e.message);
-            }
+            });
+            console.log(`✅ Found ${parsed.length} questions from primary storage`);
+          }
+        } catch (e) {
+          console.warn('Could not parse primary questions');
+        }
+      }
+
+      // Load from current question
+      const currentQ = localStorage.getItem(STORAGE_KEYS.currentQuestion);
+      if (currentQ && currentQ !== 'null') {
+        try {
+          const parsed = JSON.parse(currentQ);
+          if (parsed && (parsed.text || parsed.question_text)) {
+            foundQuestions.set(parsed.id || 'current', parsed);
+            console.log('✅ Found current question');
+          }
+        } catch (e) {
+          console.warn('Could not parse current question');
+        }
+      }
+
+      // Load from legacy storage
+      STORAGE_KEYS.legacyQuestions.forEach(key => {
+        const stored = localStorage.getItem(key);
+        if (stored && stored !== 'null' && stored !== '[]') {
+          try {
+            const parsed = JSON.parse(stored);
+            const items = Array.isArray(parsed) ? parsed : [parsed];
+            items.forEach(q => {
+              if (q && (q.text || q.question_text)) {
+                foundQuestions.set(q.id || `legacy_${key}`, q);
+              }
+            });
+            console.log(`✅ Found questions from ${key}`);
+          } catch (e) {
+            // Continue
           }
         }
+      });
 
-        // Merge found questions without duplicates
-        foundQuestions.forEach(question => {
-          const existingIndex = allQuestions.findIndex(q => q.id === question.id);
-          if (existingIndex >= 0) {
-            allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
-          } else {
-            allQuestions.push(question);
-          }
-        });
+      // Convert to array and sort by date
+      allQuestions = Array.from(foundQuestions.values()).sort((a, b) => {
+        const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
+        const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
+        return dateB - dateA;
+      });
+    }
 
-        // Get all possible response sources
-        const responseSources = [STORAGE_KEYS.responses, ...STORAGE_KEYS.legacyResponses];
-        
-        // Also check for teacher-specific response storage
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (key.endsWith('_responses') || key.includes('response'))) {
-            if (!responseSources.includes(key)) {
-              responseSources.push(key);
-            }
+    function loadAllResponses() {
+      allResponses = [];
+      const foundResponses = new Map();
+
+      // Load from primary storage
+      const primaryR = localStorage.getItem(STORAGE_KEYS.responses);
+      if (primaryR && primaryR !== '[]') {
+        try {
+          const parsed = JSON.parse(primaryR);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(r => {
+              if (r && r.answer && (r.student_name || r.studentName)) {
+                const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
+                foundResponses.set(uniqueKey, r);
+              }
+            });
+            console.log(`✅ Found ${parsed.length} responses from primary storage`);
           }
+        } catch (e) {
+          console.warn('Could not parse primary responses');
         }
-        
-        const foundResponses = new Map();
-        
-        for (const key of responseSources) {
-          const stored = localStorage.getItem(key);
-          if (stored && stored !== '[]' && stored !== '{}') {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(r => {
-                  if (r && r.answer && (r.student_name || r.studentName)) {
-                    const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
+      }
+
+      // Load from legacy storage
+      STORAGE_KEYS.legacyResponses.forEach(key => {
+        const stored = localStorage.getItem(key);
+        if (stored && stored !== '[]') {
+          try {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed)) {
+              parsed.forEach(r => {
+                if (r && r.answer && (r.student_name || r.studentName)) {
+                  const uniqueKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
+                  if (!foundResponses.has(uniqueKey)) {
                     foundResponses.set(uniqueKey, r);
                   }
-                });
-                debugLog(`Found ${parsed.length} responses in ${key}`);
-              }
-            } catch (e) {
-              debugLog(`Error parsing responses from ${key}`, e.message);
+                }
+              });
+              console.log(`✅ Found responses from ${key}`);
             }
+          } catch (e) {
+            // Continue
           }
         }
+      });
 
-        // Merge found responses without duplicates
-        foundResponses.forEach(response => {
-          const uniqueKey = `${response.student_name || response.studentName}-${response.answer.substring(0,50)}-${response.submitted_at || response.submittedAt || response.timestamp}`;
-          const existingIndex = allResponses.findIndex(r => {
-            const existingKey = `${r.student_name || r.studentName}-${r.answer.substring(0,50)}-${r.submitted_at || r.submittedAt || r.timestamp}`;
-            return existingKey === uniqueKey;
-          });
-          
-          if (existingIndex >= 0) {
-            allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
-          } else {
-            allResponses.push(response);
-          }
-        });
-
-        // Sort questions by date (newest first)
-        allQuestions.sort((a, b) => {
-          const dateA = new Date(a.created_at || a.published_at || a.timestamp || 0);
-          const dateB = new Date(b.created_at || b.published_at || b.timestamp || 0);
-          return dateB - dateA;
-        });
-
-        debugLog('Final comprehensive data loaded', { 
-          questions: allQuestions.length, 
-          responses: allResponses.length,
-          questionIds: allQuestions.map(q => ({ id: q.id, text: (q.text || q.question_text || '').substring(0, 50) })),
-          storageKeys: { questionSources, responseSources }
-        });
-
-        return { questions: allQuestions.length, responses: allResponses.length };
-        
-      } catch (error) {
-        debugLog('Error loading storage data', error.message);
-        console.error('Error loading storage data:', error);
-        return { questions: 0, responses: 0 };
-      }
-    }
-
-    function initSupabase() {
-      try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        debugLog('Supabase client initialized');
-        testConnection();
-        return true;
-      } catch (error) {
-        debugLog('Error initializing Supabase', error.message);
-        loadAllStorageData();
-        updateUI();
-        return false;
-      }
-    }
-
-    async function testConnection() {
-      try {
-        const { data, error } = await supabase.from('questions').select('count').limit(1);
-        
-        if (error) throw error;
-        
-        isConnected = true;
-        debugLog('Supabase connection successful');
-        
-        await loadSupabaseData();
-        
-      } catch (error) {
-        debugLog('Supabase connection failed', error.message);
-        isConnected = false;
-        loadAllStorageData();
-        updateUI();
-        showNotification('Using offline data only', 'info');
-      }
-    }
-
-    async function loadSupabaseData() {
-      try {
-        debugLog('Loading data from Supabase...');
-        
-        const { data: supabaseQuestions, error: questionsError } = await supabase
-          .from('questions')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (!questionsError && supabaseQuestions) {
-          supabaseQuestions.forEach(question => {
-            const existingIndex = allQuestions.findIndex(q => q.id === question.id);
-            if (existingIndex >= 0) {
-              allQuestions[existingIndex] = { ...allQuestions[existingIndex], ...question };
-            } else {
-              allQuestions.push(question);
-            }
-          });
-          debugLog(`Merged ${supabaseQuestions.length} questions from Supabase`);
-        }
-
-        const { data: supabaseResponses, error: responsesError } = await supabase
-          .from('student_responses')
-          .select('*')
-          .order('submitted_at', { ascending: false });
-
-        if (!responsesError && supabaseResponses) {
-          supabaseResponses.forEach(response => {
-            const existingIndex = allResponses.findIndex(r => r.id === response.id);
-            if (existingIndex >= 0) {
-              allResponses[existingIndex] = { ...allResponses[existingIndex], ...response };
-            } else {
-              allResponses.push(response);
-            }
-          });
-          debugLog(`Merged ${supabaseResponses.length} responses from Supabase`);
-        }
-
-        const localData = loadAllStorageData();
-        
-        updateUI();
-        showNotification(`Connected: ${allQuestions.length} questions, ${allResponses.length} responses`, 'success');
-        
-      } catch (error) {
-        debugLog('Error loading Supabase data', error.message);
-        loadAllStorageData();
-        updateUI();
-        showNotification('Database error, using local data', 'error');
-      }
+      allResponses = Array.from(foundResponses.values());
     }
 
     function getResponsesForQuestion(question) {
@@ -1033,20 +825,14 @@
         const responseQuestionId = response.question_id || response.questionId;
         const responseQuestionText = response.questionText || response.question_text || '';
         
+        // Match by ID or by question text
         return (
           (questionId && responseQuestionId && questionId === responseQuestionId) ||
-          (questionText && responseQuestionText && questionText === responseQuestionText) ||
-          (questionId === 'demo' && (!responseQuestionId || responseQuestionId === 'demo'))
+          (questionText && responseQuestionText && questionText === responseQuestionText)
         );
       });
 
-      debugLog(`Found ${matchedResponses.length} responses for question "${questionText}"`, {
-        questionId: questionId,
-        responseIds: matchedResponses.map(r => ({
-          student: r.student_name || r.studentName,
-          questionId: r.question_id || r.questionId
-        }))
-      });
+      console.log(`Found ${matchedResponses.length} responses for question "${questionText.substring(0, 50)}"`);
       
       return matchedResponses;
     }
@@ -1057,7 +843,6 @@
       updateDisplayButton();
     }
 
-    // Enhanced question dropdown population
     function populateQuestionDropdown() {
       const selector = document.getElementById('questionSelector');
       
@@ -1068,64 +853,60 @@
 
       selector.innerHTML = '<option value="">Select a question to view analytics...</option>';
 
-      // Sort questions by response count and date
-      const sortedQuestions = allQuestions.map(question => {
-        const responses = getResponsesForQuestion(question);
-        return {
-          ...question,
-          responseCount: responses.length,
-          sortDate: new Date(question.created_at || question.published_at || question.timestamp || 0)
-        };
-      }).sort((a, b) => {
-        // First by response count (desc), then by date (desc)
-        if (a.responseCount !== b.responseCount) {
-          return b.responseCount - a.responseCount;
-        }
-        return b.sortDate - a.sortDate;
-      });
-
-      sortedQuestions.forEach((question) => {
+      allQuestions.forEach((question, index) => {
         const option = document.createElement('option');
-        option.value = question.id || 'demo';
+        option.value = index;
         
         const questionText = question.text || question.question_text || 'Untitled Question';
         const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
         
-        const responseCount = question.responseCount;
-        const dateStr = question.sortDate.toLocaleDateString();
+        const responses = getResponsesForQuestion(question);
+        const responseCount = responses.length;
+        const dateStr = new Date(question.created_at || question.published_at || question.timestamp || 0).toLocaleDateString();
         
-        const migrated = question.migrated ? ' [Imported]' : '';
-        const createdBy = question.created_by ? ` [${question.created_by}]` : '';
-        
-        option.textContent = `${shortText} - ${responseCount} responses (${dateStr})${migrated}${createdBy}`;
+        option.textContent = `${shortText} - ${responseCount} response${responseCount !== 1 ? 's' : ''} (${dateStr})`;
         
         selector.appendChild(option);
       });
 
-      debugLog('Question dropdown populated with sorting', { 
-        total: allQuestions.length,
-        withResponses: sortedQuestions.filter(q => q.responseCount > 0).length
-      });
+      console.log(`✅ Dropdown populated with ${allQuestions.length} questions`);
     }
 
-    // NEW: Enhanced analytics box update
     function updateAnalyticsBox() {
       const counter = document.getElementById('responseCounter');
       const deleteBtn = document.getElementById('deleteBtn');
       const analyticsBox = document.getElementById('analyticsBox');
+      const statsGrid = document.getElementById('statsGrid');
       
       if (!currentSelectedQuestion) {
         counter.textContent = 'Select a question above to view analytics';
         counter.className = 'response-counter no-selection';
         deleteBtn.classList.remove('visible');
         analyticsBox.classList.remove('has-selection');
+        statsGrid.style.display = 'none';
       } else {
         const responses = getResponsesForQuestion(currentSelectedQuestion);
         const count = responses.length;
+        
         counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
         counter.className = 'response-counter';
         deleteBtn.classList.add('visible');
         analyticsBox.classList.add('has-selection');
+        
+        if (count > 0) {
+          statsGrid.style.display = 'grid';
+          
+          // Calculate statistics
+          const totalWords = responses.reduce((sum, r) => sum + (r.word_count || r.wordCount || 0), 0);
+          const avgWords = Math.round(totalWords / count);
+          const withPhotos = responses.filter(r => r.photo_url || r.hasPhoto).length;
+          
+          document.getElementById('totalResponses').textContent = count;
+          document.getElementById('avgWords').textContent = avgWords;
+          document.getElementById('withPhotos').textContent = withPhotos;
+        } else {
+          statsGrid.style.display = 'none';
+        }
       }
     }
 
@@ -1141,10 +922,10 @@
       if (!selectedValue) {
         currentSelectedQuestion = null;
       } else {
-        currentSelectedQuestion = allQuestions.find(q => q.id === selectedValue);
+        currentSelectedQuestion = allQuestions[parseInt(selectedValue)];
       }
 
-      debugLog('Selected question changed', currentSelectedQuestion);
+      console.log('Selected question:', currentSelectedQuestion?.text?.substring(0, 50) || 'none');
       
       updateAnalyticsBox();
       updateDisplayButton();
@@ -1156,27 +937,22 @@
         return;
       }
       
-      debugLog('Displaying responses for question', currentSelectedQuestion);
-      
       const matchedResponses = getResponsesForQuestion(currentSelectedQuestion);
       
       showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
       
+      // Prepare data for display page
       const questionData = JSON.stringify(currentSelectedQuestion);
       const responseData = JSON.stringify(matchedResponses);
       
+      // Save to display keys
       localStorage.setItem('display_question', questionData);
       localStorage.setItem('display_responses', responseData);
       localStorage.setItem('current_question', questionData);
       
-      localStorage.setItem(STORAGE_KEYS.responses, JSON.stringify(allResponses));
-      localStorage.setItem(STORAGE_KEYS.questions, JSON.stringify(allQuestions));
+      console.log(`✅ Prepared display data: ${matchedResponses.length} responses`);
       
-      debugLog('Stored display data', { 
-        question: currentSelectedQuestion.id, 
-        responses: matchedResponses.length 
-      });
-      
+      // Open display page
       try {
         window.open('../displays/', '_blank');
       } catch (error) {
@@ -1195,7 +971,7 @@
       const shortQuestion = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
       
       if (count > 0) {
-        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} associated response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
+        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
       } else {
         message.textContent = `Are you sure you want to delete "${shortQuestion}"? This action cannot be undone.`;
       }
@@ -1207,7 +983,7 @@
       document.getElementById('confirmDialog').classList.remove('show');
     }
 
-    async function confirmDelete() {
+    function confirmDelete() {
       if (!currentSelectedQuestion) {
         closeConfirmDialog();
         return;
@@ -1216,29 +992,12 @@
       const questionToDelete = currentSelectedQuestion;
 
       try {
-        showNotification('Deleting question...', 'info');
+        console.log('🗑 Deleting question and responses...');
         
-        if (isConnected) {
-          try {
-            const { error: responseError } = await supabase
-              .from('student_responses')
-              .delete()
-              .eq('question_id', questionToDelete.id);
-
-            const { error: questionError } = await supabase
-              .from('questions')
-              .delete()
-              .eq('id', questionToDelete.id);
-
-            if (questionError) debugLog('Supabase delete warning', questionError);
-            debugLog('Deleted from Supabase');
-          } catch (supabaseError) {
-            debugLog('Supabase delete failed, continuing with local delete', supabaseError.message);
-          }
-        }
-
+        // Get responses to delete
         const responsesToDelete = getResponsesForQuestion(questionToDelete);
         
+        // Remove responses from allResponses array
         responsesToDelete.forEach(response => {
           const index = allResponses.findIndex(r => r === response);
           if (index > -1) {
@@ -1246,39 +1005,33 @@
           }
         });
 
+        // Remove question from allQuestions array
         const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
         if (questionIndex > -1) {
           allQuestions.splice(questionIndex, 1);
         }
 
+        // Save updated data to storage
         const questionData = JSON.stringify(allQuestions);
         const responseData = JSON.stringify(allResponses);
         
         localStorage.setItem(STORAGE_KEYS.questions, questionData);
         localStorage.setItem(STORAGE_KEYS.responses, responseData);
         
+        // Update legacy storage
         STORAGE_KEYS.legacyQuestions.forEach(key => {
           try {
             localStorage.setItem(key, questionData);
-          } catch (e) {
-            // Ignore errors
-          }
+          } catch (e) {}
         });
         
         STORAGE_KEYS.legacyResponses.forEach(key => {
           try {
             localStorage.setItem(key, responseData);
-          } catch (e) {
-            // Ignore errors
-          }
+          } catch (e) {}
         });
         
-        debugLog('Question and responses deleted', { 
-          question: questionToDelete.id,
-          responsesDeleted: responsesToDelete.length,
-          remainingQuestions: allQuestions.length,
-          remainingResponses: allResponses.length
-        });
+        console.log(`✅ Deleted question and ${responsesToDelete.length} responses`);
         
         currentSelectedQuestion = null;
         document.getElementById('questionSelector').value = '';
@@ -1287,7 +1040,7 @@
         showNotification('Question deleted successfully', 'success');
         
       } catch (error) {
-        debugLog('Error deleting question', error.message);
+        console.error('❌ Error deleting question:', error);
         showNotification('Error deleting question', 'error');
         closeConfirmDialog();
       }
@@ -1318,18 +1071,25 @@
       }, 3000);
     }
 
-    // Initialize on DOM load
+    // Auto-refresh data every 10 seconds
+    setInterval(() => {
+      const prevQuestions = allQuestions.length;
+      const prevResponses = allResponses.length;
+      
+      loadAllData();
+      
+      if (allQuestions.length > prevQuestions || allResponses.length > prevResponses) {
+        console.log(`✨ New data detected! Questions: ${prevQuestions}→${allQuestions.length}, Responses: ${prevResponses}→${allResponses.length}`);
+      }
+    }, 10000);
+
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      debugLog('INTUITY Analytics (Improved Layout) Loading...');
+      console.log('🚀 INTUITY Analytics Ready!');
       
-      debugMode = window.location.search.includes('debug') || localStorage.getItem('debug_mode') === 'true';
+      loadAllData();
       
-      initSupabase();
-      
-      document.getElementById('questionSelector').addEventListener('change', handleQuestionChange);
-      document.getElementById('displayBtn').addEventListener('click', displayResponses);
-      document.getElementById('deleteBtn').addEventListener('click', showDeleteConfirmation);
-      
+      // Event listeners
       document.getElementById('confirmDialog').addEventListener('click', function(e) {
         if (e.target === this) {
           closeConfirmDialog();
@@ -1340,31 +1100,9 @@
         if (e.key === 'Escape') {
           closeConfirmDialog();
         }
-        if (e.ctrlKey && e.key === 'd') {
-          e.preventDefault();
-          debugMode = !debugMode;
-          if (debugMode) {
-            localStorage.setItem('debug_mode', 'true');
-            debugLog('Debug mode enabled via keyboard');
-            setTimeout(() => {
-              debugLog('Current data summary', {
-                questions: allQuestions.length,
-                responses: allResponses.length,
-                connected: isConnected,
-                selected: currentSelectedQuestion?.id || 'none',
-                allStorageKeys: Object.keys(localStorage).filter(key => 
-                  key.includes('question') || key.includes('response') || key.includes('teacher')
-                )
-              });
-            }, 500);
-          } else {
-            localStorage.removeItem('debug_mode');
-            document.getElementById('debugPanel').classList.remove('show');
-          }
-        }
       });
       
-      debugLog('INTUITY Analytics (Improved Layout) Ready!');
+      console.log('✅ Analytics initialized successfully');
     });
   </script>
 </body>
