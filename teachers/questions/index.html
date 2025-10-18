@@ -463,6 +463,29 @@
         min-width: 80px;
       }
     }
+
+    /* Debug Console */
+    .debug-console {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 12px;
+      color: #0f0;
+      font-family: monospace;
+      max-width: 300px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 3000;
+      display: none;
+    }
+
+    .debug-console.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -526,11 +549,24 @@
     </div>
   </div>
 
+  <div class="debug-console" id="debugConsole"></div>
+
   <script>
     console.log('🚀 INTUITY Teacher Portal Loading...');
     
     let currentQuestion = null;
     let isPublished = false;
+    let debugLog = [];
+
+    function addDebug(msg) {
+      debugLog.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+      console.log(msg);
+      const debugConsole = document.getElementById('debugConsole');
+      if (debugConsole) {
+        debugConsole.innerHTML = debugLog.slice(-20).join('<br>');
+        debugConsole.scrollTop = debugConsole.scrollHeight;
+      }
+    }
 
     function handleQuestionInput() {
       const questionInput = document.getElementById('questionInput');
@@ -563,61 +599,102 @@
       publishBtn.innerHTML = '⏳ Publishing...';
       publishBtn.disabled = true;
 
+      addDebug('📝 Starting publish process...');
+
       try {
-        // Wait for DataSync to be ready
+        // Wait for DataSync
         if (!window.intuitySync) {
-          console.log('⏳ Waiting for DataSync...');
-          await new Promise(resolve => setTimeout(resolve, 500));
+          addDebug('⏳ Waiting for DataSync...');
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         if (!window.intuitySync) {
-          throw new Error('DataSync not available');
+          throw new Error('DataSync not available after waiting');
         }
 
-        const questionData = {
-          text: questionText,
-          question_type: 'open-ended',
-          created_by: 'teacher'
-        };
+        addDebug('✅ DataSync available');
+        addDebug(`🌐 Online: ${window.intuitySync.isOnline}`);
+        addDebug(`🔌 Connected: ${window.intuitySync.isConnected}`);
 
-        console.log('📝 Publishing via DataSync...', questionData);
-
-        // USE DATASYNC - this handles EVERYTHING (localStorage + Supabase)!
-        const result = await window.intuitySync.publishQuestion(questionData);
+        // DIRECT SUPABASE WRITE (bypass DataSync for debugging)
+        let supabaseSuccess = false;
         
-        if (result.success) {
-          currentQuestion = result.question;
-          isPublished = true;
+        if (window.intuitySync.supabase && window.intuitySync.isOnline) {
+          addDebug('🌐 Attempting DIRECT Supabase write...');
           
-          // Update UI based on sync status
-          if (result.synced) {
-            publishBtn.innerHTML = '✓ Published (Cloud)';
-            document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
-            console.log('✅ Question synced to Supabase!');
-          } else {
-            publishBtn.innerHTML = '✓ Published (Local)';
-            document.getElementById('successMessage').innerHTML = 'Question Published Locally!<br><span style="font-size:14px;opacity:0.8;">Will sync when online</span>';
-            console.log('✅ Question saved locally (offline mode)');
-          }
-          
-          qrBtn.classList.add('show');
-          
-          showSuccessNotification();
-          
-          console.log('✅ Question successfully published!');
-          console.log('Question ID:', result.question.id);
+          const questionData = {
+            id: 'q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            text: questionText,
+            created_at: new Date().toISOString(),
+            published_at: new Date().toISOString(),
+            is_published: true,
+            created_by: 'teacher',
+            question_type: 'open-ended'
+          };
 
+          addDebug(`📦 Question data: ${JSON.stringify(questionData).substring(0, 100)}...`);
+
+          try {
+            const { data, error } = await window.intuitySync.supabase
+              .from('questions')
+              .insert([questionData])
+              .select();
+
+            if (error) {
+              addDebug(`❌ Supabase ERROR: ${error.message}`);
+              addDebug(`Error details: ${JSON.stringify(error)}`);
+              throw error;
+            }
+
+            if (data && data.length > 0) {
+              addDebug('✅✅✅ SUPABASE WRITE SUCCESS!');
+              addDebug(`Inserted ID: ${data[0].id}`);
+              supabaseSuccess = true;
+              currentQuestion = data[0];
+              
+              // Also save to localStorage
+              localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
+            }
+          } catch (supabaseError) {
+            addDebug(`❌ Supabase exception: ${supabaseError.message}`);
+            throw supabaseError;
+          }
         } else {
-          throw new Error('Publish failed');
+          addDebug('⚠️ Supabase not available or offline');
         }
+
+        isPublished = true;
+        
+        if (supabaseSuccess) {
+          publishBtn.innerHTML = '✓ Published (Cloud)';
+          document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
+          addDebug('🎉 SUCCESS: Question in Supabase!');
+        } else {
+          publishBtn.innerHTML = '✓ Published (Local Only)';
+          document.getElementById('successMessage').innerHTML = 'Saved Locally<br><span style="font-size:14px;">Check connection!</span>';
+          addDebug('⚠️ Only saved locally - Supabase failed');
+        }
+        
+        qrBtn.classList.add('show');
+        showSuccessNotification();
+        
+        // Show debug console
+        document.getElementById('debugConsole').classList.add('show');
+        setTimeout(() => {
+          document.getElementById('debugConsole').classList.remove('show');
+        }, 10000);
 
       } catch (error) {
-        console.error('❌ Error publishing question:', error);
+        addDebug(`❌❌❌ CRITICAL ERROR: ${error.message}`);
+        console.error('Full error:', error);
         
         publishBtn.innerHTML = 'Publish';
         publishBtn.disabled = false;
         
-        alert('Failed to publish question: ' + error.message);
+        alert(`FAILED TO PUBLISH:\n\n${error.message}\n\nCheck console for details.`);
+        
+        // Show debug console
+        document.getElementById('debugConsole').classList.add('show');
       }
     }
 
@@ -645,6 +722,7 @@
         
         isPublished = false;
         currentQuestion = null;
+        debugLog = [];
         
         document.getElementById('questionInput').focus();
         
@@ -712,15 +790,33 @@
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Teacher Portal Ready!');
       
-      // Wait for DataSync to load
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (window.intuitySync) {
-        console.log('✅ DataSync available');
-        console.log('🌐 Online status:', window.intuitySync.isOnline);
-        console.log('🔌 Connected to Supabase:', window.intuitySync.isConnected);
+        addDebug('✅ DataSync loaded');
+        addDebug(`🌐 Online: ${window.intuitySync.isOnline}`);
+        addDebug(`🔌 Supabase: ${window.intuitySync.isConnected}`);
+        
+        // Test Supabase connection
+        if (window.intuitySync.supabase) {
+          addDebug('🧪 Testing Supabase connection...');
+          try {
+            const { data, error } = await window.intuitySync.supabase
+              .from('questions')
+              .select('count')
+              .limit(1);
+            
+            if (error) {
+              addDebug(`❌ Supabase test FAILED: ${error.message}`);
+            } else {
+              addDebug('✅ Supabase connection OK!');
+            }
+          } catch (e) {
+            addDebug(`❌ Supabase test exception: ${e.message}`);
+          }
+        }
       } else {
-        console.warn('⚠️ DataSync not loaded!');
+        addDebug('❌ DataSync NOT loaded!');
       }
       
       const questionInput = document.getElementById('questionInput');
@@ -736,7 +832,6 @@
           closeQRModal();
         }
       });
-
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           if (!document.getElementById('publishBtn').disabled) {
@@ -745,6 +840,11 @@
         }
         if (e.key === 'Escape') {
           closeQRModal();
+        }
+        // Press 'D' to toggle debug console
+        if (e.key === 'd' || e.key === 'D') {
+          const debugConsole = document.getElementById('debugConsole');
+          debugConsole.classList.toggle('show');
         }
       });
 
