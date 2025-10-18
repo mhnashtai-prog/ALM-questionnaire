@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Teacher Questions</title>
+  <title>INTUITY - Student Response</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
   <!-- Supabase CDN -->
@@ -117,6 +117,18 @@
       animation: float 9s ease-in-out infinite reverse;
     }
 
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(-15deg);
+      border: 1px solid rgba(255, 160, 80, 0.1);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.03) 0%, transparent 100%);
+      opacity: 0.15;
+      animation: drift 15s ease-in-out infinite reverse;
+    }
+
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
       33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
@@ -128,6 +140,11 @@
       50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
     }
 
+    @keyframes buttonPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
     @keyframes drift {
       0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
       25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
@@ -135,11 +152,12 @@
       75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
     }
 
-    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
-    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
-    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
-    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
-    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
+    .curve1 { --base-opacity: 0.9; --rotate: 30deg; }
+    .curve2 { --base-opacity: 0.7; --rotate: -20deg; }
+    .curve3 { --base-opacity: 0.5; --rotate: 60deg; }
+    .curve4 { --base-opacity: 0.3; --rotate: -45deg; }
+    .curve5 { --base-opacity: 0.8; --rotate: 15deg; }
+    .curve6 { --base-opacity: 0.2; --rotate: 80deg; }
 
     .container {
       position: relative;
@@ -172,23 +190,60 @@
       letter-spacing: 0.5px;
     }
 
+    .question-overlay {
+      position: absolute;
+      top: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 85%;
+      text-align: center;
+      z-index: 5;
+      opacity: 0.4;
+      font-size: 26px;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.4;
+      pointer-events: none;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8),
+                   0 0 40px rgba(0, 0, 0, 0.6);
+      background: linear-gradient(135deg, 
+                  rgba(0, 0, 0, 0.15) 0%, 
+                  rgba(0, 0, 0, 0.05) 50%, 
+                  rgba(0, 0, 0, 0.15) 100%);
+      padding: 20px 30px;
+      border-radius: 15px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.5s ease;
+    }
+
+    .question-overlay.focused {
+      opacity: 0.2;
+      transform: translateX(-50%) scale(0.95);
+    }
+
+    .question-overlay.typing {
+      opacity: 0.15;
+      transform: translateX(-50%) scale(0.9);
+    }
+
     .main-content {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding-bottom: 140px;
+      padding-bottom: 100px;
     }
 
-    .question-container {
+    .response-container {
       width: 100%;
       height: 5cm;
       position: relative;
       perspective: 1000px;
-      overflow: hidden;
+      overflow: visible; /* Changed from hidden to allow dropdown overflow */
     }
 
-    .question-box {
+    .response-box {
       width: 100%;
       height: 100%;
       background: #000000;
@@ -201,18 +256,232 @@
       transition: all 0.3s ease;
     }
 
-    .question-box:hover {
+    .response-box:hover {
       transform: translateY(-2px);
     }
 
     .content-area {
-      flex: 1;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       padding: 20px;
     }
 
-    .question-input {
+    .name-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .name-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .name-input:focus {
+      border-bottom-color: rgba(255, 140, 60, 0.6);
+    }
+
+    .name-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+      font-style: italic;
+    }
+
+    /* Enhanced Name Dropdown */
+    .name-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 60px; /* Leave space for camera icon */
+      background: rgba(0, 0, 0, 0.95);
+      border: 1px solid rgba(255, 140, 60, 0.4);
+      border-radius: 12px;
+      max-height: 240px; /* Increased height */
+      overflow-y: auto;
+      z-index: 2000; /* Increased z-index */
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .name-suggestions.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .suggestions-header {
+      padding: 12px 15px 8px 15px;
+      color: rgba(255, 140, 60, 0.8);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255, 140, 60, 0.2);
+      background: rgba(255, 140, 60, 0.05);
+      position: sticky;
+      top: 0;
+    }
+
+    .name-suggestion {
+      padding: 12px 15px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    .name-suggestion:last-child {
+      border-bottom: none;
+    }
+
+    .name-suggestion:hover {
+      background: rgba(255, 140, 60, 0.15);
+      color: #fff;
+      transform: translateX(2px);
+    }
+
+    .name-suggestion.highlighted {
+      background: rgba(255, 140, 60, 0.25);
+      color: #fff;
+      transform: translateX(2px);
+    }
+
+    .suggestion-photo {
+      width: 32px; /* Increased size */
+      height: 32px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      flex-shrink: 0;
+    }
+
+    .suggestion-photo-placeholder {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(255, 140, 60, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: rgba(255, 140, 60, 0.8);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      flex-shrink: 0;
+    }
+
+    .suggestion-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .suggestion-name {
+      font-weight: 500;
+      color: inherit;
+    }
+
+    .suggestion-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .suggestion-count {
+      font-size: 10px;
+      color: rgba(255, 140, 60, 0.7);
+      background: rgba(255, 140, 60, 0.1);
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 140, 60, 0.2);
+    }
+
+    .suggestion-photo-indicator {
+      font-size: 10px;
+      color: rgba(16, 185, 129, 0.7);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .new-student-option {
+      padding: 12px 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+      font-style: italic;
+    }
+
+    .new-student-option:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .camera-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255, 140, 60, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 18px;
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .camera-icon:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
+    }
+
+    .camera-icon.has-photo {
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+    }
+
+    .camera-icon.has-photo:hover {
+      background: rgba(16, 185, 129, 1);
+    }
+
+    .answer-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .answer-input {
       flex: 1;
       background: transparent;
       border: none;
@@ -223,39 +492,66 @@
       resize: none;
       line-height: 1.6;
       padding: 0;
-      text-align: center;
     }
 
-    .question-input::placeholder {
+    .answer-input::placeholder {
       color: rgba(255, 255, 255, 0.4);
       font-style: italic;
     }
 
-    .question-input:focus {
+    .answer-input:focus {
       color: #fff;
     }
 
-    .action-buttons {
-      display: flex;
+    .success-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 20;
+      display: none;
+      align-items: center;
       justify-content: center;
-      gap: 15px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      opacity: 0;
-      transition: all 0.3s ease;
+      text-align: center;
+      border-radius: 20px;
     }
 
-    .action-buttons.show {
-      opacity: 1;
+    .success-content {
+      color: #fff;
     }
 
-    .action-btn {
-      background: rgba(255, 140, 60, 0.6);
-      border: none;
-      border-radius: 12px;
-      padding: 8px 16px;
-      color: #000;
-      font-size: 12px;
+    .success-icon {
+      font-size: 48px;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 20px;
+    }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: rgba(16, 185, 129, 0.9);
+      margin-bottom: 15px;
+    }
+
+    .success-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 16px;
+    }
+
+    .success-actions {
+      margin-top: 30px;
+    }
+
+    .success-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 1px solid rgba(255, 140, 60, 0.5);
+      border-radius: 15px;
+      padding: 12px 25px;
+      color: rgba(255, 140, 60, 1);
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -263,109 +559,102 @@
       letter-spacing: 0.5px;
     }
 
-    .action-btn:hover {
-      background: rgba(255, 140, 60, 0.8);
+    .success-btn:hover {
+      background: rgba(255, 140, 60, 0.3);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Submit Button - The Star */
+    .submit-section {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    .submit-btn {
+      background: rgba(255, 140, 60, 0.9);
+      border: none;
+      border-radius: 20px;
+      padding: 18px 40px;
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      min-width: 160px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.3);
+    }
+
+    .submit-btn:active {
       transform: translateY(-1px);
     }
 
-    .action-btn:disabled {
-      opacity: 0.4;
+    .submit-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .submit-btn.submitting {
+      background: rgba(255, 140, 60, 0.6);
       cursor: not-allowed;
       transform: none;
     }
 
-    .action-btn.secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 140, 60, 0.9);
-      display: none;
-    }
-
-    .action-btn.secondary.show {
-      display: block;
-    }
-
-    .action-btn.secondary:hover {
-      background: rgba(255, 255, 255, 0.15);
-      color: rgba(255, 140, 60, 1);
-    }
-
-    .footer {
-      margin-top: 40px;
-      background: rgba(64, 64, 64, 0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 25px;
-      padding: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .nav-button {
-      width: 45px;
-      height: 45px;
+    /* Clear button - subtle when needed */
+    .clear-hint {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 18px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
-      text-decoration: none;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .nav-button:hover {
-      background: rgba(255, 140, 60, 0.2);
-      color: #fff;
+    .clear-hint.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .clear-hint:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: rgba(239, 68, 68, 0.8);
       transform: scale(1.1);
     }
 
-    .nav-button:active {
-      transform: scale(0.95);
-    }
-
-    .success-notification {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(16, 185, 129, 0.15);
-      border: 2px solid rgba(16, 185, 129, 0.5);
-      border-radius: 16px;
-      padding: 30px;
-      color: rgba(16, 185, 129, 0.9);
-      font-size: 18px;
-      font-weight: 600;
-      text-align: center;
-      z-index: 2000;
-      display: none;
-      backdrop-filter: blur(10px);
-      animation: fadeIn 0.3s ease;
-      min-width: 300px;
-    }
-
-    .success-icon {
-      font-size: 48px;
-      margin-bottom: 15px;
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
-
-    .qr-modal {
+    /* Photo Options Modal */
+    .photo-options {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.9);
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
       z-index: 2000;
       display: none;
       align-items: center;
@@ -373,60 +662,216 @@
       backdrop-filter: blur(10px);
     }
 
-    .qr-modal-content {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid rgba(255, 140, 60, 0.5);
-      border-radius: 20px;
-      padding: 30px;
-      backdrop-filter: blur(10px);
-      text-align: center;
-      max-width: 400px;
-      margin: 20px;
+    .photo-options.show {
+      display: flex;
     }
 
-    .qr-modal h3 {
-      margin-bottom: 20px;
+    .photo-options-content {
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      text-align: center;
+      max-width: 350px;
+      width: 90%;
+    }
+
+    .photo-options-title {
       color: #fff;
       font-size: 20px;
       font-weight: 600;
+      margin-bottom: 25px;
     }
 
-    .qr-display {
-      width: 280px;
-      height: 280px;
-      margin: 0 auto 20px;
-      background: white;
+    .photo-options-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .photo-option-btn {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
       border-radius: 15px;
+      padding: 15px 20px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #666;
-      font-size: 16px;
-      border: 2px solid rgba(255, 140, 60, 0.3);
-      overflow: hidden;
+      gap: 10px;
     }
 
-    .qr-display img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .photo-option-btn:hover {
+      background: rgba(255, 140, 60, 0.2);
+      border-color: rgba(255, 140, 60, 0.5);
+      color: #fff;
+      transform: translateY(-2px);
     }
 
-    .close-btn {
+    .photo-option-btn.cancel {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .photo-option-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+
+    .photo-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .photo-modal.show {
+      display: flex;
+    }
+
+    .photo-modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .photo-modal img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+    }
+
+    .photo-modal-controls {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .photo-modal-btn {
       background: rgba(255, 140, 60, 0.8);
       border: none;
-      border-radius: 12px;
-      padding: 12px 24px;
+      border-radius: 8px;
+      padding: 8px;
       color: #000;
-      font-weight: 600;
-      font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
-    .close-btn:hover {
+    .photo-modal-btn:hover {
+      background: rgba(255, 140, 60, 1);
+    }
+
+    .camera-preview {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: black;
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .camera-preview.show {
+      display: flex;
+    }
+
+    .camera-preview video {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 12px;
+    }
+
+    .camera-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .camera-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 25px;
+      padding: 15px 25px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      min-width: 100px;
+    }
+
+    .camera-btn:hover {
       background: rgba(255, 140, 60, 1);
       transform: scale(1.05);
+    }
+
+    .camera-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .camera-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .camera-btn.flip {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 50%;
+      min-width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .camera-btn.flip:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    /* Custom scrollbar for suggestions */
+    .name-suggestions::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .name-suggestions::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+    }
+
+    .name-suggestions::-webkit-scrollbar-thumb {
+      background: rgba(255, 140, 60, 0.3);
+      border-radius: 2px;
+    }
+
+    .name-suggestions::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 140, 60, 0.5);
     }
 
     @media (max-width: 768px) {
@@ -438,7 +883,12 @@
         font-size: 28px;
       }
       
-      .question-container {
+      .question-overlay {
+        font-size: 20px;
+        max-width: 90%;
+      }
+      
+      .response-container {
         height: 4cm;
       }
       
@@ -446,17 +896,43 @@
         padding: 15px;
       }
       
-      .question-input {
+      .name-input {
         font-size: 15px;
       }
       
-      .action-buttons {
-        gap: 10px;
+      .answer-input {
+        font-size: 15px;
       }
       
-      .action-btn {
-        padding: 6px 12px;
-        font-size: 11px;
+      .camera-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+
+      .submit-btn {
+        padding: 16px 30px;
+        font-size: 16px;
+        min-width: 140px;
+      }
+
+      .submit-section {
+        margin-top: 30px;
+      }
+
+      .photo-options-content {
+        margin: 20px;
+        padding: 25px;
+      }
+
+      .name-suggestions {
+        max-height: 200px;
+      }
+
+      .suggestion-photo,
+      .suggestion-photo-placeholder {
+        width: 28px;
+        height: 28px;
       }
     }
   </style>
@@ -469,262 +945,1295 @@
       <div class="curve curve3"></div>
       <div class="curve curve4"></div>
       <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
     </div>
+  </div>
+
+  <div class="question-overlay" id="questionOverlay">
+    Loading question...
   </div>
 
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Create Question<br>By Majid Nashtai</p>
+      <p>Student Response<br>By Majid Nashtai</p>
     </header>
 
     <main class="main-content">
-      <div class="question-container">
-        <div class="question-box">
+      <div class="response-container">
+        <div class="response-box">
           <div class="content-area">
-            <textarea 
-              class="question-input" 
-              id="questionInput"
-              placeholder="What would you like to ask your students?"
-            ></textarea>
+            <div class="name-section">
+              <input 
+                type="text" 
+                class="name-input" 
+                id="studentName"
+                placeholder="Your name..."
+                maxlength="50"
+                autocomplete="off"
+              />
+              <div class="name-suggestions" id="nameSuggestions"></div>
+              <div class="camera-icon" id="cameraIcon" title="Add photo">📸</div>
+            </div>
             
-            <div class="action-buttons" id="actionButtons">
-              <button class="action-btn" id="publishBtn" disabled>Publish</button>
-              <button class="action-btn secondary" id="qrBtn">QR Code</button>
+            <div class="answer-area">
+              <textarea 
+                class="answer-input" 
+                id="studentAnswer"
+                placeholder="Your answer..."
+              ></textarea>
+            </div>
+          </div>
+          
+          <div class="success-overlay" id="successOverlay">
+            <div class="success-content">
+              <div class="success-icon">✨</div>
+              <div class="success-title">Response Submitted!</div>
+              <div class="success-text">Thank you for sharing your thoughts!<br><small style="opacity: 0.7; margin-top: 10px; display: block;" id="photoSaveMessage">Your photo has been saved for future responses</small></div>
+              <div class="success-actions">
+                <button class="success-btn" onclick="clearForm()">Write Another Response</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <footer class="footer">
-      <a href="../../index.html" class="nav-button" title="Home">⌂</a>
-      <button class="nav-button" id="nextQuestionBtn" title="Next Question">+</button>
-      <a href="../../visualisation/" class="nav-button" title="Analytics">📊</a>
-    </footer>
-  </div>
-
-  <div class="success-notification" id="successNotification">
-    <span class="success-icon">✨</span>
-    <div>Question Published!</div>
-    <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
-      Students can now access your question.
+    <div class="submit-section">
+      <button class="submit-btn" id="submitBtn" disabled>SUBMIT</button>
     </div>
   </div>
 
-  <div id="qrModal" class="qr-modal">
-    <div class="qr-modal-content">
-      <h3>Student QR Code</h3>
-      <div id="qrDisplay" class="qr-display">
-        <div>Generating QR Code...</div>
+  <!-- Clear button - only visible when needed -->
+  <div class="clear-hint" id="clearBtn" title="Clear form">✕</div>
+
+  <!-- Photo Options Modal -->
+  <div class="photo-options" id="photoOptions">
+    <div class="photo-options-content">
+      <div class="photo-options-title">Add Photo</div>
+      <div class="photo-options-buttons">
+        <button class="photo-option-btn" id="takePictureBtn">
+          📸 Take Picture
+        </button>
+        <button class="photo-option-btn" id="chooseFromAlbumBtn">
+          🖼️ Choose from Album
+        </button>
+        <button class="photo-option-btn cancel" id="cancelPhotoBtn">
+          Cancel
+        </button>
       </div>
-      <button class="close-btn" onclick="closeQRModal()">Close</button>
     </div>
   </div>
+
+  <div class="photo-modal" id="photoModal">
+    <div class="photo-modal-content">
+      <div class="photo-modal-controls">
+        <button class="photo-modal-btn" id="retakeBtn">📷 Change</button>
+        <button class="photo-modal-btn" id="removePhotoBtn">🗑️ Remove</button>
+        <button class="photo-modal-btn" id="closeModalBtn">✕ Keep</button>
+      </div>
+      <img id="photoModalImg" />
+    </div>
+  </div>
+
+  <div class="camera-preview" id="cameraPreview">
+    <video id="cameraVideo" autoplay muted playsinline></video>
+    <div class="camera-controls">
+      <button class="camera-btn flip" id="flipCameraBtn" title="Flip Camera">🔄</button>
+      <button class="camera-btn" id="captureBtn">Capture</button>
+      <button class="camera-btn secondary" id="cancelCameraBtn">Cancel</button>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
   <script>
+    // Supabase Configuration
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
+    // Global variables
     let supabase;
+    let intuityData;
     let currentQuestion = null;
+    let currentPhoto = null;
+    let cameraStream = null;
+    let isSubmitted = false;
     let isConnected = false;
-    let isPublished = false;
+    let isOnline = navigator.onLine;
+    let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
 
-    async function initSupabase() {
+    // Enhanced dropdown variables
+    let currentSuggestionIndex = -1;
+    let dropdownOpen = false;
+
+    // Initialize Supabase
+    function initSupabase() {
       try {
+        if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+          throw new Error('Please configure your Supabase credentials');
+        }
+
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase client initialized');
         
-        const { data, error } = await supabase.from('questions').select('count').limit(1);
-        if (error) throw error;
-        
-        isConnected = true;
-        console.log('✅ Connected to Supabase');
+        testConnection();
         return true;
       } catch (error) {
-        console.error('❌ Supabase connection failed:', error);
-        isConnected = false;
+        console.error('❌ Error initializing Supabase:', error);
         return false;
       }
     }
 
-    function handleQuestionInput() {
-      const input = document.getElementById('questionInput');
-      const publishBtn = document.getElementById('publishBtn');
-      const actionButtons = document.getElementById('actionButtons');
-
-      const text = input.value.trim();
-      
-      if (text.length > 0 && !isPublished) {
-        publishBtn.disabled = false;
-        actionButtons.classList.add('show');
-      } else if (!isPublished) {
-        publishBtn.disabled = true;
-        actionButtons.classList.remove('show');
+    // Test Supabase connection
+    async function testConnection() {
+      try {
+        const { data, error } = await supabase.from('questions').select('count').limit(1);
+        
+        if (error) throw error;
+        
+        isConnected = true;
+        console.log('✅ Supabase connection test successful');
+        
+        initDataLayer();
+        
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+        isConnected = false;
+        initDataLayer();
       }
     }
 
-    async function publishQuestion() {
-      const questionText = document.getElementById('questionInput').value.trim();
-      
-      if (!questionText) return;
+    // Initialize data layer
+    function initDataLayer() {
+      intuityData = new INTUITYStudentDataLayer();
+      console.log('✅ INTUITY Student Data Layer initialized');
+    }
 
-      const publishBtn = document.getElementById('publishBtn');
-      const qrBtn = document.getElementById('qrBtn');
-      
-      publishBtn.innerHTML = '⏳';
-      publishBtn.disabled = true;
+    // Student Data Access Layer for Supabase
+    class INTUITYStudentDataLayer {
+      constructor() {
+        this.isOnline = navigator.onLine;
+        this.setupOfflineHandling();
+      }
 
-      try {
-        if (isConnected) {
-          await supabase
-            .from('questions')
-            .update({ is_published: false })
-            .eq('is_published', true);
+      setupOfflineHandling() {
+        window.addEventListener('online', () => {
+          this.isOnline = true;
+          console.log('🌐 Back online - syncing data...');
+          this.syncOfflineData();
+        });
 
+        window.addEventListener('offline', () => {
+          this.isOnline = false;
+          console.log('📱 Offline mode activated');
+        });
+      }
+
+      async fallbackToLocalStorage(operation, data, key) {
+        console.log(`📱 Using localStorage fallback for ${operation}`);
+        
+        switch (operation) {
+          case 'get':
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : null;
+          case 'set':
+            localStorage.setItem(key, JSON.stringify(data));
+            return data;
+          default:
+            return null;
+        }
+      }
+
+      async syncOfflineData() {
+        const offlineResponses = localStorage.getItem('offline_responses');
+        
+        try {
+          if (offlineResponses) {
+            const responses = JSON.parse(offlineResponses);
+            for (const response of responses) {
+              await this.submitResponse(response);
+            }
+            localStorage.removeItem('offline_responses');
+            console.log('✅ Offline responses synced');
+          }
+        } catch (error) {
+          console.error('❌ Error syncing offline data:', error);
+        }
+      }
+
+      async getCurrentQuestion() {
+        if (!this.isOnline || !isConnected) {
+          return this.fallbackToLocalStorage('get', null, 'current_question');
+        }
+
+        try {
           const { data, error } = await supabase
             .from('questions')
+            .select('*')
+            .eq('is_published', true)
+            .order('published_at', { ascending: false })
+            .limit(1);
+
+          if (error) throw error;
+
+          const currentQuestion = data[0] || null;
+          
+          if (currentQuestion) {
+            localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+            console.log('✅ Current question retrieved from Supabase:', currentQuestion);
+          }
+          
+          return currentQuestion;
+        } catch (error) {
+          console.error('❌ Error fetching current question:', error);
+          return this.fallbackToLocalStorage('get', null, 'current_question');
+        }
+      }
+
+      async getQuestionById(questionId) {
+        if (!this.isOnline || !isConnected) {
+          const storedQuestions = localStorage.getItem('alm_questions');
+          if (storedQuestions) {
+            const questions = JSON.parse(storedQuestions);
+            return questions.find(q => q.id === questionId) || null;
+          }
+          return null;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('id', questionId)
+            .single();
+
+          if (error) throw error;
+
+          console.log('✅ Question retrieved by ID:', data);
+          return data;
+        } catch (error) {
+          console.error('❌ Error fetching question by ID:', error);
+          return null;
+        }
+      }
+
+      async submitResponse(responseData) {
+        if (!this.isOnline || !isConnected) {
+          const offlineResponses = JSON.parse(localStorage.getItem('offline_responses') || '[]');
+          const responseWithId = {
+            ...responseData,
+            id: Date.now(),
+            offline_created: new Date().toISOString()
+          };
+          offlineResponses.push(responseWithId);
+          localStorage.setItem('offline_responses', JSON.stringify(offlineResponses));
+          
+          this.updateLocalStorageResponses(responseWithId);
+          
+          return responseWithId;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('student_responses')
             .insert([{
-              text: questionText,
-              question_type: 'open-ended',
-              is_published: true,
-              published_at: new Date().toISOString(),
+              question_id: responseData.questionId,
+              student_name: responseData.studentName,
+              answer: responseData.answer,
+              word_count: responseData.wordCount,
+              quality: responseData.quality,
+              score: responseData.score,
+              source: responseData.source || 'web',
               metadata: {
-                createdBy: 'teacher',
-                source: 'intuity_teacher_interface'
+                timestamp: responseData.timestamp,
+                submittedAt: responseData.submittedAt,
+                questionText: responseData.questionText,
+                photo_url: responseData.photo_url || null
               }
             }])
             .select();
 
           if (error) throw error;
-          currentQuestion = data[0];
-        } else {
-          currentQuestion = {
-            id: Date.now(),
-            text: questionText,
-            published_at: new Date().toISOString()
-          };
-          localStorage.setItem('current_question', JSON.stringify(currentQuestion));
+
+          console.log('✅ Response submitted to Supabase:', data[0]);
+          
+          this.updateLocalStorageResponses(data[0]);
+          
+          return data[0];
+        } catch (error) {
+          console.error('❌ Error submitting response:', error);
+          throw error;
+        }
+      }
+
+      async uploadPhoto(photoBlob) {
+        if (!this.isOnline || !isConnected) {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(photoBlob);
+          });
         }
 
-        console.log('✅ Question published:', currentQuestion);
-        
-        isPublished = true;
-        publishBtn.innerHTML = '✓ Published';
-        qrBtn.classList.add('show');
-        
-        showSuccessNotification();
+        try {
+          const fileName = `student-photos/${Date.now()}-${Math.random().toString(36).substring(2)}.jpg`;
+          
+          const { data, error } = await supabase.storage
+            .from('student-responses')
+            .upload(fileName, photoBlob, {
+              contentType: 'image/jpeg',
+              upsert: false
+            });
 
+          if (error) throw error;
+
+          const { data: urlData } = supabase.storage
+            .from('student-responses')
+            .getPublicUrl(fileName);
+
+          console.log('✅ Photo uploaded to Supabase Storage:', urlData.publicUrl);
+          return urlData.publicUrl;
+        } catch (error) {
+          console.error('❌ Error uploading photo:', error);
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(photoBlob);
+          });
+        }
+      }
+
+      updateLocalStorageResponses(response) {
+        try {
+          const existingResponses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+          const legacyResponse = {
+            id: response.id,
+            questionId: response.question_id || response.questionId,
+            studentName: response.student_name || response.studentName,
+            answer: response.answer,
+            wordCount: response.word_count || response.wordCount,
+            quality: response.quality,
+            score: response.score,
+            source: response.source,
+            timestamp: response.metadata?.timestamp || response.submitted_at || response.timestamp,
+            submittedAt: response.submitted_at || response.submittedAt,
+            questionText: response.metadata?.questionText || response.questionText || '',
+            photo_url: response.metadata?.photo_url || response.photo_url || null
+          };
+          
+          existingResponses.push(legacyResponse);
+          localStorage.setItem('alm_student_responses', JSON.stringify(existingResponses));
+        } catch (error) {
+          console.error('Error updating localStorage responses:', error);
+        }
+      }
+    }
+
+    // Enhanced name autocomplete functions
+    function getAllStudentNames() {
+      const names = new Map(); // Use Map to avoid duplicates and store metadata
+      
+      try {
+        // Get names from photo database
+        const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+        Object.values(studentPhotos).forEach(student => {
+          const key = student.name.toLowerCase();
+          names.set(key, {
+            name: student.name,
+            hasPhoto: true,
+            photo: student.photo,
+            responses: 0,
+            lastSeen: student.saved
+          });
+        });
+
+        // Get names from responses and count them
+        const responses = JSON.parse(localStorage.getItem('alm_student_responses') || '[]');
+        responses.forEach(response => {
+          const studentName = response.studentName || response.student_name;
+          if (studentName) {
+            const key = studentName.toLowerCase();
+            const existing = names.get(key);
+            if (existing) {
+              existing.responses++;
+              existing.lastSeen = response.submittedAt || response.timestamp || existing.lastSeen;
+            } else {
+              names.set(key, {
+                name: studentName,
+                hasPhoto: false,
+                photo: null,
+                responses: 1,
+                lastSeen: response.submittedAt || response.timestamp || new Date().toISOString()
+              });
+            }
+          }
+        });
+
+        // Convert to array and sort by recent activity, then response count
+        return Array.from(names.values()).sort((a, b) => {
+          const aDate = new Date(a.lastSeen || 0);
+          const bDate = new Date(b.lastSeen || 0);
+          
+          // Primary sort: most recent activity
+          if (aDate.getTime() !== bDate.getTime()) {
+            return bDate.getTime() - aDate.getTime();
+          }
+          
+          // Secondary sort: more responses
+          if (a.responses !== b.responses) {
+            return b.responses - a.responses;
+          }
+          
+          // Tertiary sort: alphabetically
+          return a.name.localeCompare(b.name);
+        });
       } catch (error) {
-        console.error('❌ Error publishing question:', error);
-        publishBtn.innerHTML = 'Publish';
-        publishBtn.disabled = false;
+        console.error('Error getting student names:', error);
+        return [];
       }
     }
 
-    function showSuccessNotification() {
-      const notification = document.getElementById('successNotification');
-      notification.style.display = 'block';
+    function showNameSuggestions(query = '') {
+      const suggestions = document.getElementById('nameSuggestions');
+      const allNames = getAllStudentNames();
       
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, 3000);
-    }
-
-    function nextQuestion() {
-      if (confirm('Start a new question? This will clear the current one.')) {
-        document.getElementById('questionInput').value = '';
-        document.getElementById('questionInput').placeholder = 'What would you like to ask your students?';
-        
-        const publishBtn = document.getElementById('publishBtn');
-        const qrBtn = document.getElementById('qrBtn');
-        const actionButtons = document.getElementById('actionButtons');
-        
-        publishBtn.innerHTML = 'Publish';
-        publishBtn.disabled = true;
-        qrBtn.classList.remove('show');
-        actionButtons.classList.remove('show');
-        
-        isPublished = false;
-        currentQuestion = null;
-        
-        document.getElementById('questionInput').focus();
+      // Show dropdown with all students when focused, or filtered when typing
+      let filtered = allNames;
+      if (query && query.length >= 1) {
+        filtered = allNames.filter(student => 
+          student.name.toLowerCase().includes(query.toLowerCase())
+        );
       }
-    }
+      
+      // Limit to 8 suggestions to keep dropdown manageable
+      filtered = filtered.slice(0, 8);
 
-    function generateQR() {
-      if (!currentQuestion) return;
-      
-      const modal = document.getElementById('qrModal');
-      const display = document.getElementById('qrDisplay');
-      
-      modal.style.display = 'flex';
-      display.innerHTML = '<div>Generating QR Code...</div>';
-      
-      const baseURL = window.location.origin;
-      const pathParts = window.location.pathname.split('/');
-      pathParts.pop(); // remove current file
-      pathParts.pop(); // remove 'questions'
-      pathParts.pop(); // remove 'teachers'
-      pathParts.push('students', 'answers', '');
-      const studentURL = baseURL + pathParts.join('/');
-      
-      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
-      
-      const img = new Image();
-      img.onload = () => {
-        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code for Students">`;
-      };
-      
-      img.onerror = () => {
-        display.innerHTML = `
-          <div style="color: #ef4444; padding: 20px;">
-            <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
-            <div><strong>Failed to generate QR code</strong></div>
-            <div style="font-size: 14px; margin-top: 5px;">Check your internet connection</div>
+      if (filtered.length === 0 && (!query || query.length === 0)) {
+        // No students exist yet
+        suggestions.innerHTML = `
+          <div class="new-student-option">
+            👋 Welcome! You're the first student - just type your name above
           </div>
         `;
-      };
-      
-      img.src = qrCodeURL;
-    }
+        suggestions.classList.add('show');
+        dropdownOpen = true;
+        return;
+      }
 
-    function closeQRModal() {
-      document.getElementById('qrModal').style.display = 'none';
-    }
+      if (filtered.length === 0 && query && query.length > 0) {
+        // No matches but user is typing
+        suggestions.innerHTML = `
+          <div class="new-student-option">
+            ✨ New student "${query}" - continue typing to add yourself
+          </div>
+        `;
+        suggestions.classList.add('show');
+        dropdownOpen = true;
+        return;
+      }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Teacher Question Creator initializing...');
+      // Build suggestions HTML
+      let html = '';
       
-      await initSupabase();
-      
-      const questionInput = document.getElementById('questionInput');
-      questionInput.addEventListener('input', handleQuestionInput);
-      questionInput.focus();
-      
-      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
-      document.getElementById('qrBtn').addEventListener('click', generateQR);
-      document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
-      
-      document.getElementById('qrModal').addEventListener('click', (e) => {
-        if (e.target.id === 'qrModal') {
-          closeQRModal();
+      // Add header if showing all students
+      if (!query || query.length === 0) {
+        html += `<div class="suggestions-header">Recent Students</div>`;
+      }
+
+      html += filtered.map((student, index) => {
+        const photoHtml = student.hasPhoto 
+          ? `<img src="${student.photo}" alt="${student.name}" class="suggestion-photo">`
+          : `<div class="suggestion-photo-placeholder">👤</div>`;
+        
+        const metaItems = [];
+        if (student.responses > 0) {
+          metaItems.push(`<span class="suggestion-count">${student.responses} response${student.responses > 1 ? 's' : ''}</span>`);
         }
-      });
+        if (student.hasPhoto) {
+          metaItems.push(`<span class="suggestion-photo-indicator">📸 Photo</span>`);
+        }
 
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-          if (!document.getElementById('publishBtn').disabled) {
-            publishQuestion();
+        return `
+          <div class="name-suggestion" data-name="${student.name}" data-index="${index}">
+            ${photoHtml}
+            <div class="suggestion-info">
+              <div class="suggestion-name">${student.name}</div>
+              ${metaItems.length > 0 ? `<div class="suggestion-meta">${metaItems.join('')}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add "new student" option if user is typing something not in the list
+      if (query && query.length > 0 && !filtered.some(s => s.name.toLowerCase() === query.toLowerCase())) {
+        html += `
+          <div class="new-student-option">
+            ✨ Continue as new student "${query}"
+          </div>
+        `;
+      }
+
+      suggestions.innerHTML = html;
+      suggestions.classList.add('show');
+      dropdownOpen = true;
+      currentSuggestionIndex = -1;
+    }
+
+    function hideNameSuggestions() {
+      const suggestions = document.getElementById('nameSuggestions');
+      suggestions.classList.remove('show');
+      dropdownOpen = false;
+      currentSuggestionIndex = -1;
+    }
+
+    function selectNameSuggestion(studentName) {
+      const nameInput = document.getElementById('studentName');
+      nameInput.value = studentName;
+      hideNameSuggestions();
+      
+      // Load photo if available
+      loadStudentPhoto(studentName);
+      
+      // Update form state
+      handleInput();
+      
+      // Focus on answer field
+      setTimeout(() => {
+        document.getElementById('studentAnswer').focus();
+      }, 100);
+    }
+
+    function navigateSuggestions(direction) {
+      const suggestions = document.querySelectorAll('.name-suggestion');
+      if (suggestions.length === 0) return;
+
+      // Remove current highlight
+      suggestions.forEach(s => s.classList.remove('highlighted'));
+
+      // Update index
+      if (direction === 'down') {
+        currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestions.length;
+      } else if (direction === 'up') {
+        currentSuggestionIndex = currentSuggestionIndex <= 0 
+          ? suggestions.length - 1 
+          : currentSuggestionIndex - 1;
+      }
+
+      // Highlight new selection
+      if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
+        const highlighted = suggestions[currentSuggestionIndex];
+        highlighted.classList.add('highlighted');
+        
+        // Scroll into view if necessary
+        highlighted.scrollIntoView({ block: 'nearest' });
+      }
+    }
+
+    function selectCurrentSuggestion() {
+      const highlighted = document.querySelector('.name-suggestion.highlighted');
+      if (highlighted) {
+        const studentName = highlighted.dataset.name;
+        selectNameSuggestion(studentName);
+        return true;
+      }
+      return false;
+    }
+
+    function saveStudentPhoto(studentName, photoBlob) {
+      try {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+          studentPhotos[studentName.toLowerCase().trim()] = {
+            name: studentName,
+            photo: reader.result,
+            saved: new Date().toISOString()
+          };
+          localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+          console.log(`📸 Photo saved for ${studentName}`);
+        };
+        reader.readAsDataURL(photoBlob);
+      } catch (error) {
+        console.error('Error saving student photo:', error);
+      }
+    }
+
+    function loadStudentPhoto(studentName) {
+      try {
+        const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+        const photoData = studentPhotos[studentName.toLowerCase().trim()];
+        
+        if (photoData && photoData.photo) {
+          // Convert data URL back to blob
+          fetch(photoData.photo)
+            .then(response => response.blob())
+            .then(blob => {
+              setPhoto(blob, true); // Mark as auto-loaded
+              showPhotoLoadedNotification(photoData.name);
+            });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Error loading student photo:', error);
+        return false;
+      }
+    }
+
+    function showPhotoLoadedNotification(studentName) {
+      // Create subtle notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: rgba(16, 185, 129, 0.9);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-size: 12px;
+        z-index: 1000;
+        opacity: 0;
+        transition: all 0.3s ease;
+      `;
+      notification.textContent = `📸 Photo loaded for ${studentName}`;
+      
+      document.body.appendChild(notification);
+      
+      // Fade in
+      setTimeout(() => notification.style.opacity = '1', 100);
+      
+      // Fade out and remove
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+
+    function compressImage(file, maxWidth = 800, quality = 0.8) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+          
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(resolve, 'image/jpeg', quality);
+        };
+        
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    function handleCameraClick() {
+      if (currentPhoto) {
+        showPhotoModal();
+      } else {
+        showPhotoOptions();
+      }
+    }
+
+    function showPhotoOptions() {
+      document.getElementById('photoOptions').classList.add('show');
+    }
+
+    function hidePhotoOptions() {
+      document.getElementById('photoOptions').classList.remove('show');
+    }
+
+    async function startCamera() {
+      try {
+        // Stop any existing stream
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+        }
+
+        const constraints = { 
+          video: { 
+            facingMode: currentFacingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        };
+
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        const video = document.getElementById('cameraVideo');
+        video.srcObject = cameraStream;
+        
+        hidePhotoOptions();
+        document.getElementById('cameraPreview').classList.add('show');
+        
+        console.log(`📷 Camera started with ${currentFacingMode} facing mode`);
+        
+      } catch (error) {
+        console.error('Camera not available:', error);
+        hidePhotoOptions();
+        showCameraError();
+      }
+    }
+
+    async function flipCamera() {
+      // Toggle between front and rear camera
+      currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+      
+      // Restart camera with new facing mode
+      if (cameraStream) {
+        await startCamera();
+      }
+      
+      console.log(`🔄 Camera flipped to ${currentFacingMode} mode`);
+    }
+
+    function showCameraError() {
+      // Fallback to file upload if camera fails
+      const confirmResult = confirm('Camera not available. Choose photo from album instead?');
+      if (confirmResult) {
+        triggerFileUpload();
+      }
+    }
+
+    function triggerFileUpload() {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          compressImage(file).then(blob => {
+            setPhoto(blob);
+            hidePhotoOptions();
+          });
+        }
+      };
+      fileInput.click();
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+      
+      canvas.toBlob((blob) => {
+        setPhoto(blob);
+        stopCamera();
+      }, 'image/jpeg', 0.8);
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      document.getElementById('cameraPreview').classList.remove('show');
+    }
+
+    async function setPhoto(photoBlob, isAutoLoaded = false) {
+      currentPhoto = photoBlob;
+      
+      const trigger = document.getElementById('cameraIcon');
+      trigger.classList.add('has-photo');
+      trigger.textContent = '✓';
+      
+      if (isAutoLoaded) {
+        trigger.title = 'Photo auto-loaded - click to view or change';
+        // Add subtle animation to indicate auto-load
+        trigger.style.animation = 'buttonPulse 0.5s ease';
+        setTimeout(() => trigger.style.animation = '', 500);
+      } else {
+        trigger.title = 'Click to view or change photo';
+      }
+      
+      console.log(`📸 Photo ${isAutoLoaded ? 'auto-loaded' : 'set'}`);
+    }
+
+    function showPhotoModal() {
+      if (!currentPhoto) return;
+      
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('photoModalImg');
+      
+      modalImg.src = URL.createObjectURL(currentPhoto);
+      modal.classList.add('show');
+    }
+
+    function removePhoto() {
+      const nameInput = document.getElementById('studentName');
+      const studentName = nameInput.value.trim();
+      
+      // Remove from current session
+      currentPhoto = null;
+      
+      const trigger = document.getElementById('cameraIcon');
+      trigger.classList.remove('has-photo');
+      trigger.textContent = '📸';
+      trigger.title = 'Add photo';
+      
+      document.getElementById('photoModal').classList.remove('show');
+      
+      // Also remove from saved photos if this student has one saved
+      if (studentName) {
+        try {
+          const studentPhotos = JSON.parse(localStorage.getItem('student_photos') || '{}');
+          if (studentPhotos[studentName.toLowerCase().trim()]) {
+            delete studentPhotos[studentName.toLowerCase().trim()];
+            localStorage.setItem('student_photos', JSON.stringify(studentPhotos));
+            console.log(`🗑️ Photo removed for ${studentName} (from saved photos too)`);
+          }
+        } catch (error) {
+          console.error('Error removing saved photo:', error);
+        }
+      }
+      
+      console.log('🗑️ Photo removed');
+    }
+
+    // Load question from URL parameters or Supabase
+    async function loadQuestion() {
+      console.log('🔍 Loading question...');
+      
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionId = urlParams.get('q');
+        const questionText = urlParams.get('t');
+        
+        if (questionId && questionText) {
+          currentQuestion = {
+            id: questionId,
+            text: decodeURIComponent(questionText),
+            source: 'url',
+            isReal: true
+          };
+          console.log('✅ Loaded question from URL:', currentQuestion);
+          return displayQuestion();
+        }
+        
+        if (questionId && !questionText) {
+          const question = await intuityData.getQuestionById(questionId);
+          if (question) {
+            currentQuestion = {
+              ...question,
+              source: 'supabase',
+              isReal: true
+            };
+            console.log('✅ Loaded question from Supabase by ID:', currentQuestion);
+            return displayQuestion();
           }
         }
-        if (e.key === 'Escape') {
-          closeQRModal();
+        
+        const question = await intuityData.getCurrentQuestion();
+        if (question) {
+          currentQuestion = {
+            ...question,
+            source: 'supabase',
+            isReal: true
+          };
+          console.log('✅ Loaded current question from Supabase:', currentQuestion);
+          return displayQuestion();
         }
+        
+        console.log('❌ No question found');
+        showDemoQuestion();
+        
+      } catch (error) {
+        console.error('❌ Error loading question:', error);
+        showDemoQuestion();
+      }
+    }
+
+    function displayQuestion() {
+      const questionOverlay = document.getElementById('questionOverlay');
+      
+      if (currentQuestion && (currentQuestion.text || currentQuestion.question_text)) {
+        const questionText = currentQuestion.text || currentQuestion.question_text;
+        questionOverlay.textContent = questionText;
+        console.log('✅ Question displayed successfully');
+      } else {
+        showDemoQuestion();
+      }
+    }
+
+    function showDemoQuestion() {
+      const questionOverlay = document.getElementById('questionOverlay');
+      questionOverlay.textContent = 'Demo: What would you like to learn today?';
+      
+      currentQuestion = {
+        id: 'demo',
+        text: 'Demo: What would you like to learn today?',
+        source: 'demo',
+        isReal: false
+      };
+      
+      console.log('📝 Demo question displayed');
+    }
+
+    function handleInput() {
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const questionOverlay = document.getElementById('questionOverlay');
+      
+      const name = nameInput.value.trim();
+      const answer = answerInput.value.trim();
+      
+      // Dynamic question overlay visibility
+      if (name || answer) {
+        questionOverlay.classList.add('typing');
+        questionOverlay.classList.remove('focused');
+      } else if (document.activeElement === nameInput || document.activeElement === answerInput) {
+        questionOverlay.classList.add('focused');
+        questionOverlay.classList.remove('typing');
+      } else {
+        questionOverlay.classList.remove('focused', 'typing');
+      }
+      
+      // Show name suggestions when typing or when dropdown is open
+      if (document.activeElement === nameInput && dropdownOpen) {
+        showNameSuggestions(name);
+      }
+      
+      // Check for existing photo when name is entered
+      if (name.length >= 2 && !currentPhoto) {
+        // Small delay to avoid excessive lookups while typing
+        clearTimeout(window.photoLookupTimeout);
+        window.photoLookupTimeout = setTimeout(() => {
+          loadStudentPhoto(name);
+        }, 500);
+      }
+      
+      // Enable/disable submit button
+      if (name && answer) {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
+      }
+
+      // Show/hide clear button
+      if (name || answer || currentPhoto) {
+        clearBtn.classList.add('visible');
+      } else {
+        clearBtn.classList.remove('visible');
+      }
+    }
+
+    function determineQuality(wordCount) {
+      if (wordCount >= 25) return 'excellent';
+      if (wordCount >= 10) return 'good';
+      return 'needs-work';
+    }
+
+    function calculateScore(wordCount, answer) {
+      let score = 30;
+      
+      const wordScore = Math.min(40, (wordCount / 25) * 40);
+      score += wordScore;
+      
+      const sentences = answer.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+      const contentScore = Math.min(30, sentences * 10);
+      score += contentScore;
+      
+      return Math.min(100, Math.round(score));
+    }
+
+    async function submitResponse() {
+      if (isSubmitted) return;
+      
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      const studentName = nameInput.value.trim();
+      const studentAnswer = answerInput.value.trim();
+      
+      if (!studentName || !studentAnswer) {
+        console.log('❌ Cannot submit: missing name or answer');
+        return;
+      }
+
+      // Show submitting state
+      submitBtn.textContent = 'SUBMITTING...';
+      submitBtn.classList.add('submitting');
+      submitBtn.disabled = true;
+
+      try {
+        let photoUrl = null;
+        
+        if (currentPhoto) {
+          console.log('📸 Uploading photo...');
+          photoUrl = await intuityData.uploadPhoto(currentPhoto);
+        }
+
+        const wordCount = studentAnswer.split(/\s+/).filter(word => word.length > 0).length;
+
+        const response = {
+          questionId: currentQuestion.id,
+          questionText: currentQuestion.text || currentQuestion.question_text || '',
+          studentName: studentName,
+          answer: studentAnswer,
+          wordCount: wordCount,
+          timestamp: new Date().toLocaleString(),
+          submittedAt: new Date().toISOString(),
+          quality: determineQuality(wordCount),
+          score: calculateScore(wordCount, studentAnswer),
+          source: currentQuestion.source || 'web',
+          photo_url: photoUrl
+        };
+
+        console.log('💾 Submitting response:', response);
+
+        await intuityData.submitResponse(response);
+
+        console.log('✅ Response submitted successfully');
+
+        // Save student photo for future use
+        if (currentPhoto && studentName) {
+          saveStudentPhoto(studentName, currentPhoto);
+        }
+
+        // Success - show success overlay
+        showSuccess();
+        isSubmitted = true;
+        
+      } catch (error) {
+        console.error('❌ Error submitting response:', error);
+        
+        // Always reset button state on error, then decide what to do
+        resetSubmitButton();
+        
+        // If offline, treat as success (data saved locally)
+        if (!isOnline) {
+          console.log('📱 Offline submission - showing success');
+          showSuccess();
+          isSubmitted = true;
+        } else {
+          // Online but failed - show error and allow retry
+          alert('Failed to submit response. Please try again.');
+        }
+      }
+    }
+
+    function resetSubmitButton() {
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.textContent = 'SUBMIT';
+      submitBtn.classList.remove('submitting');
+      
+      // Re-enable button based on current form state
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      const name = nameInput.value.trim();
+      const answer = answerInput.value.trim();
+      
+      submitBtn.disabled = !(name && answer);
+    }
+
+    function showSuccess() {
+      const successOverlay = document.getElementById('successOverlay');
+      const photoSaveMessage = document.getElementById('photoSaveMessage');
+      
+      // Update message based on whether there was a photo
+      if (currentPhoto) {
+        photoSaveMessage.textContent = 'Your photo has been saved for future responses';
+        photoSaveMessage.style.display = 'block';
+      } else {
+        photoSaveMessage.style.display = 'none';
+      }
+      
+      successOverlay.style.display = 'flex';
+      document.getElementById('clearBtn').classList.remove('visible');
+    }
+
+    function clearForm() {
+      if (isSubmitted) {
+        // Reset for new response
+        isSubmitted = false;
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentAnswer').value = '';
+        document.getElementById('successOverlay').style.display = 'none';
+        
+        // Clear current photo (will auto-reload when name is typed again)
+        currentPhoto = null;
+        const trigger = document.getElementById('cameraIcon');
+        trigger.classList.remove('has-photo');
+        trigger.textContent = '📸';
+        trigger.title = 'Add photo';
+        
+        // Reset submit button
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.textContent = 'SUBMIT';
+        submitBtn.classList.remove('submitting');
+        
+        handleInput(); // Update button states
+        return;
+      }
+      
+      if (confirm('Clear your response? Your saved photo will remain available for future use.')) {
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentAnswer').value = '';
+        
+        // Clear current photo but don't delete from database
+        currentPhoto = null;
+        const trigger = document.getElementById('cameraIcon');
+        trigger.classList.remove('has-photo');
+        trigger.textContent = '📸';
+        trigger.title = 'Add photo';
+        
+        handleInput();
+      }
+    }
+
+    // Add function to clear photo specifically
+    function clearPhotoOnly() {
+      if (confirm('Remove your photo? You can add it back anytime.')) {
+        removePhoto();
+      }
+    }
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Enhanced Student Interface initializing...');
+      
+      if (initSupabase()) {
+        setTimeout(loadQuestion, 1000);
+      } else {
+        initDataLayer();
+        loadQuestion();
+      }
+      
+      // Event listeners
+      const nameInput = document.getElementById('studentName');
+      const answerInput = document.getElementById('studentAnswer');
+      
+      nameInput.addEventListener('input', handleInput);
+      
+      // Enhanced focus handling for dropdown
+      nameInput.addEventListener('focus', () => {
+        handleInput(); // Update overlay state
+        showNameSuggestions(nameInput.value.trim()); // Show dropdown immediately
+      });
+      
+      nameInput.addEventListener('blur', () => {
+        handleInput(); // Update overlay state
+        // Delay hiding to allow clicking on suggestions
+        setTimeout(() => hideNameSuggestions(), 200);
       });
 
-      console.log('✅ Teacher Question Creator ready!');
+      answerInput.addEventListener('input', handleInput);
+      answerInput.addEventListener('focus', handleInput);
+      answerInput.addEventListener('blur', handleInput);
+      
+      document.getElementById('submitBtn').addEventListener('click', submitResponse);
+      document.getElementById('clearBtn').addEventListener('click', clearForm);
+
+      // Enhanced name suggestion click handlers
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.name-suggestion')) {
+          e.preventDefault();
+          const suggestion = e.target.closest('.name-suggestion');
+          const studentName = suggestion.dataset.name;
+          selectNameSuggestion(studentName);
+        } else if (e.target.closest('.new-student-option')) {
+          // Just hide dropdown for new student option
+          hideNameSuggestions();
+          nameInput.focus();
+        } else if (!e.target.closest('.name-section')) {
+          hideNameSuggestions();
+        }
+      });
+      
+      // Photo event listeners
+      document.getElementById('cameraIcon').addEventListener('click', handleCameraClick);
+      
+      // Photo options event listeners
+      document.getElementById('takePictureBtn').addEventListener('click', startCamera);
+      document.getElementById('chooseFromAlbumBtn').addEventListener('click', () => {
+        hidePhotoOptions();
+        triggerFileUpload();
+      });
+      document.getElementById('cancelPhotoBtn').addEventListener('click', hidePhotoOptions);
+      
+      // Camera event listeners
+      document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+      document.getElementById('cancelCameraBtn').addEventListener('click', stopCamera);
+      document.getElementById('flipCameraBtn').addEventListener('click', flipCamera);
+      
+      // Photo modal event listeners
+      document.getElementById('retakeBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+        showPhotoOptions();
+      });
+      document.getElementById('removePhotoBtn').addEventListener('click', removePhoto);
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        document.getElementById('photoModal').classList.remove('show');
+      });
+      
+      // Modal click outside to close
+      document.getElementById('photoOptions').addEventListener('click', (e) => {
+        if (e.target.id === 'photoOptions') {
+          hidePhotoOptions();
+        }
+      });
+      
+      document.getElementById('photoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'photoModal') {
+          document.getElementById('photoModal').classList.remove('show');
+        }
+      });
+      
+      // Enhanced keyboard shortcuts and navigation
+      document.addEventListener('keydown', (e) => {
+        // Handle name suggestion navigation
+        if (dropdownOpen) {
+          switch(e.key) {
+            case 'ArrowDown':
+              e.preventDefault();
+              navigateSuggestions('down');
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              navigateSuggestions('up');
+              break;
+            case 'Enter':
+              if (document.activeElement === nameInput && selectCurrentSuggestion()) {
+                e.preventDefault();
+              }
+              break;
+            case 'Escape':
+              e.preventDefault();
+              hideNameSuggestions();
+              break;
+            case 'Tab':
+              // Allow tab to move to next field but close dropdown
+              hideNameSuggestions();
+              break;
+          }
+          return;
+        }
+
+        // Global shortcuts
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          const submitBtn = document.getElementById('submitBtn');
+          if (!submitBtn.disabled) submitResponse();
+        }
+        
+        if (e.key === 'Escape' && !isSubmitted) {
+          // Close any open modals
+          hidePhotoOptions();
+          hideNameSuggestions();
+          document.getElementById('photoModal').classList.remove('show');
+          stopCamera();
+        }
+      });
+      
+      console.log('✅ Enhanced student interface ready with improved dropdown!');
     });
   </script>
 </body>
