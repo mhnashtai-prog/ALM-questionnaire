@@ -771,18 +771,26 @@
 
       if (supabase && isOnline) {
         console.log('🌐 Fetching responses from Supabase...');
-        try {
-          const { data, error } = await supabase
-            .from('responses')
-            .select('*')
-            .order('submitted_at', { ascending: false});
-          
-          if (!error && data && data.length > 0) {
-            console.log(`✅ Got ${data.length} responses from Supabase`);
-            allResponses = data;
-          }
-        } catch (err) {console.error('❌ Supabase responses fetch failed:', err);
-        }
+      try {
+  const { data, error } = await supabase
+    .from('responses')
+    .select('*')
+    .order('submitted_at', { ascending: false });
+
+  if (error) throw error;
+
+  if (data && data.length > 0) {
+    console.log(`✅ Got ${data.length} responses from Supabase`);
+    allResponses = data;
+  } else {
+    console.warn('⚠️ No responses found.');
+  }
+} catch (err) {
+  console.error('❌ Supabase responses fetch failed:', err.message || err);
+}
+
+}
+
       }
 
       // Fallback to localStorage if no Supabase data
