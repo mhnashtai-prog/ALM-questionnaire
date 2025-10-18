@@ -531,46 +531,6 @@
     
     let currentQuestion = null;
     let isPublished = false;
-    let supabase = null;
-    let isOnline = false;
-
-    // ========================================
-    // YOUR SUPABASE CREDENTIALS
-    // ========================================
-    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
-
-    // CRITICAL: The exact storage key that the student interface reads from
-    const STUDENT_KEY = 'current_question';
-
-    // Initialize Supabase
-    function initSupabase() {
-      try {
-        if (window.supabase && typeof window.supabase.createClient === 'function') {
-          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-          console.log('✅ Supabase initialized successfully');
-          checkOnlineStatus();
-          return true;
-        } else {
-          console.warn('⚠️ Supabase not available');
-          return false;
-        }
-      } catch (error) {
-        console.error('❌ Supabase initialization error:', error);
-        return false;
-      }
-    }
-
-    async function checkOnlineStatus() {
-      try {
-        const { data, error } = await supabase.from('questions').select('id').limit(1);
-        isOnline = !error;
-        console.log(isOnline ? '🌐 Online - connected to Supabase' : '📴 Offline mode');
-      } catch (error) {
-        isOnline = false;
-        console.log('📴 Offline mode');
-      }
-    }
 
     function handleQuestionInput() {
       const questionInput = document.getElementById('questionInput');
@@ -604,114 +564,52 @@
       publishBtn.disabled = true;
 
       try {
-        const questionId = 'question_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const timestamp = new Date().toISOString();
-        
-        // Create question object in format both teacher and student understand
+        // Wait for DataSync to be ready
+        if (!window.intuitySync) {
+          console.log('⏳ Waiting for DataSync...');
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        if (!window.intuitySync) {
+          throw new Error('DataSync not available');
+        }
+
         const questionData = {
-          id: questionId,
           text: questionText,
-          question_text: questionText,
           question_type: 'open-ended',
-          is_published: true,
-          published_at: timestamp,
-          created_at: timestamp,
-          created_by: 'teacher',
-          metadata: {
-            source: 'simplified_teacher_interface',
-            publishedAt: new Date().toLocaleString()
-          }
+          created_by: 'teacher'
         };
 
-        console.log('📝 Publishing question:', questionData);
+        console.log('📝 Publishing via DataSync...', questionData);
 
-        // ========================================
-        // PUBLISH TO SUPABASE FIRST!
-        // ========================================
-        let supabaseSuccess = false;
+        // USE DATASYNC - this handles EVERYTHING (localStorage + Supabase)!
+        const result = await window.intuitySync.publishQuestion(questionData);
         
-        if (supabase && isOnline) {
-          console.log('🌐 Publishing to Supabase...');
+        if (result.success) {
+          currentQuestion = result.question;
+          isPublished = true;
           
-          try {
-            const { data, error } = await supabase
-              .from('questions')
-              .insert([questionData])
-              .select();
-            
-            if (error) {
-              console.error('❌ Supabase insert error:', error);
-              throw error;
-            }
-            
-            if (data && data.length > 0) {
-              console.log('✅ Question published to Supabase!');
-              supabaseSuccess = true;
-            }
-          } catch (supabaseError) {
-            console.error('❌ Supabase publish failed:', supabaseError);
-            // Continue with localStorage save
-          }
-        } else {
-          console.warn('⚠️ Supabase not available - saving locally only');
-        }
-
-        // ========================================
-        // SAVE TO LOCALSTORAGE (backup + local access)
-        // ========================================
-        
-        // CRITICAL: Save to the EXACT key the student interface reads
-        localStorage.setItem(STUDENT_KEY, JSON.stringify(questionData));
-        console.log('✅ Saved to student key:', STUDENT_KEY);
-        
-        // Also save to analytics key for the analytics page
-        const analyticsQuestions = JSON.parse(localStorage.getItem('intuity_questions') || '[]');
-        analyticsQuestions.unshift(questionData);
-        localStorage.setItem('intuity_questions', JSON.stringify(analyticsQuestions));
-        console.log('✅ Saved to analytics');
-        
-        // Save to legacy locations for backward compatibility
-        const legacyKeys = ['alm_questions', 'display_question'];
-        legacyKeys.forEach(key => {
-          try {
-            localStorage.setItem(key, JSON.stringify(questionData));
-            console.log(`✅ Saved to legacy key: ${key}`);
-          } catch (e) {
-            console.warn(`Could not save to ${key}:`, e);
-          }
-        });
-
-        // Verify it was saved correctly
-        const verification = localStorage.getItem(STUDENT_KEY);
-        if (verification) {
-          const verificationData = JSON.parse(verification);
-          if (verificationData.text === questionText && verificationData.id === questionId) {
-            console.log('✅ VERIFICATION PASSED: Question correctly saved to localStorage');
+          // Update UI based on sync status
+          if (result.synced) {
+            publishBtn.innerHTML = '✓ Published (Cloud)';
+            document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
+            console.log('✅ Question synced to Supabase!');
           } else {
-            throw new Error('Verification failed: Data mismatch');
+            publishBtn.innerHTML = '✓ Published (Local)';
+            document.getElementById('successMessage').innerHTML = 'Question Published Locally!<br><span style="font-size:14px;opacity:0.8;">Will sync when online</span>';
+            console.log('✅ Question saved locally (offline mode)');
           }
-        } else {
-          throw new Error('Verification failed: Question not found after save');
-        }
+          
+          qrBtn.classList.add('show');
+          
+          showSuccessNotification();
+          
+          console.log('✅ Question successfully published!');
+          console.log('Question ID:', result.question.id);
 
-        currentQuestion = questionData;
-        isPublished = true;
-        
-        // Update UI based on sync status
-        if (supabaseSuccess) {
-          publishBtn.innerHTML = '✓ Published (Cloud)';
-          document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
         } else {
-          publishBtn.innerHTML = '✓ Published (Local)';
-          document.getElementById('successMessage').innerHTML = 'Question Published Locally!<br><span style="font-size:14px;opacity:0.8;">Will sync when online</span>';
+          throw new Error('Publish failed');
         }
-        
-        qrBtn.classList.add('show');
-        
-        showSuccessNotification();
-        
-        console.log('✅ Question successfully published!');
-        console.log(`📊 Supabase: ${supabaseSuccess ? 'YES' : 'NO'}, localStorage: YES`);
 
       } catch (error) {
         console.error('❌ Error publishing question:', error);
@@ -814,11 +712,16 @@
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 INTUITY Teacher Portal Ready!');
       
-      // Initialize Supabase
-      initSupabase();
-      
-      // Wait for initialization
+      // Wait for DataSync to load
       await new Promise(resolve => setTimeout(resolve, 500));
+      
+      if (window.intuitySync) {
+        console.log('✅ DataSync available');
+        console.log('🌐 Online status:', window.intuitySync.isOnline);
+        console.log('🔌 Connected to Supabase:', window.intuitySync.isConnected);
+      } else {
+        console.warn('⚠️ DataSync not loaded!');
+      }
       
       const questionInput = document.getElementById('questionInput');
       questionInput.addEventListener('input', handleQuestionInput);
@@ -848,7 +751,6 @@
       questionInput.focus();
       
       console.log('✅ Teacher portal initialized');
-      console.log(`📊 Supabase: ${isOnline ? 'ONLINE' : 'OFFLINE'}`);
     });
   </script>
 </body>
