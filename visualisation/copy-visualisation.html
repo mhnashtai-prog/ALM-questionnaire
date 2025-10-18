@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Teacher Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <script src="../../intuity-data-sync.js"></script> 
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      position: relative;
+      background: #000000;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(8deg);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
+      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
+      opacity: 0.4;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-5deg);
+      border: 1px solid rgba(255, 100, 40, 0.2);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
+      opacity: 0.3;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(12deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
+      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
+      opacity: 0.25;
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-10deg);
+      border: 1px solid rgba(255, 120, 50, 0.15);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
+      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
+      opacity: 0.2;
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(6deg);
+      border: 1px solid rgba(255, 140, 60, 0.25);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
+      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
+      opacity: 0.35;
+      animation: float 9s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
+      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
+      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
+      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
+    }
+
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 50px 20px 0;
+      min-height: 0;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 38px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+    }
+
+    .header p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .question-container {
+      width: 100%;
+      height: auto;
+      min-height: 180px;
+      position: relative;
+      perspective: 1000px;
+      overflow: visible;
+    }
+
+    .question-box {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .question-box:hover {
+      transform: translateY(-2px);
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .question-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      line-height: 1.6;
+      padding: 0;
+      text-align: center;
+      min-height: 100px;
+    }
+
+    .question-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .action-buttons.show {
+      opacity: 1;
+    }
+
+    .action-btn {
+      background: rgba(255, 140, 60, 0.6);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: #000;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 100px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 140, 60, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .action-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 140, 60, 0.9);
+      display: none;
+    }
+
+    .action-btn.secondary.show {
+      display: block;
+    }
+
+    .action-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 140, 60, 1);
+    }
+
+    .footer {
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: 15px;
+      position: relative;
+    }
+
+    .nav-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .nav-button:active {
+      transform: scale(0.95);
+    }
+
+    .success-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid rgba(16, 185, 129, 0.5);
+      border-radius: 16px;
+      padding: 35px;
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      z-index: 2000;
+      display: none;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.3s ease;
+      min-width: 320px;
+    }
+
+    .success-icon {
+      font-size: 56px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .qr-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .qr-modal-content {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 20px;
+      padding: 35px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      max-width: 420px;
+      margin: 20px;
+    }
+
+    .qr-modal h3 {
+      margin-bottom: 25px;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .qr-display {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 25px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 18px;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      overflow: hidden;
+    }
+
+    .qr-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .close-btn {
+      background: rgba(255, 140, 60, 0.8);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      color: #000;
+      font-weight: 600;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 140, 60, 1);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 35px 15px 0;
+      }
+      
+      .header h1 {
+        font-size: 28px;
+      }
+      
+      .question-container {
+        min-height: 140px;
+      }
+      
+      .content-area {
+        padding: 15px;
+      }
+      
+      .question-input {
+        font-size: 16px;
+        min-height: 80px;
+      }
+      
+      .action-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: 80px;
+      }
+    }
+
+    .debug-console {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 12px;
+      color: #0f0;
+      font-family: monospace;
+      max-width: 300px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 3000;
+      display: none;
+    }
+
+    .debug-console.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Teacher Interface<br>By Majid Nashtai</p>
+    </header>
+
+    <main class="main-content">
+      <div class="question-container">
+        <div class="question-box">
+          <div class="content-area">
+            <textarea 
+              class="question-input" 
+              id="questionInput"
+              placeholder="What would you like to ask your students?"
+            ></textarea>
+            
+            <div class="action-buttons" id="actionButtons">
+              <button class="action-btn" id="publishBtn" disabled>Publish</button>
+              <button class="action-btn secondary" id="qrBtn">QR Code</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <a href="../../index.html" class="nav-button" title="Home">⌂</a>
+      <button class="nav-button" id="nextQuestionBtn" title="Clear">✨</button>
+      <button class="nav-button" id="analyticsBtn" title="Analytics">📊</button>
+    </footer>
+  </div>
+
+  <div class="success-notification" id="successNotification">
+    <span class="success-icon">✨</span>
+    <div id="successMessage">Question Published!</div>
+    <div style="font-size: 16px; margin-top: 12px; opacity: 0.8;">
+      Students can now access your question.
+    </div>
+  </div>
+
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-content">
+      <h3>Student QR Code</h3>
+      <div id="qrDisplay" class="qr-display">
+        <div>Generating QR Code...</div>
+      </div>
+      <button class="close-btn" onclick="closeQRModal()">Close</button>
+    </div>
+  </div>
+
+  <div class="debug-console" id="debugConsole"></div>
+
+  <script>
+    console.log('🚀 INTUITY Teacher Portal Loading...');
+    
+    let currentQuestion = null;
+    let isPublished = false;
+    let debugLog = [];
+
+    function addDebug(msg) {
+      debugLog.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+      console.log(msg);
+      const debugConsole = document.getElementById('debugConsole');
+      if (debugConsole) {
+        debugConsole.innerHTML = debugLog.slice(-20).join('<br>');
+        debugConsole.scrollTop = debugConsole.scrollHeight;
+      }
+    }
+
+    function handleQuestionInput() {
+      const questionInput = document.getElementById('questionInput');
+      const publishBtn = document.getElementById('publishBtn');
+      const actionButtons = document.getElementById('actionButtons');
+      
+      const text = questionInput.value.trim();
+      
+      if (text.length > 0 && !isPublished) {
+        publishBtn.disabled = false;
+        actionButtons.classList.add('show');
+      } else if (!isPublished) {
+        publishBtn.disabled = true;
+        if (!document.getElementById('qrBtn').classList.contains('show')) {
+          actionButtons.classList.remove('show');
+        }
+      }
+    }
+
+    async function publishQuestion() {
+      const questionText = document.getElementById('questionInput').value.trim();
+      if (!questionText) {
+        console.warn('Attempted to publish empty question');
+        return;
+      }
+
+      const publishBtn = document.getElementById('publishBtn');
+      const qrBtn = document.getElementById('qrBtn');
+      
+      publishBtn.innerHTML = '⏳ Publishing...';
+      publishBtn.disabled = true;
+
+      addDebug('📝 Starting publish process...');
+
+      try {
+        if (!window.intuitySync) {
+          addDebug('⏳ Waiting for DataSync...');
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        if (!window.intuitySync) {
+          throw new Error('DataSync not available after waiting');
+        }
+
+        addDebug('✅ DataSync available');
+        addDebug(`🌐 Online: ${window.intuitySync.isOnline}`);
+        addDebug(`🔌 Connected: ${window.intuitySync.isConnected}`);
+
+        let supabaseSuccess = false;
+        
+        if (window.intuitySync.supabase && window.intuitySync.isOnline) {
+          addDebug('🌐 Attempting DIRECT Supabase write...');
+          
+          const questionData = {
+            text: questionText,
+            created_at: new Date().toISOString(),
+            published_at: new Date().toISOString(),
+            is_published: true,
+            created_by: 'teacher',
+            question_type: 'open-ended'
+          };
+
+          addDebug(`📦 Question data: ${JSON.stringify(questionData).substring(0, 100)}...`);
+
+          try {
+            const { data, error } = await window.intuitySync.supabase
+              .from('questions')
+              .insert([questionData])
+              .select();
+
+            if (error) {
+              addDebug(`❌ Supabase ERROR: ${error.message}`);
+              addDebug(`Error details: ${JSON.stringify(error)}`);
+              throw error;
+            }
+
+            if (data && data.length > 0) {
+              addDebug('✅✅✅ SUPABASE WRITE SUCCESS!');
+              addDebug(`Inserted ID: ${data[0].id}`);
+              supabaseSuccess = true;
+              currentQuestion = data[0];
+              
+              const questionForStorage = {
+                ...data[0],
+                storedAt: new Date().toISOString()
+              };
+              localStorage.setItem('intuity_current_question', JSON.stringify(questionForStorage));
+            }
+          } catch (supabaseError) {
+            addDebug(`❌ Supabase exception: ${supabaseError.message}`);
+            throw supabaseError;
+          }
+        } else {
+          addDebug('⚠️ Supabase not available or offline');
+        }
+
+        isPublished = true;
+        
+        if (supabaseSuccess) {
+          publishBtn.innerHTML = '✓ Published (Cloud)';
+          document.getElementById('successMessage').innerHTML = 'Question Published to Cloud!';
+          addDebug('🎉 SUCCESS: Question in Supabase!');
+        } else {
+          publishBtn.innerHTML = '✓ Published (Local Only)';
+          document.getElementById('successMessage').innerHTML = 'Saved Locally<br><span style="font-size:14px;">Check connection!</span>';
+          addDebug('⚠️ Only saved locally - Supabase failed');
+        }
+        
+        qrBtn.classList.add('show');
+        showSuccessNotification();
+        
+        document.getElementById('debugConsole').classList.add('show');
+        setTimeout(() => {
+          document.getElementById('debugConsole').classList.remove('show');
+        }, 10000);
+
+      } catch (error) {
+        addDebug(`❌❌❌ CRITICAL ERROR: ${error.message}`);
+        console.error('Full error:', error);
+        
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = false;
+        
+        alert(`FAILED TO PUBLISH:\n\n${error.message}\n\nCheck console for details.`);
+        
+        document.getElementById('debugConsole').classList.add('show');
+      }
+    }
+
+    function showSuccessNotification() {
+      const notification = document.getElementById('successNotification');
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    function nextQuestion() {
+      if (confirm('Start fresh? This will clear the current question.')) {
+        document.getElementById('questionInput').value = '';
+        
+        const publishBtn = document.getElementById('publishBtn');
+        const qrBtn = document.getElementById('qrBtn');
+        const actionButtons = document.getElementById('actionButtons');
+        
+        publishBtn.innerHTML = 'Publish';
+        publishBtn.disabled = true;
+        qrBtn.classList.remove('show');
+        actionButtons.classList.remove('show');
+        
+        isPublished = false;
+        currentQuestion = null;
+        debugLog = [];
+        
+        document.getElementById('questionInput').focus();
+        
+        console.log('Session cleared for new question');
+      }
+    }
+
+    function openAnalytics() {
+      console.log('Opening analytics...');
+      
+      try {
+        window.open('../../visualisation/', '_blank');
+      } catch (error) {
+        window.location.href = '../../visualisation/';
+      }
+    }
+
+    function generateQR() {
+      if (!currentQuestion) {
+        console.warn('QR generation attempted without current question');
+        return;
+      }
+      
+      const modal = document.getElementById('qrModal');
+      const display = document.getElementById('qrDisplay');
+      
+      modal.style.display = 'flex';
+      display.innerHTML = '<div>Generating QR Code...</div>';
+      
+      const baseURL = window.location.origin;
+      const pathParts = window.location.pathname.split('/');
+      pathParts.pop();
+      pathParts.pop();
+      pathParts.pop();
+      pathParts.push('students', 'answers', '');
+      const studentURL = baseURL + pathParts.join('/') + '?auto=true';
+      
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(studentURL)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      console.log('Generating QR code for:', studentURL);
+      
+      const img = new Image();
+      img.onload = () => {
+        display.innerHTML = `<img src="${qrCodeURL}" alt="QR Code for Students">`;
+      };
+      
+      img.onerror = () => {
+        display.innerHTML = `
+          <div style="color: #ef4444; padding: 20px;">
+            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
+            <div style="font-size: 16px;"><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 14px; margin-top: 8px;">Check your internet connection</div>
+          </div>
+        `;
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Teacher Portal Ready!');
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (window.intuitySync) {
+        addDebug('✅ DataSync loaded');
+        addDebug(`🌐 Online: ${window.intuitySync.isOnline}`);
+        addDebug(`🔌 Supabase: ${window.intuitySync.isConnected}`);
+        
+        if (window.intuitySync.supabase) {
+          addDebug('🧪 Testing Supabase connection...');
+          try {
+            const { data, error } = await window.intuitySync.supabase
+              .from('questions')
+              .select('count')
+              .limit(1);
+            
+            if (error) {
+              addDebug(`❌ Supabase test FAILED: ${error.message}`);
+            } else {
+              addDebug('✅ Supabase connection OK!');
+            }
+          } catch (e) {
+            addDebug(`❌ Supabase test exception: ${e.message}`);
+          }
+        }
+      } else {
+        addDebug('❌ DataSync NOT loaded!');
+      }
+      
+      const questionInput = document.getElementById('questionInput');
+      questionInput.addEventListener('input', handleQuestionInput);
+      
+      document.getElementById('publishBtn').addEventListener('click', publishQuestion);
+      document.getElementById('qrBtn').addEventListener('click', generateQR);
+      document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
+      document.getElementById('analyticsBtn').addEventListener('click', openAnalytics);
+      
+      document.getElementById('qrModal').addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQRModal();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          if (!document.getElementById('publishBtn').disabled) {
+            publishQuestion();
+          }
+        }
+        if (e.key === 'Escape') {
+          closeQRModal();
+        }
+        if (e.key === 'd' || e.key === 'D') {
+          const debugConsole = document.getElementById('
