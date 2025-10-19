@@ -915,7 +915,6 @@
           student_name: name,
           answer: answer,
           word_count: answer.split(/\s+/).filter(w => w.length > 0).length,
-          photo_url: capturedPhoto || null,
           submitted_at: new Date().toISOString()
         };
 
