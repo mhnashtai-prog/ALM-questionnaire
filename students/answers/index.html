@@ -911,11 +911,10 @@
 
         const responseData = {
           question_id: currentQuestion.id,
-          question_text: currentQuestion.text || currentQuestion.question_text,
           student_name: name,
           answer: answer,
           word_count: answer.split(/\s+/).filter(w => w.length > 0).length,
-          submitted_at: new Date().toISOString()
+          photo_url: capturedPhoto || null
         };
 
         console.log('📋 Response data to submit:', responseData);
