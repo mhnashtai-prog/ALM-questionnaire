@@ -410,11 +410,44 @@
       transform: scale(1.05);
     }
 
-    @media (max-width: 480px) {
-      .header h1 { font-size: 36px; }
-      .question-text { font-size: 20px; }
-      .camera-controls { flex-direction: column; }
-      .camera-btn { width: 100%; }
+    .error-box {
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      color: rgba(239, 68, 68, 0.95);
+      font-size: 14px;
+      line-height: 1.6;
+      display: none;
+      word-wrap: break-word;
+    }
+
+    .error-box.show {
+      display: block;
+    }
+
+    .error-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .success-box {
+      background: rgba(16, 185, 129, 0.2);
+      border: 2px solid rgba(16, 185, 129, 0.6);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      color: rgba(16, 185, 129, 0.95);
+      font-size: 14px;
+      line-height: 1.6;
+      display: none;
+      word-wrap: break-word;
+    }
+
+    .success-box.show {
+      display: block;
     }
   </style>
 </head>
@@ -485,6 +518,16 @@
       </div>
 
       <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
+    </div>
+
+    <div class="error-box" id="errorBox">
+      <div class="error-title">❌ Error</div>
+      <div id="errorMessage"></div>
+    </div>
+
+    <div class="success-box" id="successBox">
+      <div class="error-title">✅ Success</div>
+      <div id="successMessage"></div>
     </div>
 
     <div class="success-screen" id="successScreen">
@@ -825,17 +868,42 @@
       }
     }
 
+    function showError(message, details = '') {
+      const errorBox = document.getElementById('errorBox');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message + (details ? '\n\nDetails: ' + details : '');
+      errorBox.classList.add('show');
+      console.error('Error displayed:', message, details);
+      
+      setTimeout(() => {
+        errorBox.classList.remove('show');
+      }, 8000);
+    }
+
+    function showSuccess(message) {
+      const successBox = document.getElementById('successBox');
+      const successMessage = document.getElementById('successMessage');
+      successMessage.textContent = message;
+      successBox.classList.add('show');
+      console.log('Success displayed:', message);
+      
+      setTimeout(() => {
+        successBox.classList.remove('show');
+      }, 5000);
+    }
+
     async function submitResponse() {
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
       
       if (!name || !answer || !currentQuestion) {
         console.warn('❌ Cannot submit: missing required fields');
-        alert('Please fill in your name and answer before submitting');
+        showError('Please fill in your name and answer before submitting');
         return;
       }
 
       console.log('💾 Submitting response...');
+      console.log('Current Question:', currentQuestion);
       document.getElementById('submitBtn').disabled = true;
 
       try {
@@ -851,27 +919,49 @@
           submitted_at: new Date().toISOString()
         };
 
+        console.log('📋 Response data to submit:', responseData);
+
         if (supabase && isOnline) {
           console.log('📤 Syncing to Supabase...');
+          
           const { data, error } = await supabase
             .from('student_responses')
             .insert([responseData]);
           
           if (error) {
-            console.warn('⚠️ Supabase sync failed, saving locally:', error);
+            console.error('❌ Supabase insert error:', error);
+            console.error('Error code:', error.code);
+            console.error('Error message:', error.message);
+            console.error('Error details:', error.details);
+            
+            showError(
+              'Could not send to server. Response saved locally.',
+              `Error: ${error.message || error.code}`
+            );
             saveResponseLocally(responseData);
           } else {
             console.log('✅ Response synced to Supabase!');
+            console.log('Data returned:', data);
+            showSuccess('Response submitted successfully! ✅');
+            
+            setTimeout(() => {
+              showSuccessScreen();
+            }, 1500);
+            return;
           }
         } else {
           console.log('📱 Offline mode - saving locally');
           saveResponseLocally(responseData);
+          showSuccess('Offline: Response saved locally 📱');
         }
         
-        showSuccessScreen();
+        setTimeout(() => {
+          showSuccessScreen();
+        }, 2000);
       } catch (error) {
         console.error('❌ Submission error:', error);
-        alert('Error submitting response: ' + error.message);
+        console.error('Error stack:', error.stack);
+        showError('Error submitting response', error.message || 'Unknown error');
         document.getElementById('submitBtn').disabled = false;
       }
     }
