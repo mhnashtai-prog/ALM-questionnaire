@@ -5,8 +5,10 @@
   <title>INTUITY - Student Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -14,8 +16,18 @@
       color: white;
       padding: 20px;
     }
-    .container { max-width: 650px; margin: 0 auto; padding: 40px 20px; }
-    .header { text-align: center; margin-bottom: 40px; }
+    
+    .container { 
+      max-width: 650px; 
+      margin: 0 auto; 
+      padding: 40px 20px; 
+    }
+    
+    .header { 
+      text-align: center; 
+      margin-bottom: 40px; 
+    }
+    
     .header h1 {
       font-size: 56px;
       font-weight: 800;
@@ -23,11 +35,13 @@
       margin-bottom: 10px;
       letter-spacing: 2px;
     }
+    
     .header p {
       font-size: 16px;
       color: rgba(255, 255, 255, 0.7);
       margin-bottom: 8px;
     }
+
     .welcome-back {
       background: rgba(16, 185, 129, 0.1);
       border: 2px solid rgba(16, 185, 129, 0.3);
@@ -38,7 +52,9 @@
       align-items: center;
       gap: 15px;
     }
+
     .welcome-back.show { display: flex; }
+
     .student-avatar {
       width: 60px;
       height: 60px;
@@ -46,16 +62,20 @@
       border: 2px solid rgba(16, 185, 129, 0.5);
       object-fit: cover;
     }
+
     .welcome-text { flex: 1; }
+
     .welcome-text h3 {
       color: rgba(16, 185, 129, 0.9);
       font-size: 18px;
       margin-bottom: 5px;
     }
+
     .welcome-text p {
       color: rgba(255, 255, 255, 0.6);
       font-size: 14px;
     }
+
     .clear-profile-btn {
       background: rgba(239, 68, 68, 0.2);
       border: 1px solid rgba(239, 68, 68, 0.3);
@@ -66,7 +86,9 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .clear-profile-btn:hover { background: rgba(239, 68, 68, 0.3); }
+
     .question-selection {
       background: rgba(0,0,0,0.5);
       border: 2px solid rgba(255,140,60,0.3);
@@ -74,6 +96,7 @@
       padding: 25px;
       margin-bottom: 30px;
     }
+
     .selection-header {
       display: flex;
       justify-content: space-between;
@@ -82,6 +105,7 @@
       flex-wrap: wrap;
       gap: 15px;
     }
+
     .selection-title {
       color: rgba(255, 140, 60, 0.9);
       font-size: 16px;
@@ -89,6 +113,7 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
+
     .refresh-btn {
       background: rgba(255, 140, 60, 0.2);
       border: 1px solid rgba(255, 140, 60, 0.4);
@@ -100,7 +125,12 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    .refresh-btn:hover { background: rgba(255, 140, 60, 0.3); transform: scale(1.05); }
+
+    .refresh-btn:hover { 
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
     .question-dropdown {
       width: 100%;
       background: rgba(0,0,0,0.5);
@@ -113,16 +143,39 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .question-dropdown:focus {
       outline: none;
       border-color: rgba(255,140,60,0.6);
       background: rgba(0,0,0,0.7);
     }
-    .question-dropdown option { background: rgba(20, 20, 20, 0.98); padding: 12px; }
-    .no-question { text-align: center; padding: 80px 20px; display: none; }
-    .no-question-icon { font-size: 80px; margin-bottom: 30px; opacity: 0.5; }
-    .no-question p { color: rgba(255, 255, 255, 0.6); font-size: 18px; }
-    #questionSection { display: none; }
+
+    .question-dropdown option { 
+      background: rgba(20, 20, 20, 0.98); 
+      padding: 12px; 
+    }
+
+    .no-question { 
+      text-align: center;
+      padding: 80px 20px; 
+      display: none; 
+    }
+    
+    .no-question-icon { 
+      font-size: 80px; 
+      margin-bottom: 30px; 
+      opacity: 0.5; 
+    }
+
+    .no-question p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+    }
+    
+    #questionSection { 
+      display: none; 
+    }
+    
     .question-display {
       background: rgba(255,140,60,0.1);
       border: 2px solid rgba(255,140,60,0.4);
@@ -131,7 +184,17 @@
       margin: 30px 0;
       text-align: center;
     }
-    .question-text { font-size: 26px; line-height: 1.5; color: #fff; }
+    
+    .question-text { 
+      font-size: 26px; 
+      line-height: 1.5; 
+      color: #fff;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .form-input {
       width: 100%;
       background: rgba(0,0,0,0.5);
@@ -144,13 +207,22 @@
       font-family: inherit;
       transition: all 0.3s ease;
     }
+
     .form-input:focus {
       outline: none;
       border-color: rgba(255,140,60,0.5);
       background: rgba(0,0,0,0.7);
     }
-    .form-input::placeholder { color: rgba(255, 255, 255, 0.4); }
-    .form-textarea { min-height: 160px; resize: vertical; }
+
+    .form-input::placeholder { 
+      color: rgba(255, 255, 255, 0.4); 
+    }
+    
+    .form-textarea { 
+      min-height: 160px; 
+      resize: vertical;
+    }
+
     .camera-section {
       background: rgba(0,0,0,0.5);
       border: 2px solid rgba(255,140,60,0.2);
@@ -159,14 +231,24 @@
       margin: 20px 0;
       text-align: center;
     }
+
+    .camera-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     .camera-title {
       color: rgba(255, 140, 60, 0.9);
       font-size: 16px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 15px;
     }
+
     .camera-mode-switch {
       display: flex;
       gap: 5px;
@@ -175,6 +257,7 @@
       border-radius: 10px;
       margin-bottom: 15px;
     }
+
     .mode-btn {
       flex: 1;
       background: transparent;
@@ -187,16 +270,19 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .mode-btn.active {
       background: rgba(255, 140, 60, 0.3);
       color: rgb(255, 140, 60);
     }
+
     .camera-controls {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 15px;
     }
+
     .camera-btn {
       background: rgba(255, 140, 60, 0.2);
       border: 1px solid rgba(255, 140, 60, 0.4);
@@ -209,8 +295,18 @@
       transition: all 0.3s ease;
       white-space: nowrap;
     }
-    .camera-btn:hover { background: rgba(255, 140, 60, 0.3); transform: scale(1.05); }
-    .camera-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    .camera-btn:hover:not(:disabled) { 
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
+    .camera-btn:disabled { 
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     #videoPreview {
       width: 100%;
       max-width: 500px;
@@ -219,6 +315,7 @@
       display: none;
       border: 2px solid rgba(255,140,60,0.3);
     }
+
     #photoPreview {
       max-width: 100%;
       border-radius: 15px;
@@ -226,12 +323,15 @@
       display: none;
       border: 2px solid rgba(255,140,60,0.5);
     }
+
     .camera-info {
       color: rgba(255, 255, 255, 0.6);
       font-size: 14px;
       margin-top: 10px;
     }
+
     #fileInput { display: none; }
+
     .submit-btn {
       width: 100%;
       background: rgba(255,140,60,0.9);
@@ -247,33 +347,52 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    .submit-btn:hover {
+
+    .submit-btn:hover:not(:disabled) {
       background: rgba(255,140,60,1);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(255,140,60,0.3);
     }
-    .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-    .success-screen { display: none; text-align: center; padding: 80px 20px; }
-    .success-screen.show { display: block; }
+    
+    .submit-btn:disabled { 
+      opacity: 0.3; 
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .success-screen { 
+      display: none; 
+      text-align: center; 
+      padding: 80px 20px; 
+    }
+    
+    .success-screen.show { 
+      display: block; 
+    }
+
     .success-icon {
       font-size: 100px;
       margin-bottom: 20px;
       animation: bounce 0.6s ease;
     }
+
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-20px); }
     }
+
     .success-screen h2 {
       color: rgba(16, 185, 129, 0.9);
       font-size: 32px;
       margin-bottom: 20px;
     }
+
     .success-screen p {
       color: rgba(255, 255, 255, 0.7);
       font-size: 18px;
       margin-bottom: 30px;
     }
+
     .write-another-btn {
       background: rgba(255, 140, 60, 0.2);
       border: 2px solid rgba(255, 140, 60, 0.5);
@@ -285,7 +404,12 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    .write-another-btn:hover { background: rgba(255, 140, 60, 0.3); transform: scale(1.05); }
+
+    .write-another-btn:hover { 
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
     @media (max-width: 480px) {
       .header h1 { font-size: 36px; }
       .question-text { font-size: 20px; }
@@ -329,14 +453,16 @@
 
     <div id="questionSection">
       <div class="question-display">
-        <div class="question-text" id="questionText"></div>
+        <div class="question-text" id="questionText">Select a question to view here</div>
       </div>
 
       <input type="text" id="studentName" class="form-input" placeholder="Your name" oninput="checkForm()">
       <textarea id="studentAnswer" class="form-input form-textarea" placeholder="Type your answer here..." oninput="checkForm()"></textarea>
 
       <div class="camera-section">
-        <div class="camera-title">📷 Optional Photo</div>
+        <div class="camera-header">
+          <div class="camera-title">📷 Optional Photo</div>
+        </div>
 
         <div class="camera-mode-switch">
           <button class="mode-btn active" onclick="switchMode('camera')">📷 Camera</button>
@@ -370,6 +496,8 @@
   </div>
 
   <script>
+    console.log('🚀 INTUITY Student Portal Loading...');
+    
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
     
@@ -411,15 +539,19 @@
       if (saved) {
         try {
           studentProfile = JSON.parse(saved);
+          console.log('✅ Student profile loaded:', studentProfile.name);
+          
           document.getElementById('studentName').value = studentProfile.name;
           document.getElementById('welcomeName').textContent = studentProfile.name;
           if (studentProfile.photo) {
             document.getElementById('studentAvatar').src = studentProfile.photo;
+          } else {
+            document.getElementById('studentAvatar').style.display = 'none';
           }
           document.getElementById('welcomeBack').classList.add('show');
           checkForm();
         } catch (e) {
-          console.error('Error loading profile:', e);
+          console.error('❌ Error loading profile:', e);
         }
       }
     }
@@ -427,19 +559,23 @@
     function saveStudentProfile(name, photo) {
       studentProfile = { name, photo, lastUsed: new Date().toISOString() };
       localStorage.setItem('intuity_student_profile', JSON.stringify(studentProfile));
+      console.log('✅ Student profile saved');
     }
 
     function clearProfile() {
       if (confirm('Clear your saved profile?')) {
         localStorage.removeItem('intuity_student_profile');
+        studentProfile = null;
         document.getElementById('welcomeBack').classList.remove('show');
         document.getElementById('studentName').value = '';
+        console.log('🗑 Profile cleared');
       }
     }
 
     function switchMode(mode) {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
+      
       stopCamera();
       document.getElementById('videoPreview').style.display = 'none';
       document.getElementById('captureBtn').style.display = 'none';
@@ -450,12 +586,16 @@
       if (mode === 'camera') {
         currentCameraMode = 'environment';
         document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Take a photo of your work';
       } else if (mode === 'selfie') {
         currentCameraMode = 'user';
         document.getElementById('startCameraBtn').style.display = 'inline-block';
-      } else {
+        document.getElementById('cameraInfo').textContent = 'Take a selfie with your work';
+      } else if (mode === 'upload') {
         document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
       }
+      console.log('📷 Camera mode:', mode);
     }
 
     function triggerFileUpload() {
@@ -466,39 +606,89 @@
       const file = event.target.files[0];
       if (!file) return;
       
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        capturedPhoto = e.target.result;
-        if (file.type.startsWith('image/')) {
-          document.getElementById('photoPreview').src = capturedPhoto;
-          document.getElementById('photoPreview').style.display = 'block';
-        }
-        document.getElementById('uploadBtn').style.display = 'none';
-        document.getElementById('retakeBtn').style.display = 'inline-block';
-      };
-      reader.readAsDataURL(file);
+      console.log('📁 File selected:', file.name, file.type);
+      
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          capturedPhoto = e.target.result;
+          const photo = document.getElementById('photoPreview');
+          photo.src = capturedPhoto;
+          photo.style.display = 'block';
+          document.getElementById('uploadBtn').style.display = 'none';
+          document.getElementById('retakeBtn').style.display = 'inline-block';
+          document.getElementById('cameraInfo').textContent = '✓ File uploaded! Click Retake to change';
+          console.log('✅ Image uploaded');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          capturedPhoto = e.target.result;
+          document.getElementById('photoPreview').style.display = 'none';
+          document.getElementById('uploadBtn').style.display = 'none';
+          document.getElementById('retakeBtn').style.display = 'inline-block';
+          document.getElementById('cameraInfo').textContent = `✓ Document uploaded: ${file.name}`;
+          console.log('✅ Document uploaded');
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     async function loadAllQuestions(silent = false) {
       if (isLoadingQuestions) return;
       isLoadingQuestions = true;
       
+      if (!silent) console.log('🔍 Loading questions...');
+      
+      const previousCount = allQuestions.length;
       allQuestions = [];
+      
       try {
         if (supabase && isOnline) {
-          const { data, error } = await supabase.from('questions').select('*').order('created_at', { ascending: false });
-          if (data && data.length > 0) {
-            console.log(`✅ Got ${data.length} questions`);
+          const { data, error } = await supabase
+            .from('questions')
+            .select('*')
+            .order('created_at', { ascending: false });
+          
+          if (!error && data && data.length > 0) {
+            console.log(`✅ Got ${data.length} questions from Supabase`);
             allQuestions = data;
+            
+            if (data[0]) {
+              localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
+            }
+          } else if (error) {
+            console.error('❌ Supabase error:', error);
           }
         }
         
         if (allQuestions.length === 0) {
           const stored = localStorage.getItem('intuity_current_question');
-          if (stored) allQuestions = [JSON.parse(stored)];
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (parsed && (parsed.text || parsed.question_text)) {
+                allQuestions = [parsed];
+                console.log('✅ Loaded 1 question from localStorage');
+              }
+            } catch (e) {
+              console.error('❌ Error parsing localStorage:', e);
+            }
+          }
         }
       } catch (error) {
-        console.error('Error loading questions:', error);
+        console.error('❌ Error loading questions:', error);
+      }
+      
+      allQuestions.sort((a, b) => {
+        const dateA = new Date(a.created_at || a.published_at || 0);
+        const dateB = new Date(b.created_at || b.published_at || 0);
+        return dateB - dateA;
+      });
+      
+      if (!silent && allQuestions.length > previousCount) {
+        console.log(`✨ New questions! ${previousCount} → ${allQuestions.length}`);
       }
       
       updateUI();
@@ -518,28 +708,43 @@
 
     function populateDropdown() {
       const dropdown = document.getElementById('questionDropdown');
+      const currentSelection = dropdown.value;
+      
       dropdown.innerHTML = '<option value="">Select a question...</option>';
       
-      allQuestions.forEach((q, i) => {
-        const opt = document.createElement('option');
-        opt.value = i;
-        const text = q.text || q.question_text || 'Untitled';
-        opt.textContent = text.substring(0, 50) + (text.length > 50 ? '...' : '');
-        dropdown.appendChild(opt);
+      allQuestions.forEach((q, index) => {
+        const text = q.text || q.question_text || 'Untitled Question';
+        const preview = text.length > 60 ? text.substring(0, 60) + '...' : text;
+        const date = new Date(q.created_at || q.published_at || 0);
+        const dateStr = date.toLocaleDateString();
+        
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${preview} (${dateStr})`;
+        dropdown.appendChild(option);
       });
+
+      if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
+        dropdown.value = currentSelection;
+      }
     }
 
     function selectQuestion() {
-      const idx = document.getElementById('questionDropdown').value;
-      if (!idx) {
+      const index = document.getElementById('questionDropdown').value;
+      
+      if (!index) {
         document.getElementById('questionSection').style.display = 'none';
         currentQuestion = null;
         return;
       }
       
-      currentQuestion = allQuestions[parseInt(idx)];
-      document.getElementById('questionText').textContent = currentQuestion.text || currentQuestion.question_text;
+      currentQuestion = allQuestions[parseInt(index)];
+      const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
+      
+      document.getElementById('questionText').textContent = questionText;
       document.getElementById('questionSection').style.display = 'block';
+      document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      console.log('📝 Question selected:', questionText.substring(0, 50));
     }
 
     function checkForm() {
@@ -549,47 +754,74 @@
     }
 
     async function manualRefresh() {
+      console.log('🔄 Manual refresh');
       await loadAllQuestions(false);
     }
 
     async function startCamera() {
       try {
-        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentCameraMode } });
+        console.log('📷 Starting camera in', currentCameraMode, 'mode');
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: currentCameraMode }
+        });
         const video = document.getElementById('videoPreview');
         video.srcObject = videoStream;
         video.style.display = 'block';
         document.getElementById('startCameraBtn').style.display = 'none';
         document.getElementById('captureBtn').style.display = 'inline-block';
+        document.getElementById('captureBtn').disabled = false;
+        document.getElementById('cameraInfo').textContent = 'Position your work and click Capture';
       } catch (error) {
-        alert('Camera not available: ' + error.message);
+        console.error('❌ Camera error:', error);
+        document.getElementById('cameraInfo').textContent = 'Camera not available: ' + error.message;
       }
     }
 
     function capturePhoto() {
-      const video = document.getElementById('videoPreview');
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
-      document.getElementById('photoPreview').src = capturedPhoto;
-      document.getElementById('photoPreview').style.display = 'block';
-      stopCamera();
-      document.getElementById('captureBtn').style.display = 'none';
-      document.getElementById('retakeBtn').style.display = 'inline-block';
+      try {
+        const video = document.getElementById('videoPreview');
+        const photo = document.getElementById('photoPreview');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+        photo.src = capturedPhoto;
+        photo.style.display = 'block';
+        stopCamera();
+        document.getElementById('captureBtn').style.display = 'none';
+        document.getElementById('retakeBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = '✓ Photo captured!';
+        console.log('✅ Photo captured successfully');
+      } catch (error) {
+        console.error('❌ Capture error:', error);
+        alert('Error capturing photo: ' + error.message);
+      }
     }
 
     function retakePhoto() {
       capturedPhoto = null;
       document.getElementById('photoPreview').style.display = 'none';
       document.getElementById('retakeBtn').style.display = 'none';
-      document.getElementById('startCameraBtn').style.display = 'inline-block';
+      document.getElementById('fileInput').value = '';
+      
+      const activeMode = document.querySelector('.mode-btn.active');
+      if (activeMode && activeMode.textContent.includes('Upload')) {
+        document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
+      } else {
+        document.getElementById('startCameraBtn').style.display = 'inline-block';
+        document.getElementById('cameraInfo').textContent = 'Add a photo (optional)';
+      }
+      console.log('🔄 Retaking photo');
     }
 
     function stopCamera() {
       if (videoStream) {
-        videoStream.getTracks().forEach(t => t.stop());
+        videoStream.getTracks().forEach(track => track.stop());
         document.getElementById('videoPreview').style.display = 'none';
+        videoStream = null;
+        console.log('⏹ Camera stopped');
       }
     }
 
@@ -597,31 +829,66 @@
       const name = document.getElementById('studentName').value.trim();
       const answer = document.getElementById('studentAnswer').value.trim();
       
-      if (!name || !answer || !currentQuestion) return;
-
-      saveStudentProfile(name, capturedPhoto);
-
-      const data = {
-        question_id: currentQuestion.id,
-        question_text: currentQuestion.text || currentQuestion.question_text,
-        student_name: name,
-        answer: answer,
-        word_count: answer.split(/\s+/).length,
-        photo_url: capturedPhoto || null,
-        submitted_at: new Date().toISOString()
-      };
-
-      try {
-        if (supabase && isOnline) {
-          await supabase.from('student_responses').insert([data]);
-          console.log('✅ Submitted to Supabase');
-        }
-        localStorage.setItem('intuity_student_responses', JSON.stringify([...(JSON.parse(localStorage.getItem('intuity_student_responses') || '[]')), data]));
-      } catch (error) {
-        console.error('Error:', error);
+      if (!name || !answer || !currentQuestion) {
+        console.warn('❌ Cannot submit: missing required fields');
+        alert('Please fill in your name and answer before submitting');
+        return;
       }
 
-      showSuccessScreen();
+      console.log('💾 Submitting response...');
+      document.getElementById('submitBtn').disabled = true;
+
+      try {
+        saveStudentProfile(name, capturedPhoto);
+
+        const responseData = {
+          question_id: currentQuestion.id,
+          question_text: currentQuestion.text || currentQuestion.question_text,
+          student_name: name,
+          answer: answer,
+          word_count: answer.split(/\s+/).filter(w => w.length > 0).length,
+          photo_url: capturedPhoto || null,
+          submitted_at: new Date().toISOString()
+        };
+
+        if (supabase && isOnline) {
+          console.log('📤 Syncing to Supabase...');
+          const { data, error } = await supabase
+            .from('student_responses')
+            .insert([responseData]);
+          
+          if (error) {
+            console.warn('⚠️ Supabase sync failed, saving locally:', error);
+            saveResponseLocally(responseData);
+          } else {
+            console.log('✅ Response synced to Supabase!');
+          }
+        } else {
+          console.log('📱 Offline mode - saving locally');
+          saveResponseLocally(responseData);
+        }
+        
+        showSuccessScreen();
+      } catch (error) {
+        console.error('❌ Submission error:', error);
+        alert('Error submitting response: ' + error.message);
+        document.getElementById('submitBtn').disabled = false;
+      }
+    }
+
+    function saveResponseLocally(responseData) {
+      try {
+        let responses = [];
+        const stored = localStorage.getItem('intuity_student_responses');
+        if (stored) {
+          responses = JSON.parse(stored);
+        }
+        responses.push(responseData);
+        localStorage.setItem('intuity_student_responses', JSON.stringify(responses));
+        console.log('✅ Response saved to localStorage');
+      } catch (e) {
+        console.error('❌ Error saving locally:', e);
+      }
     }
 
     function showSuccessScreen() {
@@ -629,6 +896,7 @@
       document.getElementById('questionSelection').style.display = 'none';
       document.getElementById('successScreen').classList.add('show');
       stopCamera();
+      console.log('🎉 Success screen shown');
     }
 
     function writeAnother() {
@@ -636,21 +904,47 @@
       document.getElementById('questionDropdown').value = '';
       capturedPhoto = null;
       document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+      document.getElementById('startCameraBtn').style.display = 'inline-block';
+      document.getElementById('cameraInfo').textContent = 'Choose a method above to add a photo';
+      
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      const firstModeBtn = document.querySelector('.mode-btn');
+      if (firstModeBtn) firstModeBtn.classList.add('active');
+      currentCameraMode = 'environment';
+      
+      currentQuestion = null;
       document.getElementById('successScreen').classList.remove('show');
+      document.getElementById('questionText').textContent = 'Select a question to view here';
       loadAllQuestions();
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       checkForm();
+      console.log('🔄 Reset for new response');
     }
 
     function startAutoRefresh() {
-      setInterval(() => loadAllQuestions(true), 15000);
+      autoRefreshInterval = setInterval(() => {
+        loadAllQuestions(true);
+      }, 15000);
+      console.log('🔄 Auto-refresh enabled (every 15s)');
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 INTUITY Student Portal Ready!');
+      
       initSupabase();
       loadStudentProfile();
-      await new Promise(r => setTimeout(r, 800));
+      
+      await new Promise(resolve => setTimeout(resolve, 800));
       await loadAllQuestions(false);
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
+        document.getElementById('questionDropdown').value = '0';
+        selectQuestion();
+        console.log('🎯 Auto-selected from QR code');
+      }
+      
       startAutoRefresh();
     });
 
