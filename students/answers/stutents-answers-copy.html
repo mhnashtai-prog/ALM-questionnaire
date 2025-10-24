@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INTUITY - Student Portal (FIXED)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #000 0%, #1a0a05 100%);
+      color: white;
+      padding: 20px;
+    }
+    
+    .container { 
+      max-width: 650px; 
+      margin: 0 auto; 
+      padding: 40px 20px; 
+    }
+    
+    .header { 
+      text-align: center; 
+      margin-bottom: 40px; 
+    }
+    
+    .header h1 {
+      font-size: 56px;
+      font-weight: 800;
+      color: rgb(255, 140, 60);
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    
+    .header p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+    }
+
+    .debug-info {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      font-family: monospace;
+      color: rgba(255, 140, 60, 0.9);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .debug-info.hidden {
+      display: none;
+    }
+
+    .no-question { 
+      text-align: center;
+      padding: 80px 20px; 
+    }
+    
+    .no-question-icon { 
+      font-size: 80px; 
+      margin-bottom: 30px; 
+      opacity: 0.5; 
+    }
+
+    .no-question p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    
+    .question-selection {
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,140,60,0.3);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .selection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .selection-title {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .refresh-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 1px solid rgba(255, 140, 60, 0.4);
+      border-radius: 10px;
+      padding: 8px 16px;
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .refresh-btn:hover { 
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
+    .question-dropdown {
+      width: 100%;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,140,60,0.3);
+      border-radius: 15px;
+      padding: 16px;
+      color: white;
+      font-size: 16px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .question-dropdown:focus {
+      outline: none;
+      border-color: rgba(255,140,60,0.6);
+      background: rgba(0,0,0,0.7);
+    }
+
+    .question-dropdown option { 
+      background: rgba(20, 20, 20, 0.98); 
+      padding: 12px; 
+    }
+
+    #questionSection { 
+      display: none; 
+    }
+    
+    .question-display {
+      background: rgba(255,140,60,0.1);
+      border: 2px solid rgba(255,140,60,0.4);
+      border-radius: 25px;
+      padding: 40px;
+      margin: 30px 0;
+      text-align: center;
+    }
+    
+    .question-text { 
+      font-size: 26px; 
+      line-height: 1.5; 
+      color: #fff;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,140,60,0.2);
+      border-radius: 15px;
+      padding: 16px 20px;
+      color: white;
+      font-size: 18px;
+      margin: 15px 0;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: rgba(255,140,60,0.5);
+      background: rgba(0,0,0,0.7);
+    }
+
+    .form-input::placeholder { 
+      color: rgba(255, 255, 255, 0.4); 
+    }
+    
+    .form-textarea { 
+      min-height: 160px; 
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: rgba(255,140,60,0.9);
+      border: none;
+      border-radius: 18px;
+      padding: 20px;
+      color: black;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: rgba(255,140,60,1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,140,60,0.3);
+    }
+    
+    .submit-btn:disabled { 
+      opacity: 0.3; 
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .success-screen { 
+      display: none; 
+      text-align: center; 
+      padding: 80px 20px; 
+    }
+    
+    .success-screen.show { 
+      display: block; 
+    }
+
+    .success-icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .success-screen h2 {
+      color: rgba(16, 185, 129, 0.9);
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .success-screen p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .write-another-btn {
+      background: rgba(255, 140, 60, 0.2);
+      border: 2px solid rgba(255, 140, 60, 0.5);
+      border-radius: 15px;
+      padding: 15px 30px;
+      color: rgb(255, 140, 60);
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .write-another-btn:hover { 
+      background: rgba(255, 140, 60, 0.3);
+      transform: scale(1.05);
+    }
+
+    .error-box {
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      color: rgba(239, 68, 68, 0.95);
+      font-size: 14px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .error-box.show {
+      display: block;
+    }
+
+    .error-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p>Student Response Portal</p>
+      <p style="font-size: 14px; color: rgba(255, 255, 255, 0.5);">Answer questions from your teacher</p>
+    </div>
+
+    <div class="debug-info hidden" id="debugInfo">
+      <strong>🔍 Debug Info (Ctrl+D to toggle):</strong>
+      <div id="debugContent"></div>
+    </div>
+
+    <div class="no-question" id="noQuestion">
+      <div class="no-question-icon">📭</div>
+      <p>No questions available yet</p>
+      <p style="font-size: 14px; margin-top: 10px;">Check back soon or scan a QR code from your teacher</p>
+    </div>
+
+    <div class="question-selection" id="questionSelection" style="display: none;">
+      <div class="selection-header">
+        <div class="selection-title">📚 Available Questions</div>
+        <button class="refresh-btn" onclick="manualRefresh()">🔄 Refresh</button>
+      </div>
+      <select id="questionDropdown" onchange="selectQuestion()" class="question-dropdown">
+        <option value="">Select a question...</option>
+      </select>
+    </div>
+
+    <div id="questionSection">
+      <div class="question-display">
+        <div class="question-text" id="questionText">Select a question to view here</div>
+      </div>
+
+      <input type="text" id="studentName" class="form-input" placeholder="Your name" oninput="checkForm()">
+      <textarea id="studentAnswer" class="form-input form-textarea" placeholder="Type your answer here..." oninput="checkForm()"></textarea>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
+    </div>
+
+    <div class="error-box" id="errorBox">
+      <div class="error-title">❌ Error</div>
+      <div id="errorMessage"></div>
+    </div>
+
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✨</div>
+      <h2>Response Submitted!</h2>
+      <p>Your answer has been recorded successfully</p>
+      <button class="write-another-btn" onclick="writeAnother()">Answer Another Question</button>
+    </div>
+  </div>
+
+  <script>
+    console.log('🚀 INTUITY Student Portal Loading (SWISS CLOCK FIX)...');
+    
+    const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+    
+    let supabase = null;
+    let isOnline = false;
+    let allQuestions = [];
+    let currentQuestion = null;
+    let isLoadingQuestions = false;
+    let autoRefreshInterval = null;
+    let debugMode = false;
+
+    // Debug logging
+    function debugLog(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[${timestamp}] ${message}`, data || '');
+      
+      if (debugMode) {
+        const debugContent = document.getElementById('debugContent');
+        const logEntry = document.createElement('div');
+        logEntry.style.marginTop = '5px';
+        logEntry.style.paddingTop = '5px';
+        logEntry.style.borderTop = '1px solid rgba(255,140,60,0.2)';
+        logEntry.innerHTML = `<strong>${timestamp}:</strong> ${message}`;
+        if (data) {
+          const dataStr = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+          logEntry.innerHTML += `<pre style="margin-top:3px;font-size:10px;">${dataStr.substring(0, 200)}</pre>`;
+        }
+        debugContent.appendChild(logEntry);
+        
+        // Keep only last 10 entries
+        while (debugContent.children.length > 10) {
+          debugContent.removeChild(debugContent.firstChild);
+        }
+      }
+    }
+
+    function initSupabase() {
+      try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        debugLog('✅ Supabase initialized');
+        checkOnlineStatus();
+        return true;
+      } catch (error) {
+        debugLog('❌ Supabase error', error.message);
+        return false;
+      }
+    }
+
+    async function checkOnlineStatus() {
+      try {
+        const { data, error } = await supabase.from('questions').select('id').limit(1);
+        isOnline = !error;
+        debugLog(isOnline ? '🌐 Online' : '📴 Offline');
+      } catch (error) {
+        isOnline = false;
+        debugLog('📴 Connection check failed');
+      }
+    }
+
+    // CRITICAL FIX: Load questions with proper fallback logic
+    async function loadAllQuestions(silent = false) {
+      if (isLoadingQuestions) {
+        debugLog('⏳ Already loading, skipping...');
+        return;
+      }
+      isLoadingQuestions = true;
+      
+      if (!silent) debugLog('🔍 Loading questions...');
+      
+      const previousCount = allQuestions.length;
+      let foundQuestions = [];
+      
+      try {
+        // STEP 1: Try Supabase if online
+        if (supabase && isOnline) {
+          debugLog('📡 Checking Supabase...');
+          try {
+            const { data, error } = await supabase
+              .from('questions')
+              .select('*')
+              .order('created_at', { ascending: false });
+            
+            if (!error && data && data.length > 0) {
+              debugLog(`✅ Supabase: Found ${data.length} questions`);
+              foundQuestions = data;
+            } else if (error) {
+              debugLog('⚠️ Supabase error', error.message);
+            } else {
+              debugLog('ℹ️ Supabase: No questions found (0 results)');
+            }
+          } catch (err) {
+            debugLog('❌ Supabase fetch failed', err.message);
+          }
+        }
+        
+        // STEP 2: If Supabase returned nothing, check localStorage
+        if (foundQuestions.length === 0) {
+          debugLog('📦 Checking localStorage (Supabase had 0 results)...');
+          
+          // Check all possible storage locations
+          const storageKeys = [
+            'current_question',           // Primary key - Swiss Clock critical
+            'intuity_current_question',   // Alternative key
+            'alm_questions',              // Legacy
+            'intuity_questions'           // Analytics
+          ];
+          
+          for (const key of storageKeys) {
+            try {
+              const stored = localStorage.getItem(key);
+              if (stored && stored !== 'null') {
+                const parsed = JSON.parse(stored);
+                
+                // Handle both single question object and array
+                if (Array.isArray(parsed)) {
+                  const validQuestions = parsed.filter(q => 
+                    q && (q.text || q.question_text) && q.id !== 'demo'
+                  );
+                  if (validQuestions.length > 0) {
+                    debugLog(`✅ localStorage[${key}]: Found ${validQuestions.length} questions`);
+                    foundQuestions = validQuestions;
+                    break;
+                  }
+                } else if (parsed && (parsed.text || parsed.question_text) && parsed.id !== 'demo') {
+                  debugLog(`✅ localStorage[${key}]: Found 1 question`);
+                  foundQuestions = [parsed];
+                  break;
+                }
+              }
+            } catch (e) {
+              debugLog(`⚠️ Error parsing ${key}`, e.message);
+            }
+          }
+        }
+        
+        // STEP 3: Update allQuestions
+        if (foundQuestions.length > 0) {
+          allQuestions = foundQuestions;
+          
+          // Save to cache for future offline use
+          if (foundQuestions[0]) {
+            localStorage.setItem('intuity_current_question', JSON.stringify(foundQuestions[0]));
+          }
+          
+          if (!silent && allQuestions.length > previousCount) {
+            debugLog(`✨ New questions! ${previousCount} → ${allQuestions.length}`);
+          }
+        } else {
+          debugLog('❌ No questions found anywhere');
+          allQuestions = [];
+        }
+        
+      } catch (error) {
+        debugLog('❌ Error in loadAllQuestions', error.message);
+      }
+      
+      // Sort by most recent
+      allQuestions.sort((a, b) => {
+        const dateA = new Date(a.created_at || a.published_at || 0);
+        const dateB = new Date(b.created_at || b.published_at || 0);
+        return dateB - dateA;
+      });
+      
+      updateUI();
+      isLoadingQuestions = false;
+      
+      debugLog(`📊 Final count: ${allQuestions.length} questions`);
+    }
+
+    function updateUI() {
+      if (allQuestions.length === 0) {
+        document.getElementById('noQuestion').style.display = 'block';
+        document.getElementById('questionSelection').style.display = 'none';
+      } else {
+        document.getElementById('noQuestion').style.display = 'none';
+        document.getElementById('questionSelection').style.display = 'block';
+        populateDropdown();
+      }
+    }
+
+    function populateDropdown() {
+      const dropdown = document.getElementById('questionDropdown');
+      const currentSelection = dropdown.value;
+      
+      dropdown.innerHTML = '<option value="">Select a question...</option>';
+      
+      allQuestions.forEach((q, index) => {
+        const text = q.text || q.question_text || 'Untitled Question';
+        const preview = text.length > 60 ? text.substring(0, 60) + '...' : text;
+        const date = new Date(q.created_at || q.published_at || 0);
+        const dateStr = date.toLocaleDateString();
+        
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${preview} (${dateStr})`;
+        dropdown.appendChild(option);
+      });
+
+      if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
+        dropdown.value = currentSelection;
+      }
+      
+      debugLog(`📋 Dropdown populated with ${allQuestions.length} questions`);
+    }
+
+    function selectQuestion() {
+      const index = document.getElementById('questionDropdown').value;
+      
+      if (!index) {
+        document.getElementById('questionSection').style.display = 'none';
+        currentQuestion = null;
+        return;
+      }
+      
+      currentQuestion = allQuestions[parseInt(index)];
+      const questionText = currentQuestion.text || currentQuestion.question_text || 'No question text';
+      
+      document.getElementById('questionText').textContent = questionText;
+      document.getElementById('questionSection').style.display = 'block';
+      document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      debugLog('📝 Question selected', questionText.substring(0, 50));
+    }
+
+    function checkForm() {
+      const name = document.getElementById('studentName').value.trim();
+      const answer = document.getElementById('studentAnswer').value.trim();
+      document.getElementById('submitBtn').disabled = !(name && answer);
+    }
+
+    async function manualRefresh() {
+      debugLog('🔄 Manual refresh requested');
+      await loadAllQuestions(false);
+    }
+
+    async function submitResponse() {
+      const name = document.getElementById('studentName').value.trim();
+      const answer = document.getElementById('studentAnswer').value.trim();
+      
+      if (!name || !answer || !currentQuestion) {
+        debugLog('❌ Cannot submit: missing fields');
+        showError('Please fill in your name and answer');
+        return;
+      }
+
+      debugLog('💾 Submitting response...');
+      document.getElementById('submitBtn').disabled = true;
+
+      try {
+        const responseData = {
+          question_id: currentQuestion.id,
+          student_name: name,
+          answer: answer,
+          word_count: answer.split(/\s+/).filter(w => w.length > 0).length,
+          submitted_at: new Date().toISOString()
+        };
+
+        debugLog('📤 Response data prepared', responseData);
+
+        if (supabase && isOnline) {
+          debugLog('📡 Sending to Supabase...');
+          
+          const { data, error } = await supabase
+            .from('student_responses')
+            .insert([responseData]);
+          
+          if (error) {
+            debugLog('❌ Supabase error', error.message);
+            saveResponseLocally(responseData);
+            showError('Could not sync to server. Saved locally.', error.message);
+          } else {
+            debugLog('✅ Sent to Supabase successfully');
+            setTimeout(() => showSuccessScreen(), 1000);
+            return;
+          }
+        } else {
+          debugLog('📱 Offline - saving locally');
+          saveResponseLocally(responseData);
+        }
+        
+        setTimeout(() => showSuccessScreen(), 1500);
+        
+      } catch (error) {
+        debugLog('❌ Submit error', error.message);
+        showError('Error submitting response', error.message);
+        document.getElementById('submitBtn').disabled = false;
+      }
+    }
+
+    function saveResponseLocally(responseData) {
+      try {
+        let responses = [];
+        const stored = localStorage.getItem('intuity_student_responses');
+        if (stored) {
+          responses = JSON.parse(stored);
+        }
+        responses.push(responseData);
+        localStorage.setItem('intuity_student_responses', JSON.stringify(responses));
+        debugLog('✅ Saved locally', { count: responses.length });
+      } catch (e) {
+        debugLog('❌ Local save failed', e.message);
+      }
+    }
+
+    function showSuccessScreen() {
+      document.getElementById('questionSection').style.display = 'none';
+      document.getElementById('questionSelection').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+      debugLog('🎉 Success screen shown');
+    }
+
+    function writeAnother() {
+      document.getElementById('studentAnswer').value = '';
+      document.getElementById('questionDropdown').value = '';
+      
+      currentQuestion = null;
+      document.getElementById('successScreen').classList.remove('show');
+      document.getElementById('questionText').textContent = 'Select a question to view here';
+      loadAllQuestions();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      checkForm();
+      
+      debugLog('🔄 Reset for new response');
+    }
+
+    function showError(message, details = '') {
+      const errorBox = document.getElementById('errorBox');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message + (details ? '\n\nDetails: ' + details : '');
+      errorBox.classList.add('show');
+      
+      setTimeout(() => {
+        errorBox.classList.remove('show');
+      }, 8000);
+    }
+
+    function startAutoRefresh() {
+      autoRefreshInterval = setInterval(() => {
+        loadAllQuestions(true);
+      }, 15000);
+      debugLog('🔄 Auto-refresh enabled (every 15s)');
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+D: Toggle debug mode
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        debugMode = !debugMode;
+        const debugInfo = document.getElementById('debugInfo');
+        debugInfo.classList.toggle('hidden');
+        debugLog(debugMode ? '🔍 Debug mode ON' : '🔍 Debug mode OFF');
+        
+        if (debugMode) {
+          // Show current state
+          debugLog('Current state', {
+            questions: allQuestions.length,
+            currentQuestion: currentQuestion?.text?.substring(0, 30),
+            online: isOnline
+          });
+        }
+      }
+      
+      // Ctrl+R: Manual refresh
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        manualRefresh();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      debugLog('🚀 INTUITY Student Portal Ready (SWISS CLOCK FIX)!');
+      
+      initSupabase();
+      
+      await new Promise(resolve => setTimeout(resolve, 800));
+      await loadAllQuestions(false);
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
+        document.getElementById('questionDropdown').value = '0';
+        selectQuestion();
+        debugLog('🎯 Auto-selected from QR');
+      }
+      
+      startAutoRefresh();
+      
+      debugLog('✅ Initialization complete', {
+        questionsFound: allQuestions.length,
+        online: isOnline,
+        supabaseActive: !!supabase
+      });
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+    });
+  </script>
+</body>
+</html>
