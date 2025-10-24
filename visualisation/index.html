@@ -2,153 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Analytics</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>INTUITY - Analytics (FIXED)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       height: 100vh;
-      height: 100dvh;
       width: 100vw;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      position: relative;
-      background: #000000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #000 0%, #1a0a05 100%);
+      color: white;
     }
-
-    .background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
-                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
-                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
-                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
-                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
-    }
-
-    .curved-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 1;
-    }
-
-    .curve {
-      position: absolute;
-      border-radius: 50%;
-      backdrop-filter: blur(2px);
-    }
-
-    .curve1 {
-      width: 200px;
-      height: 400px;
-      top: -100px;
-      right: -50px;
-      transform: rotate(8deg);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
-      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
-      opacity: 0.4;
-      animation: float 8s ease-in-out infinite;
-    }
-
-    .curve2 {
-      width: 150px;
-      height: 300px;
-      bottom: -80px;
-      left: -30px;
-      transform: rotate(-5deg);
-      border: 1px solid rgba(255, 100, 40, 0.2);
-      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
-      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
-      opacity: 0.3;
-      animation: float 10s ease-in-out infinite reverse;
-    }
-
-    .curve3 {
-      width: 120px;
-      height: 250px;
-      top: 40%;
-      right: 10%;
-      transform: rotate(12deg);
-      border: 1px solid rgba(255, 160, 80, 0.2);
-      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
-      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
-      opacity: 0.25;
-      animation: drift 6s ease-in-out infinite;
-    }
-
-    .curve4 {
-      width: 80px;
-      height: 160px;
-      top: 20%;
-      left: 20%;
-      transform: rotate(-10deg);
-      border: 1px solid rgba(255, 120, 50, 0.15);
-      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
-      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
-      opacity: 0.2;
-      animation: pulse 12s ease-in-out infinite;
-    }
-
-    .curve5 {
-      width: 180px;
-      height: 360px;
-      bottom: 10%;
-      right: 15%;
-      transform: rotate(6deg);
-      border: 1px solid rgba(255, 140, 60, 0.25);
-      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
-      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
-      opacity: 0.35;
-      animation: float 9s ease-in-out infinite reverse;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
-      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
-      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
-      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
-    }
-
-    @keyframes drift {
-      0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--rotate)); }
-      25% { transform: translateX(3px) translateY(-5px) rotate(calc(var(--rotate) + 1deg)); }
-      50% { transform: translateX(-2px) translateY(-8px) rotate(calc(var(--rotate) - 0.5deg)); }
-      75% { transform: translateX(4px) translateY(-3px) rotate(calc(var(--rotate) + 0.8deg)); }
-    }
-
-    .curve1 { --base-opacity: 0.4; --rotate: 8deg; }
-    .curve2 { --base-opacity: 0.3; --rotate: -5deg; }
-    .curve3 { --base-opacity: 0.25; --rotate: 12deg; }
-    .curve4 { --base-opacity: 0.2; --rotate: -10deg; }
-    .curve5 { --base-opacity: 0.35; --rotate: 6deg; }
 
     .container {
-      position: relative;
-      z-index: 10;
       height: 100vh;
-      height: 100dvh;
       display: flex;
       flex-direction: column;
       padding: 25px 20px 0;
-      min-height: 0;
       gap: 20px;
     }
 
@@ -160,17 +34,37 @@
     .header h1 {
       font-size: 32px;
       font-weight: 800;
-      color: #fff;
+      color: rgb(255, 140, 60);
       margin-bottom: 8px;
       letter-spacing: 2px;
-      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
     }
 
     .header p {
       font-size: 14px;
       color: rgba(255, 255, 255, 0.7);
-      font-weight: 300;
       letter-spacing: 0.5px;
+    }
+
+    .debug-panel {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-family: monospace;
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .debug-panel.show {
+      display: block;
+    }
+
+    .debug-entry {
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 140, 60, 0.1);
     }
 
     .dropdown-section {
@@ -183,7 +77,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
-      flex-wrap: wrap;
       gap: 10px;
     }
 
@@ -219,31 +112,19 @@
       border-radius: 16px;
       color: #fff;
       font-size: 18px;
-      font-family: inherit;
-      outline: none;
       padding: 18px 24px;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .question-dropdown:hover {
-      border-color: rgba(255, 140, 60, 0.6);
-      background: rgba(20, 20, 20, 0.95);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(255, 140, 60, 0.15);
+      transition: all 0.3s ease;
     }
 
     .question-dropdown:focus {
+      outline: none;
       border-color: rgba(255, 140, 60, 0.8);
-      background: rgba(25, 25, 25, 0.98);
     }
 
     .question-dropdown option {
       background: rgba(25, 25, 25, 0.98);
-      color: #fff;
-      padding: 14px 18px;
+      padding: 14px;
     }
 
     .main-content {
@@ -251,7 +132,6 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      min-height: 0;
       overflow-y: auto;
       padding: 10px 0;
     }
@@ -259,53 +139,26 @@
     .analytics-container {
       width: 100%;
       max-width: 600px;
-      position: relative;
     }
 
     .analytics-box {
-      width: 100%;
       background: rgba(5, 5, 5, 0.8);
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(15px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-    }
-
-    .analytics-box:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
+      padding: 30px 28px;
+      transition: all 0.3s ease;
     }
 
     .analytics-box.has-selection {
       border-color: rgba(255, 140, 60, 0.3);
-      background: rgba(8, 8, 8, 0.9);
-    }
-
-    .content-area {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: 30px 28px;
-      justify-content: center;
-      align-items: center;
-      min-height: 120px;
-      gap: 20px;
     }
 
     .response-counter {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
+      text-align: center;
       color: rgba(255, 140, 60, 0.9);
       font-size: 20px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      margin-bottom: 20px;
     }
 
     .response-counter.no-selection {
@@ -316,10 +169,9 @@
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
-      width: 100%;
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     .stat-card {
@@ -344,41 +196,45 @@
       letter-spacing: 0.5px;
     }
 
-    .delete-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      color: rgba(239, 68, 68, 0.6);
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0;
-      transform: scale(0.8);
-      pointer-events: none;
+    .response-list {
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .response-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .response-header {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
     }
 
-    .delete-btn.visible {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: all;
+    .student-name {
+      color: rgba(255, 140, 60, 0.9);
+      font-weight: 600;
     }
 
-    .delete-btn:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: rgba(239, 68, 68, 0.9);
-      transform: scale(1.1);
-      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
+    .word-count {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 11px;
+    }
+
+    .response-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      line-height: 1.4;
     }
 
     .footer {
       background: rgba(15, 15, 15, 0.8);
-      backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 18px;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -386,7 +242,6 @@
       justify-content: space-around;
       align-items: center;
       flex-shrink: 0;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .nav-button {
@@ -398,25 +253,16 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s ease;
       text-decoration: none;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      min-width: 90px;
-      text-align: center;
     }
 
     .nav-button:hover {
       background: rgba(255, 140, 60, 0.2);
       color: #fff;
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 140, 60, 0.15);
-    }
-
-    .nav-button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
     }
 
     .nav-button.primary {
@@ -425,17 +271,130 @@
       border: 1px solid rgba(255, 140, 60, 0.3);
     }
 
-    .nav-button.primary:hover:not(:disabled) {
-      background: rgba(255, 140, 60, 0.3);
-      color: #fff;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(255, 140, 60, 0.25);
+    .nav-button.diagnostic {
+      background: rgba(59, 130, 246, 0.2);
+      color: rgba(59, 130, 246, 1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      font-size: 12px;
+      padding: 10px 18px;
+    }
+    
+    .nav-button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
-    .nav-button.primary:disabled {
-      opacity: 0.3;
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.5);
+    .diagnostic-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .diagnostic-modal.show {
+      display: flex;
+    }
+
+    .diagnostic-content {
+      background: rgba(20, 20, 20, 0.95);
+      border: 2px solid rgba(255, 140, 60, 0.4);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      width: 100%;
+    }
+
+    .diagnostic-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .diagnostic-title {
+      color: rgb(255, 140, 60);
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .close-diagnostic {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .diagnostic-section {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .diagnostic-section h3 {
+      color: rgba(255, 140, 60, 0.9);
+      font-size: 16px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .diagnostic-table {
+      width: 100%;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    .diagnostic-table th {
+      text-align: left;
+      padding: 8px;
+      background: rgba(255, 140, 60, 0.2);
+      color: rgba(255, 140, 60, 0.9);
+      font-weight: 600;
+    }
+
+    .diagnostic-table td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .diagnostic-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: rgba(16, 185, 129, 0.9);
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: rgba(245, 158, 11, 0.9);
+    }
+
+    .badge-error {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.9);
     }
 
     .notification {
@@ -444,16 +403,10 @@
       right: 25px;
       padding: 16px 24px;
       border-radius: 14px;
-      backdrop-filter: blur(15px);
       z-index: 1000;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      transition: all 0.3s ease;
       transform: translateX(120%);
       font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
     .notification.show {
@@ -461,164 +414,35 @@
     }
 
     .notification.success {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.4);
       color: rgba(16, 185, 129, 0.95);
     }
 
     .notification.info {
-      background: rgba(255, 140, 60, 0.15);
-      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: rgba(255, 140, 60, 0.2);
+      border: 1px solid rgba(255, 140, 60, 0.4);
       color: rgba(255, 140, 60, 0.95);
     }
 
     .notification.error {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: rgba(239, 68, 68, 0.95);
-    }
-
-    .dialog-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(15px);
-    }
-
-    .dialog-overlay.show {
-      display: flex;
-    }
-
-    .dialog-box {
-      background: rgba(10, 10, 10, 0.95);
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 35px;
-      max-width: 450px;
-      width: 90%;
-      text-align: center;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-      transform: scale(0.9);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .dialog-overlay.show .dialog-box {
-      transform: scale(1);
-    }
-
-    .dialog-title {
-      color: #fff;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .dialog-message {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
-
-    .dialog-buttons {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-    }
-
-    .dialog-btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      min-width: 90px;
-    }
-
-    .dialog-btn.cancel {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .dialog-btn.cancel:hover {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    .dialog-btn.delete {
       background: rgba(239, 68, 68, 0.2);
-      color: rgba(239, 68, 68, 1);
       border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    .dialog-btn.delete:hover {
-      background: rgba(239, 68, 68, 0.3);
-      color: #fff;
-      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 20px 15px 0;
-        gap: 15px;
-      }
-      
-      .header h1 {
-        font-size: 28px;
-      }
-      
-      .question-dropdown {
-        font-size: 16px;
-        padding: 15px 20px;
-      }
-      
-      .response-counter {
-        font-size: 18px;
-      }
-
-      .nav-button {
-        padding: 12px 18px;
-        font-size: 13px;
-        min-width: 75px;
-      }
-
-      .content-area {
-        padding: 25px 20px;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      color: rgba(239, 68, 68, 0.95);
     }
   </style>
 </head>
 <body>
-  <div class="background">
-    <div class="curved-overlay">
-      <div class="curve curve1"></div>
-      <div class="curve curve2"></div>
-      <div class="curve curve3"></div>
-      <div class="curve curve4"></div>
-      <div class="curve curve5"></div>
-    </div>
-  </div>
-
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Analytics Dashboard<br>By Majid Nashtai</p>
+      <p>Analytics Dashboard<br>Press Ctrl+D for debug info</p>
     </header>
+
+    <div class="debug-panel" id="debugPanel">
+      <strong>🔍 Debug Log:</strong>
+      <div id="debugContent"></div>
+    </div>
 
     <section class="dropdown-section">
       <div class="selection-header">
@@ -633,75 +457,114 @@
     <main class="main-content">
       <div class="analytics-container">
         <div class="analytics-box" id="analyticsBox">
-          <div class="content-area">
-            <div class="response-counter no-selection" id="responseCounter">
-              Select a question above to view analytics
-            </div>
-            <div class="stats-grid" id="statsGrid" style="display: none;">
-              <div class="stat-card">
-                <div class="stat-value" id="totalResponses">0</div>
-                <div class="stat-label">Responses</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value" id="avgWords">0</div>
-                <div class="stat-label">Avg Words</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value" id="withPhotos">0</div>
-                <div class="stat-label">With Photos</div>
-              </div>
-            </div>
-            <button class="delete-btn" id="deleteBtn" onclick="showDeleteConfirmation()" title="Delete this question and all responses">🗑</button>
+          <div class="response-counter no-selection" id="responseCounter">
+            Select a question above to view analytics
           </div>
+          <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+              <div class="stat-value" id="totalResponses">0</div>
+              <div class="stat-label">Responses</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="avgWords">0</div>
+              <div class="stat-label">Avg Words</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="withPhotos">0</div>
+              <div class="stat-label">With Photos</div>
+            </div>
+          </div>
+          <div class="response-list" id="responseList" style="display: none;"></div>
         </div>
       </div>
     </main>
 
     <footer class="footer">
       <button class="nav-button primary" id="displayBtn" onclick="displayResponses()" disabled>DISPLAY</button>
+      <button class="nav-button diagnostic" onclick="showDiagnostics()">🔧 DIAGNOSE</button>
       <a href="../index.html" class="nav-button">HOME</a>
       <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
   </div>
 
-  <div class="dialog-overlay" id="confirmDialog">
-    <div class="dialog-box">
-      <div class="dialog-title">Delete Question</div>
-      <div class="dialog-message" id="dialogMessage">
-        Are you sure you want to delete this question and all responses? This action cannot be undone.
+  <div class="diagnostic-modal" id="diagnosticModal">
+    <div class="diagnostic-content">
+      <div class="diagnostic-header">
+        <div class="diagnostic-title">🔧 System Diagnostics</div>
+        <button class="close-diagnostic" onclick="closeDiagnostics()">✕</button>
       </div>
-      <div class="dialog-buttons">
-        <button class="dialog-btn cancel" onclick="closeConfirmDialog()">Cancel</button>
-        <button class="dialog-btn delete" onclick="confirmDelete()">Delete</button>
+      
+      <div class="diagnostic-section">
+        <h3>📊 Data Sources</h3>
+        <table class="diagnostic-table">
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Questions</th>
+              <th>Responses</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="diagnosticSources"></tbody>
+        </table>
+      </div>
+
+      <div class="diagnostic-section">
+        <h3>🔗 Question-Response Mapping</h3>
+        <div id="diagnosticMapping"></div>
+      </div>
+
+      <div class="diagnostic-section">
+        <h3>⚠️ Potential Issues</h3>
+        <div id="diagnosticIssues"></div>
       </div>
     </div>
   </div>
 
   <script>
-    console.log('🚀 INTUITY Analytics Loading...');
+    console.log('🚀 INTUITY Analytics Loading (SWISS CLOCK FIX)...');
     
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
     let supabase = null;
     let isOnline = false;
+    let debugMode = false;
 
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
+
+    // Debug logging
+    function debugLog(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[${timestamp}] ${message}`, data || '');
+      
+      if (debugMode) {
+        const debugContent = document.getElementById('debugContent');
+        const entry = document.createElement('div');
+        entry.className = 'debug-entry';
+        entry.innerHTML = `<strong>${timestamp}:</strong> ${message}`;
+        if (data) {
+          const dataStr = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+          entry.innerHTML += `<pre style="font-size:10px;margin-top:3px;">${dataStr.substring(0, 150)}</pre>`;
+        }
+        debugContent.appendChild(entry);
+        
+        // Keep last 15 entries
+        while (debugContent.children.length > 15) {
+          debugContent.removeChild(debugContent.firstChild);
+        }
+      }
+    }
 
     function initSupabase() {
       try {
-        if (window.supabase && typeof window.supabase.createClient === 'function') {
-          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-          console.log('✅ Supabase initialized');
-          checkOnlineStatus();
-          return true;
-        } else {
-          console.warn('⚠️ Supabase not available');
-          return false;
-        }
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        debugLog('✅ Supabase initialized');
+        checkOnlineStatus();
+        return true;
       } catch (error) {
-        console.error('❌ Supabase initialization error:', error);
+        debugLog('❌ Supabase error', error.message);
         return false;
       }
     }
@@ -710,143 +573,208 @@
       try {
         const { data, error } = await supabase.from('questions').select('id').limit(1);
         isOnline = !error;
-        console.log(isOnline ? '🌐 Online' : '📴 Offline');
+        debugLog(isOnline ? '🌐 Online' : '📴 Offline');
       } catch (error) {
         isOnline = false;
-        console.log('📴 Offline');
       }
     }
 
     async function loadAllData() {
-      console.log('📊 Loading data...');
+      debugLog('🔄 Loading all data...');
       showNotification('Refreshing data...', 'info');
       
       await loadAllQuestions();
       await loadAllResponses();
       updateUI();
       
-      console.log(`✅ Loaded ${allQuestions.length} questions, ${allResponses.length} responses`);
-      showNotification(`Loaded ${allQuestions.length} questions`, 'success');
+      debugLog(`✅ Loaded ${allQuestions.length} questions, ${allResponses.length} responses`);
+      showNotification(`Loaded ${allQuestions.length} questions, ${allResponses.length} responses`, 'success');
     }
 
+    // CRITICAL FIX: Load questions with proper fallback
     async function loadAllQuestions() {
-      allQuestions = [];
-
+      let foundQuestions = [];
+      
+      // STEP 1: Try Supabase
       if (supabase && isOnline) {
-        console.log('🌐 Fetching questions from Supabase...');
+        debugLog('📡 Checking Supabase for questions...');
         try {
           const { data, error } = await supabase
             .from('questions')
             .select('*')
             .order('created_at', { ascending: false });
           
-          if (error) {
-            console.error('❌ Supabase error:', error);
-            throw error;
-          }
-          
-          if (data && data.length > 0) {
-            console.log(`✅ Got ${data.length} questions from Supabase`);
-            allQuestions = data;
-            return;
+          if (!error && data && data.length > 0) {
+            debugLog(`✅ Supabase: Found ${data.length} questions`);
+            foundQuestions = data;
+          } else if (error) {
+            debugLog('⚠️ Supabase error', error.message);
           } else {
-            console.log('ℹ️ No questions found in Supabase');
+            debugLog('ℹ️ Supabase: 0 questions returned');
           }
         } catch (err) {
-          console.error('❌ Supabase fetch failed:', err);
+          debugLog('❌ Supabase fetch failed', err.message);
         }
       }
-
-      // Fallback to localStorage if no Supabase data
-      if (allQuestions.length === 0) {
-        console.log('📦 Checking localStorage for questions...');
-        const stored = localStorage.getItem('intuity_current_question');
-        if (stored) {
+      
+      // STEP 2: If Supabase gave us nothing, check localStorage
+      if (foundQuestions.length === 0) {
+        debugLog('📦 Checking localStorage (Supabase had 0 results)...');
+        
+        const storageKeys = [
+          'current_question',
+          'intuity_current_question',
+          'intuity_questions',
+          'alm_questions',
+          'display_question'
+        ];
+        
+        for (const key of storageKeys) {
           try {
-            const parsed = JSON.parse(stored);
-            if (parsed && (parsed.text || parsed.question_text)) {
-              allQuestions = [parsed];
-              console.log('✅ Loaded 1 question from localStorage');
+            const stored = localStorage.getItem(key);
+            if (stored && stored !== 'null') {
+              const parsed = JSON.parse(stored);
+              
+              if (Array.isArray(parsed)) {
+                const valid = parsed.filter(q => q && (q.text || q.question_text));
+                if (valid.length > 0) {
+                  debugLog(`✅ localStorage[${key}]: Found ${valid.length} questions`);
+                  foundQuestions = valid;
+                  break;
+                }
+              } else if (parsed && (parsed.text || parsed.question_text)) {
+                debugLog(`✅ localStorage[${key}]: Found 1 question`);
+                foundQuestions = [parsed];
+                break;
+              }
             }
           } catch (e) {
-            console.error('❌ Error parsing localStorage question:', e);
+            debugLog(`⚠️ Error parsing ${key}`, e.message);
           }
         }
       }
       
-      if (allQuestions.length === 0) {
-        console.warn('⚠️ No questions found in Supabase or localStorage');
-      }
+      allQuestions = foundQuestions;
+      debugLog(`📊 Final question count: ${allQuestions.length}`);
     }
 
+    // CRITICAL FIX: Load responses with proper fallback
     async function loadAllResponses() {
-      allResponses = [];
-
+      let foundResponses = [];
+      
+      // STEP 1: Try Supabase
       if (supabase && isOnline) {
-        console.log('🌐 Fetching responses from Supabase...');
+        debugLog('📡 Checking Supabase for responses...');
         try {
           const { data, error } = await supabase
             .from('student_responses')
             .select('*')
             .order('submitted_at', { ascending: false });
 
-          if (error) {
-            console.error('❌ Supabase responses error:', error);
-            throw error;
-          }
-
-          if (data && data.length > 0) {
-            console.log(`✅ Got ${data.length} responses from Supabase`);
-            allResponses = data;
-            return;
+          if (!error && data && data.length > 0) {
+            debugLog(`✅ Supabase: Found ${data.length} responses`);
+            foundResponses = data;
+          } else if (error) {
+            debugLog('⚠️ Supabase error', error.message);
           } else {
-            console.log('ℹ️ No responses found in Supabase');
+            debugLog('ℹ️ Supabase: 0 responses returned');
           }
         } catch (err) {
-          console.error('❌ Supabase responses fetch failed:', err.message || err);
+          debugLog('❌ Supabase fetch failed', err.message);
         }
       }
-
-      // Fallback to localStorage if no Supabase data
-      if (allResponses.length === 0) {
-        console.log('📦 Checking localStorage for responses...');
-        const stored = localStorage.getItem('intuity_student_responses');
-        if (stored) {
+      
+      // STEP 2: If Supabase gave us nothing, check localStorage
+      if (foundResponses.length === 0) {
+        debugLog('📦 Checking localStorage (Supabase had 0 results)...');
+        
+        const storageKeys = [
+          'intuity_student_responses',
+          'alm_student_responses',
+          'student_responses',
+          'display_responses'
+        ];
+        
+        for (const key of storageKeys) {
           try {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed)) {
-              allResponses = parsed;
-              console.log(`✅ Loaded ${parsed.length} responses from localStorage`);
+            const stored = localStorage.getItem(key);
+            if (stored && stored !== '[]' && stored !== 'null') {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                debugLog(`✅ localStorage[${key}]: Found ${parsed.length} responses`);
+                foundResponses = parsed;
+                break;
+              }
             }
           } catch (e) {
-            console.error('❌ Error parsing localStorage responses:', e);
+            debugLog(`⚠️ Error parsing ${key}`, e.message);
           }
         }
       }
       
-      if (allResponses.length === 0) {
-        console.log('ℹ️ No responses found');
-      }
+      allResponses = foundResponses;
+      debugLog(`📊 Final response count: ${allResponses.length}`);
     }
 
     function getResponsesForQuestion(question) {
       if (!question) return [];
       
       const questionId = question.id;
+      const questionText = (question.text || question.question_text || '').trim().toLowerCase();
       
-      if (!questionId) {
-        console.warn('⚠️ Question has no ID');
+      if (!questionId && !questionText) {
+        debugLog('⚠️ Question has no ID or text');
         return [];
       }
       
-      const matchedResponses = allResponses.filter(response => {
-        const responseQuestionId = response.question_id || response.questionId;
-        return questionId && responseQuestionId && questionId === responseQuestionId;
+      // SWISS CLOCK FIX: Match by ID first, then fall back to text matching
+      const matchedById = allResponses.filter(response => {
+        const respQId = response.question_id || response.questionId;
+        return questionId && respQId && questionId === respQId;
       });
-
-      console.log(`Found ${matchedResponses.length} responses for question ID: ${questionId}`);
       
-      return matchedResponses;
+      if (matchedById.length > 0) {
+        debugLog(`🔍 Matched ${matchedById.length} responses by ID: ${questionId}`);
+        return matchedById;
+      }
+      
+      // FALLBACK: Match by question text (for ID mismatches)
+      if (questionText) {
+        const matchedByText = allResponses.filter(response => {
+          const respText = (response.metadata?.questionText || '').trim().toLowerCase();
+          // Match if question text is similar (at least 80% of characters match)
+          if (!respText) return false;
+          const similarity = calculateSimilarity(questionText, respText);
+          return similarity > 0.8;
+        });
+        
+        if (matchedByText.length > 0) {
+          debugLog(`🔍 Matched ${matchedByText.length} responses by TEXT (ID mismatch detected!)`);
+          debugLog(`Question text: "${questionText.substring(0, 50)}..."`);
+          return matchedByText;
+        }
+      }
+
+      debugLog(`❌ No matches found for question (ID: ${questionId})`);
+      return [];
+    }
+    
+    // Helper: Calculate text similarity (simple character overlap)
+    function calculateSimilarity(text1, text2) {
+      if (!text1 || !text2) return 0;
+      const maxLen = Math.max(text1.length, text2.length);
+      const minLen = Math.min(text1.length, text2.length);
+      
+      // Quick check: if lengths are very different, not similar
+      if (minLen / maxLen < 0.5) return 0;
+      
+      // Count matching characters at start
+      let matches = 0;
+      for (let i = 0; i < minLen; i++) {
+        if (text1[i] === text2[i]) matches++;
+      }
+      
+      return matches / maxLen;
     }
 
     function updateUI() {
@@ -859,68 +787,100 @@
       const selector = document.getElementById('questionSelector');
       
       if (allQuestions.length === 0) {
-        selector.innerHTML = '<option value="">No questions available - create your first one!</option>';
+        selector.innerHTML = '<option value="">No questions available</option>';
         return;
       }
 
-      selector.innerHTML = '<option value="">Select a question to view analytics...</option>';
+      selector.innerHTML = '<option value="">Select a question...</option>';
 
       allQuestions.forEach((question, index) => {
         const option = document.createElement('option');
         option.value = index;
         
-        const questionText = question.text || question.question_text || 'Untitled Question';
-        const shortText = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
-        
+        const text = question.text || question.question_text || 'Untitled';
+        const shortText = text.length > 50 ? text.substring(0, 50) + '...' : text;
         const responses = getResponsesForQuestion(question);
-        const responseCount = responses.length;
-        const dateStr = new Date(question.created_at || question.published_at || Date.now()).toLocaleDateString();
+        const date = new Date(question.created_at || question.published_at || 0);
         
-        option.textContent = `${shortText} - ${responseCount} response${responseCount !== 1 ? 's' : ''} (${dateStr})`;
-        
+        option.textContent = `${shortText} - ${responses.length} response${responses.length !== 1 ? 's' : ''} (${date.toLocaleDateString()})`;
         selector.appendChild(option);
       });
 
-      console.log(`✅ Dropdown populated with ${allQuestions.length} questions`);
+      debugLog(`✅ Dropdown populated with ${allQuestions.length} questions`);
     }
 
     function updateAnalyticsBox() {
       const counter = document.getElementById('responseCounter');
-      const deleteBtn = document.getElementById('deleteBtn');
       const analyticsBox = document.getElementById('analyticsBox');
       const statsGrid = document.getElementById('statsGrid');
+      const responseList = document.getElementById('responseList');
       
       if (!currentSelectedQuestion) {
         counter.textContent = 'Select a question above to view analytics';
         counter.className = 'response-counter no-selection';
-        deleteBtn.classList.remove('visible');
         analyticsBox.classList.remove('has-selection');
         statsGrid.style.display = 'none';
-      } else {
-        const responses = getResponsesForQuestion(currentSelectedQuestion);
-        const count = responses.length;
+        responseList.style.display = 'none';
+        return;
+      }
+      
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
+      
+      counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
+      counter.className = 'response-counter';
+      analyticsBox.classList.add('has-selection');
+      
+      if (count > 0) {
+        statsGrid.style.display = 'grid';
         
-        counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
-        counter.className = 'response-counter';
-        deleteBtn.classList.add('visible');
-        analyticsBox.classList.add('has-selection');
+        const totalWords = responses.reduce((sum, r) => {
+          const text = r.answer || r.response_text || '';
+          return sum + text.split(/\s+/).filter(w => w.length > 0).length;
+        }, 0);
+        const avgWords = Math.round(totalWords / count);
+        const withPhotos = responses.filter(r => r.photo_url || r.hasPhoto).length;
         
-        if (count > 0) {
-          statsGrid.style.display = 'grid';
+        document.getElementById('totalResponses').textContent = count;
+        document.getElementById('avgWords').textContent = avgWords;
+        document.getElementById('withPhotos').textContent = withPhotos;
+        
+        // Show response list
+        responseList.style.display = 'block';
+        responseList.innerHTML = '';
+        
+        responses.slice(0, 5).forEach(response => {
+          const item = document.createElement('div');
+          item.className = 'response-item';
           
-          const totalWords = responses.reduce((sum, r) => {
-            const text = r.answer || r.response_text || '';
-            return sum + text.split(/\s+/).filter(w => w.length > 0).length;
-          }, 0);
-          const avgWords = Math.round(totalWords / count);
-          const withPhotos = responses.filter(r => r.photo_url || r.hasPhoto).length;
+          const name = response.student_name || response.studentName || 'Anonymous';
+          const text = response.answer || response.response_text || '';
+          const words = text.split(/\s+/).filter(w => w.length > 0).length;
+          const preview = text.length > 100 ? text.substring(0, 100) + '...' : text;
           
-          document.getElementById('totalResponses').textContent = count;
-          document.getElementById('avgWords').textContent = avgWords;
-          document.getElementById('withPhotos').textContent = withPhotos;
-        } else {
-          statsGrid.style.display = 'none';
+          item.innerHTML = `
+            <div class="response-header">
+              <span class="student-name">${name}</span>
+              <span class="word-count">${words} words</span>
+            </div>
+            <div class="response-text">${preview}</div>
+          `;
+          
+          responseList.appendChild(item);
+        });
+        
+        if (count > 5) {
+          const more = document.createElement('div');
+          more.style.textAlign = 'center';
+          more.style.color = 'rgba(255,255,255,0.5)';
+          more.style.fontSize = '12px';
+          more.style.marginTop = '10px';
+          more.textContent = `+ ${count - 5} more responses`;
+          responseList.appendChild(more);
         }
+      } else {
+        statsGrid.style.display = 'none';
+        responseList.style.display = 'none';
       }
     }
 
@@ -937,9 +897,8 @@
         currentSelectedQuestion = null;
       } else {
         currentSelectedQuestion = allQuestions[parseInt(selectedValue)];
+        debugLog('Selected question', currentSelectedQuestion?.text?.substring(0, 50));
       }
-
-      console.log('Selected question:', currentSelectedQuestion?.text?.substring(0, 50) || 'none');
       
       updateAnalyticsBox();
       updateDisplayButton();
@@ -951,23 +910,18 @@
         return;
       }
       
-      const matchedResponses = getResponsesForQuestion(currentSelectedQuestion);
+      const matched = getResponsesForQuestion(currentSelectedQuestion);
       
-      if (matchedResponses.length === 0) {
+      if (matched.length === 0) {
         showNotification('No responses to display', 'info');
         return;
       }
       
-      showNotification(`Loading ${matchedResponses.length} responses...`, 'info');
+      localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
+      localStorage.setItem('display_responses', JSON.stringify(matched));
       
-      const questionData = JSON.stringify(currentSelectedQuestion);
-      const responseData = JSON.stringify(matchedResponses);
-      
-      localStorage.setItem('display_question', questionData);
-      localStorage.setItem('display_responses', responseData);
-      localStorage.setItem('current_question', questionData);
-      
-      console.log(`✅ Prepared display data: ${matchedResponses.length} responses`);
+      debugLog(`✅ Prepared display: ${matched.length} responses`);
+      showNotification(`Loading ${matched.length} responses...`, 'info');
       
       setTimeout(() => {
         try {
@@ -978,196 +932,215 @@
       }, 500);
     }
 
-    function showDeleteConfirmation() {
-      if (!currentSelectedQuestion) return;
-
-      const responses = getResponsesForQuestion(currentSelectedQuestion);
-      const count = responses.length;
-      
-      const message = document.getElementById('dialogMessage');
-      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
-      const shortQuestion = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
-      
-      if (count > 0) {
-        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
-      } else {
-        message.textContent = `Are you sure you want to delete "${shortQuestion}"? This action cannot be undone.`;
-      }
-      
-      document.getElementById('confirmDialog').classList.add('show');
-    }
-
-    function closeConfirmDialog() {
-      document.getElementById('confirmDialog').classList.remove('show');
-    }
-
-    async function confirmDelete() {
-      if (!currentSelectedQuestion) {
-        closeConfirmDialog();
-        return;
-      }
-
-      const questionToDelete = currentSelectedQuestion;
-      const questionId = questionToDelete.id;
-
-      try {
-        console.log('🗑 Deleting question and responses...');
-        
-        const responsesToDelete = getResponsesForQuestion(questionToDelete);
-        
-        // Delete from Supabase if online
-        if (supabase && isOnline && questionId) {
-          try {
-            // Delete responses first
-            if (responsesToDelete.length > 0) {
-              const responseIds = responsesToDelete.map(r => r.id).filter(id => id);
-              if (responseIds.length > 0) {
-                console.log(`Deleting ${responseIds.length} responses from Supabase...`);
-                const { error: respError } = await supabase
-                  .from('responses')
-                  .delete()
-                  .in('id', responseIds);
-                
-                if (respError) {
-                  console.error('Error deleting responses from Supabase:', respError);
-                } else {
-                  console.log(`✅ Deleted ${responseIds.length} responses from Supabase`);
-                }
-              }
-            }
-            
-            // Delete question
-            console.log(`Deleting question ${questionId} from Supabase...`);
-            const { error: qError } = await supabase
-              .from('questions')
-              .delete()
-              .eq('id', questionId);
-            
-            if (qError) {
-              console.error('Error deleting question from Supabase:', qError);
-            } else {
-              console.log('✅ Deleted question from Supabase');
-            }
-          } catch (err) {
-            console.error('Supabase delete error:', err);
-          }
-        }
-        
-        // Remove from local arrays
-        responsesToDelete.forEach(response => {
-          const index = allResponses.findIndex(r => r === response);
-          if (index > -1) {
-            allResponses.splice(index, 1);
-          }
-        });
-
-        const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
-        if (questionIndex > -1) {
-          allQuestions.splice(questionIndex, 1);
-        }
-
-        // Update localStorage
-        localStorage.setItem('intuity_student_responses', JSON.stringify(allResponses));
-        
-        // If this was the only/current question in localStorage, remove it
-        const storedQuestion = localStorage.getItem('intuity_current_question');
-        if (storedQuestion) {
-          try {
-            const parsed = JSON.parse(storedQuestion);
-            if (parsed.id === questionId) {
-              localStorage.removeItem('intuity_current_question');
-            }
-          } catch (e) {}
-        }
-        
-        console.log(`✅ Deleted question and ${responsesToDelete.length} responses`);
-        
-        currentSelectedQuestion = null;
-        document.getElementById('questionSelector').value = '';
-        updateUI();
-        closeConfirmDialog();
-        showNotification('Question deleted successfully', 'success');
-        
-      } catch (error) {
-        console.error('❌ Error deleting question:', error);
-        showNotification('Error deleting question', 'error');
-        closeConfirmDialog();
-      }
-    }
-
     function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
-      
-      const icons = {
-        success: '✓',
-        error: '⚠',
-        info: 'ℹ'
-      };
-      
-      notification.innerHTML = `
-        <span>${icons[type] || 'ℹ'}</span>
-        <span>${message}</span>
-      `;
+      notification.textContent = message;
       
       document.body.appendChild(notification);
-      
       setTimeout(() => notification.classList.add('show'), 100);
-      
       setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
       }, 3000);
     }
 
-    // Auto-refresh every 10 seconds
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        debugMode = !debugMode;
+        document.getElementById('debugPanel').classList.toggle('show');
+        debugLog(debugMode ? '🔍 Debug mode ON' : '🔍 Debug mode OFF');
+        
+        if (debugMode) {
+          debugLog('Current state', {
+            questions: allQuestions.length,
+            responses: allResponses.length,
+            selectedQuestion: currentSelectedQuestion?.text?.substring(0, 30),
+            online: isOnline
+          });
+        }
+      }
+      
+      if (e.key === 'Escape') {
+        closeDiagnostics();
+      }
+    });
+
+    // DIAGNOSTIC TOOL
+    async function showDiagnostics() {
+      debugLog('🔧 Running diagnostics...');
+      
+      const modal = document.getElementById('diagnosticModal');
+      modal.classList.add('show');
+      
+      // Check data sources
+      const sources = document.getElementById('diagnosticSources');
+      sources.innerHTML = '';
+      
+      // Supabase
+      let supabaseQuestions = 0;
+      let supabaseResponses = 0;
+      let supabaseStatus = 'error';
+      
+      if (supabase && isOnline) {
+        try {
+          const qResult = await supabase.from('questions').select('id', { count: 'exact', head: true });
+          const rResult = await supabase.from('student_responses').select('id', { count: 'exact', head: true });
+          
+          supabaseQuestions = qResult.count || 0;
+          supabaseResponses = rResult.count || 0;
+          supabaseStatus = 'success';
+        } catch (e) {
+          supabaseStatus = 'error';
+        }
+      }
+      
+      sources.innerHTML += `
+        <tr>
+          <td>Supabase (Cloud)</td>
+          <td>${supabaseQuestions}</td>
+          <td>${supabaseResponses}</td>
+          <td><span class="diagnostic-badge badge-${supabaseStatus}">${supabaseStatus === 'success' ? '✓ Online' : '✗ Offline'}</span></td>
+        </tr>
+      `;
+      
+      // LocalStorage
+      const localStorageKeys = [
+        { key: 'current_question', type: 'questions' },
+        { key: 'intuity_student_responses', type: 'responses' }
+      ];
+      
+      let localQuestions = 0;
+      let localResponses = 0;
+      
+      localStorageKeys.forEach(({ key, type }) => {
+        try {
+          const data = localStorage.getItem(key);
+          if (data && data !== 'null') {
+            const parsed = JSON.parse(data);
+            if (Array.isArray(parsed)) {
+              if (type === 'questions') localQuestions += parsed.length;
+              if (type === 'responses') localResponses += parsed.length;
+            } else if (type === 'questions' && parsed) {
+              localQuestions += 1;
+            }
+          }
+        } catch (e) {}
+      });
+      
+      sources.innerHTML += `
+        <tr>
+          <td>LocalStorage (Browser)</td>
+          <td>${localQuestions}</td>
+          <td>${localResponses}</td>
+          <td><span class="diagnostic-badge badge-success">✓ Available</span></td>
+        </tr>
+      `;
+      
+      // Question-Response mapping
+      const mapping = document.getElementById('diagnosticMapping');
+      mapping.innerHTML = '';
+      
+      if (allQuestions.length === 0) {
+        mapping.innerHTML = '<p style="color: rgba(255,255,255,0.5);">No questions to analyze</p>';
+      } else {
+        const mappingTable = document.createElement('table');
+        mappingTable.className = 'diagnostic-table';
+        mappingTable.innerHTML = '<thead><tr><th>Question</th><th>ID</th><th>Responses</th></tr></thead><tbody></tbody>';
+        
+        allQuestions.forEach(q => {
+          const text = (q.text || q.question_text || 'Untitled').substring(0, 40);
+          const id = q.id || 'NO_ID';
+          const responses = getResponsesForQuestion(q);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${text}...</td>
+            <td style="font-size:10px;">${id}</td>
+            <td><span class="diagnostic-badge badge-${responses.length > 0 ? 'success' : 'warning'}">${responses.length}</span></td>
+          `;
+          mappingTable.querySelector('tbody').appendChild(row);
+        });
+        
+        mapping.appendChild(mappingTable);
+      }
+      
+      // Potential issues
+      const issues = document.getElementById('diagnosticIssues');
+      issues.innerHTML = '';
+      
+      const issuesList = [];
+      
+      // Issue: Questions with no responses
+      const orphanQuestions = allQuestions.filter(q => getResponsesForQuestion(q).length === 0);
+      if (orphanQuestions.length > 0) {
+        issuesList.push(`<span class="diagnostic-badge badge-warning">⚠️</span> ${orphanQuestions.length} question(s) have no responses`);
+      }
+      
+      // Issue: Responses with no matching question
+      const questionIds = new Set(allQuestions.map(q => q.id));
+      const orphanResponses = allResponses.filter(r => {
+        const qId = r.question_id || r.questionId;
+        return qId && !questionIds.has(qId);
+      });
+      if (orphanResponses.length > 0) {
+        issuesList.push(`<span class="diagnostic-badge badge-error">✗</span> ${orphanResponses.length} response(s) have no matching question (ID mismatch)`);
+      }
+      
+      // Issue: Offline mode
+      if (!isOnline || !supabase) {
+        issuesList.push(`<span class="diagnostic-badge badge-warning">⚠️</span> Running in offline mode - Supabase unavailable`);
+      }
+      
+      // Issue: Empty data
+      if (allQuestions.length === 0 && allResponses.length === 0) {
+        issuesList.push(`<span class="diagnostic-badge badge-error">✗</span> No data found in any source`);
+      }
+      
+      if (issuesList.length === 0) {
+        issues.innerHTML = '<p style="color: rgba(16,185,129,0.9);"><span class="diagnostic-badge badge-success">✓</span> No issues detected</p>';
+      } else {
+        issues.innerHTML = issuesList.map(issue => `<p style="margin: 8px 0;">${issue}</p>`).join('');
+      }
+      
+      debugLog('✅ Diagnostics complete');
+    }
+    
+    function closeDiagnostics() {
+      document.getElementById('diagnosticModal').classList.remove('show');
+    }
+
+    // Auto-refresh every 15 seconds
     setInterval(async () => {
       if (!supabase || !isOnline) return;
       
-      const prevQuestions = allQuestions.length;
-      const prevResponses = allResponses.length;
+      const prevQ = allQuestions.length;
+      const prevR = allResponses.length;
       
       await loadAllQuestions();
       await loadAllResponses();
       
-      if (allQuestions.length !== prevQuestions || allResponses.length !== prevResponses) {
-        console.log(`✨ New data! Q: ${prevQuestions}→${allQuestions.length}, R: ${prevResponses}→${allResponses.length}`);
+      if (allQuestions.length !== prevQ || allResponses.length !== prevR) {
+        debugLog(`✨ New data! Q: ${prevQ}→${allQuestions.length}, R: ${prevR}→${allResponses.length}`);
         updateUI();
       }
-    }, 10000);
+    }, 15000);
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', async function() {
-      console.log('🚀 INTUITY Analytics Ready!');
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      debugLog('🚀 INTUITY Analytics Ready (SWISS CLOCK FIX)!');
       
-      // Initialize Supabase
-      const supabaseReady = initSupabase();
-      
-      if (!supabaseReady) {
-        showNotification('Running in offline mode', 'info');
-      }
-      
-      // Wait for Supabase to initialize
+      initSupabase();
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Load all data
       await loadAllData();
       
-      // Setup dialog event listeners
-      document.getElementById('confirmDialog').addEventListener('click', function(e) {
-        if (e.target === this) {
-          closeConfirmDialog();
-        }
+      debugLog('✅ Initialization complete', {
+        questions: allQuestions.length,
+        responses: allResponses.length,
+        online: isOnline
       });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeConfirmDialog();
-        }
-      });
-      
-      console.log('✅ Analytics initialized');
-      console.log('📊 Questions:', allQuestions.length, '| Responses:', allResponses.length);
     });
   </script>
 </body>
