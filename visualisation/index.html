@@ -66,12 +66,7 @@
       letter-spacing: 0.8px;
     }
 
-    .header-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .refresh-btn, .delete-btn {
+    .refresh-btn {
       background: rgba(255, 140, 60, 0.2);
       border: 1px solid rgba(255, 140, 60, 0.4);
       border-radius: 10px;
@@ -83,25 +78,9 @@
       transition: all 0.3s ease;
     }
 
-    .delete-btn {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: rgba(239, 68, 68, 0.9);
-    }
-
     .refresh-btn:hover {
       background: rgba(255, 140, 60, 0.3);
       transform: scale(1.05);
-    }
-
-    .delete-btn:hover {
-      background: rgba(239, 68, 68, 0.3);
-      transform: scale(1.05);
-    }
-
-    .delete-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
     }
 
     .question-dropdown {
@@ -144,7 +123,8 @@
       background: rgba(5, 5, 5, 0.8);
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 30px 28px;
+      position: relative;
+      overflow: hidden;
       transition: all 0.3s ease;
     }
 
@@ -152,12 +132,25 @@
       border-color: rgba(255, 140, 60, 0.3);
     }
 
+    .content-area {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 28px;
+      justify-content: center;
+      align-items: center;
+      min-height: 120px;
+      gap: 20px;
+    }
+
     .response-counter {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
       color: rgba(255, 140, 60, 0.9);
       font-size: 20px;
       font-weight: 600;
-      margin-bottom: 20px;
     }
 
     .response-counter.no-selection {
@@ -170,7 +163,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
-      margin-top: 15px;
+      width: 100%;
     }
 
     .stat-card {
@@ -196,7 +189,7 @@
     }
 
     .response-list {
-      margin-top: 20px;
+      width: 100%;
       max-height: 300px;
       overflow-y: auto;
     }
@@ -230,6 +223,38 @@
       color: rgba(255, 255, 255, 0.8);
       font-size: 14px;
       line-height: 1.4;
+    }
+
+    .delete-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.6);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn.visible {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: rgba(239, 68, 68, 0.9);
+      transform: scale(1.1);
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
     }
 
     .footer {
@@ -311,6 +336,96 @@
       color: rgba(239, 68, 68, 0.95);
     }
 
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(15px);
+    }
+
+    .dialog-overlay.show {
+      display: flex;
+    }
+
+    .dialog-box {
+      background: rgba(10, 10, 10, 0.95);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 35px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dialog-overlay.show .dialog-box {
+      transform: scale(1);
+    }
+
+    .dialog-title {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .dialog-message {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .dialog-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .dialog-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 90px;
+    }
+
+    .dialog-btn.cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .dialog-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .dialog-btn.delete {
+      background: rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 1);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .dialog-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    }
+
     .loading-spinner {
       display: inline-block;
       width: 14px;
@@ -336,10 +451,7 @@
     <section class="dropdown-section">
       <div class="selection-header">
         <div class="selection-title">📊 Question Analytics</div>
-        <div class="header-actions">
-          <button class="delete-btn" id="deleteBtn" onclick="deleteSelectedQuestion()" disabled>🗑️ Delete</button>
-          <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh</button>
-        </div>
+        <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh</button>
       </div>
       <select class="question-dropdown" id="questionSelector" onchange="handleQuestionChange()">
         <option value="">Loading questions...</option>
@@ -349,24 +461,27 @@
     <main class="main-content">
       <div class="analytics-container">
         <div class="analytics-box" id="analyticsBox">
-          <div class="response-counter no-selection" id="responseCounter">
-            Select a question above to view analytics
+          <div class="content-area">
+            <div class="response-counter no-selection" id="responseCounter">
+              Select a question above to view analytics
+            </div>
+            <div class="stats-grid" id="statsGrid" style="display: none;">
+              <div class="stat-card">
+                <div class="stat-value" id="totalResponses">0</div>
+                <div class="stat-label">Responses</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="avgWords">0</div>
+                <div class="stat-label">Avg Words</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="withPhotos">0</div>
+                <div class="stat-label">With Photos</div>
+              </div>
+            </div>
+            <div class="response-list" id="responseList" style="display: none;"></div>
+            <button class="delete-btn" id="deleteBtn" onclick="showDeleteConfirmation()" title="Delete this question">🗑</button>
           </div>
-          <div class="stats-grid" id="statsGrid" style="display: none;">
-            <div class="stat-card">
-              <div class="stat-value" id="totalResponses">0</div>
-              <div class="stat-label">Responses</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" id="avgWords">0</div>
-              <div class="stat-label">Avg Words</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" id="withPhotos">0</div>
-              <div class="stat-label">With Photos</div>
-            </div>
-          </div>
-          <div class="response-list" id="responseList" style="display: none;"></div>
         </div>
       </div>
     </main>
@@ -376,6 +491,19 @@
       <a href="../index.html" class="nav-button">HOME</a>
       <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
+  </div>
+
+  <div class="dialog-overlay" id="confirmDialog">
+    <div class="dialog-box">
+      <div class="dialog-title">Delete Question</div>
+      <div class="dialog-message" id="dialogMessage">
+        Are you sure you want to delete this question and all responses? This action cannot be undone.
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn cancel" onclick="closeConfirmDialog()">Cancel</button>
+        <button class="dialog-btn delete" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -589,6 +717,7 @@
       const analyticsBox = document.getElementById('analyticsBox');
       const statsGrid = document.getElementById('statsGrid');
       const responseList = document.getElementById('responseList');
+      const deleteBtn = document.getElementById('deleteBtn');
       
       if (!currentSelectedQuestion) {
         counter.textContent = 'Select a question above to view analytics';
@@ -596,6 +725,7 @@
         analyticsBox.classList.remove('has-selection');
         statsGrid.style.display = 'none';
         responseList.style.display = 'none';
+        deleteBtn.classList.remove('visible');
         return;
       }
       
@@ -605,6 +735,7 @@
       counter.textContent = `${count} Response${count !== 1 ? 's' : ''}`;
       counter.className = 'response-counter';
       analyticsBox.classList.add('has-selection');
+      deleteBtn.classList.add('visible');
       
       if (count > 0) {
         statsGrid.style.display = 'grid';
@@ -660,13 +791,11 @@
 
     function updateButtons() {
       const displayBtn = document.getElementById('displayBtn');
-      const deleteBtn = document.getElementById('deleteBtn');
       
       const hasSelection = currentSelectedQuestion !== null;
       const hasResponses = hasSelection && getResponsesForQuestion(currentSelectedQuestion).length > 0;
       
       displayBtn.disabled = !hasResponses;
-      deleteBtn.disabled = !hasSelection;
     }
 
     function escapeHtml(text) {
@@ -689,36 +818,100 @@
       updateButtons();
     }
 
-    async function deleteSelectedQuestion() {
+    function showDeleteConfirmation() {
       if (!currentSelectedQuestion) return;
+
+      const responses = getResponsesForQuestion(currentSelectedQuestion);
+      const count = responses.length;
       
-      const questionText = (currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question').substring(0, 50);
+      const message = document.getElementById('dialogMessage');
+      const questionText = currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question';
+      const shortQuestion = questionText.length > 50 ? questionText.substring(0, 50) + '...' : questionText;
       
-      if (!confirm(`Delete "${questionText}"?\n\nThis will remove the question but NOT the responses.`)) {
-        return;
+      if (count > 0) {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}" and all ${count} response${count !== 1 ? 's' : ''}? This action cannot be undone.`;
+      } else {
+        message.textContent = `Are you sure you want to delete "${shortQuestion}"? This action cannot be undone.`;
       }
       
-      const deleteBtn = document.getElementById('deleteBtn');
-      deleteBtn.innerHTML = '<span class="loading-spinner"></span>';
-      deleteBtn.disabled = true;
-      
+      document.getElementById('confirmDialog').classList.add('show');
+    }
+
+    function closeConfirmDialog() {
+      document.getElementById('confirmDialog').classList.remove('show');
+    }
+
+    async function confirmDelete() {
+      if (!currentSelectedQuestion) {
+        closeConfirmDialog();
+        return;
+      }
+
+      const questionToDelete = currentSelectedQuestion;
+      const questionId = questionToDelete.id;
+
       try {
-        if (supabase && isOnline && currentSelectedQuestion.id) {
-          const { error } = await supabase
-            .from('questions')
-            .delete()
-            .eq('id', currentSelectedQuestion.id);
-          
-          if (error) throw error;
+        const responsesToDelete = getResponsesForQuestion(questionToDelete);
+        
+        if (supabase && isOnline && questionId) {
+          try {
+            if (responsesToDelete.length > 0) {
+              const responseIds = responsesToDelete.map(r => r.id).filter(id => id);
+              if (responseIds.length > 0) {
+                const { error: respError } = await supabase
+                  .from('student_responses')
+                  .delete()
+                  .in('id', responseIds);
+                
+                if (respError) console.error('Error deleting responses:', respError);
+              }
+            }
+            
+            const { error: qError } = await supabase
+              .from('questions')
+              .delete()
+              .eq('id', questionId);
+            
+            if (qError) console.error('Error deleting question:', qError);
+          } catch (err) {
+            console.error('Supabase delete error:', err);
+          }
         }
         
-        showNotification('Question deleted successfully', 'success');
+        responsesToDelete.forEach(response => {
+          const index = allResponses.findIndex(r => r === response);
+          if (index > -1) {
+            allResponses.splice(index, 1);
+          }
+        });
+
+        const questionIndex = allQuestions.findIndex(q => q === questionToDelete);
+        if (questionIndex > -1) {
+          allQuestions.splice(questionIndex, 1);
+        }
+
+        localStorage.setItem('intuity_student_responses', JSON.stringify(allResponses));
+        
+        const storedQuestion = localStorage.getItem('intuity_current_question');
+        if (storedQuestion) {
+          try {
+            const parsed = JSON.parse(storedQuestion);
+            if (parsed.id === questionId) {
+              localStorage.removeItem('intuity_current_question');
+            }
+          } catch (e) {}
+        }
+        
         currentSelectedQuestion = null;
-        await loadAllData();
+        document.getElementById('questionSelector').value = '';
+        updateUI();
+        closeConfirmDialog();
+        showNotification('Question deleted successfully', 'success');
+        
       } catch (error) {
-        showNotification('Error deleting question: ' + error.message, 'error');
-        deleteBtn.innerHTML = '🗑️ Delete';
-        deleteBtn.disabled = false;
+        console.error('Error deleting question:', error);
+        showNotification('Error deleting question', 'error');
+        closeConfirmDialog();
       }
     }
 
@@ -812,6 +1005,18 @@
       initSupabase();
       await new Promise(resolve => setTimeout(resolve, 500));
       await loadAllData();
+      
+      document.getElementById('confirmDialog').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeConfirmDialog();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeConfirmDialog();
+        }
+      });
     });
   </script>
 </body>
