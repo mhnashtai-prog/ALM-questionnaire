@@ -1,1 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INTUITY - Live Responses (Neumorphic Edition)</title>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      min-height: 100vh;
+      width: 100vw;
+      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      background: #000000;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 100, 40, 0.35) 0%, transparent 45%),
+                  radial-gradient(circle at 20% 70%, rgba(200, 80, 30, 0.25) 0%, transparent 65%),
+                  radial-gradient(circle at 90% 10%, rgba(255, 160, 80, 0.2) 0%, transparent 40%),
+                  linear-gradient(135deg, #000000 0%, #000000 30%, #0a0503 70%, #000000 100%);
+    }
+
+    .curved-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    .curve {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+    }
+
+    .curve1 {
+      width: 200px;
+      height: 400px;
+      top: -100px;
+      right: -50px;
+      transform: rotate(8deg);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.12) 0%, rgba(255, 100, 40, 0.08) 50%, rgba(200, 80, 30, 0.04) 100%);
+      box-shadow: inset 0 0 30px rgba(255, 120, 50, 0.08);
+      opacity: 0.4;
+    }
+
+    .curve2 {
+      width: 150px;
+      height: 300px;
+      bottom: -80px;
+      left: -30px;
+      transform: rotate(-5deg);
+      border: 1px solid rgba(255, 100, 40, 0.2);
+      background: linear-gradient(45deg, rgba(255, 100, 40, 0.08) 0%, rgba(200, 80, 30, 0.06) 50%, transparent 100%);
+      box-shadow: inset 0 0 20px rgba(255, 100, 40, 0.06);
+      opacity: 0.3;
+    }
+
+    .curve3 {
+      width: 120px;
+      height: 250px;
+      top: 40%;
+      right: 10%;
+      transform: rotate(12deg);
+      border: 1px solid rgba(255, 160, 80, 0.2);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.06) 0%, rgba(255, 140, 60, 0.03) 50%, transparent 100%);
+      box-shadow: inset 0 0 15px rgba(255, 160, 80, 0.05);
+      opacity: 0.25;
+    }
+
+    .curve4 {
+      width: 80px;
+      height: 160px;
+      top: 20%;
+      left: 20%;
+      transform: rotate(-10deg);
+      border: 1px solid rgba(255, 120, 50, 0.15);
+      background: linear-gradient(45deg, rgba(255, 120, 50, 0.04) 0%, rgba(200, 80, 30, 0.02) 50%, transparent 100%);
+      box-shadow: inset 0 0 12px rgba(255, 120, 50, 0.04);
+      opacity: 0.2;
+    }
+
+    .curve5 {
+      width: 180px;
+      height: 360px;
+      bottom: 10%;
+      right: 15%;
+      transform: rotate(6deg);
+      border: 1px solid rgba(255, 140, 60, 0.25);
+      background: linear-gradient(45deg, rgba(255, 140, 60, 0.08) 0%, rgba(255, 100, 40, 0.05) 50%, rgba(200, 80, 30, 0.03) 100%);
+      box-shadow: inset 0 0 25px rgba(255, 140, 60, 0.08);
+      opacity: 0.35;
+    }
+
+    .curve6 {
+      width: 60px;
+      height: 120px;
+      top: 65%;
+      left: 8%;
+      transform: rotate(-15deg);
+      border: 1px solid rgba(255, 160, 80, 0.1);
+      background: linear-gradient(45deg, rgba(255, 160, 80, 0.03) 0%, transparent 100%);
+      opacity: 0.15;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 20px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 140, 60, 0.3);
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    /* CLASSROOM OPTIMIZED - 30% wider for better presentation visibility */
+    .question-display {
+      width: 65%; /* INCREASED from 50% to 65% (30% increase) */
+      height: 2.5cm;
+      background: #000000;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto 50px auto;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .question-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .question-text {
+      font-size: 16px;
+      color: #fff;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .total-count {
+      font-size: 12px;
+      color: rgba(255, 140, 60, 0.8);
+      font-weight: 500;
+    }
+
+    /* CLASSROOM OPTIMIZED - 30% wider response container */
+    .response-container {
+      width: 65%; /* INCREASED from 50% to 65% (30% increase) */
+      height: 6cm;
+      position: relative;
+      margin: 0 auto 50px auto;
+      perspective: 1000px;
+    }
+
+    .response-card {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transform: translateX(30px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+    }
+
+    .response-card.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* CARD STRUCTURE - UNCHANGED */
+    .card-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .card-container:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 140, 60, 0.3);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 25px;
+      border-radius: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .card-front {
+      opacity: 1;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* NEUMORPHIC BLUE STYLING FOR BACK FACE */
+    .card-back {
+      opacity: 0;
+      z-index: 1;
+      background: #5a7a95;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        8px 8px 20px rgba(71, 94, 117, 0.4),
+        -8px -8px 20px rgba(89, 122, 155, 0.6);
+      animation: gentleFloat 8s ease-in-out infinite;
+    }
+
+    .card-container.flipped .card-front {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .card-container.flipped .card-back {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    /* Front face styling - UNCHANGED */
+    .front-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .front-name {
+      font-size: 24px;
+      font-weight: 600;
+      color: rgba(255, 140, 60, 0.9);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .front-preview {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+      line-height: 1.3;
+      font-weight: 300;
+      transition: all 0.3s ease;
+    }
+
+    .card-container:hover .front-preview {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* NEUMORPHIC BLUE BACK FACE CONTENT */
+    .neumorphic-content {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+      position: relative;
+      z-index: 2;
+      padding: 10px;
+    }
+
+    .neu-photo-section {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .neu-text-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      min-width: 0;
+    }
+
+    .neu-photo {
+      width: 96px;
+      height: 96px;
+      border-radius: 20px;
+      object-fit: cover;
+      box-shadow: 
+        inset 3px 3px 8px rgba(71, 94, 117, 0.4),
+        inset -3px -3px 8px rgba(89, 122, 155, 0.6),
+        6px 6px 15px rgba(47, 62, 78, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .neu-photo-placeholder {
+      width: 96px;
+      height: 96px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      color: rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        inset 3px 3px 8px rgba(71, 94, 117, 0.4),
+        inset -3px -3px 8px rgba(89, 122, 155, 0.6);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .neu-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      text-align: center;
+      text-shadow: 
+        2px 2px 6px rgba(71, 94, 117, 0.4),
+        -1px -1px 3px rgba(89, 122, 155, 0.6);
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .neu-response {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 15px;
+      padding: 20px;
+      width: 100%;
+      max-height: 140px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 
+        inset 2px 2px 6px rgba(71, 94, 117, 0.3),
+        inset -2px -2px 6px rgba(89, 122, 155, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      /* Enable smooth scrolling on all devices */
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      /* Custom scrollbar styling */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
+    }
+
+    /* Custom scrollbar for webkit browsers */
+    .neu-response::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .neu-response::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .neu-response::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 3px;
+    }
+
+    .neu-response::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Subtle scroll indicator */
+    .neu-response::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      right: 8px;
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 4px solid rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .neu-response.scrollable::after {
+      opacity: 1;
+    }
+
+    .neu-response-text {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.6;
+      text-align: left;
+      font-weight: 400;
+      text-shadow: 
+        1px 1px 3px rgba(71, 94, 117, 0.4),
+        0 0 8px rgba(255, 255, 255, 0.1);
+      margin: 0;
+      padding: 0;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+
+    /* Decorative elements for neumorphic cards */
+    .neu-decoration {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+      box-shadow: 
+        2px 2px 6px rgba(71, 94, 117, 0.3),
+        -2px -2px 6px rgba(89, 122, 155, 0.4);
+      animation: drift 12s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .neu-decoration:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+      opacity: 0.3;
+    }
+
+    .neu-decoration:nth-child(2) {
+      bottom: 15%;
+      right: 8%;
+      animation-delay: 4s;
+      transform: scale(0.7);
+      opacity: 0.25;
+    }
+
+    /* Floating animation */
+    @keyframes gentleFloat {
+      0%, 100% {
+        transform: translateY(0px);
+        box-shadow: 
+          8px 8px 20px rgba(71, 94, 117, 0.4),
+          -8px -8px 20px rgba(89, 122, 155, 0.6);
+      }
+      50% {
+        transform: translateY(-6px);
+        box-shadow: 
+          12px 14px 25px rgba(71, 94, 117, 0.5),
+          -12px -10px 22px rgba(89, 122, 155, 0.7);
+      }
+    }
+
+    @keyframes drift {
+      0%, 100% {
+        transform: translate(0, 0) scale(var(--scale, 1));
+        opacity: 0.3;
+      }
+      25% {
+        transform: translate(15px, -10px) scale(var(--scale, 1));
+        opacity: 0.5;
+      }
+      50% {
+        transform: translate(-8px, 8px) scale(var(--scale, 1));
+        opacity: 0.4;
+      }
+      75% {
+        transform: translate(12px, 4px) scale(var(--scale, 1));
+        opacity: 0.45;
+      }
+    }
+
+    /* NAVIGATION - UNCHANGED */
+    .navigation-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+    }
+
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 140, 60, 0.1);
+      border-color: rgba(255, 140, 60, 0.3);
+      color: rgba(255, 140, 60, 0.8);
+    }
+
+    .nav-arrow.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .navigation-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-dot.active {
+      background: rgba(255, 140, 60, 0.8);
+      transform: scale(1.3);
+    }
+
+    .nav-dot:hover {
+      background: rgba(255, 140, 60, 0.5);
+      transform: scale(1.1);
+    }
+
+    .no-responses {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+    }
+
+    .no-responses-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .footer {
+      margin-top: 60px;
+      background: rgba(64, 64, 64, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      text-decoration: none;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 140, 60, 0.2);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .click-indicator {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(16, 185, 129, 0.8);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .click-indicator.show {
+      opacity: 1;
+    }
+
+    /* Animations for background curves - UNCHANGED */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--rotate)); opacity: var(--base-opacity); }
+      33% { transform: translateY(-8px) rotate(calc(var(--rotate) + 1deg)); opacity: calc(var(--base-opacity) * 1.2); }
+      66% { transform: translateY(-4px) rotate(calc(var(--rotate) - 0.5deg)); opacity: calc(var(--base-opacity) * 0.8); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1) rotate(var(--rotate)); }
+      50% { opacity: calc(var(--base-opacity) * 1.5); transform: scale(1.02) rotate(var(--rotate)); }
+    }
+
+    .curve1 { --base-opacity: 0.4; --rotate: 8deg; animation: float 8s ease-in-out infinite; }
+    .curve2 { --base-opacity: 0.3; --rotate: -5deg; animation: float 10s ease-in-out infinite reverse; }
+    .curve3 { --base-opacity: 0.25; --rotate: 12deg; animation: drift 6s ease-in-out infinite; }
+    .curve4 { --base-opacity: 0.2; --rotate: -10deg; animation: pulse 12s ease-in-out infinite; }
+    .curve5 { --base-opacity: 0.35; --rotate: 6deg; animation: float 9s ease-in-out infinite reverse; }
+    .curve6 { --base-opacity: 0.15; --rotate: -15deg; animation: drift 15s ease-in-out infinite reverse; }
+
+    /* DEBUG - UNCHANGED */
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      color: rgba(255, 140, 60, 0.8);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: monospace;
+      z-index: 1000;
+      max-width: 300px;
+      display: none;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
+    /* Mobile Responsive - Keep mobile width at 100% for usability */
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 15px 15px;
+      }
+      
+      .header {
+        margin-bottom: 40px;
+      }
+      
+      .header h1 {
+        font-size: 28px;
+      }
+      
+      .question-display {
+        width: 100%; /* Full width on mobile for better readability */
+        height: 2cm;
+        margin-bottom: 30px;
+        padding: 12px;
+      }
+      
+      .question-text {
+        font-size: 14px;
+      }
+      
+      .response-container {
+        width: 100%; /* Full width on mobile for better usability */
+        height: 5cm;
+        margin-bottom: 30px;
+      }
+      
+      .card-front, .card-back {
+        padding: 20px;
+      }
+      
+      .front-photo {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .front-name {
+        font-size: 16px;
+      }
+      
+      .navigation-container {
+        margin-bottom: 30px;
+      }
+      
+      .footer {
+        margin-top: 40px;
+      }
+
+      .neu-photo, .neu-photo-placeholder {
+        width: 80px;
+        height: 80px;
+      }
+
+      .neu-name {
+        font-size: 20px;
+      }
+
+      .neu-response {
+        padding: 15px;
+      }
+
+      .neu-response-text {
+        font-size: 12px;
+      }
+    }
+
+    /* CLASSROOM PRESENTATION OPTIMIZATIONS for large screens */
+    @media (min-width: 1024px) {
+      .container {
+        padding: 60px 40px 30px;
+        max-width: 1600px;
+        margin: 0 auto;
+      }
+      
+      .header h1 {
+        font-size: 42px;
+        margin-bottom: 15px;
+      }
+      
+      .header p {
+        font-size: 18px;
+      }
+      
+      .question-display {
+        width: 75%; /* Even wider on large screens for maximum classroom impact */
+        height: 3.5cm; /* Taller for better visibility */
+        padding: 25px;
+        margin-bottom: 60px;
+      }
+      
+      .question-text {
+        font-size: 22px;
+      }
+      
+      .total-count {
+        font-size: 16px;
+      }
+      
+      .response-container {
+        width: 75%; /* Matching wider width for large displays */
+        height: 8cm; /* Taller for better classroom viewing */
+        margin-bottom: 60px;
+      }
+      
+      .card-front, .card-back {
+        padding: 35px;
+      }
+      
+      .front-photo {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .front-name {
+        font-size: 28px;
+      }
+      
+      .front-preview {
+        font-size: 16px;
+      }
+      
+      .neu-photo, .neu-photo-placeholder {
+        width: 110px;
+        height: 110px;
+      }
+      
+      .neu-name {
+        font-size: 24px;
+      }
+      
+      .neu-response {
+        padding: 25px;
+        max-height: 180px;
+      }
+      
+      .neu-response-text {
+        font-size: 20px;
+        line-height: 1.7;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="curved-overlay">
+      <div class="curve curve1"></div>
+      <div class="curve curve2"></div>
+      <div class="curve curve3"></div>
+      <div class="curve curve4"></div>
+      <div class="curve curve5"></div>
+      <div class="curve curve6"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header class="header">
+      <h1>INTUITY</h1>
+      <p>Live Responses (Neumorphic Edition)<br>By Majid Nashtai</p>
+    </header>
+
+    <div class="question-display">
+      <div class="question-content">
+        <div class="question-text" id="questionText">Loading question...</div>
+        <div class="total-count" id="totalCount">Loading responses...</div>
+      </div>
+    </div>
+
+    <div class="response-container" id="responseContainer">
+      <div class="no-responses" id="noResponses">
+        <div class="no-responses-icon">💭</div>
+        <div>No responses yet</div>
+        <div style="margin-top: 10px; font-size: 14px; opacity: 0.6;">Responses will appear here as students submit them</div>
+      </div>
+    </div>
+
+    <div class="navigation-container">
+      <div class="nav-arrow" id="prevArrow" onclick="navigateToResponse(currentIndex - 1)">‹</div>
+      <div class="navigation-dots" id="navigationDots"></div>
+      <div class="nav-arrow" id="nextArrow" onclick="navigateToResponse(currentIndex + 1)">›</div>
+    </div>
+
+    <footer class="footer">
+      <button class="nav-button" onclick="window.close()" title="Close">✕</button>
+      <a href="../index.html" class="nav-button" title="Home">⌂</a>
+      <button class="nav-button" onclick="goToAnalytics()" title="Back to Analytics">📊</button>
+      <button class="nav-button" id="refreshBtn" title="Refresh">🔄</button>
+    </footer>
+  </div>
+
+  <div class="debug-info" id="debugInfo">
+    <div id="debugContent"></div>
+  </div>
+
+  <script>
+    let currentQuestion = null;
+    let responses = [];
+    let currentIndex = 0;
+    let activeCardClickHandler = null;
+
+    function debugLog(message, data = null) {
+      const debugInfo = document.getElementById('debugInfo');
+      const debugContent = document.getElementById('debugContent');
+      const timestamp = new Date().toLocaleTimeString();
+      
+      console.log(`[NEUMORPHIC DISPLAY] ${timestamp} - ${message}`, data || '');
+      
+      debugContent.innerHTML = `
+        <div><strong>${timestamp}:</strong> ${message}</div>
+        ${data ? '<div style="font-size: 10px; opacity: 0.7;">' + JSON.stringify(data, null, 2) + '</div>' : ''}
+      `;
+      debugInfo.classList.add('show');
+      
+      setTimeout(() => {
+        debugInfo.classList.remove('show');
+      }, 3000);
+    }
+
+    function loadData() {
+      try {
+        const questionData = localStorage.getItem('display_question');
+        if (questionData) {
+          currentQuestion = JSON.parse(questionData);
+        }
+
+        const responseSources = [
+          'display_responses',
+          'alm_student_responses', 
+          'intuity_responses',
+          'student_responses',
+          'intuity_student_responses'
+        ];
+
+        for (const source of responseSources) {
+          const responsesData = localStorage.getItem(source);
+          if (responsesData) {
+            try {
+              const parsed = JSON.parse(responsesData);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                responses = parsed;
+                debugLog(`Loaded ${responses.length} responses from ${source}`);
+                break;
+              }
+            } catch (e) {
+              console.warn(`Failed to parse ${source}:`, e);
+            }
+          }
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Error loading data:', error);
+        return false;
+      }
+    }
+
+    function displayQuestion() {
+      const questionText = document.getElementById('questionText');
+      const totalCount = document.getElementById('totalCount');
+
+      if (currentQuestion) {
+        const questionStr = currentQuestion.questionText || currentQuestion.text || currentQuestion.question_text || 'Question';
+        questionText.textContent = questionStr;
+      } else {
+        questionText.textContent = 'No question selected';
+      }
+
+      const count = responses.length;
+      totalCount.textContent = `${count} response${count !== 1 ? 's' : ''}`;
+    }
+
+    function createResponseCard(response, index) {
+      const card = document.createElement('div');
+      card.className = 'response-card';
+      card.id = `response-${index}`;
+
+      const studentName = response.studentName || response.student_name || 'Anonymous';
+      const answer = response.answer || 'No response text';
+      const wordCount = response.wordCount || response.word_count || 0;
+      const timestamp = formatTimestamp(response.timestamp || response.created_at || response.submitted_at);
+      const photoUrl = response.photoUrl || response.photo_url || response.metadata?.photo_url;
+      
+      const frontPhotoHtml = photoUrl ? 
+        `<img src="${photoUrl}" alt="Student photo" class="front-photo" onerror="this.style.display='none'">` :
+        `<div class="front-photo" style="background: rgba(255,140,60,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,140,60,0.6);">👤</div>`;
+      
+      const neuPhotoHtml = photoUrl ?
+        `<img src="${photoUrl}" alt="Student photo" class="neu-photo" onerror="this.replaceWith(this.nextElementSibling)">
+         <div class="neu-photo-placeholder" style="display: none;">👤</div>` :
+        `<div class="neu-photo-placeholder">👤</div>`;
+
+      card.innerHTML = `
+        <div class="card-container" data-index="${index}" data-student="${escapeHtml(studentName)}">
+          <div class="click-indicator">CLICK FOR RESPONSE</div>
+          <div class="card-front">
+            ${frontPhotoHtml}
+            <div class="front-name">${escapeHtml(studentName)}</div>
+            <div class="front-preview">Click to see response</div>
+          </div>
+          <div class="card-back">
+            <div class="neu-decoration"></div>
+            <div class="neu-decoration"></div>
+            
+            <div class="neumorphic-content">
+              <div class="neu-photo-section">
+                ${neuPhotoHtml}
+                <div class="neu-name">${escapeHtml(studentName)}</div>
+              </div>
+              <div class="neu-text-section">
+                <div class="neu-response" data-response-id="${index}">
+                  <div class="neu-response-text">${escapeHtml(answer)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Check if response needs scrolling and add indicator
+      setTimeout(() => {
+        const responseContainer = card.querySelector('.neu-response');
+        if (responseContainer) {
+          const isScrollable = responseContainer.scrollHeight > responseContainer.clientHeight;
+          if (isScrollable) {
+            responseContainer.classList.add('scrollable');
+          }
+        }
+      }, 100);
+
+      return card;
+    }
+
+    function attachCardClickHandler() {
+      // Remove previous handler
+      if (activeCardClickHandler) {
+        document.removeEventListener('click', activeCardClickHandler);
+      }
+
+      // Create new handler
+      activeCardClickHandler = function(e) {
+        const cardContainer = e.target.closest('.card-container');
+        if (!cardContainer) return;
+
+        const responseCard = cardContainer.closest('.response-card');
+        if (!responseCard || !responseCard.classList.contains('active')) {
+          debugLog('Click ignored - card not active');
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const studentName = cardContainer.dataset.student;
+        const isFlipped = cardContainer.classList.contains('flipped');
+        
+        debugLog(`Neumorphic card clicked: ${studentName}`, { 
+          wasFlipped: isFlipped, 
+          willBeFlipped: !isFlipped 
+        });
+
+        // Show click indicator
+        const indicator = cardContainer.querySelector('.click-indicator');
+        if (indicator) {
+          indicator.classList.add('show');
+          setTimeout(() => indicator.classList.remove('show'), 500);
+        }
+
+        // Toggle flip
+        cardContainer.classList.toggle('flipped');
+        
+        // Update preview text
+        const frontPreview = cardContainer.querySelector('.front-preview');
+        if (frontPreview) {
+          frontPreview.textContent = cardContainer.classList.contains('flipped') ? 
+            'Click to close response' : 'Click to see response';
+        }
+
+        debugLog(`Neumorphic card toggled: ${studentName}`, { 
+          nowShowingResponse: cardContainer.classList.contains('flipped')
+        });
+      };
+
+      // Attach new handler
+      document.addEventListener('click', activeCardClickHandler);
+      debugLog('Neumorphic card click handler attached');
+    }
+
+    function displayResponses() {
+      const container = document.getElementById('responseContainer');
+      const noResponses = document.getElementById('noResponses');
+      
+      debugLog('Displaying neumorphic responses', { count: responses.length });
+      
+      if (responses.length === 0) {
+        noResponses.style.display = 'flex';
+        updateNavigationArrows();
+        return;
+      }
+
+      noResponses.style.display = 'none';
+
+      // Sort responses by timestamp
+      const sortedResponses = [...responses].sort((a, b) => {
+        const timeA = new Date(a.timestamp || a.created_at || a.submitted_at || 0);
+        const timeB = new Date(b.timestamp || b.created_at || b.submitted_at || 0);
+        return timeB - timeA;
+      });
+
+      // Clear container
+      container.innerHTML = '';
+
+      // Create all cards
+      sortedResponses.forEach((response, index) => {
+        const card = createResponseCard(response, index);
+        if (index === currentIndex) {
+          card.classList.add('active');
+        }
+        container.appendChild(card);
+      });
+
+      // Attach click handlers
+      setTimeout(() => {
+        attachCardClickHandler();
+        debugLog('Neumorphic cards created and handlers attached', { 
+          totalCards: sortedResponses.length,
+          activeIndex: currentIndex
+        });
+      }, 100);
+
+      createNavigationDots();
+      updateNavigationArrows();
+    }
+
+    function createNavigationDots() {
+      const dotsContainer = document.getElementById('navigationDots');
+      dotsContainer.innerHTML = '';
+
+      if (responses.length <= 1) return;
+
+      for (let i = 0; i < responses.length && i < 12; i++) {
+        const dot = document.createElement('div');
+        dot.className = `nav-dot ${i === currentIndex ? 'active' : ''}`;
+        dot.addEventListener('click', () => navigateToResponse(i));
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function updateNavigationArrows() {
+      const prevArrow = document.getElementById('prevArrow');
+      const nextArrow = document.getElementById('nextArrow');
+      
+      if (responses.length <= 1) {
+        prevArrow.classList.add('disabled');
+        nextArrow.classList.add('disabled');
+        return;
+      }
+      
+      prevArrow.classList.toggle('disabled', currentIndex === 0);
+      nextArrow.classList.toggle('disabled', currentIndex === responses.length - 1);
+    }
+
+    function navigateToResponse(index) {
+      if (index < 0 || index >= responses.length || index === currentIndex) {
+        return;
+      }
+
+      debugLog(`Navigating from ${currentIndex} to ${index}`);
+
+      // Reset any flipped cards
+      document.querySelectorAll('.card-container.flipped').forEach(card => {
+        card.classList.remove('flipped');
+        const frontPreview = card.querySelector('.front-preview');
+        if (frontPreview) {
+          frontPreview.textContent = 'Click to see response';
+        }
+      });
+
+      // Hide current card
+      const currentCard = document.querySelector('.response-card.active');
+      if (currentCard) {
+        currentCard.classList.remove('active');
+      }
+
+      currentIndex = index;
+
+      // Show new card
+      setTimeout(() => {
+        document.querySelectorAll('.response-card').forEach((card, i) => {
+          if (i === currentIndex) {
+            card.classList.add('active');
+          } else {
+            card.classList.remove('active');
+          }
+        });
+
+        createNavigationDots();
+        updateNavigationArrows();
+        
+        debugLog(`Navigation complete to index ${currentIndex}`);
+      }, 150);
+    }
+
+    function formatTimestamp(timestamp) {
+      if (!timestamp) return 'Unknown time';
+      
+      try {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      } catch (error) {
+        return 'Unknown time';
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function refreshData() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      refreshBtn.style.animation = 'spin 1s linear infinite';
+
+      if (loadData()) {
+        displayQuestion();
+        displayResponses();
+        debugLog('Neumorphic data refreshed successfully');
+      }
+
+      setTimeout(() => {
+        refreshBtn.style.animation = '';
+      }, 1000);
+    }
+
+    function goToAnalytics() {
+      window.location.href = '../visualisation/';
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (responses.length === 0) return;
+      
+      switch(e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          navigateToResponse(currentIndex - 1);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          navigateToResponse(currentIndex + 1);
+          break;
+        case ' ': // Spacebar
+          e.preventDefault();
+          const activeCard = document.querySelector('.response-card.active .card-container');
+          if (activeCard) {
+            activeCard.click();
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          document.querySelectorAll('.card-container.flipped').forEach(card => {
+            card.classList.remove('flipped');
+            const frontPreview = card.querySelector('.front-preview');
+            if (frontPreview) {
+              frontPreview.textContent = 'Click to see response';
+            }
+          });
+          break;
+      }
+    });
+
+    function startAutoRefresh() {
+      setInterval(() => {
+        const oldCount = responses.length;
+        loadData();
+        const newCount = responses.length;
+        
+        if (newCount !== oldCount) {
+          displayQuestion();
+          displayResponses();
+        }
+      }, 5000);
+    }
+
+    function init() {
+      debugLog('INTUITY Neumorphic Display initializing...');
+      
+      if (!loadData()) {
+        // Demo data with educational focus
+        currentQuestion = { questionText: 'What would you like to learn or improve this semester?' };
+        responses = [
+          {
+            studentName: 'Emma Chen',
+            answer: 'I want to learn sustainable architecture and understand how buildings can work with nature rather than against it. Green design fascinates me and I think it could help solve many environmental challenges we face today.',
+            wordCount: 32,
+            timestamp: new Date().toISOString(),
+            photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
+          },
+          {
+            studentName: 'Marcus Johnson', 
+            answer: 'I\'d love to master artificial intelligence and machine learning to help solve climate change through better predictions and resource management. The combination of AI and environmental science could be revolutionary.',
+            wordCount: 28,
+            timestamp: new Date(Date.now() - 120000).toISOString(),
+            photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
+          },
+          {
+            studentName: 'Sophia Rodriguez',
+            answer: 'I want to study quantum computing and understand how quantum processors can solve problems that classical computers cannot handle efficiently. The possibilities for scientific research are endless.',
+            wordCount: 26,
+            timestamp: new Date(Date.now() - 300000).toISOString(),
+            photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
+          },
+          {
+            studentName: 'Alex Kim',
+            answer: 'I hope to develop better communication skills and practice public speaking to become more confident in presentations and group discussions. Clear communication is essential for leadership.',
+            wordCount: 24,
+            timestamp: new Date(Date.now() - 480000).toISOString(),
+            photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+          }
+        ];
+        debugLog('Using educational demo data', { responses: responses.length });
+      }
+
+      displayQuestion();
+      displayResponses();
+      startAutoRefresh();
+
+      document.getElementById('refreshBtn').addEventListener('click', refreshData);
+
+      debugLog('INTUITY Neumorphic Display ready!', { 
+        responses: responses.length,
+        currentIndex: currentIndex
+      });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', init);
+
+    // Storage listener
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'display_responses' || e.key === 'display_question') {
+        refreshData();
+      }
+    });
+
+    // Add refresh animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
