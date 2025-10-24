@@ -66,7 +66,12 @@
       letter-spacing: 0.8px;
     }
 
-    .refresh-btn {
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .refresh-btn, .delete-btn {
       background: rgba(255, 140, 60, 0.2);
       border: 1px solid rgba(255, 140, 60, 0.4);
       border-radius: 10px;
@@ -78,9 +83,25 @@
       transition: all 0.3s ease;
     }
 
+    .delete-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: rgba(239, 68, 68, 0.9);
+    }
+
     .refresh-btn:hover {
       background: rgba(255, 140, 60, 0.3);
       transform: scale(1.05);
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      transform: scale(1.05);
+    }
+
+    .delete-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
     .question-dropdown {
@@ -248,131 +269,11 @@
       color: rgba(255, 140, 60, 1);
       border: 1px solid rgba(255, 140, 60, 0.3);
     }
-
-    .nav-button.diagnostic {
-      background: rgba(59, 130, 246, 0.2);
-      color: rgba(59, 130, 246, 1);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      font-size: 12px;
-      padding: 10px 18px;
-    }
     
     .nav-button:disabled {
       opacity: 0.3;
       cursor: not-allowed;
-    }
-
-    .diagnostic-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 3000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .diagnostic-modal.show {
-      display: flex;
-    }
-
-    .diagnostic-content {
-      background: rgba(20, 20, 20, 0.95);
-      border: 2px solid rgba(255, 140, 60, 0.4);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 800px;
-      max-height: 90vh;
-      overflow-y: auto;
-      width: 100%;
-    }
-
-    .diagnostic-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .diagnostic-title {
-      color: rgb(255, 140, 60);
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    .close-diagnostic {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      color: white;
-      cursor: pointer;
-      font-size: 18px;
-    }
-
-    .diagnostic-section {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 15px;
-    }
-
-    .diagnostic-section h3 {
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 16px;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .diagnostic-table {
-      width: 100%;
-      font-size: 12px;
-      font-family: monospace;
-    }
-
-    .diagnostic-table th {
-      text-align: left;
-      padding: 8px;
-      background: rgba(255, 140, 60, 0.2);
-      color: rgba(255, 140, 60, 0.9);
-      font-weight: 600;
-    }
-
-    .diagnostic-table td {
-      padding: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .diagnostic-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    .badge-success {
-      background: rgba(16, 185, 129, 0.2);
-      color: rgba(16, 185, 129, 0.9);
-    }
-
-    .badge-warning {
-      background: rgba(245, 158, 11, 0.2);
-      color: rgba(245, 158, 11, 0.9);
-    }
-
-    .badge-error {
-      background: rgba(239, 68, 68, 0.2);
-      color: rgba(239, 68, 68, 0.9);
+      transform: none;
     }
 
     .notification {
@@ -385,6 +286,7 @@
       transition: all 0.3s ease;
       transform: translateX(120%);
       font-size: 14px;
+      max-width: 350px;
     }
 
     .notification.show {
@@ -408,6 +310,20 @@
       border: 1px solid rgba(239, 68, 68, 0.4);
       color: rgba(239, 68, 68, 0.95);
     }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 140, 60, 0.3);
+      border-top-color: rgba(255, 140, 60, 0.9);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -420,7 +336,10 @@
     <section class="dropdown-section">
       <div class="selection-header">
         <div class="selection-title">📊 Question Analytics</div>
-        <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh</button>
+        <div class="header-actions">
+          <button class="delete-btn" id="deleteBtn" onclick="deleteSelectedQuestion()" disabled>🗑️ Delete</button>
+          <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh</button>
+        </div>
       </div>
       <select class="question-dropdown" id="questionSelector" onchange="handleQuestionChange()">
         <option value="">Loading questions...</option>
@@ -454,44 +373,9 @@
 
     <footer class="footer">
       <button class="nav-button primary" id="displayBtn" onclick="displayResponses()" disabled>DISPLAY</button>
-      <button class="nav-button diagnostic" onclick="showDiagnostics()">🔧 DIAGNOSE</button>
       <a href="../index.html" class="nav-button">HOME</a>
       <a href="../teachers/questions/" class="nav-button">CREATE</a>
     </footer>
-  </div>
-
-  <div class="diagnostic-modal" id="diagnosticModal">
-    <div class="diagnostic-content">
-      <div class="diagnostic-header">
-        <div class="diagnostic-title">🔧 System Diagnostics</div>
-        <button class="close-diagnostic" onclick="closeDiagnostics()">✕</button>
-      </div>
-      
-      <div class="diagnostic-section">
-        <h3>📊 Data Sources</h3>
-        <table class="diagnostic-table">
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Questions</th>
-              <th>Responses</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="diagnosticSources"></tbody>
-        </table>
-      </div>
-
-      <div class="diagnostic-section">
-        <h3>🔗 Question-Response Mapping</h3>
-        <div id="diagnosticMapping"></div>
-      </div>
-
-      <div class="diagnostic-section">
-        <h3>⚠️ Potential Issues</h3>
-        <div id="diagnosticIssues"></div>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -537,7 +421,6 @@
     async function loadAllQuestions() {
       let foundQuestions = [];
       
-      // Try Supabase first
       if (supabase && isOnline) {
         try {
           const { data, error } = await supabase
@@ -547,21 +430,15 @@
           
           if (!error && data && data.length > 0) {
             foundQuestions = data;
+            console.log(`✓ Loaded ${data.length} questions from Supabase`);
           }
         } catch (err) {
           console.error('Supabase fetch failed:', err);
         }
       }
       
-      // Fallback to localStorage if Supabase returned nothing
       if (foundQuestions.length === 0) {
-        const storageKeys = [
-          'current_question',
-          'intuity_current_question',
-          'intuity_questions',
-          'alm_questions',
-          'display_question'
-        ];
+        const storageKeys = ['current_question', 'intuity_current_question', 'intuity_questions', 'alm_questions'];
         
         for (const key of storageKeys) {
           try {
@@ -573,16 +450,16 @@
                 const valid = parsed.filter(q => q && (q.text || q.question_text));
                 if (valid.length > 0) {
                   foundQuestions = valid;
+                  console.log(`✓ Loaded ${valid.length} questions from ${key}`);
                   break;
                 }
               } else if (parsed && (parsed.text || parsed.question_text)) {
                 foundQuestions = [parsed];
+                console.log(`✓ Loaded 1 question from ${key}`);
                 break;
               }
             }
-          } catch (e) {
-            console.warn(`Error parsing ${key}:`, e);
-          }
+          } catch (e) {}
         }
       }
       
@@ -592,7 +469,6 @@
     async function loadAllResponses() {
       let foundResponses = [];
       
-      // Try Supabase first
       if (supabase && isOnline) {
         try {
           const { data, error } = await supabase
@@ -602,20 +478,15 @@
 
           if (!error && data && data.length > 0) {
             foundResponses = data;
+            console.log(`✓ Loaded ${data.length} responses from Supabase`);
           }
         } catch (err) {
           console.error('Supabase fetch failed:', err);
         }
       }
       
-      // Fallback to localStorage if Supabase returned nothing
       if (foundResponses.length === 0) {
-        const storageKeys = [
-          'intuity_student_responses',
-          'alm_student_responses',
-          'student_responses',
-          'display_responses'
-        ];
+        const storageKeys = ['intuity_student_responses', 'alm_student_responses', 'student_responses'];
         
         for (const key of storageKeys) {
           try {
@@ -624,12 +495,11 @@
               const parsed = JSON.parse(stored);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 foundResponses = parsed;
+                console.log(`✓ Loaded ${parsed.length} responses from ${key}`);
                 break;
               }
             }
-          } catch (e) {
-            console.warn(`Error parsing ${key}:`, e);
-          }
+          } catch (e) {}
         }
       }
       
@@ -644,7 +514,6 @@
       
       if (!questionId && !questionText) return [];
       
-      // Match by ID first
       const matchedById = allResponses.filter(response => {
         const respQId = response.question_id || response.questionId;
         return questionId && respQId && questionId === respQId;
@@ -654,7 +523,6 @@
         return matchedById;
       }
       
-      // Fallback: Match by question text (for ID mismatches)
       if (questionText) {
         const matchedByText = allResponses.filter(response => {
           const respText = (response.metadata?.questionText || '').trim().toLowerCase();
@@ -689,7 +557,7 @@
     function updateUI() {
       populateQuestionDropdown();
       updateAnalyticsBox();
-      updateDisplayButton();
+      updateButtons();
     }
 
     function populateQuestionDropdown() {
@@ -766,10 +634,10 @@
           
           item.innerHTML = `
             <div class="response-header">
-              <span class="student-name">${name}</span>
+              <span class="student-name">${escapeHtml(name)}</span>
               <span class="word-count">${words} words</span>
             </div>
-            <div class="response-text">${preview}</div>
+            <div class="response-text">${escapeHtml(preview)}</div>
           `;
           
           responseList.appendChild(item);
@@ -790,9 +658,21 @@
       }
     }
 
-    function updateDisplayButton() {
+    function updateButtons() {
       const displayBtn = document.getElementById('displayBtn');
-      displayBtn.disabled = !currentSelectedQuestion;
+      const deleteBtn = document.getElementById('deleteBtn');
+      
+      const hasSelection = currentSelectedQuestion !== null;
+      const hasResponses = hasSelection && getResponsesForQuestion(currentSelectedQuestion).length > 0;
+      
+      displayBtn.disabled = !hasResponses;
+      deleteBtn.disabled = !hasSelection;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     function handleQuestionChange() {
@@ -806,7 +686,40 @@
       }
       
       updateAnalyticsBox();
-      updateDisplayButton();
+      updateButtons();
+    }
+
+    async function deleteSelectedQuestion() {
+      if (!currentSelectedQuestion) return;
+      
+      const questionText = (currentSelectedQuestion.text || currentSelectedQuestion.question_text || 'this question').substring(0, 50);
+      
+      if (!confirm(`Delete "${questionText}"?\n\nThis will remove the question but NOT the responses.`)) {
+        return;
+      }
+      
+      const deleteBtn = document.getElementById('deleteBtn');
+      deleteBtn.innerHTML = '<span class="loading-spinner"></span>';
+      deleteBtn.disabled = true;
+      
+      try {
+        if (supabase && isOnline && currentSelectedQuestion.id) {
+          const { error } = await supabase
+            .from('questions')
+            .delete()
+            .eq('id', currentSelectedQuestion.id);
+          
+          if (error) throw error;
+        }
+        
+        showNotification('Question deleted successfully', 'success');
+        currentSelectedQuestion = null;
+        await loadAllData();
+      } catch (error) {
+        showNotification('Error deleting question: ' + error.message, 'error');
+        deleteBtn.innerHTML = '🗑️ Delete';
+        deleteBtn.disabled = false;
+      }
     }
 
     function displayResponses() {
@@ -822,12 +735,13 @@
         return;
       }
       
-      // CRITICAL FIX: Limit responses to prevent localStorage quota exceeded
-      // Most presentations don't need more than 50 responses
+      const displayBtn = document.getElementById('displayBtn');
+      displayBtn.innerHTML = '<span class="loading-spinner"></span> Loading...';
+      displayBtn.disabled = true;
+      
       const MAX_DISPLAY_RESPONSES = 50;
       const responsesToDisplay = matched.slice(0, MAX_DISPLAY_RESPONSES);
       
-      // Strip unnecessary data to reduce size
       const compactResponses = responsesToDisplay.map(r => ({
         student_name: r.student_name || r.studentName,
         answer: r.answer || r.response_text,
@@ -844,23 +758,25 @@
         const totalCount = matched.length;
         
         if (totalCount > MAX_DISPLAY_RESPONSES) {
-          showNotification(`Displaying first ${displayCount} of ${totalCount} responses (localStorage limit)`, 'info');
+          showNotification(`Opening display with first ${displayCount} of ${totalCount} responses`, 'info');
         } else {
-          showNotification(`Loading ${displayCount} responses...`, 'info');
+          showNotification(`Opening display with ${displayCount} responses...`, 'info');
         }
         
         setTimeout(() => {
-          try {
-            window.open('../displays/', '_blank');
-          } catch (error) {
-            window.location.href = '../displays/';
-          }
+          displayBtn.innerHTML = 'DISPLAY';
+          displayBtn.disabled = false;
+          
+          window.open('../displays/', '_blank');
         }, 500);
       } catch (error) {
+        displayBtn.innerHTML = 'DISPLAY';
+        displayBtn.disabled = false;
+        
         if (error.name === 'QuotaExceededError') {
-          showNotification('Too many responses to display. Try selecting a question with fewer responses.', 'error');
+          showNotification('Too many responses. Try a question with fewer responses.', 'error');
         } else {
-          showNotification('Error preparing display: ' + error.message, 'error');
+          showNotification('Error: ' + error.message, 'error');
         }
       }
     }
@@ -878,154 +794,6 @@
       }, 3000);
     }
 
-    // DIAGNOSTIC TOOL
-    async function showDiagnostics() {
-      const modal = document.getElementById('diagnosticModal');
-      modal.classList.add('show');
-      
-      // Check data sources
-      const sources = document.getElementById('diagnosticSources');
-      sources.innerHTML = '';
-      
-      // Supabase
-      let supabaseQuestions = 0;
-      let supabaseResponses = 0;
-      let supabaseStatus = 'error';
-      
-      if (supabase && isOnline) {
-        try {
-          const qResult = await supabase.from('questions').select('id', { count: 'exact', head: true });
-          const rResult = await supabase.from('student_responses').select('id', { count: 'exact', head: true });
-          
-          supabaseQuestions = qResult.count || 0;
-          supabaseResponses = rResult.count || 0;
-          supabaseStatus = 'success';
-        } catch (e) {
-          supabaseStatus = 'error';
-        }
-      }
-      
-      sources.innerHTML += `
-        <tr>
-          <td>Supabase (Cloud)</td>
-          <td>${supabaseQuestions}</td>
-          <td>${supabaseResponses}</td>
-          <td><span class="diagnostic-badge badge-${supabaseStatus}">${supabaseStatus === 'success' ? '✓ Online' : '✗ Offline'}</span></td>
-        </tr>
-      `;
-      
-      // LocalStorage
-      const localStorageKeys = [
-        { key: 'current_question', type: 'questions' },
-        { key: 'intuity_student_responses', type: 'responses' }
-      ];
-      
-      let localQuestions = 0;
-      let localResponses = 0;
-      
-      localStorageKeys.forEach(({ key, type }) => {
-        try {
-          const data = localStorage.getItem(key);
-          if (data && data !== 'null') {
-            const parsed = JSON.parse(data);
-            if (Array.isArray(parsed)) {
-              if (type === 'questions') localQuestions += parsed.length;
-              if (type === 'responses') localResponses += parsed.length;
-            } else if (type === 'questions' && parsed) {
-              localQuestions += 1;
-            }
-          }
-        } catch (e) {}
-      });
-      
-      sources.innerHTML += `
-        <tr>
-          <td>LocalStorage (Browser)</td>
-          <td>${localQuestions}</td>
-          <td>${localResponses}</td>
-          <td><span class="diagnostic-badge badge-success">✓ Available</span></td>
-        </tr>
-      `;
-      
-      // Question-Response mapping
-      const mapping = document.getElementById('diagnosticMapping');
-      mapping.innerHTML = '';
-      
-      if (allQuestions.length === 0) {
-        mapping.innerHTML = '<p style="color: rgba(255,255,255,0.5);">No questions to analyze</p>';
-      } else {
-        const mappingTable = document.createElement('table');
-        mappingTable.className = 'diagnostic-table';
-        mappingTable.innerHTML = '<thead><tr><th>Question</th><th>ID</th><th>Responses</th></tr></thead><tbody></tbody>';
-        
-        allQuestions.forEach(q => {
-          const text = (q.text || q.question_text || 'Untitled').substring(0, 40);
-          const id = q.id || 'NO_ID';
-          const responses = getResponsesForQuestion(q);
-          
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${text}...</td>
-            <td style="font-size:10px;">${id}</td>
-            <td><span class="diagnostic-badge badge-${responses.length > 0 ? 'success' : 'warning'}">${responses.length}</span></td>
-          `;
-          mappingTable.querySelector('tbody').appendChild(row);
-        });
-        
-        mapping.appendChild(mappingTable);
-      }
-      
-      // Potential issues
-      const issues = document.getElementById('diagnosticIssues');
-      issues.innerHTML = '';
-      
-      const issuesList = [];
-      
-      // Issue: Questions with no responses
-      const orphanQuestions = allQuestions.filter(q => getResponsesForQuestion(q).length === 0);
-      if (orphanQuestions.length > 0) {
-        issuesList.push(`<span class="diagnostic-badge badge-warning">⚠️</span> ${orphanQuestions.length} question(s) have no responses`);
-      }
-      
-      // Issue: Responses with no matching question
-      const questionIds = new Set(allQuestions.map(q => q.id));
-      const orphanResponses = allResponses.filter(r => {
-        const qId = r.question_id || r.questionId;
-        return qId && !questionIds.has(qId);
-      });
-      if (orphanResponses.length > 0) {
-        issuesList.push(`<span class="diagnostic-badge badge-error">✗</span> ${orphanResponses.length} response(s) have no matching question (ID mismatch)`);
-      }
-      
-      // Issue: Offline mode
-      if (!isOnline || !supabase) {
-        issuesList.push(`<span class="diagnostic-badge badge-warning">⚠️</span> Running in offline mode - Supabase unavailable`);
-      }
-      
-      // Issue: Empty data
-      if (allQuestions.length === 0 && allResponses.length === 0) {
-        issuesList.push(`<span class="diagnostic-badge badge-error">✗</span> No data found in any source`);
-      }
-      
-      if (issuesList.length === 0) {
-        issues.innerHTML = '<p style="color: rgba(16,185,129,0.9);"><span class="diagnostic-badge badge-success">✓</span> No issues detected</p>';
-      } else {
-        issues.innerHTML = issuesList.map(issue => `<p style="margin: 8px 0;">${issue}</p>`).join('');
-      }
-    }
-    
-    function closeDiagnostics() {
-      document.getElementById('diagnosticModal').classList.remove('show');
-    }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeDiagnostics();
-      }
-    });
-
-    // Auto-refresh every 15 seconds
     setInterval(async () => {
       if (!supabase || !isOnline) return;
       
@@ -1040,7 +808,6 @@
       }
     }, 15000);
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
       initSupabase();
       await new Promise(resolve => setTimeout(resolve, 500));
