@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Student Portal</title>
+  <title>INTUITY - Student Portal (FIXED)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
@@ -42,53 +42,40 @@
       margin-bottom: 8px;
     }
 
-    .welcome-back {
-      background: rgba(16, 185, 129, 0.1);
-      border: 2px solid rgba(16, 185, 129, 0.3);
-      border-radius: 15px;
-      padding: 15px 20px;
+    .debug-info {
+      background: rgba(255, 140, 60, 0.1);
+      border: 1px solid rgba(255, 140, 60, 0.3);
+      border-radius: 10px;
+      padding: 15px;
       margin-bottom: 20px;
-      display: none;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .welcome-back.show { display: flex; }
-
-    .student-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid rgba(16, 185, 129, 0.5);
-      object-fit: cover;
-    }
-
-    .welcome-text { flex: 1; }
-
-    .welcome-text h3 {
-      color: rgba(16, 185, 129, 0.9);
-      font-size: 18px;
-      margin-bottom: 5px;
-    }
-
-    .welcome-text p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-    }
-
-    .clear-profile-btn {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: rgba(239, 68, 68, 0.9);
       font-size: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      font-family: monospace;
+      color: rgba(255, 140, 60, 0.9);
+      max-height: 200px;
+      overflow-y: auto;
     }
 
-    .clear-profile-btn:hover { background: rgba(239, 68, 68, 0.3); }
+    .debug-info.hidden {
+      display: none;
+    }
 
+    .no-question { 
+      text-align: center;
+      padding: 80px 20px; 
+    }
+    
+    .no-question-icon { 
+      font-size: 80px; 
+      margin-bottom: 30px; 
+      opacity: 0.5; 
+    }
+
+    .no-question p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    
     .question-selection {
       background: rgba(0,0,0,0.5);
       border: 2px solid rgba(255,140,60,0.3);
@@ -155,23 +142,6 @@
       padding: 12px; 
     }
 
-    .no-question { 
-      text-align: center;
-      padding: 80px 20px; 
-      display: none; 
-    }
-    
-    .no-question-icon { 
-      font-size: 80px; 
-      margin-bottom: 30px; 
-      opacity: 0.5; 
-    }
-
-    .no-question p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 18px;
-    }
-    
     #questionSection { 
       display: none; 
     }
@@ -222,115 +192,6 @@
       min-height: 160px; 
       resize: vertical;
     }
-
-    .camera-section {
-      background: rgba(0,0,0,0.5);
-      border: 2px solid rgba(255,140,60,0.2);
-      border-radius: 20px;
-      padding: 25px;
-      margin: 20px 0;
-      text-align: center;
-    }
-
-    .camera-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .camera-title {
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .camera-mode-switch {
-      display: flex;
-      gap: 5px;
-      background: rgba(0,0,0,0.3);
-      padding: 5px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
-
-    .mode-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 10px 15px;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .mode-btn.active {
-      background: rgba(255, 140, 60, 0.3);
-      color: rgb(255, 140, 60);
-    }
-
-    .camera-controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-    }
-
-    .camera-btn {
-      background: rgba(255, 140, 60, 0.2);
-      border: 1px solid rgba(255, 140, 60, 0.4);
-      border-radius: 10px;
-      padding: 8px 16px;
-      color: rgba(255, 140, 60, 0.9);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-
-    .camera-btn:hover:not(:disabled) { 
-      background: rgba(255, 140, 60, 0.3);
-      transform: scale(1.05);
-    }
-
-    .camera-btn:disabled { 
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    #videoPreview {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 15px;
-      margin: 15px auto;
-      display: none;
-      border: 2px solid rgba(255,140,60,0.3);
-    }
-
-    #photoPreview {
-      max-width: 100%;
-      border-radius: 15px;
-      margin: 15px 0;
-      display: none;
-      border: 2px solid rgba(255,140,60,0.5);
-    }
-
-    .camera-info {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    #fileInput { display: none; }
 
     .submit-btn {
       width: 100%;
@@ -420,7 +281,6 @@
       font-size: 14px;
       line-height: 1.6;
       display: none;
-      word-wrap: break-word;
     }
 
     .error-box.show {
@@ -432,23 +292,6 @@
       margin-bottom: 10px;
       font-size: 16px;
     }
-
-    .success-box {
-      background: rgba(16, 185, 129, 0.2);
-      border: 2px solid rgba(16, 185, 129, 0.6);
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px 0;
-      color: rgba(16, 185, 129, 0.95);
-      font-size: 14px;
-      line-height: 1.6;
-      display: none;
-      word-wrap: break-word;
-    }
-
-    .success-box.show {
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -459,13 +302,9 @@
       <p style="font-size: 14px; color: rgba(255, 255, 255, 0.5);">Answer questions from your teacher</p>
     </div>
 
-    <div class="welcome-back" id="welcomeBack">
-      <img id="studentAvatar" class="student-avatar" alt="Your photo">
-      <div class="welcome-text">
-        <h3>Welcome back, <span id="welcomeName"></span>! 👋</h3>
-        <p>Your profile has been loaded</p>
-      </div>
-      <button class="clear-profile-btn" onclick="clearProfile()">Clear Profile</button>
+    <div class="debug-info hidden" id="debugInfo">
+      <strong>🔍 Debug Info (Ctrl+D to toggle):</strong>
+      <div id="debugContent"></div>
     </div>
 
     <div class="no-question" id="noQuestion">
@@ -492,42 +331,12 @@
       <input type="text" id="studentName" class="form-input" placeholder="Your name" oninput="checkForm()">
       <textarea id="studentAnswer" class="form-input form-textarea" placeholder="Type your answer here..." oninput="checkForm()"></textarea>
 
-      <div class="camera-section">
-        <div class="camera-header">
-          <div class="camera-title">📷 Optional Photo</div>
-        </div>
-
-        <div class="camera-mode-switch">
-          <button class="mode-btn active" onclick="switchMode('camera')">📷 Camera</button>
-          <button class="mode-btn" onclick="switchMode('selfie')">🤳 Selfie</button>
-          <button class="mode-btn" onclick="switchMode('upload')">📁 Upload</button>
-        </div>
-
-        <div class="camera-controls">
-          <button class="camera-btn" id="startCameraBtn" onclick="startCamera()">Start Camera</button>
-          <button class="camera-btn" id="captureBtn" onclick="capturePhoto()" disabled style="display: none;">Capture Photo</button>
-          <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display: none;">Retake</button>
-          <button class="camera-btn" id="uploadBtn" onclick="triggerFileUpload()" style="display: none;">Choose File</button>
-        </div>
-
-        <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx" onchange="handleFileUpload(event)">
-        
-        <video id="videoPreview" autoplay playsinline></video>
-        <img id="photoPreview" alt="Captured photo">
-        <div class="camera-info" id="cameraInfo">Choose a method above to add a photo</div>
-      </div>
-
       <button class="submit-btn" id="submitBtn" onclick="submitResponse()" disabled>Submit Response</button>
     </div>
 
     <div class="error-box" id="errorBox">
       <div class="error-title">❌ Error</div>
       <div id="errorMessage"></div>
-    </div>
-
-    <div class="success-box" id="successBox">
-      <div class="error-title">✅ Success</div>
-      <div id="successMessage"></div>
     </div>
 
     <div class="success-screen" id="successScreen">
@@ -539,7 +348,7 @@
   </div>
 
   <script>
-    console.log('🚀 INTUITY Student Portal Loading...');
+    console.log('🚀 INTUITY Student Portal Loading (SWISS CLOCK FIX)...');
     
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
@@ -548,21 +357,43 @@
     let isOnline = false;
     let allQuestions = [];
     let currentQuestion = null;
-    let videoStream = null;
-    let capturedPhoto = null;
     let isLoadingQuestions = false;
     let autoRefreshInterval = null;
-    let currentCameraMode = 'environment';
-    let studentProfile = null;
+    let debugMode = false;
+
+    // Debug logging
+    function debugLog(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[${timestamp}] ${message}`, data || '');
+      
+      if (debugMode) {
+        const debugContent = document.getElementById('debugContent');
+        const logEntry = document.createElement('div');
+        logEntry.style.marginTop = '5px';
+        logEntry.style.paddingTop = '5px';
+        logEntry.style.borderTop = '1px solid rgba(255,140,60,0.2)';
+        logEntry.innerHTML = `<strong>${timestamp}:</strong> ${message}`;
+        if (data) {
+          const dataStr = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+          logEntry.innerHTML += `<pre style="margin-top:3px;font-size:10px;">${dataStr.substring(0, 200)}</pre>`;
+        }
+        debugContent.appendChild(logEntry);
+        
+        // Keep only last 10 entries
+        while (debugContent.children.length > 10) {
+          debugContent.removeChild(debugContent.firstChild);
+        }
+      }
+    }
 
     function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log('✅ Supabase initialized');
+        debugLog('✅ Supabase initialized');
         checkOnlineStatus();
         return true;
       } catch (error) {
-        console.error('❌ Supabase error:', error);
+        debugLog('❌ Supabase error', error.message);
         return false;
       }
     }
@@ -571,171 +402,121 @@
       try {
         const { data, error } = await supabase.from('questions').select('id').limit(1);
         isOnline = !error;
-        console.log(isOnline ? '🌐 Online' : '📴 Offline');
+        debugLog(isOnline ? '🌐 Online' : '📴 Offline');
       } catch (error) {
         isOnline = false;
+        debugLog('📴 Connection check failed');
       }
     }
 
-    function loadStudentProfile() {
-      const saved = localStorage.getItem('intuity_student_profile');
-      if (saved) {
-        try {
-          studentProfile = JSON.parse(saved);
-          console.log('✅ Student profile loaded:', studentProfile.name);
-          
-          document.getElementById('studentName').value = studentProfile.name;
-          document.getElementById('welcomeName').textContent = studentProfile.name;
-          if (studentProfile.photo) {
-            document.getElementById('studentAvatar').src = studentProfile.photo;
-          } else {
-            document.getElementById('studentAvatar').style.display = 'none';
-          }
-          document.getElementById('welcomeBack').classList.add('show');
-          checkForm();
-        } catch (e) {
-          console.error('❌ Error loading profile:', e);
-        }
-      }
-    }
-
-    function saveStudentProfile(name, photo) {
-      studentProfile = { name, photo, lastUsed: new Date().toISOString() };
-      localStorage.setItem('intuity_student_profile', JSON.stringify(studentProfile));
-      console.log('✅ Student profile saved');
-    }
-
-    function clearProfile() {
-      if (confirm('Clear your saved profile?')) {
-        localStorage.removeItem('intuity_student_profile');
-        studentProfile = null;
-        document.getElementById('welcomeBack').classList.remove('show');
-        document.getElementById('studentName').value = '';
-        console.log('🗑 Profile cleared');
-      }
-    }
-
-    function switchMode(mode) {
-      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      
-      stopCamera();
-      document.getElementById('videoPreview').style.display = 'none';
-      document.getElementById('captureBtn').style.display = 'none';
-      document.getElementById('retakeBtn').style.display = 'none';
-      document.getElementById('uploadBtn').style.display = 'none';
-      document.getElementById('startCameraBtn').style.display = 'none';
-      
-      if (mode === 'camera') {
-        currentCameraMode = 'environment';
-        document.getElementById('startCameraBtn').style.display = 'inline-block';
-        document.getElementById('cameraInfo').textContent = 'Take a photo of your work';
-      } else if (mode === 'selfie') {
-        currentCameraMode = 'user';
-        document.getElementById('startCameraBtn').style.display = 'inline-block';
-        document.getElementById('cameraInfo').textContent = 'Take a selfie with your work';
-      } else if (mode === 'upload') {
-        document.getElementById('uploadBtn').style.display = 'inline-block';
-        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
-      }
-      console.log('📷 Camera mode:', mode);
-    }
-
-    function triggerFileUpload() {
-      document.getElementById('fileInput').click();
-    }
-
-    function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      console.log('📁 File selected:', file.name, file.type);
-      
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          capturedPhoto = e.target.result;
-          const photo = document.getElementById('photoPreview');
-          photo.src = capturedPhoto;
-          photo.style.display = 'block';
-          document.getElementById('uploadBtn').style.display = 'none';
-          document.getElementById('retakeBtn').style.display = 'inline-block';
-          document.getElementById('cameraInfo').textContent = '✓ File uploaded! Click Retake to change';
-          console.log('✅ Image uploaded');
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          capturedPhoto = e.target.result;
-          document.getElementById('photoPreview').style.display = 'none';
-          document.getElementById('uploadBtn').style.display = 'none';
-          document.getElementById('retakeBtn').style.display = 'inline-block';
-          document.getElementById('cameraInfo').textContent = `✓ Document uploaded: ${file.name}`;
-          console.log('✅ Document uploaded');
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
+    // CRITICAL FIX: Load questions with proper fallback logic
     async function loadAllQuestions(silent = false) {
-      if (isLoadingQuestions) return;
+      if (isLoadingQuestions) {
+        debugLog('⏳ Already loading, skipping...');
+        return;
+      }
       isLoadingQuestions = true;
       
-      if (!silent) console.log('🔍 Loading questions...');
+      if (!silent) debugLog('🔍 Loading questions...');
       
       const previousCount = allQuestions.length;
-      allQuestions = [];
+      let foundQuestions = [];
       
       try {
+        // STEP 1: Try Supabase if online
         if (supabase && isOnline) {
-          const { data, error } = await supabase
-            .from('questions')
-            .select('*')
-            .order('created_at', { ascending: false });
-          
-          if (!error && data && data.length > 0) {
-            console.log(`✅ Got ${data.length} questions from Supabase`);
-            allQuestions = data;
+          debugLog('📡 Checking Supabase...');
+          try {
+            const { data, error } = await supabase
+              .from('questions')
+              .select('*')
+              .order('created_at', { ascending: false });
             
-            if (data[0]) {
-              localStorage.setItem('intuity_current_question', JSON.stringify(data[0]));
+            if (!error && data && data.length > 0) {
+              debugLog(`✅ Supabase: Found ${data.length} questions`);
+              foundQuestions = data;
+            } else if (error) {
+              debugLog('⚠️ Supabase error', error.message);
+            } else {
+              debugLog('ℹ️ Supabase: No questions found (0 results)');
             }
-          } else if (error) {
-            console.error('❌ Supabase error:', error);
+          } catch (err) {
+            debugLog('❌ Supabase fetch failed', err.message);
           }
         }
         
-        if (allQuestions.length === 0) {
-          const stored = localStorage.getItem('intuity_current_question');
-          if (stored) {
+        // STEP 2: If Supabase returned nothing, check localStorage
+        if (foundQuestions.length === 0) {
+          debugLog('📦 Checking localStorage (Supabase had 0 results)...');
+          
+          // Check all possible storage locations
+          const storageKeys = [
+            'current_question',           // Primary key - Swiss Clock critical
+            'intuity_current_question',   // Alternative key
+            'alm_questions',              // Legacy
+            'intuity_questions'           // Analytics
+          ];
+          
+          for (const key of storageKeys) {
             try {
-              const parsed = JSON.parse(stored);
-              if (parsed && (parsed.text || parsed.question_text)) {
-                allQuestions = [parsed];
-                console.log('✅ Loaded 1 question from localStorage');
+              const stored = localStorage.getItem(key);
+              if (stored && stored !== 'null') {
+                const parsed = JSON.parse(stored);
+                
+                // Handle both single question object and array
+                if (Array.isArray(parsed)) {
+                  const validQuestions = parsed.filter(q => 
+                    q && (q.text || q.question_text) && q.id !== 'demo'
+                  );
+                  if (validQuestions.length > 0) {
+                    debugLog(`✅ localStorage[${key}]: Found ${validQuestions.length} questions`);
+                    foundQuestions = validQuestions;
+                    break;
+                  }
+                } else if (parsed && (parsed.text || parsed.question_text) && parsed.id !== 'demo') {
+                  debugLog(`✅ localStorage[${key}]: Found 1 question`);
+                  foundQuestions = [parsed];
+                  break;
+                }
               }
             } catch (e) {
-              console.error('❌ Error parsing localStorage:', e);
+              debugLog(`⚠️ Error parsing ${key}`, e.message);
             }
           }
         }
+        
+        // STEP 3: Update allQuestions
+        if (foundQuestions.length > 0) {
+          allQuestions = foundQuestions;
+          
+          // Save to cache for future offline use
+          if (foundQuestions[0]) {
+            localStorage.setItem('intuity_current_question', JSON.stringify(foundQuestions[0]));
+          }
+          
+          if (!silent && allQuestions.length > previousCount) {
+            debugLog(`✨ New questions! ${previousCount} → ${allQuestions.length}`);
+          }
+        } else {
+          debugLog('❌ No questions found anywhere');
+          allQuestions = [];
+        }
+        
       } catch (error) {
-        console.error('❌ Error loading questions:', error);
+        debugLog('❌ Error in loadAllQuestions', error.message);
       }
       
+      // Sort by most recent
       allQuestions.sort((a, b) => {
         const dateA = new Date(a.created_at || a.published_at || 0);
         const dateB = new Date(b.created_at || b.published_at || 0);
         return dateB - dateA;
       });
       
-      if (!silent && allQuestions.length > previousCount) {
-        console.log(`✨ New questions! ${previousCount} → ${allQuestions.length}`);
-      }
-      
       updateUI();
       isLoadingQuestions = false;
+      
+      debugLog(`📊 Final count: ${allQuestions.length} questions`);
     }
 
     function updateUI() {
@@ -770,6 +551,8 @@
       if (currentSelection && parseInt(currentSelection) < allQuestions.length) {
         dropdown.value = currentSelection;
       }
+      
+      debugLog(`📋 Dropdown populated with ${allQuestions.length} questions`);
     }
 
     function selectQuestion() {
@@ -787,7 +570,8 @@
       document.getElementById('questionText').textContent = questionText;
       document.getElementById('questionSection').style.display = 'block';
       document.getElementById('questionSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      console.log('📝 Question selected:', questionText.substring(0, 50));
+      
+      debugLog('📝 Question selected', questionText.substring(0, 50));
     }
 
     function checkForm() {
@@ -797,99 +581,8 @@
     }
 
     async function manualRefresh() {
-      console.log('🔄 Manual refresh');
+      debugLog('🔄 Manual refresh requested');
       await loadAllQuestions(false);
-    }
-
-    async function startCamera() {
-      try {
-        console.log('📷 Starting camera in', currentCameraMode, 'mode');
-        videoStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: currentCameraMode }
-        });
-        const video = document.getElementById('videoPreview');
-        video.srcObject = videoStream;
-        video.style.display = 'block';
-        document.getElementById('startCameraBtn').style.display = 'none';
-        document.getElementById('captureBtn').style.display = 'inline-block';
-        document.getElementById('captureBtn').disabled = false;
-        document.getElementById('cameraInfo').textContent = 'Position your work and click Capture';
-      } catch (error) {
-        console.error('❌ Camera error:', error);
-        document.getElementById('cameraInfo').textContent = 'Camera not available: ' + error.message;
-      }
-    }
-
-    function capturePhoto() {
-      try {
-        const video = document.getElementById('videoPreview');
-        const photo = document.getElementById('photoPreview');
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
-        photo.src = capturedPhoto;
-        photo.style.display = 'block';
-        stopCamera();
-        document.getElementById('captureBtn').style.display = 'none';
-        document.getElementById('retakeBtn').style.display = 'inline-block';
-        document.getElementById('cameraInfo').textContent = '✓ Photo captured!';
-        console.log('✅ Photo captured successfully');
-      } catch (error) {
-        console.error('❌ Capture error:', error);
-        alert('Error capturing photo: ' + error.message);
-      }
-    }
-
-    function retakePhoto() {
-      capturedPhoto = null;
-      document.getElementById('photoPreview').style.display = 'none';
-      document.getElementById('retakeBtn').style.display = 'none';
-      document.getElementById('fileInput').value = '';
-      
-      const activeMode = document.querySelector('.mode-btn.active');
-      if (activeMode && activeMode.textContent.includes('Upload')) {
-        document.getElementById('uploadBtn').style.display = 'inline-block';
-        document.getElementById('cameraInfo').textContent = 'Upload a photo or document from your device';
-      } else {
-        document.getElementById('startCameraBtn').style.display = 'inline-block';
-        document.getElementById('cameraInfo').textContent = 'Add a photo (optional)';
-      }
-      console.log('🔄 Retaking photo');
-    }
-
-    function stopCamera() {
-      if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
-        document.getElementById('videoPreview').style.display = 'none';
-        videoStream = null;
-        console.log('⏹ Camera stopped');
-      }
-    }
-
-    function showError(message, details = '') {
-      const errorBox = document.getElementById('errorBox');
-      const errorMessage = document.getElementById('errorMessage');
-      errorMessage.textContent = message + (details ? '\n\nDetails: ' + details : '');
-      errorBox.classList.add('show');
-      console.error('Error displayed:', message, details);
-      
-      setTimeout(() => {
-        errorBox.classList.remove('show');
-      }, 8000);
-    }
-
-    function showSuccess(message) {
-      const successBox = document.getElementById('successBox');
-      const successMessage = document.getElementById('successMessage');
-      successMessage.textContent = message;
-      successBox.classList.add('show');
-      console.log('Success displayed:', message);
-      
-      setTimeout(() => {
-        successBox.classList.remove('show');
-      }, 5000);
     }
 
     async function submitResponse() {
@@ -897,69 +590,51 @@
       const answer = document.getElementById('studentAnswer').value.trim();
       
       if (!name || !answer || !currentQuestion) {
-        console.warn('❌ Cannot submit: missing required fields');
-        showError('Please fill in your name and answer before submitting');
+        debugLog('❌ Cannot submit: missing fields');
+        showError('Please fill in your name and answer');
         return;
       }
 
-      console.log('💾 Submitting response...');
-      console.log('Current Question:', currentQuestion);
+      debugLog('💾 Submitting response...');
       document.getElementById('submitBtn').disabled = true;
 
       try {
-        saveStudentProfile(name, capturedPhoto);
-
         const responseData = {
           question_id: currentQuestion.id,
           student_name: name,
           answer: answer,
           word_count: answer.split(/\s+/).filter(w => w.length > 0).length,
-          photo_url: capturedPhoto || null
+          submitted_at: new Date().toISOString()
         };
 
-        console.log('📋 Response data to submit:', responseData);
+        debugLog('📤 Response data prepared', responseData);
 
         if (supabase && isOnline) {
-          console.log('📤 Syncing to Supabase...');
+          debugLog('📡 Sending to Supabase...');
           
           const { data, error } = await supabase
             .from('student_responses')
             .insert([responseData]);
           
           if (error) {
-            console.error('❌ Supabase insert error:', error);
-            console.error('Error code:', error.code);
-            console.error('Error message:', error.message);
-            console.error('Error details:', error.details);
-            
-            showError(
-              'Could not send to server. Response saved locally.',
-              `Error: ${error.message || error.code}`
-            );
+            debugLog('❌ Supabase error', error.message);
             saveResponseLocally(responseData);
+            showError('Could not sync to server. Saved locally.', error.message);
           } else {
-            console.log('✅ Response synced to Supabase!');
-            console.log('Data returned:', data);
-            showSuccess('Response submitted successfully! ✅');
-            
-            setTimeout(() => {
-              showSuccessScreen();
-            }, 1500);
+            debugLog('✅ Sent to Supabase successfully');
+            setTimeout(() => showSuccessScreen(), 1000);
             return;
           }
         } else {
-          console.log('📱 Offline mode - saving locally');
+          debugLog('📱 Offline - saving locally');
           saveResponseLocally(responseData);
-          showSuccess('Offline: Response saved locally 📱');
         }
         
-        setTimeout(() => {
-          showSuccessScreen();
-        }, 2000);
+        setTimeout(() => showSuccessScreen(), 1500);
+        
       } catch (error) {
-        console.error('❌ Submission error:', error);
-        console.error('Error stack:', error.stack);
-        showError('Error submitting response', error.message || 'Unknown error');
+        debugLog('❌ Submit error', error.message);
+        showError('Error submitting response', error.message);
         document.getElementById('submitBtn').disabled = false;
       }
     }
@@ -973,9 +648,9 @@
         }
         responses.push(responseData);
         localStorage.setItem('intuity_student_responses', JSON.stringify(responses));
-        console.log('✅ Response saved to localStorage');
+        debugLog('✅ Saved locally', { count: responses.length });
       } catch (e) {
-        console.error('❌ Error saving locally:', e);
+        debugLog('❌ Local save failed', e.message);
       }
     }
 
@@ -983,23 +658,12 @@
       document.getElementById('questionSection').style.display = 'none';
       document.getElementById('questionSelection').style.display = 'none';
       document.getElementById('successScreen').classList.add('show');
-      stopCamera();
-      console.log('🎉 Success screen shown');
+      debugLog('🎉 Success screen shown');
     }
 
     function writeAnother() {
       document.getElementById('studentAnswer').value = '';
       document.getElementById('questionDropdown').value = '';
-      capturedPhoto = null;
-      document.getElementById('photoPreview').style.display = 'none';
-      document.getElementById('retakeBtn').style.display = 'none';
-      document.getElementById('startCameraBtn').style.display = 'inline-block';
-      document.getElementById('cameraInfo').textContent = 'Choose a method above to add a photo';
-      
-      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-      const firstModeBtn = document.querySelector('.mode-btn');
-      if (firstModeBtn) firstModeBtn.classList.add('active');
-      currentCameraMode = 'environment';
       
       currentQuestion = null;
       document.getElementById('successScreen').classList.remove('show');
@@ -1007,21 +671,59 @@
       loadAllQuestions();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       checkForm();
-      console.log('🔄 Reset for new response');
+      
+      debugLog('🔄 Reset for new response');
+    }
+
+    function showError(message, details = '') {
+      const errorBox = document.getElementById('errorBox');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message + (details ? '\n\nDetails: ' + details : '');
+      errorBox.classList.add('show');
+      
+      setTimeout(() => {
+        errorBox.classList.remove('show');
+      }, 8000);
     }
 
     function startAutoRefresh() {
       autoRefreshInterval = setInterval(() => {
         loadAllQuestions(true);
       }, 15000);
-      console.log('🔄 Auto-refresh enabled (every 15s)');
+      debugLog('🔄 Auto-refresh enabled (every 15s)');
     }
 
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+D: Toggle debug mode
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        debugMode = !debugMode;
+        const debugInfo = document.getElementById('debugInfo');
+        debugInfo.classList.toggle('hidden');
+        debugLog(debugMode ? '🔍 Debug mode ON' : '🔍 Debug mode OFF');
+        
+        if (debugMode) {
+          // Show current state
+          debugLog('Current state', {
+            questions: allQuestions.length,
+            currentQuestion: currentQuestion?.text?.substring(0, 30),
+            online: isOnline
+          });
+        }
+      }
+      
+      // Ctrl+R: Manual refresh
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        manualRefresh();
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 INTUITY Student Portal Ready!');
+      debugLog('🚀 INTUITY Student Portal Ready (SWISS CLOCK FIX)!');
       
       initSupabase();
-      loadStudentProfile();
       
       await new Promise(resolve => setTimeout(resolve, 800));
       await loadAllQuestions(false);
@@ -1030,14 +732,19 @@
       if (urlParams.get('auto') === 'true' && allQuestions.length > 0) {
         document.getElementById('questionDropdown').value = '0';
         selectQuestion();
-        console.log('🎯 Auto-selected from QR code');
+        debugLog('🎯 Auto-selected from QR');
       }
       
       startAutoRefresh();
+      
+      debugLog('✅ Initialization complete', {
+        questionsFound: allQuestions.length,
+        online: isOnline,
+        supabaseActive: !!supabase
+      });
     });
 
     window.addEventListener('beforeunload', () => {
-      stopCamera();
       if (autoRefreshInterval) clearInterval(autoRefreshInterval);
     });
   </script>
