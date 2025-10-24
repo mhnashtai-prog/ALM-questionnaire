@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INTUITY - Analytics (FIXED)</title>
+  <title>INTUITY - Analytics Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
@@ -43,28 +43,6 @@
       font-size: 14px;
       color: rgba(255, 255, 255, 0.7);
       letter-spacing: 0.5px;
-    }
-
-    .debug-panel {
-      background: rgba(255, 140, 60, 0.1);
-      border: 1px solid rgba(255, 140, 60, 0.3);
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 10px;
-      font-size: 11px;
-      font-family: monospace;
-      max-height: 150px;
-      overflow-y: auto;
-      display: none;
-    }
-
-    .debug-panel.show {
-      display: block;
-    }
-
-    .debug-entry {
-      padding: 3px 0;
-      border-bottom: 1px solid rgba(255, 140, 60, 0.1);
     }
 
     .dropdown-section {
@@ -436,13 +414,8 @@
   <div class="container">
     <header class="header">
       <h1>INTUITY</h1>
-      <p>Analytics Dashboard<br>Press Ctrl+D for debug info</p>
+      <p>Analytics Dashboard</p>
     </header>
-
-    <div class="debug-panel" id="debugPanel">
-      <strong>🔍 Debug Log:</strong>
-      <div id="debugContent"></div>
-    </div>
 
     <section class="dropdown-section">
       <div class="selection-header">
@@ -522,49 +495,22 @@
   </div>
 
   <script>
-    console.log('🚀 INTUITY Analytics Loading (SWISS CLOCK FIX)...');
-    
     let allQuestions = [];
     let allResponses = [];
     let currentSelectedQuestion = null;
     let supabase = null;
     let isOnline = false;
-    let debugMode = false;
 
     const SUPABASE_URL = 'https://hpdebohqsvjlxeapzkrr.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZGVib2hxc3ZqbHhlYXB6a3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzkxMTEsImV4cCI6MjA3MzQ1NTExMX0.mnOtWgJaxNDcroSYJSiPxqov47KY3KXOeeltSUL3adw';
 
-    // Debug logging
-    function debugLog(message, data = null) {
-      const timestamp = new Date().toLocaleTimeString();
-      console.log(`[${timestamp}] ${message}`, data || '');
-      
-      if (debugMode) {
-        const debugContent = document.getElementById('debugContent');
-        const entry = document.createElement('div');
-        entry.className = 'debug-entry';
-        entry.innerHTML = `<strong>${timestamp}:</strong> ${message}`;
-        if (data) {
-          const dataStr = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
-          entry.innerHTML += `<pre style="font-size:10px;margin-top:3px;">${dataStr.substring(0, 150)}</pre>`;
-        }
-        debugContent.appendChild(entry);
-        
-        // Keep last 15 entries
-        while (debugContent.children.length > 15) {
-          debugContent.removeChild(debugContent.firstChild);
-        }
-      }
-    }
-
     function initSupabase() {
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        debugLog('✅ Supabase initialized');
         checkOnlineStatus();
         return true;
       } catch (error) {
-        debugLog('❌ Supabase error', error.message);
+        console.error('Supabase initialization error:', error);
         return false;
       }
     }
@@ -573,31 +519,26 @@
       try {
         const { data, error } = await supabase.from('questions').select('id').limit(1);
         isOnline = !error;
-        debugLog(isOnline ? '🌐 Online' : '📴 Offline');
       } catch (error) {
         isOnline = false;
       }
     }
 
     async function loadAllData() {
-      debugLog('🔄 Loading all data...');
       showNotification('Refreshing data...', 'info');
       
       await loadAllQuestions();
       await loadAllResponses();
       updateUI();
       
-      debugLog(`✅ Loaded ${allQuestions.length} questions, ${allResponses.length} responses`);
       showNotification(`Loaded ${allQuestions.length} questions, ${allResponses.length} responses`, 'success');
     }
 
-    // CRITICAL FIX: Load questions with proper fallback
     async function loadAllQuestions() {
       let foundQuestions = [];
       
-      // STEP 1: Try Supabase
+      // Try Supabase first
       if (supabase && isOnline) {
-        debugLog('📡 Checking Supabase for questions...');
         try {
           const { data, error } = await supabase
             .from('questions')
@@ -605,22 +546,15 @@
             .order('created_at', { ascending: false });
           
           if (!error && data && data.length > 0) {
-            debugLog(`✅ Supabase: Found ${data.length} questions`);
             foundQuestions = data;
-          } else if (error) {
-            debugLog('⚠️ Supabase error', error.message);
-          } else {
-            debugLog('ℹ️ Supabase: 0 questions returned');
           }
         } catch (err) {
-          debugLog('❌ Supabase fetch failed', err.message);
+          console.error('Supabase fetch failed:', err);
         }
       }
       
-      // STEP 2: If Supabase gave us nothing, check localStorage
+      // Fallback to localStorage if Supabase returned nothing
       if (foundQuestions.length === 0) {
-        debugLog('📦 Checking localStorage (Supabase had 0 results)...');
-        
         const storageKeys = [
           'current_question',
           'intuity_current_question',
@@ -638,33 +572,28 @@
               if (Array.isArray(parsed)) {
                 const valid = parsed.filter(q => q && (q.text || q.question_text));
                 if (valid.length > 0) {
-                  debugLog(`✅ localStorage[${key}]: Found ${valid.length} questions`);
                   foundQuestions = valid;
                   break;
                 }
               } else if (parsed && (parsed.text || parsed.question_text)) {
-                debugLog(`✅ localStorage[${key}]: Found 1 question`);
                 foundQuestions = [parsed];
                 break;
               }
             }
           } catch (e) {
-            debugLog(`⚠️ Error parsing ${key}`, e.message);
+            console.warn(`Error parsing ${key}:`, e);
           }
         }
       }
       
       allQuestions = foundQuestions;
-      debugLog(`📊 Final question count: ${allQuestions.length}`);
     }
 
-    // CRITICAL FIX: Load responses with proper fallback
     async function loadAllResponses() {
       let foundResponses = [];
       
-      // STEP 1: Try Supabase
+      // Try Supabase first
       if (supabase && isOnline) {
-        debugLog('📡 Checking Supabase for responses...');
         try {
           const { data, error } = await supabase
             .from('student_responses')
@@ -672,22 +601,15 @@
             .order('submitted_at', { ascending: false });
 
           if (!error && data && data.length > 0) {
-            debugLog(`✅ Supabase: Found ${data.length} responses`);
             foundResponses = data;
-          } else if (error) {
-            debugLog('⚠️ Supabase error', error.message);
-          } else {
-            debugLog('ℹ️ Supabase: 0 responses returned');
           }
         } catch (err) {
-          debugLog('❌ Supabase fetch failed', err.message);
+          console.error('Supabase fetch failed:', err);
         }
       }
       
-      // STEP 2: If Supabase gave us nothing, check localStorage
+      // Fallback to localStorage if Supabase returned nothing
       if (foundResponses.length === 0) {
-        debugLog('📦 Checking localStorage (Supabase had 0 results)...');
-        
         const storageKeys = [
           'intuity_student_responses',
           'alm_student_responses',
@@ -701,19 +623,17 @@
             if (stored && stored !== '[]' && stored !== 'null') {
               const parsed = JSON.parse(stored);
               if (Array.isArray(parsed) && parsed.length > 0) {
-                debugLog(`✅ localStorage[${key}]: Found ${parsed.length} responses`);
                 foundResponses = parsed;
                 break;
               }
             }
           } catch (e) {
-            debugLog(`⚠️ Error parsing ${key}`, e.message);
+            console.warn(`Error parsing ${key}:`, e);
           }
         }
       }
       
       allResponses = foundResponses;
-      debugLog(`📊 Final response count: ${allResponses.length}`);
     }
 
     function getResponsesForQuestion(question) {
@@ -722,53 +642,42 @@
       const questionId = question.id;
       const questionText = (question.text || question.question_text || '').trim().toLowerCase();
       
-      if (!questionId && !questionText) {
-        debugLog('⚠️ Question has no ID or text');
-        return [];
-      }
+      if (!questionId && !questionText) return [];
       
-      // SWISS CLOCK FIX: Match by ID first, then fall back to text matching
+      // Match by ID first
       const matchedById = allResponses.filter(response => {
         const respQId = response.question_id || response.questionId;
         return questionId && respQId && questionId === respQId;
       });
       
       if (matchedById.length > 0) {
-        debugLog(`🔍 Matched ${matchedById.length} responses by ID: ${questionId}`);
         return matchedById;
       }
       
-      // FALLBACK: Match by question text (for ID mismatches)
+      // Fallback: Match by question text (for ID mismatches)
       if (questionText) {
         const matchedByText = allResponses.filter(response => {
           const respText = (response.metadata?.questionText || '').trim().toLowerCase();
-          // Match if question text is similar (at least 80% of characters match)
           if (!respText) return false;
           const similarity = calculateSimilarity(questionText, respText);
           return similarity > 0.8;
         });
         
         if (matchedByText.length > 0) {
-          debugLog(`🔍 Matched ${matchedByText.length} responses by TEXT (ID mismatch detected!)`);
-          debugLog(`Question text: "${questionText.substring(0, 50)}..."`);
           return matchedByText;
         }
       }
 
-      debugLog(`❌ No matches found for question (ID: ${questionId})`);
       return [];
     }
     
-    // Helper: Calculate text similarity (simple character overlap)
     function calculateSimilarity(text1, text2) {
       if (!text1 || !text2) return 0;
       const maxLen = Math.max(text1.length, text2.length);
       const minLen = Math.min(text1.length, text2.length);
       
-      // Quick check: if lengths are very different, not similar
       if (minLen / maxLen < 0.5) return 0;
       
-      // Count matching characters at start
       let matches = 0;
       for (let i = 0; i < minLen; i++) {
         if (text1[i] === text2[i]) matches++;
@@ -805,8 +714,6 @@
         option.textContent = `${shortText} - ${responses.length} response${responses.length !== 1 ? 's' : ''} (${date.toLocaleDateString()})`;
         selector.appendChild(option);
       });
-
-      debugLog(`✅ Dropdown populated with ${allQuestions.length} questions`);
     }
 
     function updateAnalyticsBox() {
@@ -845,7 +752,6 @@
         document.getElementById('avgWords').textContent = avgWords;
         document.getElementById('withPhotos').textContent = withPhotos;
         
-        // Show response list
         responseList.style.display = 'block';
         responseList.innerHTML = '';
         
@@ -897,7 +803,6 @@
         currentSelectedQuestion = null;
       } else {
         currentSelectedQuestion = allQuestions[parseInt(selectedValue)];
-        debugLog('Selected question', currentSelectedQuestion?.text?.substring(0, 50));
       }
       
       updateAnalyticsBox();
@@ -920,7 +825,6 @@
       localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
       localStorage.setItem('display_responses', JSON.stringify(matched));
       
-      debugLog(`✅ Prepared display: ${matched.length} responses`);
       showNotification(`Loading ${matched.length} responses...`, 'info');
       
       setTimeout(() => {
@@ -945,33 +849,8 @@
       }, 3000);
     }
 
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.key === 'd') {
-        e.preventDefault();
-        debugMode = !debugMode;
-        document.getElementById('debugPanel').classList.toggle('show');
-        debugLog(debugMode ? '🔍 Debug mode ON' : '🔍 Debug mode OFF');
-        
-        if (debugMode) {
-          debugLog('Current state', {
-            questions: allQuestions.length,
-            responses: allResponses.length,
-            selectedQuestion: currentSelectedQuestion?.text?.substring(0, 30),
-            online: isOnline
-          });
-        }
-      }
-      
-      if (e.key === 'Escape') {
-        closeDiagnostics();
-      }
-    });
-
     // DIAGNOSTIC TOOL
     async function showDiagnostics() {
-      debugLog('🔧 Running diagnostics...');
-      
       const modal = document.getElementById('diagnosticModal');
       modal.classList.add('show');
       
@@ -1104,13 +983,18 @@
       } else {
         issues.innerHTML = issuesList.map(issue => `<p style="margin: 8px 0;">${issue}</p>`).join('');
       }
-      
-      debugLog('✅ Diagnostics complete');
     }
     
     function closeDiagnostics() {
       document.getElementById('diagnosticModal').classList.remove('show');
     }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDiagnostics();
+      }
+    });
 
     // Auto-refresh every 15 seconds
     setInterval(async () => {
@@ -1123,24 +1007,15 @@
       await loadAllResponses();
       
       if (allQuestions.length !== prevQ || allResponses.length !== prevR) {
-        debugLog(`✨ New data! Q: ${prevQ}→${allQuestions.length}, R: ${prevR}→${allResponses.length}`);
         updateUI();
       }
     }, 15000);
 
     // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
-      debugLog('🚀 INTUITY Analytics Ready (SWISS CLOCK FIX)!');
-      
       initSupabase();
       await new Promise(resolve => setTimeout(resolve, 500));
       await loadAllData();
-      
-      debugLog('✅ Initialization complete', {
-        questions: allQuestions.length,
-        responses: allResponses.length,
-        online: isOnline
-      });
     });
   </script>
 </body>
