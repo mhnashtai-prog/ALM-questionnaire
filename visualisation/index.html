@@ -822,18 +822,47 @@
         return;
       }
       
-      localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
-      localStorage.setItem('display_responses', JSON.stringify(matched));
+      // CRITICAL FIX: Limit responses to prevent localStorage quota exceeded
+      // Most presentations don't need more than 50 responses
+      const MAX_DISPLAY_RESPONSES = 50;
+      const responsesToDisplay = matched.slice(0, MAX_DISPLAY_RESPONSES);
       
-      showNotification(`Loading ${matched.length} responses...`, 'info');
+      // Strip unnecessary data to reduce size
+      const compactResponses = responsesToDisplay.map(r => ({
+        student_name: r.student_name || r.studentName,
+        answer: r.answer || r.response_text,
+        photo_url: r.photo_url || r.photoUrl,
+        submitted_at: r.submitted_at || r.timestamp || r.created_at,
+        question_id: r.question_id || r.questionId
+      }));
       
-      setTimeout(() => {
-        try {
-          window.open('../displays/', '_blank');
-        } catch (error) {
-          window.location.href = '../displays/';
+      try {
+        localStorage.setItem('display_question', JSON.stringify(currentSelectedQuestion));
+        localStorage.setItem('display_responses', JSON.stringify(compactResponses));
+        
+        const displayCount = responsesToDisplay.length;
+        const totalCount = matched.length;
+        
+        if (totalCount > MAX_DISPLAY_RESPONSES) {
+          showNotification(`Displaying first ${displayCount} of ${totalCount} responses (localStorage limit)`, 'info');
+        } else {
+          showNotification(`Loading ${displayCount} responses...`, 'info');
         }
-      }, 500);
+        
+        setTimeout(() => {
+          try {
+            window.open('../displays/', '_blank');
+          } catch (error) {
+            window.location.href = '../displays/';
+          }
+        }, 500);
+      } catch (error) {
+        if (error.name === 'QuotaExceededError') {
+          showNotification('Too many responses to display. Try selecting a question with fewer responses.', 'error');
+        } else {
+          showNotification('Error preparing display: ' + error.message, 'error');
+        }
+      }
     }
 
     function showNotification(message, type = 'info') {
